@@ -118,11 +118,9 @@ Headless Chromium run (after the art pass) through all 18 beats, driving every i
 
 A restyle of the code-drawn build (commit `dc5f777`) as a hand-drawn ink-and-watercolour illustration. **The story, interactions, narration (voice lines, cast pitch/rate) and SFX are unchanged**: only the look changes.
 
-- **Ink linework**: the whole scene passes through one SVG filter (`#hand`). It wobbles every line with a tileable noise displacement map, then lays a second, lighter pencil pass of the dark ink lines slightly off-register.
-- **Line boil**: the noise field shifts about 6 times a second, like redrawn animation frames. It's off under `prefers-reduced-motion`.
 - **Pencil hatching** under hill ridges and in the shadow side of foliage.
 - **Watercolour paper**: a seamless, script-painted paper tile (pigment blooms, fibres, tooth) multiplied over the stage. It replaces the digital grain.
 - **Hand-cut UI**: irregular corner radii on the caption, cards, pills and buttons; Kalam hand-lettering for the body text, with Yatra One kept for display.
-- **Quality guard**: if the frame rate stays under 22 fps while a scene plays, it first drops the pencil overdraw, then the wobble filter. Paper, hatching and UI remain. Headless software rendering (no GPU) drops to the last tier, so check smoothness on a real target device.
+- **No line wobble**: the wobble/boil filter and pencil overdraw from the first pass were removed on request. Linework is the original steady ink.
 
 Regenerate it with `git show dc5f777:merchant-and-bull/index.html > v1.html && python3 restyle_handdrawn.py v1.html hand-drawn.html`.

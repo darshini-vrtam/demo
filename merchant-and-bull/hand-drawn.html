@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Kalam:wght@400;700&family=Yatra+One&display=swap">
 <style>
 /* One committed storybook world (dusk-lit paper + turmeric), so a single palette is used in every theme.
-   Hand-drawn pass: scene art goes through an ink-wobble + pencil-overdraw filter and sits under a watercolour-paper wash. */
+   Hand-drawn pass: pencil hatching on the art, which sits under a watercolour-paper wash. */
 :root{
   color-scheme: dark;
   --ink:#3B2414; --ink-soft:#6B4A30;
@@ -128,7 +128,6 @@ button:focus-visible,a:focus-visible,#chip:focus-visible{outline:3px solid var(-
 .pill,#chip,.cbtn,#hint,#menulist button{box-shadow:2px 3px 0 var(--ink)}
 #line{font-weight:700;letter-spacing:.005em}
 #askq{font-weight:700}
-.askcard .face,#endbook{filter:url(#handsm)}
 
 /* ─── SVG motion vocabulary ─── */
 .sway{transform-box:fill-box;transform-origin:50% 100%;animation:sway 6s ease-in-out infinite}
@@ -224,23 +223,10 @@ g[tabindex]:focus-visible{filter:drop-shadow(0 0 0 #fff) drop-shadow(0 0 6px #ff
         <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
         <filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="28"/></filter>
         <filter id="sepia"><feColorMatrix type="matrix" values=".40 .72 .18 0 .02  .35 .66 .16 0 .01  .27 .52 .13 0 0  0 0 0 1 0"/></filter>
-        <filter id="hand" filterUnits="userSpaceOnUse" x="-2000" y="-2000" width="5600" height="5000" color-interpolation-filters="sRGB">
-          <feImage id="nimgA" preserveAspectRatio="none" x="0" y="0" width="400" height="400" result="tA"/>
-          <feTile in="tA" result="nA"/>
-          <feImage id="nimgB" preserveAspectRatio="none" x="0" y="0" width="400" height="400" result="tB"/>
-          <feTile in="tB" result="nB"/>
-          <feDisplacementMap in="SourceGraphic" in2="nA" scale="7" xChannelSelector="R" yChannelSelector="G" result="d"/>
-          <feColorMatrix in="d" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -3 -5.9 -1.1 0 2.6" result="dark"/>
-          <feComposite in="dark" in2="d" operator="in" result="ink"/>
-          <feDisplacementMap in="ink" in2="nB" scale="12" xChannelSelector="G" yChannelSelector="R" result="ink2"/>
-          <feComponentTransfer in="ink2" result="ink3"><feFuncA type="linear" slope=".32"/></feComponentTransfer>
-          <feMerge><feMergeNode in="d"/><feMergeNode in="ink3"/></feMerge>
-        </filter>
-        <filter id="handsm" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="3.5" xChannelSelector="R" yChannelSelector="G"/></filter>
         <pattern id="hatch" patternUnits="userSpaceOnUse" width="11" height="11" patternTransform="rotate(38)"><path d="M0,2 L11,2 M0,7.5 L11,7.3" stroke="#3B2414" stroke-width="1.7" stroke-linecap="round" fill="none"/></pattern>
         <g id="sdefs"></g>
       </defs>
-      <g id="ink" filter="url(#hand)"><g id="world"></g></g>
+      <g id="world"></g>
     </svg>
     <div id="grain"></div>
     <div id="vignette"></div>
@@ -395,33 +381,8 @@ function tween(el, to, dur = 1000, fn = ease.io) {
 function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 
 const svg = $('#scene'), world = $('#world'), sdefs = $('#sdefs');
-/* ══════════ Hand-drawn look: noise tiles, watercolour paper, line boil ══════════ */
+/* ══════════ Hand-drawn look: watercolour paper ══════════ */
 (function handDrawn() {
-  // Tileable value noise → RG displacement map (128px tile stretched over 400 units).
-  function noiseTile(seed, cellsA, cellsB) {
-    const N = 128, c = document.createElement('canvas'); c.width = c.height = N;
-    const x = c.getContext('2d'), img = x.createImageData(N, N), R = rng(seed);
-    const lattice = n => { const a = []; for (let i = 0; i < n * n; i++) a.push(R()); return a; };
-    const layers = [[cellsA, lattice(cellsA), lattice(cellsA), .7], [cellsB, lattice(cellsB), lattice(cellsB), .3]];
-    const sm = t => t * t * (3 - 2 * t);
-    const at = (L, n, u, v) => {
-      const fx = u * n, fy = v * n, x0 = Math.floor(fx), y0 = Math.floor(fy), tx = sm(fx - x0), ty = sm(fy - y0);
-      const g = (i, j) => L[((j % n + n) % n) * n + ((i % n + n) % n)];
-      const a = g(x0, y0) + (g(x0 + 1, y0) - g(x0, y0)) * tx, b = g(x0, y0 + 1) + (g(x0 + 1, y0 + 1) - g(x0, y0 + 1)) * tx;
-      return a + (b - a) * ty;
-    };
-    for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) {
-      const u = i / N, v = j / N; let r = 0, gg = 0;
-      for (const [n, LR, LG, w] of layers) { r += at(LR, n, u, v) * w; gg += at(LG, n, u, v) * w; }
-      const k = (j * N + i) * 4;
-      img.data[k] = Math.round(r * 255); img.data[k + 1] = Math.round(gg * 255); img.data[k + 2] = 128; img.data[k + 3] = 255;
-    }
-    x.putImageData(img, 0, 0); return c.toDataURL('image/png');
-  }
-  const setHref = (el, u) => { el.setAttribute('href', u); el.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', u); };
-  const nA = $('#nimgA'), nB = $('#nimgB');
-  try { setHref(nA, noiseTile(11, 8, 22)); setHref(nB, noiseTile(29, 6, 16)); } catch (e) { $('#ink').removeAttribute('filter'); }
-
   // Watercolour paper: soft pigment blooms, fibres and tooth, painted once into a seamless tile.
   try {
     const N = 512, c = document.createElement('canvas'); c.width = c.height = N;
@@ -447,46 +408,6 @@ const svg = $('#scene'), world = $('#world'), sdefs = $('#sdefs');
     $('#grain').style.backgroundImage = `url(${c.toDataURL('image/jpeg', .86)})`;
   } catch (e) { }
 
-  // Filter only what the screen shows (the scene is 1600×900, letterboxed with "meet").
-  const hf = $('#hand');
-  const fitFilter = () => {
-    const w = innerWidth || 1600, h = innerHeight || 900, k = Math.min(w / W, h / H), vw = w / k, vh = h / k, m = 40;
-    hf.setAttribute('x', ((W - vw) / 2 - m).toFixed(0)); hf.setAttribute('y', ((H - vh) / 2 - m).toFixed(0));
-    hf.setAttribute('width', (vw + 2 * m).toFixed(0)); hf.setAttribute('height', (vh + 2 * m).toFixed(0));
-  };
-  fitFilter(); addEventListener('resize', fitFilter);
-
-  // Quality guard: on a device that can't keep up, drop the pencil overdraw, then the wobble.
-  // Paper, hatching and the hand-cut UI stay either way.
-  let tier = 0, low = 0, frames = 0, t0 = performance.now();
-  const extra = [...hf.children].slice(5);
-  const tick = now => {
-    frames++;
-    if (now - t0 >= 2500) {
-      const fps = frames * 1000 / (now - t0); frames = 0; t0 = now;
-      const watching = !document.hidden && $('#title').hidden && $('#game').hidden;
-      low = watching && fps < 22 ? low + 1 : 0;
-      if (low >= 2 && tier < 2) {
-        low = 0; tier++;
-        if (tier === 1) extra.forEach(e => e.remove());
-        else $('#ink').removeAttribute('filter');
-        console.info('[hand-drawn] quality tier', tier, 'at', fps.toFixed(1), 'fps');
-      }
-    }
-    if (tier < 2) requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
-
-  // Boil: shift the wobble field a few times a second, like redrawn animation frames.
-  const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!still) {
-    const offs = [[0, 0], [137, 61], [263, 191], [71, 311]]; let f = 0;
-    setInterval(() => {
-      if (document.hidden) return;
-      f = (f + 1) % offs.length; const [ox, oy] = offs[f];
-      nA.setAttribute('x', ox); nA.setAttribute('y', oy); nB.setAttribute('x', -oy); nB.setAttribute('y', ox);
-    }, 170);
-  }
 })();
 
 function newStage(bg) {
