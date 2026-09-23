@@ -1,0 +1,1696 @@
+<meta charset="utf-8">
+<title>The Merchant and the Bull</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Yatra+One&display=swap">
+<style>
+/* One committed storybook world (dusk-lit paper + turmeric), so a single palette is used in every theme. */
+:root{
+  color-scheme: dark;
+  --ink:#3B2414; --ink-soft:#6B4A30;
+  --paper:#F7E8C4; --paper-2:#EFD9A7;
+  --turmeric:#E9A23B; --kumkum:#B5412A; --leaf:#5E8C3F;
+  --night:#1C1830; --cream:#FFF7E6; --gold:#F2C14E;
+  --display:'Yatra One','Baloo 2',Georgia,serif;
+  --body:'Baloo 2','Trebuchet MS',system-ui,sans-serif;
+}
+[hidden]{display:none !important}
+html,body{height:100%}
+body{margin:0;background:var(--night);color:var(--cream);font-family:var(--body);overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+#app{position:relative;height:100%;overflow:hidden;overflow:clip}
+#stage{position:absolute;inset:0;overflow:hidden;overflow:clip;background:var(--night);transition:background .6s}
+#scene{position:absolute;inset:0;width:100%;height:100%;overflow:visible;touch-action:none;display:block}
+#scene.shake{animation:screenshake .5s linear}
+#grain{position:absolute;inset:0;pointer-events:none;opacity:.16;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .23  0 0 0 0 .14  0 0 0 0 .08  0 0 0 .55 0'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>")}
+#vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 55%,rgba(20,10,5,.45) 100%)}
+#fade{position:absolute;inset:0;background:#0d0a14;opacity:0;pointer-events:none;transition:opacity .45s ease}
+#fade.on{opacity:1}
+#flash{position:absolute;inset:0;background:#FFF6D8;opacity:0;pointer-events:none;transition:opacity .6s}
+#flash.on{opacity:1;transition:opacity .15s}
+
+/* ─── Top bar ─── */
+#top{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 0;pointer-events:none;z-index:42}
+#top > *{pointer-events:auto}
+#chip{font:600 14px/1.2 var(--body);color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:999px;padding:6px 14px 5px;box-shadow:0 3px 0 var(--ink);cursor:pointer;max-width:min(60vw,420px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#chip b{font-family:var(--display);font-weight:400;color:var(--kumkum);margin-right:6px}
+.ctrls{display:flex;gap:10px}
+.cbtn{width:44px;height:44px;border-radius:50%;border:2px solid var(--ink);background:var(--paper);color:var(--ink);box-shadow:0 3px 0 var(--ink);display:grid;place-items:center;cursor:pointer;padding:0}
+.cbtn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.cbtn svg{width:22px;height:22px}
+.cbtn[aria-pressed="true"]{background:var(--turmeric)}
+.cbtn.busy{animation:pulse 1s infinite}
+button:focus-visible,a:focus-visible,#chip:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+
+/* ─── Caption ─── */
+#cap{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);transform:translateX(-50%) translateY(0);width:calc(100% - 32px);max-width:860px;background:var(--paper);color:var(--ink);border:3px solid var(--ink);border-radius:18px 18px 18px 6px;box-shadow:0 5px 0 var(--ink);padding:18px 22px 14px;z-index:15;transition:opacity .3s,transform .3s;cursor:pointer}
+#cap.hide{opacity:0;transform:translateX(-50%) translateY(14px);pointer-events:none}
+#who{position:absolute;top:-15px;left:18px;font:400 15px/1 var(--display);letter-spacing:.02em;background:var(--kumkum);color:var(--cream);border:2px solid var(--ink);border-radius:999px;padding:6px 12px 4px}
+#who.arjun{background:var(--leaf)}
+#line{margin:0;font:600 clamp(16px,2.1vw,22px)/1.35 var(--body);text-wrap:pretty}
+#cap small{display:block;margin-top:4px;font:500 12px/1 var(--body);color:var(--ink-soft);letter-spacing:.04em;text-transform:uppercase}
+
+/* ─── Hint ─── */
+#hint{position:absolute;top:calc(env(safe-area-inset-top,0px) + 68px);left:50%;transform:translateX(-50%);max-width:calc(100% - 32px);width:max-content;background:var(--turmeric);color:var(--ink);border:2px solid var(--ink);border-radius:999px;box-shadow:0 3px 0 var(--ink);padding:8px 18px 6px;font:700 clamp(14px,1.8vw,18px)/1.25 var(--body);text-align:center;z-index:16;transition:opacity .3s}
+#hint.hide{opacity:0;pointer-events:none}
+#hint.nudge{animation:nudge 1.2s ease-in-out infinite}
+
+/* ─── Arjun asks ─── */
+#ask{position:absolute;inset:0;display:grid;place-items:center;padding:16px;z-index:30;background:rgba(14,10,20,.35);opacity:0;transition:opacity .35s}
+#ask.show{opacity:1}
+.askcard{position:relative;width:min(560px,100%);background:var(--paper);color:var(--ink);border:3px solid var(--ink);border-radius:22px;box-shadow:0 6px 0 var(--ink);padding:22px 22px 18px;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;align-items:center;transform:translateY(10px) scale(.97);transition:transform .35s cubic-bezier(.3,1.5,.5,1)}
+#ask.show .askcard{transform:none}
+.askcard .face{grid-row:span 2;width:84px;height:84px}
+.askcard .eyebrow{font:400 15px/1 var(--display);color:var(--leaf);letter-spacing:.03em}
+#askq{margin:0;font:700 clamp(18px,2.4vw,24px)/1.3 var(--body);text-wrap:balance}
+.askfoot{grid-column:1/-1;display:flex;align-items:center;gap:14px;margin-top:10px}
+.askbar{flex:1;height:8px;border-radius:99px;background:var(--paper-2);border:2px solid var(--ink);overflow:hidden}
+#askbar{height:100%;background:var(--leaf);transform-origin:left;transform:scaleX(1)}
+.pill{font:700 16px/1 var(--body);color:var(--cream);background:var(--kumkum);border:2px solid var(--ink);border-radius:999px;box-shadow:0 3px 0 var(--ink);padding:10px 18px 8px;cursor:pointer}
+.pill:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.pill.alt{background:var(--paper);color:var(--ink)}
+.askcard .note{grid-column:1/-1;font:500 13px/1.3 var(--body);color:var(--ink-soft)}
+
+/* ─── Title / menu / end ─── */
+.overlay{position:absolute;inset:0;z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px 16px;text-align:center}
+#title{background:linear-gradient(to top,rgba(20,12,30,.85),rgba(20,12,30,.15) 60%,transparent)}
+#title .eyebrow,#end .eyebrow{font:400 clamp(14px,1.8vw,18px)/1 var(--display);color:var(--gold);letter-spacing:.14em;text-transform:uppercase}
+#title h1{margin:0;font:400 clamp(40px,7.5vw,92px)/.95 var(--display);color:var(--cream);text-shadow:0 4px 0 var(--ink),0 10px 30px rgba(0,0,0,.5);text-wrap:balance}
+#title h1 span{color:var(--turmeric)}
+#title p{margin:0;max-width:52ch;font:500 clamp(15px,1.8vw,18px)/1.45 var(--body);color:var(--paper)}
+.row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.big{font:400 clamp(20px,2.6vw,26px)/1 var(--display);padding:16px 30px 12px;background:var(--turmeric);color:var(--ink)}
+.rotate{display:none;font:600 13px/1.3 var(--body);color:var(--paper-2)}
+@media (orientation:portrait) and (max-width:760px){.rotate{display:block}}
+#menu{z-index:45;background:rgba(14,10,20,.8);overflow:auto;justify-content:flex-start;padding-top:calc(env(safe-area-inset-top,0px) + 70px)}
+#menu h2{margin:0;font:400 28px/1 var(--display);color:var(--gold)}
+#menulist{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;width:min(900px,100%)}
+#menulist button{width:100%;text-align:left;font:600 15px/1.25 var(--body);background:var(--paper);color:var(--ink);border:2px solid var(--ink);border-radius:12px;padding:10px 14px 8px;box-shadow:0 3px 0 var(--ink);cursor:pointer;display:flex;gap:10px;align-items:baseline}
+#menulist button b{font:400 14px/1 var(--display);color:var(--kumkum);min-width:3.2em}
+#menulist button.game{background:#F3D9A0}
+#end{background:#0d0a14;opacity:0;transition:opacity 1.2s}
+#end.show{opacity:1}
+#end h2{margin:0;font:400 clamp(30px,5vw,58px)/1.05 var(--display);color:var(--cream);text-wrap:balance;max-width:18ch}
+#end .tbc{font:400 clamp(22px,3vw,34px)/1 var(--display);color:var(--turmeric);letter-spacing:.06em}
+#endbook{width:min(260px,60vw);height:auto}
+
+/* ─── Game overlay ─── */
+#game{position:absolute;inset:0;z-index:35;background:#0d0a14;opacity:0;transition:opacity .4s}
+#game.show{opacity:1}
+#gframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#0d0a14}
+.gbar{position:absolute;left:16px;right:16px;top:calc(env(safe-area-inset-top,0px) + 12px);display:flex;flex-wrap:wrap;align-items:center;gap:8px;pointer-events:none}
+.gbar > *{pointer-events:auto}
+#gname{font:400 15px/1 var(--display);color:var(--ink);background:var(--gold);border:2px solid var(--ink);border-radius:999px;padding:7px 14px 5px}
+.gsmall{font:600 13px/1 var(--body);color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:999px;padding:7px 12px 5px;text-decoration:none;cursor:pointer}
+#glogp{position:absolute;left:16px;top:calc(env(safe-area-inset-top,0px) + 56px);max-width:min(620px,calc(100% - 32px));max-height:40%;overflow:auto;margin:0;padding:10px 12px;background:rgba(247,232,196,.95);color:var(--ink);border:2px solid var(--ink);border-radius:10px;font:12px/1.4 ui-monospace,Menlo,monospace;white-space:pre-wrap}
+#gnote{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(460px,calc(100% - 32px));background:var(--paper);color:var(--ink);border:3px solid var(--ink);border-radius:18px;box-shadow:0 5px 0 var(--ink);padding:18px 20px;text-align:center;font:600 16px/1.4 var(--body)}
+#gnote a{color:var(--kumkum)}
+#gcont{position:absolute;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);font-size:17px;animation:popin-html .45s cubic-bezier(.3,1.6,.5,1)}
+
+/* ─── Camera enhancement ─── */
+#handcur{position:absolute;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;border:4px solid var(--gold);background:rgba(242,193,78,.18);pointer-events:none;z-index:50;transition:background .1s,transform .1s}
+#handcur.grab{background:rgba(242,193,78,.75);transform:scale(.8)}
+#cam{position:absolute;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);width:132px;height:99px;object-fit:cover;transform:scaleX(-1);border:2px solid var(--ink);border-radius:10px;z-index:21;opacity:.85}
+#toast{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 70px);transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);background:var(--ink);color:var(--paper);border-radius:12px;padding:10px 16px 8px;font:600 14px/1.35 var(--body);z-index:60;opacity:0;transition:opacity .3s;pointer-events:none;text-align:center}
+#toast.show{opacity:1}
+
+/* ─── SVG motion vocabulary ─── */
+.sway{transform-box:fill-box;transform-origin:50% 100%;animation:sway 6s ease-in-out infinite}
+.shake-tree{animation:treeshake .16s linear 9 !important}
+.tail{transform-box:fill-box;transform-origin:100% 0;animation:swish 3.2s ease-in-out infinite}
+.wag{transform-box:fill-box;transform-origin:100% 80%;animation:wag .9s ease-in-out infinite}
+.legA,.legB{transform-box:fill-box;transform-origin:50% 8%}
+.moving .legA{animation:step .8s ease-in-out infinite}
+.moving .legB{animation:step .8s ease-in-out -.4s infinite}
+.wheel{transform-box:fill-box;transform-origin:50% 50%}
+.moving .wheel{animation:spin 1.4s linear infinite}
+.bob{animation:bob 2.6s ease-in-out infinite}
+.hop{animation:bob .4s ease-in-out infinite}
+.breathe{transform-box:fill-box;transform-origin:50% 100%;animation:breathe 3.2s ease-in-out infinite}
+.shiver{animation:shiver .11s linear infinite}
+.pose{transform-box:view-box;transform-origin:0 0;transition:transform .9s cubic-bezier(.4,.1,.3,1)}
+.pose.droop{transform:rotate(30deg)}
+.pose.eat{transform:rotate(44deg)}
+.pose.proud{transform:rotate(-14deg)}
+.pose.tilt{transform:rotate(-13deg)}
+.pose.hdown{transform:translate(0px,6px) rotate(9deg)}
+.pose.duck{transform:translate(0px,26px)}
+.pray .armL{transform:rotate(-54deg)}
+.pray .armR{transform:rotate(54deg)}
+.raise .armR{transform:rotate(-150deg)}
+.worry .armL{transform:rotate(150deg)}
+.worry .armR{transform:rotate(-150deg)}
+.graze .head{animation:graze 2.4s ease-in-out infinite}
+.lid{transform-box:fill-box;transform-origin:50% 0;transform:scaleY(0);animation:blink 5s infinite}
+.closed .lid{animation:none;transform:scaleY(1)}
+.opening .lid{animation:none;transform:scaleY(0);transition:transform 2.4s ease-in-out}
+.eye{transform-box:fill-box;transform-origin:50% 50%;transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+.wide .eye{transform:scale(1.8)}
+.ear{transform-box:fill-box;transform-origin:50% 100%;transition:transform .3s cubic-bezier(.3,1.6,.5,1)}
+.ears-up .ear{transform:translateY(-16px) scale(1.2)}
+.ears-flat .ear{transform:translateY(12px) scaleY(.55)}
+.twinkle{animation:twinkle 3s ease-in-out infinite}
+.popin{transform-box:fill-box;transform-origin:50% 50%;animation:popin .5s cubic-bezier(.3,1.6,.5,1) both}
+.boom{transform-box:fill-box;transform-origin:50% 50%;animation:boom 1.9s ease-out forwards}
+.ring{transform-box:fill-box;transform-origin:50% 50%;animation:ring 1.9s ease-out forwards}
+.flipper.on{transform-box:view-box;transform-origin:0 0;animation:flip .42s ease-in-out infinite}
+.flicker{transform-box:fill-box;transform-origin:50% 100%;animation:flicker .5s ease-in-out infinite alternate}
+.spinslow{transform-box:fill-box;transform-origin:50% 50%;animation:spin 14s linear infinite}
+.pulse{transform-box:fill-box;transform-origin:50% 50%;animation:orb 1.6s ease-in-out infinite}
+.wiggle{transform-box:fill-box;transform-origin:50% 100%;animation:wiggle .45s ease-in-out}
+.fly{animation:flap .25s ease-in-out infinite alternate}
+.grabbable{cursor:grab;filter:drop-shadow(0 0 7px rgba(255,226,130,.95))}
+.held{cursor:grabbing;filter:drop-shadow(0 16px 8px rgba(0,0,0,.35)) drop-shadow(0 0 10px rgba(255,226,130,.95)) !important}
+.tappable{cursor:pointer;animation:pulseglow 1.8s ease-in-out infinite}
+.glowy{filter:drop-shadow(0 0 10px rgba(249,226,125,.9))}
+.fadeT{transition:opacity 1.2s ease}
+g[tabindex]:focus{outline:none}
+g[tabindex]:focus-visible{filter:drop-shadow(0 0 0 #fff) drop-shadow(0 0 6px #fff) drop-shadow(0 0 12px var(--gold)) !important}
+
+@keyframes sway{0%,100%{transform:rotate(-1.2deg)}50%{transform:rotate(1.2deg)}}
+@keyframes treeshake{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@keyframes swish{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(9deg)}}
+@keyframes wag{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(10deg)}}
+@keyframes step{0%,100%{transform:rotate(-9deg)}50%{transform:rotate(9deg)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes breathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.025)}}
+@keyframes shiver{0%,100%{transform:translateX(-2px)}50%{transform:translateX(2px)}}
+@keyframes graze{0%,100%{transform:rotate(44deg)}50%{transform:rotate(36deg)}}
+@keyframes blink{0%,93%,100%{transform:scaleY(0)}96%{transform:scaleY(1)}}
+@keyframes twinkle{0%,100%{opacity:.15}50%{opacity:1}}
+@keyframes popin{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes popin-html{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes boom{0%{transform:scale(.3);opacity:0}14%{transform:scale(1.15);opacity:1}24%{transform:scale(1)}78%{opacity:1}100%{transform:scale(1.06) translateY(-14px);opacity:0}}
+@keyframes ring{0%{transform:scale(.25);opacity:.9}100%{transform:scale(3.2);opacity:0}}
+@keyframes flip{from{transform:scaleX(1)}to{transform:scaleX(-1)}}
+@keyframes flicker{from{transform:scale(1,1)}to{transform:scale(.9,1.12)}}
+@keyframes orb{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+@keyframes flap{from{transform:scaleY(1)}to{transform:scaleY(-.6)}}
+@keyframes pulseglow{0%,100%{filter:drop-shadow(0 0 3px rgba(255,226,130,.5))}50%{filter:drop-shadow(0 0 16px rgba(255,226,130,1))}}
+@keyframes screenshake{0%,100%{transform:translate(0,0)}20%{transform:translate(-8px,4px)}40%{transform:translate(7px,-5px)}60%{transform:translate(-6px,-3px)}80%{transform:translate(5px,4px)}}
+@keyframes nudge{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.06)}}
+@keyframes pulse{50%{opacity:.5}}
+@media (prefers-reduced-motion:reduce){
+  .sway,.tail,.wag,.bob,.hop,.breathe,.twinkle,.spinslow,.pulse,.tappable,.flicker,.graze .head,.moving .legA,.moving .legB,.moving .wheel,.scroll{animation:none !important}
+  #scene.shake,.shake-tree,.shiver{animation:none !important}
+}
+.scroll{animation:scrollx linear infinite}
+.s-slow{animation-duration:48s}.s-mid{animation-duration:22s}.s-fast{animation-duration:7s}
+@keyframes scrollx{from{transform:translateX(0)}to{transform:translateX(-800px)}}
+/* ─── Painted art layer ─── */
+#backdrop{position:absolute;inset:-60px;background:#2a1a0e center/cover no-repeat;filter:blur(22px) brightness(.7) saturate(1.1)}
+.xfade{transition:opacity 1.1s ease}
+.idle{transform-box:fill-box;transform-origin:50% 100%;animation:idle 4.6s ease-in-out infinite}
+@keyframes idle{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-5px) rotate(.5deg)}}
+.halo{transform-box:fill-box;transform-origin:50% 50%;animation:halo 1.8s ease-in-out infinite}
+@keyframes halo{0%,100%{transform:scale(1);opacity:.95}50%{transform:scale(1.14);opacity:.45}}
+.lightform{filter:drop-shadow(0 0 10px rgba(255,214,120,.95)) drop-shadow(0 0 26px rgba(255,190,90,.6))}
+#cap{--figw:clamp(84px,15vh,150px)}
+#capfig{display:none;position:absolute;left:8px;bottom:0;width:var(--figw);height:auto;pointer-events:none;filter:drop-shadow(0 4px 6px rgba(40,20,5,.35));transform-origin:50% 100%;animation:narrate 3.2s ease-in-out infinite}
+#cap.arjun{padding-left:calc(var(--figw) + 20px)}
+#cap.arjun #capfig{display:block}
+#cap.arjun #who{left:calc(var(--figw) + 20px)}
+@keyframes narrate{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-3px) rotate(-.6deg)}}
+.askcard .face{width:96px;height:auto;align-self:end;filter:drop-shadow(0 3px 4px rgba(40,20,5,.35))}
+@media (prefers-reduced-motion:reduce){.idle,.halo,#capfig{animation:none !important}}
+</style>
+
+<div id="app">
+  <div id="stage">
+    <div id="backdrop"></div>
+    <svg id="scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" aria-label="Story scene" role="img">
+      <defs>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="28"/></filter>
+        <filter id="sepia"><feColorMatrix type="matrix" values=".40 .72 .18 0 .02  .35 .66 .16 0 .01  .27 .52 .13 0 0  0 0 0 1 0"/></filter>
+        <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="8"/></filter>
+        <filter id="softS" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.6"/></filter>
+        <filter id="propsoft" x="-15%" y="-15%" width="130%" height="140%"><feGaussianBlur in="SourceAlpha" stdDeviation="8" result="s"/><feOffset in="s" dy="10" result="o"/><feComponentTransfer in="o" result="sh"><feFuncA type="linear" slope=".35"/></feComponentTransfer><feGaussianBlur in="SourceGraphic" stdDeviation=".7" result="g"/><feMerge><feMergeNode in="sh"/><feMergeNode in="g"/></feMerge></filter>
+        <g id="sdefs"></g>
+      </defs>
+      <g id="world"></g>
+    </svg>
+    <div id="grain"></div>
+    <div id="vignette"></div>
+    <div id="flash"></div>
+    <div id="fade" class="on"></div>
+  </div>
+
+  <div id="top">
+    <button id="chip" type="button" aria-label="Choose a scene"><b>Panchatantra</b><span id="chiptxt">The Merchant and the Bull</span></button>
+    <div class="ctrls">
+      <button class="cbtn" id="bhands" type="button" aria-pressed="false" aria-label="Hand gestures with camera (optional)" title="Hand gestures with camera (optional)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11V6a1.5 1.5 0 0 1 3 0v4M10 10V4.5a1.5 1.5 0 0 1 3 0V10M13 10V5.5a1.5 1.5 0 0 1 3 0V11M16 11V8a1.5 1.5 0 0 1 3 0v6a7 7 0 0 1-7 7h-1a6 6 0 0 1-5-2.7L3.5 14a1.6 1.6 0 0 1 2.6-1.8L7 13.5"/></svg>
+      </button>
+      <button class="cbtn" id="bmute" type="button" aria-pressed="false" aria-label="Mute narration and sound" title="Mute (M)">
+        <svg id="icon-sound" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+        <svg id="icon-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
+      </button>
+      <button class="cbtn" id="bskip" type="button" aria-label="Skip to the next part" title="Skip (→)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l9 7-9 7zM17 5v14"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="hint" class="hide" role="status"></div>
+
+  <div id="cap" class="hide" role="status" aria-live="polite" title="Tap to skip this line">
+    <img id="capfig" alt="">
+    <span id="who">Arjun</span>
+    <p id="line"></p>
+  </div>
+
+  <div id="ask" hidden>
+    <div class="askcard" role="dialog" aria-labelledby="askq">
+      <img class="face" id="askface" alt="Arjun">
+      <div class="eyebrow">Arjun asks</div>
+      <p id="askq"></p>
+      <div class="askfoot">
+        <div class="askbar"><div id="askbar"></div></div>
+        <button class="pill" id="askgo" type="button">I answered! →</button>
+      </div>
+      <div class="note">Say your answer out loud — the story carries on by itself in a moment.</div>
+    </div>
+  </div>
+
+  <div id="title" class="overlay">
+    <div class="eyebrow">Panchatantra · Story Two</div>
+    <h1>The Merchant <span>&amp;</span> the Bull</h1>
+    <p>An interactive tale told by Arjun. It plays by itself — tap and drag to help along the way. Camera hand gestures are an optional extra.</p>
+    <div class="row">
+      <button class="pill big" id="begin" type="button">Begin the story</button>
+      <button class="pill alt" id="pick" type="button">Choose a scene</button>
+    </div>
+    <div class="rotate">Turn your phone sideways for a bigger picture.</div>
+  </div>
+
+  <div id="menu" class="overlay" hidden>
+    <h2>Choose a scene</h2>
+    <ol id="menulist"></ol>
+    <button class="pill alt" id="menuclose" type="button">Close</button>
+  </div>
+
+  <div id="game" hidden>
+    <iframe id="gframe" title="Story game"></iframe>
+    <div class="gbar">
+      <span id="gname">Game</span>
+      <a class="gsmall" id="gopen" href="#" target="_blank" rel="noopener">Open in a new tab ↗</a>
+      <button class="gsmall" id="glog" type="button">0 messages</button>
+    </div>
+    <pre id="glogp" hidden></pre>
+    <div id="gnote" hidden>The game didn't load inside this page. You can <a id="gopen2" href="#" target="_blank" rel="noopener">play it in a new tab</a>, then come back and continue the story.</div>
+    <button class="pill" id="gcont" type="button" hidden>Continue the story →</button>
+  </div>
+
+  <div id="end" class="overlay" hidden>
+    <svg id="endbook" viewBox="-170 -120 340 200" aria-hidden="true">
+      <rect x="-150" y="-100" width="300" height="170" rx="10" fill="#6E1F22" stroke="#3B2414" stroke-width="5"/>
+      <g id="cover" style="transform-box:view-box;transform-origin:0 0;transition:transform 1.1s cubic-bezier(.6,0,.3,1)">
+        <rect x="-140" y="-92" width="140" height="154" fill="#F7E8C4" stroke="#3B2414" stroke-width="4"/>
+      </g>
+      <rect x="0" y="-92" width="140" height="154" fill="#F7E8C4" stroke="#3B2414" stroke-width="4"/>
+      <text x="70" y="-12" text-anchor="middle" font-family="'Yatra One',serif" font-size="30" fill="#B5412A">पञ्चतन्त्र</text>
+    </svg>
+    <div class="eyebrow">Next story</div>
+    <h2>A Story of Friendship, Fear &amp; Cleverness</h2>
+    <div class="tbc">To Be Continued…</div>
+    <div class="row">
+      <button class="pill big" id="again" type="button">Play again</button>
+      <button class="pill alt" id="pick2" type="button">Choose a scene</button>
+    </div>
+  </div>
+
+  <video id="cam" muted playsinline hidden></video>
+  <div id="handcur" hidden></div>
+  <div id="toast" role="status"></div>
+</div>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const NS = 'http://www.w3.org/2000/svg';
+const W = 1600, H = 900;
+const INK = '#3B2414', PAPER = '#F7E8C4', TURM = '#E9A23B', KUM = '#B5412A', LEAF = '#5E8C3F', GOLD = '#F2C14E', BARK = '#7A4B2A', SKIN = '#C98A5E';
+const CH = { stroke: INK, 'stroke-width': 4, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' };
+
+/* ══════════ SVG helpers ══════════ */
+function S(tag, attrs, ...kids) {
+  const e = document.createElementNS(NS, tag);
+  if (attrs) for (const k in attrs) { const v = attrs[k]; if (v != null && v !== false) e.setAttribute(k, v); }
+  for (const c of kids.flat(3)) { if (c == null || c === false) continue; e.append(typeof c === 'string' ? document.createTextNode(c) : c); }
+  return e;
+}
+const G = (a, ...k) => S('g', a, ...k);
+let _uid = 0; const uid = p => p + (++_uid);
+function place(el, x = 0, y = 0, s = 1, o = {}) {
+  el._t = { x, y, s, r: o.r || 0, fx: o.fx || 1, sy: o.sy || 1, op: o.op == null ? 1 : o.op };
+  applyT(el); return el;
+}
+function applyT(el) {
+  const t = el._t;
+  el.setAttribute('transform', `translate(${t.x.toFixed(2)} ${t.y.toFixed(2)}) rotate(${t.r.toFixed(2)}) scale(${(t.s * t.fx).toFixed(4)} ${(t.s * t.sy).toFixed(4)})`);
+  if (t.op !== 1 || el._opSet) { el.setAttribute('opacity', Math.max(0, t.op).toFixed(3)); el._opSet = true; }
+}
+const ease = {
+  io: t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2,
+  out: t => 1 - Math.pow(1 - t, 3),
+  in: t => t * t * t,
+  back: t => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); },
+  lin: t => t
+};
+function tween(el, to, dur = 1000, fn = ease.io) {
+  if (!el._t) place(el);
+  const from = { ...el._t }, id = el._tw = (el._tw || 0) + 1;
+  return new Promise(res => {
+    const t0 = performance.now();
+    const step = now => {
+      if (el._tw !== id) return res();
+      const p = Math.min(1, (now - t0) / dur), e = fn(p);
+      for (const k in to) el._t[k] = from[k] + (to[k] - from[k]) * e;
+      applyT(el);
+      if (p < 1) requestAnimationFrame(step); else res();
+    };
+    requestAnimationFrame(step);
+  });
+}
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+const svg = $('#scene'), world = $('#world'), sdefs = $('#sdefs');
+function newStage(bg) {
+  world.innerHTML = ''; sdefs.innerHTML = '';
+  place(world, 0, 0, 1);
+  $('#stage').style.background = bg || '#1C1830'; setBackdrop(null);
+  return world;
+}
+function toWorld(x, y) {
+  const p = svg.createSVGPoint(); p.x = x; p.y = y;
+  return p.matrixTransform(world.getScreenCTM().inverse());
+}
+function actor(inner, x, y, s = 1, o = {}) {
+  const w = place(G({}), x, y, s, o); w.append(inner); w.inner = inner; w.parts = inner.parts || {}; return w;
+}
+function tweenAttr(el, attr, from, to, dur, fn = ease.out) {
+  return new Promise(res => { const t0 = performance.now(); const st = now => { const p = Math.min(1, (now - t0) / dur); el.setAttribute(attr, (from + (to - from) * fn(p)).toFixed(2)); p < 1 ? requestAnimationFrame(st) : res(); }; requestAnimationFrame(st); });
+}
+
+/* ══════════ Painted art (inlined by build.py) ══════════ */
+const ART = {
+  forest: { src: '__ART:forest.webp__', soft: '__ART:forest-soft.webp__', w: 2000, h: 1116 },
+  banyan: { src: '__ART:banyan-sage.webp__', soft: '__ART:banyan-soft.webp__', w: 1920, h: 1080 },
+  throne: { src: '__ART:throne.webp__', soft: '__ART:throne-soft.webp__', w: 1800, h: 1800 },
+  merchant: { src: '__ART:merchant.webp__', w: 343, h: 462 },
+  arjun: { src: '__ART:arjun.webp__', w: 280, h: 324 }
+};
+function setBackdrop(key) { const a = key && ART[key]; $('#backdrop').style.backgroundImage = a && a.soft ? `url("${a.soft}")` : 'none'; }
+// A full-bleed painting in a camera group ("kb"); the camera frames a point of the image (fractions) at zoom z.
+function painted(r, key, o = {}) {
+  const a = ART[key], k = Math.max(W / a.w, H / a.h), iw = a.w * k, ih = a.h * k;
+  const kb = G({});
+  kb.append(S('image', { href: o.soft ? a.soft : a.src, x: 0, y: 0, width: iw, height: ih, preserveAspectRatio: 'none' }));
+  kb.iw = iw; kb.ih = ih;
+  const f = frameT(kb, o.cx ?? .5, o.cy ?? .5, o.z ?? 1); place(kb, f.x, f.y, f.s);
+  r.append(kb); setBackdrop(key); return kb;
+}
+function frameT(kb, cx, cy, z) {
+  z = Math.max(1, z); const vx = W / (z * kb.iw), vy = H / (z * kb.ih);
+  cx = Math.min(Math.max(cx, vx / 2), 1 - vx / 2); cy = Math.min(Math.max(cy, vy / 2), 1 - vy / 2);
+  return { x: W / 2 - z * cx * kb.iw, y: H / 2 - z * cy * kb.ih, s: z };
+}
+const cam = (kb, cx, cy, z, dur = 1600, fn = ease.io) => anim(kb, frameT(kb, cx, cy, z), dur, fn);
+function drift(kb, cx, cy, z, dur = 14000) { tween(kb, frameT(kb, cx, cy, z), dur, ease.io); } // Ken Burns; the next camera move cancels it
+function wpt(kb, fx, fy) { return { x: kb._t.x + kb._t.s * fx * kb.iw, y: kb._t.y + kb._t.s * fy * kb.ih }; }
+function halo(kb, fx, fy, rad) {
+  const c = S('circle', { cx: fx * kb.iw, cy: fy * kb.ih, r: rad, fill: 'none', stroke: '#FFE9A8', 'stroke-width': 4, 'vector-effect': 'non-scaling-stroke', filter: 'url(#glow)', class: 'halo', 'pointer-events': 'none' });
+  kb.append(c); return c;
+}
+// Painted cutout character, anchored bottom-centre at (x, y), h world units tall, with a gentle idle sway.
+function cutout(key, x, y, h, o = {}) {
+  const a = ART[key], w = h * a.w / a.h;
+  const outer = place(G({}), x, y, 1, { fx: o.fx || 1 });
+  const inner = G({ class: o.anim ?? 'idle' });
+  inner.append(S('ellipse', { cx: 0, cy: -6, rx: w * .36, ry: h * .03, fill: '#1a0f08', opacity: .4, filter: 'url(#soft)' }), S('image', { href: a.src, x: -w / 2, y: -h, width: w, height: h }));
+  outer.append(inner); outer.inner = inner; outer.parts = {}; return outer;
+}
+
+/* ══════════ Scenery ══════════ */
+function sky(r, stops) {
+  const id = uid('sky');
+  sdefs.append(S('linearGradient', { id, gradientUnits: 'userSpaceOnUse', x1: 0, y1: 0, x2: 0, y2: H }, stops.map(([o, c]) => S('stop', { offset: o, 'stop-color': c }))));
+  const rect = S('rect', { x: -2000, y: -2000, width: 5600, height: 5000, fill: `url(#${id})` });
+  r.append(rect); return rect;
+}
+function veil(r, color, op = 0) {
+  const v = S('rect', { x: -2000, y: -2000, width: 5600, height: 5000, fill: color, class: 'fadeT', 'pointer-events': 'none' });
+  v.style.opacity = op; r.append(v); return v;
+}
+function hill(r, y, color, o = {}) {
+  const amp = o.amp ?? 30, per = o.period ?? 700, ph = o.phase ?? 0, x0 = o.x0 ?? -2000, x1 = o.x1 ?? 3600;
+  let d = `M${x0},3000 L${x0},${y}`;
+  for (let x = x0; x <= x1; x += 25) {
+    const yy = y - amp * Math.sin(2 * Math.PI * x / per + ph) - amp * .35 * Math.sin(4 * Math.PI * x / per + ph * 1.7);
+    d += ` L${x},${yy.toFixed(1)}`;
+  }
+  d += ` L${x1},3000Z`;
+  const p = S('path', { d, fill: color });
+  if (o.stroke) { p.setAttribute('stroke', INK); p.setAttribute('stroke-width', 4); }
+  r.append(p); return p;
+}
+function blob(circles, fill, o = {}) {
+  const g = G({});
+  g.append(G({ fill: o.outline || INK, stroke: o.outline || INK, 'stroke-width': o.sw || 8 }, circles.map(([x, y, r]) => S('circle', { cx: x, cy: y, r }))));
+  g.append(G({ fill, stroke: 'none' }, circles.map(([x, y, r]) => S('circle', { cx: x, cy: y, r }))));
+  if (o.hi) g.append(G({ fill: o.hi, stroke: 'none', opacity: .6 }, circles.filter((c, i) => i % 2 === 0).map(([x, y, r]) => S('circle', { cx: x - r * .22, cy: y - r * .3, r: r * .5 }))));
+  return g;
+}
+function tree(x, y, s = 1, o = {}) {
+  const g = place(G({}), x, y, s);
+  const leaf = o.leaf || LEAF, hi = o.hi || '#7FAE52', trunk = o.trunk || BARK;
+  g.append(S('path', { d: 'M-6,-150 C-26,-172 -46,-178 -68,-196 M6,-120 C24,-140 40,-150 60,-170', fill: 'none', stroke: INK, 'stroke-width': 14, 'stroke-linecap': 'round' }));
+  g.append(S('path', { d: 'M-6,-150 C-26,-172 -46,-178 -68,-196 M6,-120 C24,-140 40,-150 60,-170', fill: 'none', stroke: trunk, 'stroke-width': 7, 'stroke-linecap': 'round' }));
+  g.append(S('path', { d: 'M-24,4 C-18,-60 -18,-150 -12,-215 L12,-215 C18,-150 18,-60 24,4Z', fill: trunk, stroke: INK, 'stroke-width': 4, 'stroke-linejoin': 'round' }));
+  const c = G({ class: o.still ? '' : 'sway' });
+  c.style.animationDelay = (-(x * 7 % 6)).toFixed(1) + 's';
+  c.append(blob([[-80, -235, 70], [0, -292, 96], [80, -235, 70], [-44, -192, 60], [46, -192, 60], [0, -222, 72]], leaf, { hi }));
+  g.append(c); g.canopy = c; return g;
+}
+function bush(x, y, s = 1, fill = '#4F7F3A', hi = '#6E9E4C') {
+  const g = place(G({}), x, y, s);
+  const inner = G({}); inner.append(blob([[-62, -40, 46], [0, -64, 58], [62, -40, 46], [-32, -22, 42], [32, -22, 42]], fill, { hi }));
+  g.append(inner); g.inner = inner; return g;
+}
+function tufts(r, n, x0, x1, y0, y1, color, seed = 1) {
+  const R = rng(seed), g = G({ fill: color, stroke: INK, 'stroke-width': 2.5, 'stroke-linejoin': 'round' });
+  for (let i = 0; i < n; i++) {
+    const x = x0 + R() * (x1 - x0), y = y0 + R() * (y1 - y0), s = .7 + R() * .8;
+    g.append(S('path', { d: `M${x - 12 * s},${y} L${x - 6 * s},${y - 22 * s} L${x},${y} L${x + 6 * s},${y - 28 * s} L${x + 12 * s},${y}Z` }));
+  }
+  r.append(g); return g;
+}
+function motes(r, n, color, o = {}) {
+  const R = rng(o.seed || 7), g = G({ 'pointer-events': 'none' });
+  for (let i = 0; i < n; i++) {
+    const c = S('circle', { cx: (o.x0 ?? -100) + R() * ((o.x1 ?? 1700) - (o.x0 ?? -100)), cy: (o.y0 ?? 80) + R() * ((o.y1 ?? 760) - (o.y0 ?? 80)), r: 2 + R() * 4, fill: color, class: 'twinkle', filter: 'url(#glow)' });
+    c.style.animationDelay = (-R() * 3).toFixed(2) + 's'; c.style.animationDuration = (2 + R() * 3).toFixed(2) + 's';
+    g.append(c);
+  }
+  r.append(g); return g;
+}
+function sun(r, x, y, rad, color = '#FFE7A3') {
+  r.append(S('circle', { cx: x, cy: y, r: rad * 2.2, fill: color, opacity: .25, filter: 'url(#blur)' }));
+  r.append(S('circle', { cx: x, cy: y, r: rad, fill: color }));
+}
+function moon(r, x, y) {
+  r.append(S('circle', { cx: x, cy: y, r: 120, fill: '#F4EBC8', opacity: .18, filter: 'url(#blur)' }));
+  r.append(S('path', { d: `M${x},${y - 46} A46,46 0 1,0 ${x},${y + 46} A36,36 0 1,1 ${x},${y - 46}Z`, fill: '#F4EBC8' }));
+}
+function banyan(x, y, s = 1, o = {}) {
+  const g = place(G({}), x, y, s);
+  const leaf = o.leaf || '#3E6B35', hi = o.hi || '#5E8C3F', bark = o.bark || '#6E4A2E';
+  const roots = G({});
+  for (const rx of [-470, -390, -310, -240, 230, 310, 390, 470]) {
+    const d = `M${rx},-340 C${rx + 12},-240 ${rx - 12},-120 ${rx + 6},0`;
+    roots.append(S('path', { d, fill: 'none', stroke: INK, 'stroke-width': 11, 'stroke-linecap': 'round' }), S('path', { d, fill: 'none', stroke: bark, 'stroke-width': 5, 'stroke-linecap': 'round' }));
+  }
+  g.append(roots);
+  g.append(S('path', { d: 'M-120,4 C-96,-80 -84,-230 -64,-340 L64,-340 C84,-230 96,-80 120,4Z', fill: bark, stroke: INK, 'stroke-width': 5, 'stroke-linejoin': 'round' }));
+  g.append(S('path', { d: 'M-40,-40 C-34,-140 -30,-220 -24,-320 M30,-30 C28,-130 26,-220 22,-320', fill: 'none', stroke: INK, 'stroke-width': 3, opacity: .5 }));
+  const c = G({ class: 'sway' });
+  c.append(blob([[-540, -410, 150], [-310, -500, 190], [0, -548, 225], [310, -500, 190], [540, -410, 150], [-430, -330, 120], [430, -330, 120], [-160, -400, 170], [160, -400, 170]], leaf, { hi }));
+  g.append(c); g.canopy = c; return g;
+}
+function bird(x, y, s = 1) {
+  const g = place(G({}), x, y, s);
+  g.append(G({ class: 'fly' }, S('path', { d: 'M-22,0 Q-11,-14 0,0 Q11,-14 22,0', fill: 'none', stroke: INK, 'stroke-width': 4, 'stroke-linecap': 'round' })));
+  return g;
+}
+
+/* ══════════ Characters ══════════ */
+const MOUTH = { smile: 'M-9,-16 q9,8 18,0', sad: 'M-9,-11 q9,-7 18,0', o: 'M-4,-14 a4,5 0 1,0 8,0 a4,5 0 1,0 -8,0', flat: 'M-8,-14 L8,-14', worry: 'M-9,-12 q4,-4 9,-1 q5,3 9,-1', grin: 'M-11,-17 q11,12 22,0' };
+function face(o = {}) {
+  const skin = o.skin || SKIN; const g = G(CH), p = {};
+  if (o.topknot) g.append(S('circle', { cx: 0, cy: -66, r: 12, fill: '#E8E2D6' }));
+  g.append(S('circle', { cx: -29, cy: -28, r: 7, fill: skin }), S('circle', { cx: 29, cy: -28, r: 7, fill: skin }));
+  g.append(S('circle', { cx: 0, cy: -30, r: 30, fill: skin }));
+  if (o.topknot) g.append(S('path', { d: 'M-30,-36 C-28,-64 28,-64 30,-36 C18,-50 -18,-50 -30,-36Z', fill: '#E8E2D6' }));
+  else if (o.hair) g.append(S('path', { d: 'M-30,-34 C-30,-66 30,-66 30,-34 C20,-44 -8,-50 -30,-34Z', fill: o.hair }));
+  if (o.beard) g.append(S('path', { d: 'M-28,-26 C-30,4 -12,32 0,42 C12,32 30,4 28,-26 C16,-10 -16,-10 -28,-26Z', fill: '#F1ECE2' }));
+  if (o.brows === 'worry') g.append(S('path', { d: 'M-17,-44 L-5,-40 M5,-40 L17,-44', fill: 'none', 'stroke-width': 3 }));
+  g.append(G({ stroke: 'none', fill: INK, class: 'eyes' }, S('ellipse', { cx: -10, cy: -32, rx: 3.6, ry: 4.6 }), S('ellipse', { cx: 10, cy: -32, rx: 3.6, ry: 4.6 })));
+  g.append(S('circle', { cx: -18, cy: -20, r: 4, fill: '#E58B7A', stroke: 'none', opacity: .45 }), S('circle', { cx: 18, cy: -20, r: 4, fill: '#E58B7A', stroke: 'none', opacity: .45 }));
+  p.mouth = S('path', { d: MOUTH[o.mood || 'smile'], fill: 'none', 'stroke-width': 3 }); g.append(p.mouth);
+  if (o.mustache) g.append(S('path', { d: 'M-15,-19 q7,-6 15,0 q8,-6 15,0', fill: 'none', 'stroke-width': 4 }));
+  if (o.tilak) g.append(S('rect', { x: -2, y: -58, width: 4, height: 12, rx: 2, fill: KUM, stroke: 'none' }));
+  if (o.turban) g.append(S('path', { d: 'M-32,-40 C-38,-86 38,-86 32,-40 C18,-54 -18,-54 -32,-40Z', fill: o.turban }), S('path', { d: 'M-26,-60 C-8,-72 10,-72 28,-52', fill: 'none', 'stroke-width': 2.5, opacity: .6 }), S('circle', { cx: 0, cy: -58, r: 5, fill: GOLD }));
+  if (o.headcloth) g.append(S('path', { d: 'M-31,-38 C-34,-70 34,-70 31,-38 C16,-46 -16,-46 -31,-38Z', fill: o.headcloth }));
+  if (o.crown) g.append(S('path', { d: 'M-26,-50 L-26,-78 L-13,-64 L0,-86 L13,-64 L26,-78 L26,-50Z', fill: GOLD }));
+  g.parts = p; return g;
+}
+function person(o = {}) {
+  const g = G(CH), p = {}; const w = o.plump ? 1.3 : 1;
+  const cloth = o.cloth || '#4C7A8C', lower = o.lower || '#F1E6CF', skin = o.skin || SKIN;
+  if (o.staff) { const d = 'M62,4 L54,-250'; g.append(S('path', { d, fill: 'none', 'stroke-width': 13 }), S('path', { d, fill: 'none', stroke: BARK, 'stroke-width': 6 })); }
+  g.append(S('ellipse', { cx: -14, cy: 0, rx: 14, ry: 6, fill: '#6B4428' }), S('ellipse', { cx: 14, cy: 0, rx: 14, ry: 6, fill: '#6B4428' }));
+  g.append(S('path', { d: `M${-26 * w},-2 L${-22 * w},-84 L${22 * w},-84 L${26 * w},-2Z`, fill: lower }), S('path', { d: 'M0,-80 L0,-8', fill: 'none', 'stroke-width': 2.5 }));
+  g.append(S('path', { d: `M${-34 * w},-80 C${-42 * w},-130 ${-30 * w},-152 0,-154 C${30 * w},-152 ${42 * w},-130 ${34 * w},-80Z`, fill: cloth }));
+  if (o.sash) g.append(S('path', { d: `M${-30 * w},-146 L${34 * w},-94 L${31 * w},-82 L${-34 * w},-133Z`, fill: o.sash }));
+  if (o.shawl) g.append(S('path', { d: `M${-34 * w},-132 C${-20 * w},-150 ${20 * w},-150 ${34 * w},-132 L${30 * w},-100 C${10 * w},-122 ${-10 * w},-122 ${-30 * w},-100Z`, fill: o.shawl }));
+  const arm = side => {
+    const outer = G({ transform: `translate(${side * 30 * w},-140)` }), pose = G({ class: 'pose arm' + (side < 0 ? 'L' : 'R') });
+    const d = `M0,0 C${side * 10},20 ${side * 14},40 ${side * 12},58`;
+    pose.append(S('path', { d, fill: 'none', stroke: INK, 'stroke-width': 18 }), S('path', { d, fill: 'none', stroke: cloth, 'stroke-width': 11 }), S('circle', { cx: side * 12, cy: 64, r: 9, fill: skin }));
+    outer.append(pose); return [outer, pose];
+  };
+  const [lo, lp] = arm(-1), [ro, rp] = arm(1); p.armL = lp; p.armR = rp;
+  const ho = G({ transform: 'translate(0,-150)' }), head = G({ class: 'pose' });
+  const f = face(o); head.append(f); ho.append(head);
+  p.head = head; p.mouth = f.parts.mouth;
+  g.append(ho, lo, ro); g.parts = p; return g;
+}
+const SAGE = { skin: '#C58B60', cloth: '#E58A2B', lower: '#F1C27D', beard: true, topknot: true, tilak: true, staff: true, shawl: '#F3E1B6' };
+const PRINCES = [
+  { cloth: '#3F7FBF', lower: '#F4E9D2', turban: '#E9A23B', tilak: true },
+  { cloth: '#6BAA4F', lower: '#F4E9D2', turban: '#B5412A', tilak: true },
+  { cloth: '#C05A8A', lower: '#F4E9D2', turban: '#F2C14E', tilak: true }
+];
+const MERCHANT = { plump: true, cloth: '#3E7A55', lower: '#F2E4C8', turban: KUM, mustache: true, sash: TURM, skin: '#C08253' };
+const SERVANTS = [
+  { cloth: '#E9DFC9', lower: '#D8CBB0', turban: '#F3EEE2', skin: '#B07448' },
+  { cloth: '#D9C9A0', lower: '#E6DAC0', headcloth: '#8C6B4A', skin: '#9C6640', mustache: true }
+];
+
+function monkey() {
+  const f = '#8C5A33', l = '#EBC49A', g = G(CH), p = {};
+  const td = 'M-28,-24 C-84,-14 -96,-74 -64,-86 C-44,-92 -38,-68 -52,-64';
+  g.append(S('path', { d: td, fill: 'none', 'stroke-width': 14 }), S('path', { d: td, fill: 'none', stroke: f, 'stroke-width': 7 }));
+  g.append(S('ellipse', { cx: 0, cy: -52, rx: 36, ry: 44, fill: f }), S('ellipse', { cx: 6, cy: -46, rx: 20, ry: 28, fill: l, stroke: 'none' }));
+  g.append(S('ellipse', { cx: -18, cy: -6, rx: 20, ry: 10, fill: f }), S('ellipse', { cx: 22, cy: -6, rx: 20, ry: 10, fill: f }));
+  const ho = G({ transform: 'translate(0,-104)' }), hd = G({ class: 'pose head' }); ho.append(hd); p.head = hd;
+  hd.append(S('circle', { cx: -34, cy: -4, r: 12, fill: l }), S('circle', { cx: 34, cy: -4, r: 12, fill: l }), S('circle', { cx: 0, cy: -8, r: 34, fill: f }));
+  hd.append(S('path', { d: 'M0,-22 C-10,-40 -30,-30 -24,-10 C-22,10 -10,22 0,22 C10,22 22,10 24,-10 C30,-30 10,-40 0,-22Z', fill: l }));
+  const eyes = G({ class: 'eyes' }); for (const s of [-1, 1]) { const e = G({ class: 'eye' }); e.append(S('circle', { cx: s * 10, cy: -12, r: 4.5, fill: INK, stroke: 'none' })); eyes.append(e); } hd.append(eyes);
+  p.mouth = S('path', { d: 'M-8,8 Q0,14 8,8', fill: 'none', 'stroke-width': 3 }); hd.append(p.mouth);
+  const ao = G({ transform: 'translate(22,-72)' }), arm = G({ class: 'pose arm' }); const ad = 'M0,0 C18,10 34,22 44,34';
+  arm.append(S('path', { d: ad, fill: 'none', 'stroke-width': 16 }), S('path', { d: ad, fill: 'none', stroke: f, 'stroke-width': 9 }), S('circle', { cx: 46, cy: 36, r: 8, fill: l }));
+  ao.append(arm); p.arm = arm;
+  g.append(ho, ao); g.parts = p; return g;
+}
+/* ══════════ Props ══════════ */
+function wagon() {
+  const g = G(CH), p = {}; const wood = '#A7672F', woodD = '#7E4B22';
+  g.append(S('path', { d: 'M150,-126 L480,-168', fill: 'none', 'stroke-width': 15 }), S('path', { d: 'M150,-126 L480,-168', fill: 'none', stroke: woodD, 'stroke-width': 7 }));
+  g.append(S('path', { d: 'M-172,-152 L172,-152 L160,-112 L-160,-112Z', fill: wood }));
+  g.append(S('path', { d: 'M-150,-132 L150,-132', fill: 'none', stroke: woodD, 'stroke-width': 3 }));
+  p.load = G({}); g.append(p.load);
+  g.append(S('path', { d: 'M-170,-196 L170,-196', fill: 'none', 'stroke-width': 7 }));
+  for (let x = -170; x <= 170; x += 68) g.append(S('rect', { x: x - 5, y: -200, width: 10, height: 50, rx: 3, fill: woodD }));
+  const wo = G({ transform: 'translate(-10,-62)' }), wh = G({ class: 'wheel' });
+  wh.append(S('circle', { r: 62, fill: 'none', stroke: INK, 'stroke-width': 17 }), S('circle', { r: 62, fill: 'none', stroke: '#8A5530', 'stroke-width': 9 }));
+  for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4; wh.append(S('line', { x1: 0, y1: 0, x2: (Math.cos(a) * 56).toFixed(1), y2: (Math.sin(a) * 56).toFixed(1), stroke: '#6B4122', 'stroke-width': 6 })); }
+  wh.append(S('circle', { r: 13, fill: '#5E3A1E' }));
+  wo.append(wh); g.append(wo);
+  g.parts = p; return g;
+}
+const ITEM = {
+  sack: () => G(CH, S('path', { d: 'M-32,0 C-42,-40 -30,-70 -14,-80 L-20,-94 L20,-94 L14,-80 C30,-70 42,-40 32,0Z', fill: '#CFA86B' }), S('path', { d: 'M-16,-80 L16,-80', fill: 'none', stroke: KUM, 'stroke-width': 5 }), S('path', { d: 'M-12,-40 l6,6 M4,-24 l8,-4 M-18,-16 l8,2', fill: 'none', 'stroke-width': 2.5 })),
+  chest: () => G(CH, S('rect', { x: -42, y: -58, width: 84, height: 58, rx: 4, fill: '#7B4A2A' }), S('path', { d: 'M-42,-58 C-42,-86 42,-86 42,-58Z', fill: '#8E5733' }), S('rect', { x: -30, y: -84, width: 10, height: 84, fill: GOLD }), S('rect', { x: 20, y: -84, width: 10, height: 84, fill: GOLD }), S('circle', { cx: 0, cy: -48, r: 8, fill: GOLD })),
+  cloth: () => G(CH, S('rect', { x: -44, y: -24, width: 88, height: 24, rx: 12, fill: '#3E7A9A' }), S('rect', { x: -40, y: -48, width: 80, height: 24, rx: 12, fill: TURM }), S('rect', { x: -36, y: -72, width: 72, height: 24, rx: 12, fill: KUM }), S('path', { d: 'M-20,-72 v24 M0,-72 v24 M20,-72 v24', fill: 'none', stroke: GOLD, 'stroke-width': 3 })),
+  pot: () => G(CH, S('path', { d: 'M-30,-8 C-46,-40 -30,-72 -14,-76 L-14,-88 L14,-88 L14,-76 C30,-72 46,-40 30,-8 C20,2 -20,2 -30,-8Z', fill: '#B8643A' }), S('path', { d: 'M-36,-44 C-12,-36 12,-36 36,-44', fill: 'none', stroke: '#F5E6C8', 'stroke-width': 4, 'stroke-dasharray': '6 5' })),
+  basket: () => G(CH, S('circle', { cx: -18, cy: -56, r: 14, fill: '#F2B33D' }), S('circle', { cx: 8, cy: -60, r: 14, fill: '#C9412F' }), S('circle', { cx: 28, cy: -52, r: 12, fill: '#7FAE52' }), S('path', { d: 'M-42,-50 L42,-50 L32,0 L-32,0Z', fill: '#D6A35A' }), S('path', { d: 'M-36,-34 L36,-34 M-34,-18 L34,-18 M-20,-50 L-16,0 M0,-50 L0,0 M20,-50 L16,0', fill: 'none', stroke: '#9C6B2F', 'stroke-width': 2.5 }))
+};
+const ITEM_ORDER = ['sack', 'chest', 'cloth', 'pot', 'basket'];
+const SLOTS = [-120, -60, 0, 60, 120];
+function rig(o = {}) {
+  const g = G({}), wag = wagon(), p = { wagon: wag };
+  g.append(wag);
+  if (o.loaded) ITEM_ORDER.forEach((k, i) => { wag.parts.load.append(place(ITEM[k](), SLOTS[i], -152, .72)); });
+  g.parts = p; return g;
+}
+
+/* ══════════ Effects ══════════ */
+function boom(r, text, x, y, o = {}) {
+  const t = S('text', { x, y, 'text-anchor': 'middle', 'font-family': "'Yatra One',serif", 'font-size': o.size || 84, fill: o.color || GOLD, stroke: INK, 'stroke-width': o.sw || 10, 'paint-order': 'stroke', 'stroke-linejoin': 'round', class: 'boom', 'pointer-events': 'none' }, text);
+  r.append(t); setTimeout(() => t.remove(), 2000); return t;
+}
+function waves(r, x, y, o = {}) {
+  const n = o.n || 4;
+  for (let i = 0; i < n; i++) {
+    const c = S('circle', { cx: x, cy: y, r: o.r || 90, fill: 'none', stroke: o.color || '#FFF3C4', 'stroke-width': 8, class: 'ring', 'pointer-events': 'none' });
+    c.style.animationDelay = (i * .28) + 's'; c.style.opacity = 0;
+    r.append(c); setTimeout(() => c.remove(), 2400 + i * 300);
+  }
+}
+function sparkles(r, x, y, n = 10, spread = 140) {
+  const R = rng(Math.floor(x * 13 + y)), g = G({ 'pointer-events': 'none' });
+  for (let i = 0; i < n; i++) {
+    const sx = x + (R() - .5) * spread * 2, sy = y + (R() - .5) * spread, s = 6 + R() * 10;
+    const st = S('path', { d: `M${sx},${sy - s} Q${sx},${sy} ${sx + s},${sy} Q${sx},${sy} ${sx},${sy + s} Q${sx},${sy} ${sx - s},${sy} Q${sx},${sy} ${sx},${sy - s}Z`, fill: '#FFF3C4', class: 'twinkle', filter: 'url(#glow)' });
+    st.style.animationDelay = (-R() * 2).toFixed(2) + 's'; st.style.animationDuration = '1.2s';
+    g.append(st);
+  }
+  r.append(g); setTimeout(() => g.remove(), 2600); return g;
+}
+function shakeScreen() { svg.classList.remove('shake'); void svg.getBoundingClientRect(); svg.classList.add('shake'); setTimeout(() => svg.classList.remove('shake'), 600); }
+function shakeTrees(list) { list.forEach(t => { const c = t.canopy; if (!c) return; c.classList.add('shake-tree'); setTimeout(() => c.classList.remove('shake-tree'), 1500); }); }
+function tag(r, text, x, y, o = {}) {
+  const w = text.length * (o.fs || 26) * .52 + 36;
+  const outer = place(G({ 'pointer-events': 'none' }), x, y, o.scale || 1), g = G({ class: 'popin' }); outer.append(g);
+  g.append(S('rect', { x: -w / 2, y: -26, width: w, height: 48, rx: 24, fill: o.fill || PAPER, stroke: INK, 'stroke-width': 4 }));
+  if (o.sub) g.append(S('text', { x: 0, y: 44, 'text-anchor': 'middle', 'font-family': "'Baloo 2',sans-serif", 'font-weight': 700, 'font-size': 20, fill: '#FFF7E6', stroke: INK, 'stroke-width': 5, 'paint-order': 'stroke' }, o.sub));
+  g.append(S('text', { x: 0, y: 8, 'text-anchor': 'middle', 'font-family': "'Yatra One',serif", 'font-size': o.fs || 26, fill: o.color || KUM }, text));
+  r.append(outer); return outer;
+}
+function bubble(r, lines, x, y, o = {}) {
+  const fs = o.fs || 30, w = Math.max(...lines.map(l => l.length)) * fs * .5 + 50, h = lines.length * fs * 1.25 + 30;
+  const outer = place(G({ 'pointer-events': 'none' }), x, y, 1), g = G({ class: 'popin' }); outer.append(g);
+  const tx = o.tail === 'right' ? w * .25 : -w * .25;
+  g.append(S('path', { d: `M${-w / 2 + 20},${-h} H${w / 2 - 20} Q${w / 2},${-h} ${w / 2},${-h + 20} V-20 Q${w / 2},0 ${w / 2 - 20},0 H${tx + 16} L${tx + (o.tail === 'right' ? 30 : -30)},34 L${tx - 12},0 H${-w / 2 + 20} Q${-w / 2},0 ${-w / 2},-20 V${-h + 20} Q${-w / 2},${-h} ${-w / 2 + 20},${-h}Z`, fill: o.fill || '#FFF7E6', stroke: INK, 'stroke-width': 4, 'stroke-linejoin': 'round' }));
+  lines.forEach((l, i) => g.append(S('text', { x: 0, y: -h + 22 + fs * (i + .9) * 1.18, 'text-anchor': 'middle', 'font-family': "'Baloo 2',sans-serif", 'font-weight': 700, 'font-size': fs, fill: INK }, l)));
+  r.append(outer); return outer;
+}
+function tagIn(kb, text, fx, fy, o = {}) { return tag(kb, text, fx * kb.iw, fy * kb.ih, { ...o, scale: 1 / kb._t.s }); }
+
+/* ══════════ Audio: procedural SFX ══════════ */
+let muted = false;
+const Sound = {
+  ctx: null, master: null, buf: null,
+  init() {
+    if (this.ctx) return;
+    const C = window.AudioContext || window.webkitAudioContext; if (!C) return;
+    try {
+      this.ctx = new C(); this.master = this.ctx.createGain(); this.master.gain.value = muted ? 0 : .9; this.master.connect(this.ctx.destination);
+      const len = this.ctx.sampleRate * 2, b = this.ctx.createBuffer(1, len, this.ctx.sampleRate), d = b.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+      this.buf = b;
+    } catch (e) { this.ctx = null; }
+  },
+  resume() { if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume(); },
+  setMuted(m) { if (this.master) this.master.gain.setTargetAtTime(m ? 0 : .9, this.ctx.currentTime, .05); }
+};
+function env(g, t, a, d, v) { g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(v, t + a); g.gain.exponentialRampToValueAtTime(.0001, t + a + d); }
+function tone({ type = 'sine', f = 440, f2 = null, dur = .3, vol = .2, delay = 0, a = .01, vib = 0, vibRate = 5, lp = null }) {
+  const c = Sound.ctx; if (!c) return;
+  const t = c.currentTime + delay, o = c.createOscillator(), g = c.createGain();
+  o.type = type; o.frequency.setValueAtTime(f, t); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + a + dur);
+  env(g, t, a, dur, vol);
+  if (vib) { const l = c.createOscillator(), lg = c.createGain(); l.frequency.value = vibRate; lg.gain.value = vib; l.connect(lg); lg.connect(o.frequency); l.start(t); l.stop(t + a + dur + .05); }
+  if (lp) { const fl = c.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = lp; o.connect(fl); fl.connect(g); } else o.connect(g);
+  g.connect(Sound.master); o.start(t); o.stop(t + a + dur + .05);
+}
+function noise({ dur = .3, vol = .2, delay = 0, type = 'lowpass', f = 1000, f2 = null, q = 1, a = .005 }) {
+  const c = Sound.ctx; if (!c || !Sound.buf) return;
+  const t = c.currentTime + delay, s = c.createBufferSource(), fl = c.createBiquadFilter(), g = c.createGain();
+  s.buffer = Sound.buf; fl.type = type; fl.frequency.setValueAtTime(f, t); if (f2) fl.frequency.exponentialRampToValueAtTime(f2, t + a + dur); fl.Q.value = q;
+  env(g, t, a, dur, vol); s.connect(fl); fl.connect(g); g.connect(Sound.master);
+  s.start(t, Math.random()); s.stop(t + a + dur + .05);
+}
+const SFX = {
+  chime() { [1318.5, 1568, 2093].forEach((f, i) => tone({ f, dur: 1.4, vol: .12, delay: i * .09, a: .005 })); },
+  pop() { tone({ f: 420, f2: 900, dur: .12, vol: .18 }); },
+  clink() { tone({ type: 'triangle', f: 2400, f2: 2100, dur: .25, vol: .14 }); tone({ type: 'triangle', f: 1900, dur: .3, vol: .12, delay: .12 }); noise({ dur: .07, vol: .35, type: 'bandpass', f: 900, q: 6, delay: .28 }); noise({ dur: .07, vol: .35, type: 'bandpass', f: 700, q: 6, delay: .4 }); },
+  wrong() { tone({ type: 'triangle', f: 330, f2: 220, dur: .25, vol: .14 }); },
+  splash() { noise({ dur: .8, vol: .5, type: 'lowpass', f: 2600, f2: 250 }); noise({ dur: .35, vol: .2, type: 'bandpass', f: 1300, q: 3, delay: .15 }); [0, .12, .22].forEach(d => tone({ f: 300, f2: 760, dur: .08, vol: .09, delay: .25 + d })); },
+  crack() { noise({ dur: .09, vol: .8, type: 'highpass', f: 1800 }); noise({ dur: .5, vol: .35, type: 'lowpass', f: 900, f2: 200, delay: .05 }); tone({ type: 'square', f: 180, f2: 60, dur: .15, vol: .12 }); },
+  growl() { tone({ type: 'sawtooth', f: 72, f2: 54, dur: 1.6, vol: .3, a: .2, vib: 14, vibRate: 17, lp: 360 }); noise({ dur: 1.4, vol: .12, f: 320, a: .2 }); },
+  moo(k = 1, v = 1) { const d = 2.1 * k; tone({ type: 'sawtooth', f: 150, f2: 116, dur: d, vol: .3 * v, a: .25, vib: 4, vibRate: 5.5, lp: 900 }); tone({ type: 'square', f: 75, f2: 58, dur: d, vol: .09 * v, a: .3, lp: 500 }); noise({ dur: d * .9, vol: .04 * v, type: 'bandpass', f: 700, q: 2, a: .3 }); },
+  whoosh() { noise({ dur: .6, vol: .3, type: 'bandpass', f: 300, f2: 2400, q: 1.2, a: .1 }); },
+  rustle() { for (let i = 0; i < 4; i++) noise({ dur: .07, vol: .22, type: 'highpass', f: 2600, delay: i * .07 + Math.random() * .04 }); },
+  creak() { tone({ type: 'sawtooth', f: 95, f2: 150, dur: .9, vol: .14, vib: 9, vibRate: 22, lp: 700 }); },
+  snap() { noise({ dur: .1, vol: .7, type: 'highpass', f: 2000 }); tone({ type: 'square', f: 130, f2: 50, dur: .2, vol: .16 }); },
+  thud() { tone({ f: 110, f2: 40, dur: .35, vol: .5 }); noise({ dur: .25, vol: .3, f: 300 }); },
+  munch() { [0, .13, .26].forEach(d => noise({ dur: .08, vol: .3, type: 'bandpass', f: 1500, q: 2, delay: d })); },
+  sparkle() { for (let i = 0; i < 5; i++) tone({ f: 1760 + Math.random() * 1760, dur: .25, vol: .06, delay: i * .07 }); },
+  bookClose() { this.whoosh(); setTimeout(() => this.thud(), 380); },
+  steps() { for (let i = 0; i < 8; i++) noise({ dur: .06, vol: .25, type: 'lowpass', f: 500, delay: i * .14 }); },
+  chirp() { tone({ f: 2800, f2: 3700, dur: .07, vol: .05 }); tone({ f: 3000, f2: 3900, dur: .07, vol: .05, delay: .12 }); },
+  cricket() { for (let i = 0; i < 3; i++) tone({ type: 'square', f: 4300, dur: .025, vol: .012, delay: i * .06, lp: 6000 }); }
+};
+let ambT = null;
+function ambience(kind) {
+  clearInterval(ambT); ambT = null;
+  if (!kind) return;
+  const fn = kind === 'day' ? () => { if (Math.random() < .5) SFX.chirp(); } : kind === 'night' ? () => SFX.cricket() : () => { if (Math.random() < .35) tone({ f: 1568 + Math.random() * 800, dur: 1.2, vol: .025, a: .2 }); };
+  ambT = setInterval(fn, kind === 'night' ? 900 : 1700);
+}
+
+/* ══════════ Narration (Web Speech) ══════════ */
+const CAST = {
+  arjun: { label: 'Arjun', pitch: 1.12, rate: .98 },
+  vishnu: { label: 'Vishnu Sharma', pitch: .72, rate: .88 },
+  princes: { label: 'The Princes', pitch: 1.6, rate: 1.05 },
+  merchant: { label: 'Vardhamanaka', pitch: .9, rate: .92 },
+  servant: { label: 'The Servants', pitch: 1.0, rate: .88 },
+  pingalaka: { label: 'Pingalaka', pitch: .5, rate: .9 },
+  damanaka: { label: 'Damanaka', pitch: 1.3, rate: 1.02 },
+  karataka: { label: 'Karataka', pitch: .82, rate: .9 },
+  sanjivaka: { label: 'Sanjivaka', pitch: .6, rate: .9 }
+};
+const hasTTS = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+let voice = null;
+function pickVoice() {
+  if (!hasTTS) return;
+  const vs = speechSynthesis.getVoices(); if (!vs.length) return;
+  voice = vs.find(v => /en[-_]IN/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang) && /google|natural|samantha|daniel|karen/i.test(v.name)) || vs.find(v => /^en/i.test(v.lang)) || vs[0];
+}
+if (hasTTS) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+let curFin = null, skipLine = false;
+function speakOne(text, who) {
+  return new Promise(res => {
+    const c = CAST[who] || CAST.arjun;
+    const words = text.split(/\s+/).length;
+    const est = words * 400 / c.rate + 900;
+    let done = false, t;
+    const fin = () => { if (done) return; done = true; clearTimeout(t); if (curFin === fin) curFin = null; res(); };
+    curFin = fin;
+    if (muted || !hasTTS) { t = setTimeout(fin, est * .85); return; }
+    try {
+      const u = new SpeechSynthesisUtterance(text);
+      if (voice) u.voice = voice; u.lang = voice ? voice.lang : 'en-IN';
+      u.pitch = c.pitch; u.rate = c.rate; u.volume = 1;
+      u.onend = fin; u.onerror = fin;
+      t = setTimeout(fin, est * 1.9 + 1500);
+      speechSynthesis.speak(u);
+      if (speechSynthesis.paused) speechSynthesis.resume();
+    } catch (e) { t = setTimeout(fin, est); }
+  });
+}
+function stopSpeech() { if (hasTTS) try { speechSynthesis.cancel(); } catch (e) { } if (curFin) curFin(); }
+function lineSkip() { skipLine = true; stopSpeech(); }
+function sentences(text) { return (text.match(/[^.!?…]+(?:[.!?…]+["'”’]?|$)\s*/g) || [text]).map(s => s.trim()).filter(Boolean); }
+function showCaption(who, text) {
+  const c = CAST[who] || CAST.arjun;
+  $('#who').textContent = c.label; $('#who').className = who === 'arjun' ? 'arjun' : '';
+  $('#cap').classList.toggle('arjun', who === 'arjun');
+  $('#line').textContent = text; $('#cap').classList.remove('hide');
+}
+function hideCaption() { $('#cap').classList.add('hide'); }
+async function say(who, text, o = {}) {
+  await reveal();
+  showCaption(who, text); skipLine = false;
+  const parts = sentences(text);
+  for (let i = 0; i < parts.length; i++) { if (skipLine) break; o.onPart && o.onPart(i); await A(speakOne(parts[i], who)); }
+  await sleep(o.after ?? 260);
+}
+
+/* ══════════ Director ══════════ */
+const ABORT = Symbol('abort');
+let runId = 0, abortP = null, abortFn = null, cleanups = [], cur = 0, faded = true;
+function newRun() { runId++; cleanups = []; abortP = new Promise((_, rej) => { abortFn = () => rej(ABORT); }); abortP.catch(() => { }); }
+function A(p) { const id = runId; return Promise.race([p, abortP]).then(v => { if (id !== runId) throw ABORT; return v; }); }
+const sleep = ms => A(new Promise(r => setTimeout(r, ms)));
+// setTimeout that is dropped if the scene has changed by the time it fires.
+const later = (fn, ms) => { const id = runId; setTimeout(() => { if (id === runId) fn(); }, ms); };
+const anim = (el, to, dur, fn) => A(tween(el, to, dur, fn));
+async function fadeTo(on) { $('#fade').classList.toggle('on', on); faded = on; await new Promise(r => setTimeout(r, 480)); }
+async function reveal() { if (faded) { faded = false; $('#fade').classList.remove('on'); await sleep(480); } }
+async function cut(bg) { await A(fadeTo(true)); return newStage(bg); }
+function flash() { const f = $('#flash'); f.classList.add('on'); setTimeout(() => f.classList.remove('on'), 180); }
+
+async function play(i) {
+  if (i < 0 || i >= SCENES.length) return;
+  if (abortFn) abortFn();
+  newRun(); const my = runId, myCleanups = cleanups; cur = i;
+  $('#chiptxt').textContent = SCENES[i].label + ' · ' + SCENES[i].title;
+  hideCaption(); hideHint(); stopSpeech();
+  $('#end').hidden = true; $('#end').classList.remove('show');
+  try {
+    await fadeTo(true);
+    if (my !== runId) return;
+    ambience(null);
+    await SCENES[i].run();
+  } catch (e) { if (e !== ABORT) console.error(e); }
+  finally { myCleanups.forEach(f => { try { f(); } catch (e) { } }); }
+  if (my === runId && i + 1 < SCENES.length) play(i + 1);
+}
+function skip() {
+  if (Game.active) { Game.active.finish('skip'); return; }
+  if (!$('#title').hidden) return;
+  if (cur + 1 < SCENES.length) play(cur + 1); else { stopSpeech(); if (abortFn) abortFn(); showEnd(); }
+}
+
+/* ══════════ Input layer: pointer (default) + hand camera (enhancement) ══════════ */
+const Input = { hs: new Set(), emit(type, x, y, src) { for (const h of [...this.hs]) h(type, x, y, src); } };
+svg.addEventListener('pointerdown', e => { try { svg.setPointerCapture(e.pointerId); } catch (_) { } Input.emit('down', e.clientX, e.clientY, 'ptr'); });
+svg.addEventListener('pointermove', e => Input.emit('move', e.clientX, e.clientY, 'ptr'));
+svg.addEventListener('pointerup', e => Input.emit('up', e.clientX, e.clientY, 'ptr'));
+svg.addEventListener('pointercancel', e => Input.emit('up', e.clientX, e.clientY, 'ptr'));
+
+let hintT = null;
+function showHint(t) { const h = $('#hint'); h.textContent = t; h.classList.remove('hide', 'nudge'); }
+function hideHint() { $('#hint').classList.add('hide'); $('#hint').classList.remove('nudge'); clearTimeout(hintT); }
+
+function interaction(hintText, spoken, setup) {
+  return A(new Promise(res => {
+    const offs = []; let fin = false;
+    const ctx = {
+      on(h) { Input.hs.add(h); offs.push(() => Input.hs.delete(h)); },
+      done(v) { if (fin) return; fin = true; offs.forEach(f => f()); clearTimeout(hintT); stopSpeech(); hideHint(); res(v); },
+      get fin() { return fin; }
+    };
+    cleanups.push(() => { offs.forEach(f => f()); hideHint(); });
+    hideCaption(); showHint(hintText);
+    reveal().then(() => { if (!fin) speakOne(spoken || hintText, 'arjun'); }).catch(() => { });
+    hintT = setTimeout(() => { if (fin) return; $('#hint').classList.add('nudge'); speakOne(spoken || hintText, 'arjun'); }, 15000);
+    setup(ctx);
+  }));
+}
+function keyable(it, fn) {
+  it.setAttribute('tabindex', '0'); it.setAttribute('role', 'button');
+  it.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && !it._done) { e.preventDefault(); fn(it); } });
+}
+function unkey(it) { it.removeAttribute('tabindex'); it.removeAttribute('role'); it.classList.remove('grabbable', 'tappable'); }
+function draggables(ctx, items, { onTap, onDrop, onMove }) {
+  items.forEach(it => { it.classList.add('grabbable'); keyable(it, onTap); });
+  let act = null, off, st, mv;
+  ctx.on((type, x, y) => {
+    if (type === 'down') {
+      const el = document.elementFromPoint(x, y);
+      const it = el && items.find(i => !i._done && i.contains(el)); if (!it) return;
+      const p = toWorld(x, y); act = it; off = { x: it._t.x - p.x, y: it._t.y - p.y }; st = p; mv = 0;
+      it.classList.add('held'); it.parentNode.appendChild(it); SFX.pop();
+    } else if (type === 'move' && act) {
+      const p = toWorld(x, y); act._t.x = p.x + off.x; act._t.y = p.y + off.y; applyT(act);
+      mv = Math.max(mv, Math.hypot(p.x - st.x, p.y - st.y));
+      if (onMove && onMove(act, p) === 'release') { act.classList.remove('held'); act = null; }
+    } else if (type === 'up' && act) {
+      const it = act; act = null; it.classList.remove('held');
+      if (mv < 14) onTap(it); else onDrop(it, toWorld(x, y));
+    }
+  });
+}
+function tappables(ctx, items, onTap) {
+  items.forEach(it => { it.classList.add('tappable'); keyable(it, onTap); });
+  ctx.on((type, x, y) => {
+    if (type !== 'down') return;
+    const el = document.elementFromPoint(x, y);
+    const it = el && items.find(i => !i._done && i.contains(el));
+    if (it) onTap(it);
+  });
+}
+
+const MP = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14';
+const HAND_MODEL = 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task';
+const Hands = {
+  on: false, busy: false, stream: null, lm: null, raf: 0, down: false, sx: 0, sy: 0, lastT: -1, nam: false,
+  async toggle() {
+    if (this.on) { this.stop(); toast('Hand camera off — tap and drag as usual.'); return; }
+    if (this.busy) return;
+    this.busy = true; $('#bhands').classList.add('busy');
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('camera API unavailable');
+      this.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }, audio: false });
+      const v = $('#cam'); v.srcObject = this.stream; v.hidden = false; await v.play();
+      const vision = await import(MP + '/vision_bundle.mjs');
+      const files = await vision.FilesetResolver.forVisionTasks(MP + '/wasm');
+      this.lm = await vision.HandLandmarker.createFromOptions(files, { baseOptions: { modelAssetPath: HAND_MODEL, delegate: 'GPU' }, runningMode: 'VIDEO', numHands: 2 });
+      this.on = true; $('#bhands').setAttribute('aria-pressed', 'true');
+      toast('Hand camera on: pinch or make a fist to grab, open your hand to let go. Palms together = namaste.');
+      this.loop();
+    } catch (e) {
+      console.warn('[hands] unavailable:', e);
+      this.stop();
+      toast("The hand camera isn't available here — tapping and dragging work everywhere.");
+    } finally { this.busy = false; $('#bhands').classList.remove('busy'); }
+  },
+  stop() {
+    cancelAnimationFrame(this.raf); this.on = false;
+    if (this.stream) this.stream.getTracks().forEach(t => t.stop()); this.stream = null;
+    $('#cam').hidden = true; $('#handcur').hidden = true; $('#bhands').setAttribute('aria-pressed', 'false');
+    if (this.down) { this.down = false; Input.emit('up', this.sx, this.sy, 'hand'); }
+  },
+  loop() {
+    if (!this.on) return;
+    const v = $('#cam');
+    if (v.readyState >= 2 && v.currentTime !== this.lastT) {
+      this.lastT = v.currentTime;
+      try { const r = this.lm.detectForVideo(v, performance.now()); this.process(r.landmarks || []); } catch (e) { }
+    }
+    this.raf = requestAnimationFrame(() => this.loop());
+  },
+  process(hands) {
+    const cur = $('#handcur');
+    if (!hands.length) { if (this.down) { this.down = false; Input.emit('up', this.sx, this.sy, 'hand'); } cur.hidden = true; return; }
+    const d = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+    const h = hands[0], palm = d(h[0], h[9]) || .1;
+    const tx = (1 - h[9].x) * innerWidth, ty = h[9].y * innerHeight;
+    this.sx += (tx - this.sx) * .45; this.sy += (ty - this.sy) * .45;
+    cur.hidden = false; cur.style.left = this.sx + 'px'; cur.style.top = this.sy + 'px';
+    const pinch = d(h[4], h[8]) < palm * .38;
+    const tips = [8, 12, 16, 20].reduce((s, i) => s + d(h[i], h[0]), 0) / 4;
+    const fist = tips < palm * 1.15;
+    const grab = pinch || fist;
+    cur.classList.toggle('grab', grab);
+    Input.emit('move', this.sx, this.sy, 'hand');
+    if (grab !== this.down) { this.down = grab; Input.emit(grab ? 'down' : 'up', this.sx, this.sy, 'hand'); }
+    if (hands.length >= 2) {
+      const h2 = hands[1];
+      const close = d(h[9], h2[9]) < palm * 1.2 && !fist;
+      if (close && !this.nam) { this.nam = true; Input.emit('namaste', this.sx, this.sy, 'hand'); } else if (!close) this.nam = false;
+    }
+  }
+};
+let toastT = null;
+function toast(t) { const el = $('#toast'); el.textContent = t; el.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('show'), 4200); }
+
+/* ══════════ Arjun asks ══════════ */
+const ASK_MS = 8000;
+let askBtn = null;
+async function ask(q) {
+  await reveal(); hideCaption(); hideHint();
+  const el = $('#ask'); $('#askq').textContent = q; el.hidden = false;
+  const bar = $('#askbar'); bar.style.transition = 'none'; bar.style.transform = 'scaleX(1)';
+  requestAnimationFrame(() => el.classList.add('show'));
+  let btnRes; const btn = new Promise(r => { btnRes = r; });
+  askBtn = () => { lineSkip(); btnRes(); };
+  cleanups.push(() => { el.classList.remove('show'); el.hidden = true; askBtn = null; });
+  try {
+    await A(Promise.race([btn, (async () => {
+      await speakOne(q, 'arjun');
+      void bar.offsetWidth; bar.style.transition = `transform ${ASK_MS}ms linear`; bar.style.transform = 'scaleX(0)';
+      await new Promise(r => setTimeout(r, ASK_MS));
+    })()]));
+  } finally { el.classList.remove('show'); askBtn = null; setTimeout(() => { if (!el.classList.contains('show')) el.hidden = true; }, 350); }
+}
+
+/* ══════════ External games (iframe integration contract) ══════════ */
+const GAMES = {
+  moo: { name: 'Game 1 · Moo Munch', url: 'https://pub-3fdb2af8d94d4fcdb27b52da01c6c7d5.r2.dev/games/moomunch-v2/Sanjivaka%20Moo%20Munch.dc.html' },
+  run: { name: 'Game 2 · Pingalaka Panic Run', url: 'https://pub-3fdb2af8d94d4fcdb27b52da01c6c7d5.r2.dev/games/pingalaka-run-v2/Game.html' }
+};
+// Any postMessage from the game frame is logged; one whose payload mentions completion ends the game.
+const COMPLETE_RE = /(complete|finish|game[\s_-]?over|game[\s_-]?end|victory|all[\s_-]?done|\bdone\b|\bended\b|\bwon\b)/i;
+window.__gameMessages = [];
+const Game = {
+  active: null,
+  start(key) {
+    const g = GAMES[key];
+    return new Promise(res => {
+      const ov = $('#game'), fr = $('#gframe'), cont = $('#gcont'), note = $('#gnote'), lp = $('#glogp');
+      let got = 0, loaded = false, fin = false; const log = [];
+      $('#gname').textContent = g.name; $('#gopen').href = g.url; $('#gopen2').href = g.url;
+      cont.hidden = true; note.hidden = true; lp.hidden = true; lp.textContent = 'Messages from the game frame appear here.'; $('#glog').textContent = '0 messages';
+      const show = why => { if (cont.hidden) { cont.hidden = false; console.info('[game] continue button shown:', why); } };
+      const onMsg = e => {
+        if (e.source !== fr.contentWindow) return;
+        got++;
+        let s; try { s = typeof e.data === 'string' ? e.data : JSON.stringify(e.data); } catch (_) { s = String(e.data); }
+        console.info('[game message]', key, e.origin, e.data);
+        window.__gameMessages.push({ game: key, origin: e.origin, data: e.data, t: Date.now() });
+        log.push(`${new Date().toLocaleTimeString()}  ${e.origin}  ${String(s).slice(0, 400)}`);
+        $('#glog').textContent = got + (got === 1 ? ' message' : ' messages'); lp.textContent = log.join('\n');
+        if (COMPLETE_RE.test(s)) finish('message');
+      };
+      const onLoad = () => { loaded = true; console.info('[game] iframe load event', key); };
+      const t1 = setTimeout(() => { if (!got) show('no message signal yet'); }, 6000);
+      const t2 = setTimeout(() => show('timer'), 25000);
+      const t3 = setTimeout(() => { if (!loaded) { note.hidden = false; show('iframe never fired load'); } }, 9000);
+      const finish = why => {
+        if (fin) return; fin = true;
+        clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
+        window.removeEventListener('message', onMsg); fr.removeEventListener('load', onLoad);
+        ov.classList.remove('show'); this.active = null;
+        setTimeout(() => { ov.hidden = true; fr.removeAttribute('src'); }, 420);
+        console.info('[game] finished via', why, '| messages received:', got);
+        res(why);
+      };
+      this.active = { finish };
+      cont.onclick = () => finish('continue');
+      stopSpeech(); ambience(null); hideCaption(); hideHint();
+      window.addEventListener('message', onMsg);
+      fr.addEventListener('load', onLoad);
+      fr.setAttribute('allow', 'camera; microphone; autoplay; fullscreen; gamepad; accelerometer; gyroscope');
+      fr.src = g.url; ov.hidden = false;
+      requestAnimationFrame(() => ov.classList.add('show'));
+    });
+  }
+};
+async function playGame(key) {
+  cleanups.push(() => { if (Game.active) Game.active.finish('scene-change'); });
+  await A(Game.start(key));
+}
+
+/* ══════════ Scenes ══════════ */
+// Interaction "light-forms" (palms, vines, the THINK orb) are drawn as glowing magic light,
+// echoing the glowing story-animals in the banyan art, so they sit on top of the paintings without clashing.
+function mudSplash(r, x, y) {
+  for (let i = 0; i < 9; i++) {
+    const dx = (i - 4) * 38;
+    const drop = place(S('ellipse', { rx: 11, ry: 15, fill: '#5A3A1E', opacity: .9, filter: 'url(#softS)' }), x + dx, y - 10, 1);
+    r.append(drop);
+    tween(drop, { y: y - 130 - Math.abs(dx) * .4, x: x + dx * 1.8 }, 360, ease.out).then(() => tween(drop, { y: y + 20, op: 0 }, 380, ease.in)).then(() => drop.remove());
+  }
+}
+function glowEyes(r, x, y) {
+  const g = G({ class: 'fadeT', 'pointer-events': 'none' }, S('ellipse', { cx: x - 22, cy: y, rx: 12, ry: 7, fill: '#F6E27A', filter: 'url(#glow)' }), S('ellipse', { cx: x + 22, cy: y, rx: 12, ry: 7, fill: '#F6E27A', filter: 'url(#glow)' }));
+  g.style.opacity = 0; r.append(g); return g;
+}
+function holeMask(r, color, op) {
+  const id = uid('m'), m = S('mask', { id, maskUnits: 'userSpaceOnUse', x: -2000, y: -2000, width: 5600, height: 5000 }, S('rect', { x: -2000, y: -2000, width: 5600, height: 5000, fill: '#fff' }));
+  sdefs.append(m);
+  const cover = S('rect', { x: -2000, y: -2000, width: 5600, height: 5000, fill: color, mask: `url(#${id})`, class: 'fadeT', 'pointer-events': 'none' });
+  cover.style.opacity = op; r.append(cover);
+  cover.hole = (x, y) => { const c = S('circle', { cx: x, cy: y, r: 0, fill: '#000', filter: 'url(#soft)' }); m.append(c); return c; };
+  return cover;
+}
+
+const INTRO = [
+  ['throne', .52, .42, 1.55, 'Once upon a time, in the kingdom of Mahilaropya, there lived a king named Amara Shakthi.'],
+  ['throne', .5, .68, 1.15, "He had three sons — clever, playful, curious boys… who loved everything except their lessons!"],
+  ['throne', .52, .38, 2.1, "The king worried. How would his sons ever learn to rule a kingdom if they wouldn't sit still with a book?"],
+  ['banyan', .52, .56, 1.9, 'So he called for a wise scholar named Vishnu Sharma, and asked him to teach the princes.'],
+  ['banyan', .5, .55, 1.3, 'Vishnu Sharma made a promise — he would teach them everything they needed to know, not in years… but in just six months!'],
+  ['throne', .3, .84, 1.7, 'But the princes ran from every book they saw.'],
+  ['banyan', .52, .58, 2.2, 'So Vishnu Sharma had a clever idea.'],
+  ['banyan', .55, .40, 1.5, 'Instead of boring lessons… he decided to teach them through stories! Stories full of clever animals, funny mistakes, and important lessons about life.'],
+  ['banyan', .5, .45, 1.05, 'He called these stories the Panchatantra.'],
+  ['banyan', .62, .72, 1.45, "And the princes loved them so much, they couldn't wait to hear what happened next."],
+  ['banyan', .5, .55, 1.15, 'Today, Vishnu Sharma is going to tell the princes — and us — our very first Panchatantra story!'],
+  ['banyan', .5, .5, 1, "Let's listen closely…"]
+];
+async function sIntro() {
+  const r = newStage('#2a1a0e');
+  const kbs = { throne: painted(r, 'throne', { cx: .52, cy: .42, z: 1.45 }), banyan: painted(r, 'banyan') };
+  Object.values(kbs).forEach(k => k.classList.add('xfade'));
+  kbs.banyan.style.opacity = 0; setBackdrop('throne');
+  let curArt = 'throne', glyph = null;
+  await reveal(); ambience('glow');
+  for (const [art, cx, cy, z, t] of INTRO) {
+    if (art !== curArt) {
+      const f = frameT(kbs[art], cx, cy, z * .92); place(kbs[art], f.x, f.y, f.s);
+      kbs[art].style.opacity = 1; kbs[curArt].style.opacity = 0; curArt = art; setBackdrop(art);
+    }
+    drift(kbs[art], cx, cy, z, 9000);
+    if (glyph) { glyph.remove(); glyph = null; }
+    if (/called these stories/.test(t)) {
+      glyph = S('text', { x: 800, y: 330, 'text-anchor': 'middle', 'font-family': "'Yatra One',serif", 'font-size': 140, fill: '#FFE7A3', stroke: '#5A2E0E', 'stroke-width': 8, 'paint-order': 'stroke', filter: 'url(#glow)', class: 'popin', 'pointer-events': 'none' }, 'पञ्चतन्त्र');
+      r.append(glyph); SFX.chime();
+    }
+    await say('arjun', t);
+  }
+  if (glyph) glyph.remove();
+  hideCaption(); SFX.whoosh();
+  await cam(kbs.banyan, .5, .45, 2.6, 1200, ease.in);
+  flash(); SFX.chime(); await sleep(300);
+}
+
+async function namaste(r) {
+  const scrim = S('rect', { x: -2000, y: -2000, width: 5600, height: 5000, fill: '#1A1206', class: 'fadeT', 'pointer-events': 'none' });
+  scrim.style.opacity = 0; r.append(scrim); requestAnimationFrame(() => { scrim.style.opacity = .45; });
+  const target = G({ class: 'spinslow', 'pointer-events': 'none' }, S('circle', { cx: 800, cy: 560, r: 80, fill: 'none', stroke: '#FFE9A8', 'stroke-width': 4, 'stroke-dasharray': '10 12', filter: 'url(#glow)' }));
+  r.append(target);
+  const palm = dir => G({ class: 'lightform' },
+    S('path', { d: 'M-30,80 L-32,-30 C-34,-62 -24,-80 -14,-80 L14,-80 C24,-80 34,-62 32,-30 L30,80Z', fill: 'rgba(255,222,150,.55)', stroke: '#FFF3C4', 'stroke-width': 4, 'stroke-linejoin': 'round' }),
+    S('path', { d: `M${dir * 30},12 C${dir * 58},0 ${dir * 62},-28 ${dir * 44},-36 C${dir * 36},-22 ${dir * 32},-10 ${dir * 30},-6`, fill: 'rgba(255,222,150,.55)', stroke: '#FFF3C4', 'stroke-width': 4, 'stroke-linejoin': 'round' }),
+    S('path', { d: 'M-15,-76 L-15,-32 M0,-78 L0,-30 M15,-76 L15,-32', fill: 'none', stroke: 'rgba(255,248,220,.75)', 'stroke-width': 3, 'stroke-linecap': 'round' }));
+  const L = actor(palm(1), 520, 560, 1.35), R = actor(palm(-1), 1080, 560, 1.35);
+  r.append(L, R);
+  try {
+    await interaction('Say namaste! Bring the two hands together — drag them, or tap each one.', 'Say namaste! Bring the two hands together. Drag them, or tap each one.', ctx => {
+      let met = false;
+      const meet = () => { if (met) return; met = true; L._done = R._done = true; unkey(L); unkey(R); tween(L, { x: 764, y: 560 }, 320, ease.out); tween(R, { x: 836, y: 560 }, 320, ease.out).then(() => ctx.done()); };
+      const home = it => it === L ? 764 : 836;
+      const arrive = it => { it._at = true; it._done = true; unkey(it); if (L._at && R._at) meet(); };
+      draggables(ctx, [L, R], {
+        onTap: it => tween(it, { x: home(it), y: 560 }, 420, ease.out).then(() => arrive(it)),
+        onMove: () => { if (Math.hypot(L._t.x - R._t.x, L._t.y - R._t.y) < 130) { meet(); return 'release'; } },
+        onDrop: it => { if (Math.abs(it._t.x - 800) < 120 && Math.abs(it._t.y - 560) < 130) tween(it, { x: home(it), y: 560 }, 220).then(() => arrive(it)); else it._at = false; }
+      });
+      ctx.on(t => { if (t === 'namaste') meet(); });
+    });
+  } finally {
+    scrim.style.opacity = 0; target.remove();
+    tween(L, { op: 0 }, 900); tween(R, { op: 0 }, 900);
+    setTimeout(() => { L.remove(); R.remove(); scrim.remove(); }, 1300);
+  }
+}
+async function s1() {
+  const r = newStage('#2a3a1e');
+  const kb = painted(r, 'banyan', { cx: .5, cy: .55, z: 1.2 });
+  await reveal(); ambience('glow');
+  drift(kb, .52, .57, 1.4, 7000);
+  await say('vishnu', 'Namaste, little one. Are you ready to hear a story?');
+  await cam(kb, .5, .52, 1.05, 900);
+  await namaste(r);
+  SFX.chime(); sparkles(r, 800, 450, 16, 160);
+  const pr = wpt(kb, .28, .72); sparkles(r, pr.x, pr.y, 10, 90);
+  await say('arjun', 'Vishnu Sharma took the three sons under his fold and said:');
+  let h = null;
+  const focus = (cx, cy, z, hx, hy) => { if (h) { h.remove(); h = null; } tween(kb, frameT(kb, cx, cy, z), 1400); if (hx != null) h = halo(kb, hx, hy, 85); };
+  await say('vishnu', 'Listen carefully. There was once a lion king named Pingalaka.', { onPart: i => { if (i === 1) focus(.36, .45, 2.1, .34, .42); } });
+  shakeScreen(); SFX.whoosh();
+  await say('vishnu', 'One day, a strange sound filled the forest and frightened him.');
+  await say('vishnu', 'A cunning jackal came forward and cleverly set out to discover the truth.', { onPart: i => { if (i === 0) focus(.72, .47, 2.1, .74, .44); } });
+  focus(.72, .74, 1.7);
+  await say('princes', 'How?');
+  focus(.52, .58, 1.7);
+  await say('arjun', 'And Vishnu Sharma began…');
+  await ask('Ooh, a story with a lion and a jackal! Do you like lions? What sound do you think a lion makes?');
+  await cam(kb, .5, .42, 3.2, 1300, ease.in);
+  flash();
+}
+
+async function tapOne(el, text) {
+  await interaction(text, null, ctx => { tappables(ctx, [el], it => { it._done = true; unkey(it); SFX.pop(); ctx.done(); }); });
+}
+function secretScroll(r, x, y) {
+  const g = place(G({}), x, y, 1, { sy: .02 });
+  g.append(S('rect', { x: -330, y: -170, width: 660, height: 340, rx: 10, fill: PAPER, stroke: INK, 'stroke-width': 5 }));
+  g.append(S('rect', { x: -350, y: -186, width: 700, height: 26, rx: 13, fill: '#C9A46A', stroke: INK, 'stroke-width': 4 }), S('rect', { x: -350, y: 160, width: 700, height: 26, rx: 13, fill: '#C9A46A', stroke: INK, 'stroke-width': 4 }));
+  const icons = [
+    G(CH, S('circle', { r: 20, fill: GOLD }), S('text', { y: 8, 'text-anchor': 'middle', 'font-family': "'Baloo 2',sans-serif", 'font-weight': 800, 'font-size': 22, fill: INK, stroke: 'none' }, '₹')),
+    G(CH, S('path', { d: 'M-12,-4 V-12 A12,12 0 0 1 12,-12 V-4', fill: 'none' }), S('rect', { x: -18, y: -4, width: 36, height: 26, rx: 5, fill: '#7B4A2A' })),
+    G(CH, S('path', { d: 'M0,18 V-6', fill: 'none' }), S('path', { d: 'M0,-4 C-18,-6 -22,-22 -18,-26 C-6,-26 0,-16 0,-4Z M0,-8 C16,-10 22,-26 18,-30 C4,-30 -2,-18 0,-8Z', fill: '#7FAE52' })),
+    G(CH, S('path', { d: 'M0,16 C-26,-4 -18,-26 0,-12 C18,-26 26,-4 0,16Z', fill: KUM }))
+  ];
+  g.lines = SECRET.map((t, i) => {
+    const row = G({ opacity: 0 }); row.append(place(icons[i], -280, -104 + i * 72, 1), S('text', { x: -242, y: -94 + i * 72, 'font-family': "'Baloo 2',sans-serif", 'font-weight': 700, 'font-size': 28, fill: INK }, t));
+    g.append(row); return row;
+  });
+  r.append(g); return g;
+}
+const SECRET = ["If you don't have it, try hard to earn it!", 'When you have earned it, guard it well!', 'And as you guard it, always make it grow!', 'When it has grown, donate it!'];
+async function packWagon(r, rg, RX, GY, xs) {
+  const items = ITEM_ORDER.map((k, i) => { const it = place(G({}), xs[i], 858, 1.05); it.append(G({ filter: 'url(#propsoft)' }, ITEM[k]())); it.home = { x: xs[i], y: 858 }; r.append(it); return it; });
+  const load = rg.parts.wagon.parts.load; let filled = 0;
+  const zone = { x0: RX - 220, x1: RX + 230, y0: GY - 330, y1: GY + 20 };
+  await interaction('Pinch an item and drag it into the wagon to help Vardhamanaka pack! (Or just tap it.)', 'Pinch an item and drag it into the wagon to help Vardhamanaka pack!', ctx => {
+    const stow = it => {
+      it._done = true; unkey(it); const i = filled++, sx = SLOTS[i];
+      tween(it, { x: RX + sx, y: GY - 152, s: .72 }, 450, ease.out).then(() => { load.append(it); place(it, sx, -152, .72); SFX.clink(); if (filled === items.length) ctx.done(); });
+    };
+    draggables(ctx, items, {
+      onTap: stow,
+      onDrop: (it, p) => { if (p.x > zone.x0 && p.x < zone.x1 && p.y > zone.y0 && p.y < zone.y1) stow(it); else { SFX.wrong(); tween(it, { x: it.home.x, y: it.home.y }, 420, ease.back); } }
+    });
+  });
+}
+async function s2() {
+  const r = newStage('#3a2a14');
+  // No painted Mahilaropya/wagon-yard background exists yet: a defocused crop of the forest art gives warm painted bokeh behind the painted merchant.
+  const kb = painted(r, 'forest', { soft: true, cx: .55, cy: .35, z: 1.1 });
+  veil(r, '#F6D08A', .2);
+  r.append(S('ellipse', { cx: 800, cy: 980, rx: 1400, ry: 280, fill: '#4A2F14', opacity: .6, filter: 'url(#soft)' }));
+  drift(kb, .5, .38, 1.2, 30000);
+  const RX = 1230, GY = 760;
+  const rg = rig(), rgA = actor(rg, RX, GY, 1); rg.setAttribute('filter', 'url(#propsoft)'); r.append(rgA);
+  const mer = cutout('merchant', 250, 880, 610); r.append(mer);
+  await reveal(); ambience('day');
+  await say('arjun', 'Once in Mahilaropya, a prosperous merchant named Vardhamanaka lived.');
+  await say('arjun', 'He had a rule about money:');
+  await tapOne(mer, 'Tap Vardhamanaka to hear his secret!');
+  SFX.chime(); sparkles(r, 140, 420, 8, 60);
+  const sc = secretScroll(r, 830, 240); await anim(sc, { sy: 1 }, 500, ease.back);
+  for (let i = 0; i < SECRET.length; i++) { sc.lines[i].setAttribute('opacity', 1); sc.lines[i].classList.add('popin'); await say('merchant', SECRET[i]); }
+  await say('arjun', 'One day, he decided to grow his business. So he set out for Mathura…');
+  await anim(sc, { sy: .02, op: 0 }, 400, ease.in); sc.remove();
+  await packWagon(r, rg, RX, GY, [560, 680, 800, 920, 1040]);
+  SFX.clink(); boom(r, 'CLINK! CLACK!', 900, 330);
+  await sleep(700);
+  rg.classList.add('moving'); mer.inner.setAttribute('class', 'hop');
+  tween(rgA, { x: 2400 }, 5000, ease.in); tween(mer, { x: 1900 }, 6000, ease.in);
+  await say('arjun', 'The journey begins!');
+  await sleep(1200);
+}
+
+async function s3() {
+  const r = newStage('#2a2a14');
+  const kb = painted(r, 'forest', { cx: .6, cy: .42, z: 2.4 });
+  await reveal(); ambience('day');
+  drift(kb, .5, .44, 1.8, 16000);
+  await say('arjun', 'The heavy wagon was pulled by two strong bulls: Nandaka… and Sanjivaka.', { onPart: i => { if (i === 1) tagIn(kb, 'Nandaka & Sanjivaka', .43, .30); } });
+  await sleep(600);
+  await ask('Nandaka and Sanjivaka work together and help each other. Do you have a friend who helps you like that?');
+}
+
+function vine(x, y, s, flip) {
+  const outer = place(G({}), x, y, s, { fx: flip ? -1 : 1 }), g = G({ class: 'popin' }); outer.append(g);
+  const d = 'M-180,20 C-120,-40 -60,50 0,0 C60,-50 120,40 180,-20';
+  g.append(S('path', { d, fill: 'none', stroke: 'rgba(170,235,120,.4)', 'stroke-width': 30, 'stroke-linecap': 'round', filter: 'url(#glow)' }), S('path', { d, fill: 'none', stroke: '#DDF8B0', 'stroke-width': 9, 'stroke-linecap': 'round' }));
+  [[-120, -10], [-40, 16], [40, -14], [120, 10]].forEach(([lx, ly], i) => g.append(S('path', { d: `M${lx},${ly} c${i % 2 ? 10 : -10},-26 ${i % 2 ? 34 : -34},-26 ${i % 2 ? 30 : -30},-4 c-10,6 -20,8 ${i % 2 ? -30 : 30},4z`, fill: 'rgba(200,245,150,.8)', stroke: '#F1FFDD', 'stroke-width': 2 })));
+  return outer;
+}
+async function s4() {
+  const r = newStage('#2a2a14');
+  const kb = painted(r, 'forest', { cx: .45, cy: .5, z: 1.5 });
+  await reveal(); ambience('day');
+  drift(kb, .38, .6, 1.7, 6000);
+  await say('arjun', 'But as they traveled through a dense forest…');
+  await cam(kb, .32, .72, 2.3, 1400);
+  await say('arjun', 'Sanjivaka stepped into deep, wet mud.', { after: 100 });
+  const c = wpt(kb, .33, .82);
+  SFX.splash(); boom(r, 'SPLASH!', c.x, 260, { color: '#C9E6F2' }); shakeScreen(); mudSplash(r, c.x, c.y);
+  await say('arjun', 'His leg slipped… and he was badly hurt. He couldn’t walk.');
+  const b = wpt(kb, .32, .72);
+  const vines = [vine(b.x, b.y - 150, 1, false), vine(b.x + 40, b.y - 50, .95, true), vine(b.x - 30, b.y + 50, 1, false), vine(b.x + 20, b.y - 240, .85, true)];
+  vines.forEach(v => { r.append(v); v.home = { x: v._t.x, y: v._t.y }; });
+  let cleared = 0;
+  await interaction('Grab the vines and pull them away to free Sanjivaka!', null, ctx => {
+    const yank = v => {
+      if (v._done) return; v._done = true; unkey(v); SFX.rustle();
+      const dx = v._t.x - v.home.x, dy = v._t.y - v.home.y, m = Math.hypot(dx, dy) || 1;
+      tween(v, { x: v._t.x + dx / m * 700 + (m < 2 ? 700 : 0), y: v._t.y + dy / m * 400 - 120, r: 40, op: 0 }, 650, ease.in).then(() => { v.remove(); if (++cleared === vines.length) ctx.done(); });
+    };
+    draggables(ctx, vines, {
+      onTap: yank,
+      onMove: v => { if (Math.hypot(v._t.x - v.home.x, v._t.y - v.home.y) > 130) { yank(v); return 'release'; } },
+      onDrop: v => tween(v, { x: v.home.x, y: v.home.y }, 380, ease.back)
+    });
+  });
+  SFX.sparkle(); sparkles(r, b.x, b.y, 18, 220);
+  await sleep(700);
+  await say('arjun', 'The merchant loved his bull. But he had expensive goods with him… and he couldn’t stay.');
+  await ask('Uh oh! If this was your bull, would you stay and help him? What would you do?');
+}
+
+async function s5() {
+  const r = newStage('#2a2a14');
+  const kb = painted(r, 'forest', { cx: .55, cy: .44, z: 2.2 });
+  const dusk = veil(r, '#1B1740', 0);
+  const fire = motes(r, 24, '#F6E27A', { seed: 5, y0: 300, y1: 800 }); fire.style.opacity = 0; fire.classList.add('fadeT');
+  await reveal(); ambience('day');
+  await say('arjun', 'He told his servants to stay behind and care for Sanjivaka.');
+  drift(kb, .33, .6, 1.45, 8000);
+  await say('arjun', 'Then he continued his journey with a heavy heart.');
+  dusk.style.opacity = .5; fire.style.opacity = 1; ambience('night');
+  hideCaption(); await sleep(2600);
+  const twig = place(G({ filter: 'url(#softS)' }, S('path', { d: 'M0,0 C-40,-10 -90,-4 -140,10 M-60,-4 L-80,-30 M-100,2 L-120,-22', fill: 'none', stroke: '#1E140A', 'stroke-width': 12, 'stroke-linecap': 'round' })), 1250, -40, 1);
+  r.append(twig);
+  SFX.crack(); boom(r, 'CRACK!', 1150, 300, { size: 92 }); shakeScreen();
+  tween(twig, { y: 820, r: -70 }, 700, ease.in).then(() => SFX.thud());
+  await sleep(1800);
+  const eyes = glowEyes(r, 160, 400); eyes.style.opacity = 1; await sleep(600);
+  SFX.growl(); boom(r, 'Grrrr…', 210, 300, { size: 64, color: '#F6E27A' });
+  await sleep(2600);
+  eyes.style.opacity = 0;
+  await sleep(1400);
+}
+
+async function s6() {
+  let r = newStage('#141230');
+  let kb = painted(r, 'forest', { cx: .33, cy: .62, z: 1.5 });
+  veil(r, '#15123A', .55); motes(r, 24, '#F6E27A', { seed: 5, y0: 300, y1: 800 });
+  await reveal(); ambience('night');
+  drift(kb, .3, .66, 1.7, 12000);
+  await say('arjun', 'The servants were cowards. They were scared of ghosts and wild animals.');
+  SFX.steps();
+  for (let i = 0; i < 5; i++) { const p = place(S('ellipse', { rx: 40, ry: 18, fill: '#C9A06A', opacity: .5, filter: 'url(#soft)' }), 1000 + i * 120, 820 - i * 8, 1); r.append(p); tween(p, { x: 1900, op: 0, s: 2 }, 1400 + i * 120, ease.in).then(() => p.remove()); }
+  await say('arjun', 'So they abandoned Sanjivaka… and ran away.');
+  r = await cut('#3a2a14');
+  painted(r, 'forest', { soft: true, cx: .5, cy: .4, z: 1.1 }); veil(r, '#E79A6B', .25);
+  await reveal(); ambience(null);
+  await say('arjun', 'But when they returned to the merchant, they lied:');
+  const b = bubble(r, ['The bull died, sir…'], 800, 480, { tail: 'left', fs: 40 });
+  await say('servant', 'The bull died, sir…');
+  await sleep(900); b.remove();
+  r = await cut('#0a0812');
+  kb = painted(r, 'forest', { cx: .27, cy: .69, z: 3.2 });
+  const eye = wpt(kb, .268, .665);
+  const lid = holeMask(r, '#07060C', 1); const hole = lid.hole(eye.x, eye.y);
+  await reveal(); ambience('night');
+  showCaption('arjun', '…'); await sleep(1400);
+  SFX.chime();
+  await A(tweenAttr(hole, 'r', 0, 520, 2600, ease.io));
+  lid.style.opacity = 0; sparkles(r, eye.x, eye.y, 8, 60);
+  await sleep(1400);
+  await ask('The servants were scared, so they told a lie. Do you think that was okay? What should they have said instead?');
+}
+
+async function s7() {
+  const r = newStage('#2a2a14');
+  const kb = painted(r, 'forest', { cx: .3, cy: .72, z: 2.1 });
+  const dim = veil(r, '#1a1430', .4);
+  await reveal(); ambience('day');
+  await say('arjun', 'But Sanjivaka didn’t give up.');
+  dim.style.opacity = 0; drift(kb, .33, .7, 1.8, 9000);
+  await say('arjun', 'Slowly, slowly… he started to feel better.');
+  SFX.sparkle(); sparkles(r, 300, 760, 10, 200); sparkles(r, 1250, 780, 10, 200);
+  await say('arjun', 'Let’s help him get strong again!');
+  await sleep(500);
+}
+
+async function gameCard(title, sub) {
+  const r = newStage('#1C1830');
+  painted(r, 'forest', { soft: true, cx: .5, cy: .5, z: 1.1 }); veil(r, '#1C1830', .55);
+  motes(r, 30, GOLD, { seed: 41 });
+  r.append(S('text', { x: 800, y: 400, 'text-anchor': 'middle', 'font-family': "'Baloo 2',sans-serif", 'font-weight': 800, 'font-size': 30, 'letter-spacing': 8, fill: GOLD }, sub));
+  r.append(S('text', { x: 800, y: 500, 'text-anchor': 'middle', 'font-family': "'Yatra One',serif", 'font-size': 96, fill: '#FFF7E6', stroke: INK, 'stroke-width': 10, 'paint-order': 'stroke', class: 'popin' }, title));
+  await reveal(); SFX.chime(); await sleep(1500);
+}
+async function g1() {
+  await gameCard('Moo Munch', 'GAME ONE');
+  await playGame('moo');
+  const r = await cut('#2a2a14');
+  const kb = painted(r, 'forest', { cx: .31, cy: .72, z: 2.0 });
+  veil(r, '#FFE7A3', .12);
+  const birds = [bird(200, 150, 1), bird(1400, 120, .9), bird(1480, 170, .8), bird(150, 210, .7)]; r.append(...birds);
+  await reveal(); ambience('day');
+  drift(kb, .3, .7, 2.2, 8000);
+  await say('arjun', 'Look at Sanjivaka now! He’s eaten so much yummy food… and he’s become super strong!');
+  SFX.munch(); boom(r, 'MUNCH!', 1150, 380, { size: 70 });
+  await sleep(900);
+  await say('arjun', 'And then… he takes a big breath and lets out a huge…');
+  hideCaption(); await cam(kb, .29, .68, 2.5, 1200); await sleep(300);
+  const m = wpt(kb, .28, .72);
+  SFX.moo(1.4); showCaption('sanjivaka', 'MOOOOOOOOOOOOOO!');
+  boom(r, 'MOOOOOOOOOO!', 800, 230, { size: 120 }); waves(r, m.x, m.y, { n: 5, r: 110 });
+  shakeScreen(); tween(kb, frameT(kb, .31, .68, 1.9), 600, ease.out);
+  birds.forEach((b, i) => tween(b, { x: b._t.x + (i % 2 ? 500 : -500), y: -250 }, 1800, ease.in));
+  await sleep(2600);
+  await ask('Wow, that was SO loud! What do you think made that big sound?');
+}
+
+async function s8() {
+  const r = newStage('#2a2a14');
+  const kb = painted(r, 'forest', { cx: .5, cy: .14, z: 3.0 });
+  await reveal(); ambience('day');
+  drift(kb, .56, .14, 3.0, 9000);
+  await say('arjun', 'Nearby lived Pingalaka… the king of the jungle.');
+  await say('arjun', 'He looked like nothing could frighten him. Until…');
+  hideCaption(); await sleep(500);
+  SFX.moo(1.1, .55); boom(r, 'MOOOOOOO!', 420, 260, { size: 70 }); waves(r, -60, 420, { n: 4, r: 120 }); shakeScreen();
+  await cam(kb, .8, .42, 2.4, 800, ease.out);
+  await sleep(500);
+  await say('pingalaka', 'O Man! What kind of monster makes such a sound?');
+  await ask('Have you ever heard a loud noise that scared you? What was it?');
+}
+
+async function g2() {
+  await gameCard('Pingalaka Panic Run', 'GAME TWO');
+  await playGame('run');
+  const r = await cut('#2a2a14');
+  const kb = painted(r, 'forest', { cx: .8, cy: .42, z: 2.2 }); veil(r, '#1B1740', .15);
+  await reveal(); ambience('day');
+  drift(kb, .79, .4, 2.5, 9000);
+  await say('pingalaka', 'Everyone stay quiet! Whatever made that sound… must be terrifying!');
+  await say('arjun', 'And just like that… the mighty lion king ran deep into the forest and hid beneath a banyan tree.');
+}
+
+async function s9() {
+  const r = newStage('#2a2a14');
+  const kb = painted(r, 'forest', { cx: .78, cy: .45, z: 2.0 });
+  await reveal(); ambience('day');
+  drift(kb, .8, .42, 2.3, 9000);
+  await say('arjun', 'Pingalaka sat beneath the banyan tree. His ministers gathered around him. Everyone looked confused.');
+  await say('pingalaka', 'Did you hear that?!');
+  hideCaption();
+  SFX.moo(1, .5); shakeScreen(); boom(r, 'MOOOOO!', 330, 330, { size: 66 });
+  await anim(kb, frameT(kb, .8, .47, 2.6), 350, ease.out);
+  await sleep(1500);
+  await ask('Pingalaka is hiding because he’s scared. What do you do when you feel scared?');
+}
+
+// Jackal head positions in the forest art (image fractions).
+const JK = { damanaka: { fx: .265, fy: .37 }, karataka: { fx: .315, fy: .475 } };
+async function s10() {
+  const r = newStage('#141a10');
+  const kb = painted(r, 'forest', { cx: .29, cy: .44, z: 2.3 });
+  const dark = holeMask(r, '#0B0A08', .74);
+  await reveal(); ambience('day');
+  await say('arjun', 'Nearby, two jackals were watching everything.');
+  const spots = ['damanaka', 'karataka'].map(k => {
+    const p = wpt(kb, JK[k].fx, JK[k].fy);
+    const t = place(G({ class: 'fadeT' }), p.x, p.y, 1);
+    t.append(S('circle', { r: 85, fill: 'rgba(0,0,0,0)' }), S('circle', { r: 78, fill: 'none', stroke: '#FFE9A8', 'stroke-width': 4, 'stroke-dasharray': '10 10', filter: 'url(#glow)', class: 'spinslow' }), S('ellipse', { cx: -14, cy: -6, rx: 7, ry: 5, fill: '#FFF3A0', filter: 'url(#glow)', class: 'twinkle' }), S('ellipse', { cx: 14, cy: -6, rx: 7, ry: 5, fill: '#FFF3A0', filter: 'url(#glow)', class: 'twinkle' }));
+    t.style.opacity = 0; t.key = k; t.p = p; r.append(t); return t;
+  });
+  later(() => { spots[0].style.opacity = 1; }, 600);
+  later(() => { spots[1].style.opacity = 1; }, 2600);
+  let found = 0;
+  await interaction('Two pairs of eyes are peeking out. Tap them to find both jackals!', 'Two pairs of eyes are peeking out of the bushes. Tap them to find both jackals!', ctx => {
+    tappables(ctx, spots, t => {
+      if (t.style.opacity !== '1') return;
+      t._done = true; unkey(t); SFX.pop(); SFX.rustle(); t.remove();
+      tweenAttr(dark.hole(t.p.x, t.p.y), 'r', 0, 190, 700);
+      if (++found === 2) later(() => ctx.done(), 800);
+    });
+  });
+  dark.style.opacity = 0; SFX.chime();
+  const k = wpt(kb, JK.karataka.fx, JK.karataka.fy), d = wpt(kb, JK.damanaka.fx, JK.damanaka.fy);
+  tag(r, 'Karataka', k.x + 240, k.y + 10, { sub: 'the Prudent' });
+  await say('arjun', 'Karataka — the Prudent.');
+  tag(r, 'Damanaka', d.x - 230, d.y - 90, { sub: 'the Daring', fill: '#FFF3C4' });
+  await say('arjun', 'Damanaka — the Daring.');
+  await say('arjun', 'They were the sons of former ministers… but now they were jobless.');
+}
+
+async function s11() {
+  const r = newStage('#141a10');
+  const kb = painted(r, 'forest', { cx: .29, cy: .44, z: 2.3 });
+  await reveal(); ambience('day');
+  await cam(kb, .27, .40, 2.7, 900);
+  let b = bubble(r, ['Hey! Look at the king.', 'Why is he hiding?'], 1130, 330, { tail: 'left', fs: 30 });
+  await say('damanaka', 'Hey! Look at the king. He looks terrified. Why is he hiding?');
+  b.remove();
+  await cam(kb, .33, .49, 2.7, 900);
+  b = bubble(r, ['Shh! Is that our business? No!'], 1130, 360, { tail: 'left', fs: 30 });
+  await say('karataka', 'Shh! Is that our business? No!');
+  b.remove();
+  b = bubble(r, ['Poke your nose into trouble…', '…and end up like the monkey', 'who pulled the wedge!'], 1130, 340, { tail: 'left', fs: 28 });
+  await say('karataka', 'If you poke your nose into trouble… you’ll end up like the monkey who pulled the wedge.');
+  b.remove();
+  await cam(kb, .29, .44, 2.3, 900);
+  await ask('Karataka wants to stay away from trouble. Damanaka wants to find out what’s going on. Which one are you more like?');
+}
+
+async function s12() {
+  let r = newStage('#2a3a1e');
+  const kb = painted(r, 'banyan', { cx: .72, cy: .74, z: 1.7 });
+  await reveal(); ambience('glow');
+  await say('princes', 'What happened to the monkey?');
+  await cam(kb, .52, .56, 1.8, 1100);
+  await say('vishnu', 'Ah… that is another story.');
+  // The wedge cutaway stays code-drawn (sepia "memory" frame): the monkey and log-site art are not available yet.
+  r = await cut('#E8D3A8'); setBackdrop(null);
+  const story = G({ filter: 'url(#sepia)' }); r.append(story);
+  sky(story, [[0, '#F2D9A8'], [1, '#E3C08A']]);
+  story.append(tree(160, 700, 1.1), tree(1450, 700, 1.1));
+  hill(story, 700, '#C99E62', { amp: 6, period: 1300 });
+  tufts(story, 20, -100, 1700, 700, 900, '#A67E48', 91);
+  const LX = 800, LY = 610;
+  const trestle = x => G(CH, S('path', { d: `M${x - 40},${LY + 150} L${x},${LY + 60} L${x + 40},${LY + 150}`, fill: 'none', 'stroke-width': 12 }), S('path', { d: `M${x - 40},${LY + 150} L${x},${LY + 60} L${x + 40},${LY + 150}`, fill: 'none', stroke: '#8A5530', 'stroke-width': 6 }));
+  story.append(trestle(LX - 250), trestle(LX + 250));
+  story.append(G(CH, S('rect', { x: LX - 380, y: LY, width: 760, height: 58, rx: 28, fill: '#B07A45' }), S('path', { d: `M${LX - 300},${LY + 30} h140 M${LX - 60},${LY + 22} h200`, fill: 'none', 'stroke-width': 3, opacity: .5 })));
+  const wedge = place(G(CH, S('path', { d: 'M-24,-70 L24,-70 L2,8Z', fill: '#8A5530' })), LX + 262, LY, 1); story.append(wedge);
+  const top = place(G({}), LX - 380, LY, 1, { r: -4 });
+  top.append(G(CH, S('rect', { x: 0, y: -58, width: 760, height: 58, rx: 28, fill: '#C08A52' }), S('ellipse', { cx: 740, cy: -29, rx: 16, ry: 27, fill: '#E3B27A' }), S('path', { d: 'M120,-30 h160 M380,-38 h180', fill: 'none', 'stroke-width': 3, opacity: .5 })));
+  story.append(top);
+  const workers = [actor(person({ cloth: '#D9C9A0', lower: '#E6DAC0', headcloth: '#8C6B4A', skin: '#A86E44', mustache: true }), 330, 760, 1), actor(person({ cloth: '#C9B58A', lower: '#E6DAC0', turban: '#E8E0CC', skin: '#9C6640' }), 1260, 760, 1)];
+  story.append(...workers);
+  const mk = actor(monkey(), 1900, 760, 1.1, { fx: -1 }); story.append(mk);
+  r.append(S('path', { d: 'M-2000,-2000 H3600 V3000 H-2000Z M14,14 V886 H1586 V14Z', 'fill-rule': 'evenodd', fill: '#2A1A0E', opacity: .6, 'pointer-events': 'none' }));
+  r.append(S('rect', { x: 14, y: 14, width: 1572, height: 872, rx: 26, fill: 'none', stroke: PAPER, 'stroke-width': 14, 'pointer-events': 'none' }), S('rect', { x: 14, y: 14, width: 1572, height: 872, rx: 26, fill: 'none', stroke: INK, 'stroke-width': 3, 'stroke-dasharray': '2 10', 'pointer-events': 'none' }));
+  r.append(S('text', { x: 800, y: 78, 'text-anchor': 'middle', 'font-family': "'Yatra One',serif", 'font-size': 34, fill: PAPER, stroke: INK, 'stroke-width': 7, 'paint-order': 'stroke' }, 'A story within the story'));
+  await reveal(); ambience(null);
+  showCaption('vishnu', 'Workers were splitting a large wooden log. A wedge held the log open.');
+  await sleep(2400);
+  workers.forEach(w => w.inner.classList.add('hop'));
+  tween(workers[0], { x: -300 }, 2600, ease.in); tween(workers[1], { x: 1950 }, 2600, ease.in);
+  showCaption('vishnu', 'The workers left… and a curious monkey arrived.');
+  await sleep(1400);
+  for (const [x, y] of [[1700, 700], [1560, 760], [1420, 690], [1300, LY]]) await anim(mk, { x, y }, 340, ease.io);
+  await sleep(500);
+  showCaption('vishnu', 'He noticed the wedge… and pulled it!');
+  mk.parts.head.classList.add('tilt'); await sleep(900);
+  mk.parts.arm.style.transform = 'rotate(-30deg)';
+  SFX.creak(); boom(r, 'CREAK…', 1160, 340, { size: 58 });
+  await anim(wedge, { y: LY - 90, r: 25 }, 900, ease.io);
+  SFX.snap(); boom(r, 'SNAP!', 900, 420, { size: 90 });
+  tween(wedge, { x: LX + 520, y: LY + 140, r: 180, op: 0 }, 600, ease.in);
+  tween(top, { r: 0 }, 180, ease.in);
+  mk.parts.mouth.setAttribute('d', 'M-6,10 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0'); mk.inner.classList.add('wide');
+  await anim(mk, { x: 1460, y: LY - 170, r: 12 }, 380, ease.out);
+  // Freeze-frame before anything else can happen.
+  hideCaption(); await sleep(1400);
+  await say('vishnu', 'And that is why Karataka warned: “Those who interfere unnecessarily may suffer like the monkey who pulled the wedge.”');
+}
+
+async function s13() {
+  const r = newStage('#1C1830');
+  const idL = uid('cl'), idR = uid('cr');
+  sdefs.append(S('clipPath', { id: idL }, S('rect', { x: -2000, y: -2000, width: 2800, height: 5000 })), S('clipPath', { id: idR }, S('rect', { x: 800, y: -2000, width: 2800, height: 5000 })));
+  const L = G({ 'clip-path': `url(#${idL})` }), Rg = G({ 'clip-path': `url(#${idR})` }); r.append(L, Rg);
+  const kbL = painted(L, 'forest'), f1 = frameT(kbL, .3, .7, 2.0); place(kbL, f1.x - 400, f1.y, f1.s);
+  veil(L, '#FFE7A3', .12);
+  const kbR = painted(Rg, 'forest'), f2 = frameT(kbR, .8, .42, 2.0); place(kbR, f2.x + 400, f2.y, f2.s);
+  veil(Rg, '#1B1740', .35);
+  const div = 'M800,-2000 L800,-100 L812,0 L790,90 L814,180 L788,270 L812,360 L790,450 L814,540 L788,630 L812,720 L792,810 L806,900 L800,3000';
+  r.append(S('path', { d: div, fill: 'none', stroke: INK, 'stroke-width': 20 }), S('path', { d: div, fill: 'none', stroke: PAPER, 'stroke-width': 10 }));
+  await reveal(); ambience('day');
+  await say('arjun', 'And so… poor Sanjivaka was left alone in the forest… but instead of dying… he became stronger than ever!');
+  await say('arjun', 'Meanwhile… the mighty lion Pingalaka became terrified of a sound he did not understand.');
+  hideCaption(); await sleep(700);
+  SFX.moo(1.3);
+  const t = place(S('text', { x: 0, y: 0, 'text-anchor': 'middle', 'font-family': "'Yatra One',serif", 'font-size': 96, fill: GOLD, stroke: INK, 'stroke-width': 10, 'paint-order': 'stroke', 'pointer-events': 'none' }, 'MOOOOOOO!'), 480, 300, .6); r.append(t);
+  const m = wpt(kbL, .28, .72); waves(r, m.x, m.y, { n: 4 });
+  tween(t, { x: 1150, s: 1.1 }, 1800, ease.io).then(() => tween(t, { op: 0 }, 500));
+  await sleep(1300);
+  shakeScreen(); tween(kbR, { s: f2.s * 1.06, x: f2.x + 400 - .03 * kbR.iw * f2.s, y: f2.y - .03 * kbR.ih * f2.s }, 300, ease.out);
+  await sleep(2000);
+}
+
+function choiceFace(kind) {
+  const g = G(CH);
+  const col = { panic: '#E07A5F', think: GOLD, find: '#6FB3C9' }[kind];
+  g.append(S('circle', { r: 104, fill: col }));
+  if (kind === 'panic') g.append(S('circle', { cx: -34, cy: -18, r: 16, fill: '#fff' }), S('circle', { cx: 34, cy: -18, r: 16, fill: '#fff' }), S('circle', { cx: -34, cy: -16, r: 7, fill: INK }), S('circle', { cx: 34, cy: -16, r: 7, fill: INK }), S('ellipse', { cx: 0, cy: 40, rx: 20, ry: 26, fill: INK }), S('path', { d: 'M-60,-54 L-18,-44 M60,-54 L18,-44', fill: 'none' }));
+  if (kind === 'think') g.append(S('circle', { cx: -30, cy: -24, r: 8, fill: INK }), S('circle', { cx: 30, cy: -30, r: 8, fill: INK }), S('path', { d: 'M-24,40 Q6,30 30,40', fill: 'none' }), S('circle', { cx: 60, cy: 64, r: 22, fill: '#E3B444' }), S('circle', { cx: 80, cy: -94, r: 10, fill: '#FFF7E6' }), S('circle', { cx: 100, cy: -122, r: 16, fill: '#FFF7E6' }));
+  if (kind === 'find') g.append(S('circle', { cx: -30, cy: -18, r: 8, fill: INK }), S('circle', { cx: 30, cy: -18, r: 8, fill: INK }), S('path', { d: 'M-26,34 Q0,52 26,34', fill: 'none' }), S('circle', { cx: 44, cy: -6, r: 34, fill: 'rgba(255,255,255,.35)', 'stroke-width': 8 }), S('path', { d: 'M68,18 L100,56', fill: 'none', 'stroke-width': 12 }));
+  return g;
+}
+async function s14() {
+  const r = newStage('#3a2a14');
+  painted(r, 'banyan', { soft: true, cx: .5, cy: .5, z: 1.05 }); veil(r, '#FBE3B8', .35);
+  r.append(S('circle', { cx: 800, cy: 900, r: 560, fill: '#FFF1C8', opacity: .6, filter: 'url(#blur)' }));
+  const labels = { panic: 'PANIC', think: 'THINK', find: 'FIND OUT' };
+  const pos = { panic: [370, 360], think: [800, 300], find: [1230, 360] };
+  const targets = {};
+  Object.keys(pos).forEach(k => {
+    const g = place(G({ class: 'fadeT' }), pos[k][0], pos[k][1], .95); g.append(choiceFace(k));
+    g.append(S('text', { x: 0, y: 160, 'text-anchor': 'middle', 'font-family': "'Yatra One',serif", 'font-size': 42, fill: INK, stroke: PAPER, 'stroke-width': 8, 'paint-order': 'stroke' }, labels[k]));
+    g.kind = k; targets[k] = g; r.append(g);
+  });
+  const orb = place(G({}), 800, 700, 1); orb.append(G({ class: 'pulse' }, S('circle', { r: 46, fill: '#FFF3C4', stroke: '#F2C14E', 'stroke-width': 6, filter: 'url(#glow)' }))); r.append(orb);
+  await reveal(); ambience('glow');
+  await say('arjun', 'So, what lesson did we learn from today’s story? Sometimes fear comes not from real danger… but from things we don’t understand.');
+  await interaction('Grab the glowing light and move it to THINK.', 'Grab the glowing light, and move it to THINK!', ctx => {
+    let busy = false;
+    const choose = k => {
+      if (busy) return;
+      if (k === 'think') {
+        busy = true; orb._done = true; unkey(orb);
+        tween(orb, { x: pos.think[0], y: pos.think[1], s: 1.3 }, 450, ease.out).then(() => { SFX.chime(); sparkles(r, pos.think[0], pos.think[1], 14, 160); targets.panic.style.opacity = .15; targets.find.style.opacity = .15; ctx.done(); });
+      } else {
+        busy = true; SFX.wrong();
+        tween(orb, { x: pos[k][0], y: pos[k][1] + 40 }, 350, ease.out).then(() => tween(orb, { x: 800, y: 700 }, 500, ease.back)).then(() => { busy = false; });
+        const line = k === 'panic' ? 'Whoa, slow down! Take a deep breath… and try THINK.' : 'Finding out comes next! But first… we stop and THINK.';
+        showHint(line); speakOne(line, 'arjun');
+        later(() => { if (!ctx.fin) showHint('Grab the glowing light and move it to THINK.'); }, 3500);
+      }
+    };
+    const near = p => Object.keys(pos).find(k => Math.hypot(p.x - pos[k][0], p.y - pos[k][1]) < 150);
+    draggables(ctx, [orb], { onTap: () => choose('think'), onDrop: (it, p) => { const k = near(p); if (k) choose(k); else tween(orb, { x: 800, y: 700 }, 400, ease.back); } });
+    tappables(ctx, Object.values(targets), t => choose(t.kind));
+  });
+  Object.values(targets).forEach(t => { unkey(t); t._done = true; });
+  await say('arjun', 'Before we become afraid… we can stop… think… and discover the truth.', { onPart: i => { if (i === 3) { targets.find.style.opacity = 1; SFX.sparkle(); sparkles(r, pos.find[0], pos.find[1], 10, 140); } } });
+}
+
+async function s15() {
+  const r = newStage('#141230');
+  const kb = painted(r, 'forest', { cx: .29, cy: .44, z: 2.3 });
+  const dusk = veil(r, '#1B1740', .3);
+  await reveal(); ambience('night');
+  await say('arjun', 'But wait… things are about to get even more interesting!');
+  await cam(kb, .33, .49, 2.7, 1000);
+  await say('arjun', 'One clever jackal wants to stay away from trouble…');
+  await cam(kb, .27, .40, 2.7, 1000);
+  await say('arjun', 'The other wants to use this moment to rise to power.');
+  const P = (x, y) => `${(x * kb.iw).toFixed(1)},${(y * kb.ih).toFixed(1)}`;
+  kb.append(S('path', { d: `M${P(.33, .6)} C${P(.40, .60)} ${P(.44, .55)} ${P(.47, .5)} S${P(.5, .42)} ${P(.52, .36)}`, fill: 'none', stroke: '#F6E27A', 'stroke-width': 16, opacity: .5, filter: 'url(#glow)', 'stroke-linecap': 'round', 'vector-effect': 'non-scaling-stroke', class: 'twinkle' }));
+  await cam(kb, .46, .48, 1.9, 2600);
+  await cam(kb, .33, .49, 2.7, 900);
+  const b = bubble(r, ['Those who interfere unnecessarily', 'may suffer like the monkey', 'who pulled the wedge!'], 1150, 340, { tail: 'left', fs: 26 });
+  await say('karataka', 'Those who interfere unnecessarily may suffer like the monkey who pulled the wedge!');
+  b.remove(); hideCaption();
+  await cam(kb, .27, .40, 2.7, 700);
+  SFX.moo(1.2, .45); boom(r, 'MOOOOOOOOOO!', 1250, 250, { size: 64 });
+  await sleep(1300);
+  await say('damanaka', 'Now… let’s find out what made that sound.');
+  await ask('Uh oh, Damanaka is going to find Sanjivaka! What do you think will happen next?');
+  dusk.style.transition = 'opacity 3s'; dusk.style.opacity = .78;
+  await cam(kb, .3, .72, 2.5, 3600);
+  const e = wpt(kb, .268, .665); r.append(S('circle', { cx: e.x, cy: e.y, r: 5, fill: '#FFF3C4', filter: 'url(#glow)', class: 'popin' }));
+  SFX.sparkle(); await sleep(1400);
+  await A(fadeTo(true));
+  await showEnd();
+}
+async function showEnd() {
+  ambience(null); hideCaption(); hideHint();
+  const e = $('#end'); e.hidden = false; requestAnimationFrame(() => e.classList.add('show'));
+  const cover = $('#cover'); cover.style.transform = 'scaleX(1)';
+  await new Promise(r => setTimeout(r, 1600));
+  cover.style.transform = 'scaleX(-1)'; SFX.bookClose();
+}
+
+const SCENES = [
+  { id: 'intro', label: 'Intro', title: 'Last Time, in the Panchatantra', run: sIntro },
+  { id: 's1', label: 'Scene 1', title: 'Vishnu Sharma Begins the Tale', run: s1 },
+  { id: 's2', label: 'Scene 2', title: 'The Merchant Vardhamanaka', run: s2 },
+  { id: 's3', label: 'Scene 3', title: 'The Two Bulls', run: s3 },
+  { id: 's4', label: 'Scene 4', title: 'Sanjivaka Gets Stuck', run: s4 },
+  { id: 's5', label: 'Scene 5', title: 'Left Behind', run: s5 },
+  { id: 's6', label: 'Scene 6', title: 'The Big Lie', run: s6 },
+  { id: 's7', label: 'Scene 7', title: 'Sanjivaka Recovers', run: s7 },
+  { id: 'g1', label: 'Game 1', title: 'Moo Munch', run: g1, game: true },
+  { id: 's8', label: 'Scene 8', title: 'Meet Pingalaka', run: s8 },
+  { id: 'g2', label: 'Game 2', title: 'Pingalaka Panic Run', run: g2, game: true },
+  { id: 's9', label: 'Scene 9', title: 'The Lion Hides', run: s9 },
+  { id: 's10', label: 'Scene 10', title: 'Karataka and Damanaka', run: s10 },
+  { id: 's11', label: 'Scene 11', title: 'Two Very Different Jackals', run: s11 },
+  { id: 's12', label: 'Scene 12', title: 'The Monkey Who Pulled the Wedge', run: s12 },
+  { id: 's13', label: 'Scene 13', title: 'What Have We Discovered?', run: s13 },
+  { id: 's14', label: 'Scene 14', title: 'The Lesson', run: s14 },
+  { id: 's15', label: 'Scene 15', title: 'To Be Continued…', run: s15 }
+];
+
+/* ══════════ Title backdrop ══════════ */
+function titleBackdrop() {
+  const r = newStage('#141230');
+  const kb = painted(r, 'forest', { cx: .5, cy: .45, z: 1.06 }); veil(r, '#1B1740', .2);
+  tween(kb, frameT(kb, .5, .5, 1.2), 30000, ease.io);
+  $('#fade').classList.remove('on'); faded = false;
+}
+
+/* ══════════ Wiring ══════════ */
+function setMuted(m) {
+  muted = m; Sound.setMuted(m);
+  $('#bmute').setAttribute('aria-pressed', String(m)); $('#icon-sound').hidden = m; $('#icon-muted').hidden = !m;
+  if (m && hasTTS) try { speechSynthesis.cancel(); } catch (e) { }
+}
+$('#bmute').addEventListener('click', () => setMuted(!muted));
+$('#bskip').addEventListener('click', skip);
+$('#bhands').addEventListener('click', () => Hands.toggle());
+$('#cap').addEventListener('click', lineSkip);
+$('#askgo').addEventListener('click', () => askBtn && askBtn());
+$('#glog').addEventListener('click', () => { const p = $('#glogp'); p.hidden = !p.hidden; });
+document.addEventListener('keydown', e => {
+  if (e.target.closest && e.target.closest('g[tabindex]')) return;
+  if (e.key === 'm' || e.key === 'M') setMuted(!muted);
+  if (e.key === 'ArrowRight') skip();
+});
+function unlockAudio() {
+  Sound.init(); Sound.resume();
+  if (hasTTS) try { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } catch (e) { }
+}
+function start(i) {
+  unlockAudio();
+  $('#title').hidden = true; $('#menu').hidden = true; $('#end').hidden = true;
+  play(i);
+}
+const list = $('#menulist');
+SCENES.forEach((s, i) => {
+  const li = document.createElement('li'), b = document.createElement('button');
+  b.type = 'button'; if (s.game) b.className = 'game';
+  b.innerHTML = `<b>${s.label}</b><span></span>`; b.querySelector('span').textContent = s.title;
+  b.addEventListener('click', () => start(i));
+  li.append(b); list.append(li);
+});
+const openMenu = () => { $('#menu').hidden = false; };
+$('#pick').addEventListener('click', openMenu);
+$('#pick2').addEventListener('click', openMenu);
+$('#chip').addEventListener('click', openMenu);
+$('#menuclose').addEventListener('click', () => { $('#menu').hidden = true; });
+$('#begin').addEventListener('click', () => {
+  const h = (location.hash || '').slice(1).toLowerCase();
+  const idx = SCENES.findIndex(s => s.id === h);
+  start(idx >= 0 ? idx : 0);
+});
+$('#again').addEventListener('click', () => start(0));
+
+$('#capfig').src = ART.arjun.src; $('#askface').src = ART.arjun.src;
+titleBackdrop();
+window.__story = { play: start, SCENES, Game, Input };
+})();
+</script>

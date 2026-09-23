@@ -1,6 +1,8 @@
 # The Merchant and the Bull — build notes
 
-Single-file interactive story: `index.html` (≈140 KB, no image assets, everything drawn in SVG from code).
+Single-file interactive story: `index.html` (≈770 KB). Painted art is inlined as base64 WebP data URIs, because published artifacts can't load remote images.
+
+**Edit `story.src.html`, not `index.html`.** Art lives in `assets/` and is referenced as `__ART:file.webp__`. Run `python3 build.py` to regenerate `index.html`.
 
 ## What's in it
 
@@ -38,6 +40,59 @@ The ✋ button lazy-loads MediaPipe Hand Landmarker from jsDelivr and maps: palm
 
 **In the published claude.ai artifact the camera is refused by the host frame**, and the MediaPipe WASM and model fetches are also blocked by its CSP, so the enhancement only works when `index.html` is hosted on its own (e.g. next to the games on R2).
 
+## Painted art pass
+
+### Assets in use (all from the provided references, re-encoded to WebP)
+| File | Source | Size | Used for |
+|---|---|---|---|
+| `throne.webp` | King + sons, throne room | 1800², 180 KB | Intro |
+| `banyan-sage.webp` | Vishnu Sharma + princes under the banyan | 1920×1080, 145 KB | Intro, Scene 1, Scene 12 opening |
+| `forest.webp` | Bull / jackals / cart / lion establishing art | 2000×1116, 113 KB | Title, Scenes 3–11, 13, 15, game outros (via camera crops) |
+| `*-soft.webp` | Pre-blurred 640px versions of the three | 3–7 KB each | Letterbox backdrop, bokeh backgrounds (Scenes 2, 6, 14, game cards) |
+| `merchant.webp` | Merchant cutout (alpha-cropped) | 343×462, 21 KB | Scene 2 |
+| `arjun.webp` | Arjun cutout (alpha-cropped) | 280×324, 17 KB | Narrator figure beside his captions + "Arjun asks" card |
+
+### How it's layered
+- **Backgrounds** sit in an SVG camera group. `painted()` frames a point of the image at a zoom, `drift()` is the slow Ken Burns move, and `cam()` makes a deliberate camera move that cancels the drift. The camera never shows past the painting's edge. On wider or taller screens a blurred copy fills the letterbox.
+- **Cutouts** are `<image>` layers with a soft ground shadow and a gentle idle bob/sway. There's **no blink swap**, because no eyes-closed frames exist.
+- **Interaction layer**: the namaste palms, vines, "peeking eyes" rings and the THINK orb are drawn as glowing light, echoing the glowing story-animals in the banyan painting, so they read as magic rather than clashing with the art.
+- All mechanics are unchanged: director, narration, mute/skip, tap/drag plus the optional camera, and the game contract.
+
+### Scene coverage
+| Beat | Art status |
+|---|---|
+| Intro | ✅ Full: throne room ↔ banyan cross-cuts, gold पञ्चतन्त्र title |
+| 1 | ✅ Full: banyan painting; camera spotlights the glowing lion, then the fox, as Vishnu Sharma names them |
+| 2 | ⚠️ Partial: painted merchant ✅. No Mahilaropya / wagon-yard background (defocused forest bokeh stands in). **Wagon and the five goods are still code-drawn props** (softened), because no art for them exists or was requested |
+| 3 | ✅ Covered by a crop of the establishing art (cart on the forest road). Only one bull reads clearly; **Nandaka (#1)** is needed to show both pulling |
+| 4 | ✅ Covered by a crop of Sanjivaka lying in the mud (dedicated **mud-pit background #7** still missing). The merchant isn't shown, because the only merchant art is a big grin and doesn't fit "worried" |
+| 5 | ⚠️ Partial: cart leaving + Sanjivaka ✅; **servants have no art** (not in the generation list) |
+| 6 | ⚠️ Partial: fleeing servants and the sad merchant aren't shown (warm bokeh + "The bull died, sir…" bubble). The eyes-open close-up works on the painting ✅ |
+| 7 | ✅ Full |
+| Game 1 outro | ✅ Full (MUNCH, MOOO rings, camera punch, birds scatter) |
+| 8 | ⚠️ Partial: **proud Pingalaka (#2)** is missing, so the lion is only revealed after the MOO, using the startled lion in the establishing art |
+| Game 2 outro | ⚠️ Partial: he hides behind a forest tree, not a banyan (**#8** missing) |
+| 9 | ⚠️ Partial: **ministers** (no art, not in the list) and the **banyan (#8)** missing |
+| 10 | ✅ Full: the jackals in the establishing art, found by tapping glowing eye-pairs that open a spotlight on each (red scarf = Damanaka, green = Karataka, matching your spec) |
+| 11 | ✅ Covered: camera cuts between the two jackals with speech bubbles. Their painted expressions are fixed, so Damanaka's "mischievous grin" isn't shown (**#5**) |
+| 12 | ⚠️ Opening ✅ (banyan). **The wedge cutaway is still the code-drawn sepia sequence**: the monkey (#6) and log site (#9) are blocked |
+| 13 | ✅ Full: split screen of the two paintings. Sanjivaka is resting rather than grazing |
+| 14 | ✅ Activity over the soft banyan painting (PANIC / THINK / FIND OUT stay as icon graphics) |
+| 15 | ⚠️ Partial: jackal camera beats, glowing path, push onto Sanjivaka in shadow ✅. Damanaka can't visibly walk off or smile without separate cutouts (**#4, #5**) |
+
+### Blocked: the 9 assets to generate
+**None were generated.** This session has no image-generation tool. The environment does hold AWS and GCP credentials, but I didn't use them to call a paid image model on your account without your say-so. No placeholder art stands in for these assets silently; the scenes they affect are marked ⚠️ above.
+
+To add them: drop each finished file into `assets/`, add an entry to `ART` in `story.src.html`, swap the crop or `cutout()` into the scene, then run `python3 build.py`. Suggested placements:
+- #1 Nandaka → Scenes 2–3
+- #2 / #3 Pingalaka → Scenes 8–9, 13
+- #4 / #5 jackals → Scenes 10–11, 15
+- #6 monkey, #9 wedge site → Scene 12 cutaway
+- #7 mud pit → Scene 4
+- #8 banyan hideout → Game 2 outro, Scene 9
+
+Other art the script calls for that isn't in your list: **the servants** (Scenes 5–6), **Pingalaka's ministers** (Scene 9), **a worried/sad merchant** (Scenes 4, 6), **a Mahilaropya wagon-yard background plus cart and goods** (Scene 2), and **the log-site workers** (Scene 12).
+
 ## External games — integration contract
 
 - Each game opens as a full-screen `<iframe>` at its beat. The director is awaiting it, so narration, ambience and autoplay are paused.
@@ -53,7 +108,7 @@ The ✋ button lazy-loads MediaPipe Hand Landmarker from jsDelivr and maps: palm
 https://claude.ai/artifact/7XWqAj5dd7P4GnyLa5guna (private until shared from its Share menu)
 
 ## Tested
-Headless Chromium run through all 18 beats, driving every interaction via the tap/keyboard path and every prompt via its button. It completed with **no page errors**, and both game beats fell back to "Continue the story →" as designed (the game host was unreachable). Not tested: real speech voices (headless has none), real camera hand tracking, and the games' own completion events.
+Headless Chromium run (after the art pass) through all 18 beats, driving every interaction via the tap/keyboard path and every prompt via its button. It completed with **no page errors**, and both game beats fell back to "Continue the story →" as designed (the game host was unreachable). Not tested: real speech voices (headless has none), real camera hand tracking, and the games' own completion events.
 
 ## Open items
 - The script's title card says `[next story]`. The end card uses the provided subtitle ("A Story of Friendship, Fear & Cleverness") plus "To Be Continued…" until the next story's title is chosen.
