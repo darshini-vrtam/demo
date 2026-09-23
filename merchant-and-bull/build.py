@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Inline the art in assets/ into story.src.html as base64 data URIs → index.html.
+"""Build both single-file pages. Run: python3 build.py
 
-Placeholders look like __ART:filename.webp__. Run: python3 build.py
+index.html   ← rough.src.html   (the hand-drawn Rough.js edition; vendor/rough.js is inlined at __ROUGH_JS__)
+painted.html ← painted.src.html (the earlier painted-art edition; __ART:file.webp__ → base64 data URIs from assets/)
 """
 import base64, pathlib, re, sys
 
 root = pathlib.Path(__file__).parent
-src = (root / 'story.src.html').read_text(encoding='utf-8')
 mime = {'.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg'}
 
 def inline(m):
@@ -15,6 +15,10 @@ def inline(m):
         sys.exit(f'missing asset: {f}')
     return f'data:{mime[f.suffix]};base64,' + base64.b64encode(f.read_bytes()).decode()
 
-out = re.sub(r'__ART:([\w.-]+)__', inline, src)
-(root / 'index.html').write_text(out, encoding='utf-8')
-print(f'index.html: {len(out.encode()) / 1024:.0f} KB')
+def write(name, text):
+    (root / name).write_text(text, encoding='utf-8')
+    print(f'{name}: {len(text.encode()) / 1024:.0f} KB')
+
+rough_js = (root / 'vendor' / 'rough.js').read_text(encoding='utf-8')
+write('index.html', (root / 'rough.src.html').read_text(encoding='utf-8').replace('__ROUGH_JS__', rough_js, 1))
+write('painted.html', re.sub(r'__ART:([\w.-]+)__', inline, (root / 'painted.src.html').read_text(encoding='utf-8')))
