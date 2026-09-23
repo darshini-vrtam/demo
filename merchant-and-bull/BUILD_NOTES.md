@@ -116,11 +116,13 @@ Headless Chromium run (after the art pass) through all 18 beats, driving every i
 
 ## Hand-drawn edition (`hand-drawn.html`)
 
-A restyle of the code-drawn build (commit `dc5f777`) as a hand-drawn ink-and-watercolour illustration. **The story, interactions, narration (voice lines, cast pitch/rate) and SFX are unchanged**: only the look changes.
+A restyle of the code-drawn build (commit `dc5f777`) as a neat child's crayon and coloured-pencil drawing. **The story, interactions, narration (voice lines, cast pitch/rate) and SFX are unchanged**: only the look changes.
 
-- **Pencil hatching** under hill ridges and in the shadow side of foliage.
-- **Watercolour paper**: a seamless, script-painted paper tile (pigment blooms, fibres, tooth) multiplied over the stage. It replaces the digital grain.
+- **Crayon wax** (`#grain`, multiply blend): colouring strokes all laid the same way, as a child colours in, with soft pressure blotches.
+- **Paper tooth** (`#tooth`, screen blend): small flecks of white paper that the wax skipped over.
+- **Scribble shading**: a zig-zag crayon scribble under the hill ridges and on the shadow side of foliage.
+- **Crayon sky**: a few long, loose strokes across every sky.
 - **Hand-cut UI**: irregular corner radii on the caption, cards, pills and buttons; Kalam hand-lettering for the body text, with Yatra One kept for display.
-- **No line wobble**: the wobble/boil filter and pencil overdraw from the first pass were removed on request. Linework is the original steady ink.
+- **No line wobble**: nothing distorts or animates the linework. All textures are static, painted once by script as seamless tiles.
 
 Regenerate it with `git show dc5f777:merchant-and-bull/index.html > v1.html && python3 restyle_handdrawn.py v1.html hand-drawn.html`.
