@@ -78,9 +78,12 @@ Any failure (permission denied, no camera, blocked model download) shows a toast
 - **To check:** open the published artifact, start at `#g1`, and see whether the game renders. Then press "N messages" to see what the game posted.
 - **To make the games play inline:** host `index.html` on the same R2 bucket, or on any origin without a restrictive `frame-src`. On the *same origin* you can also detect completion from the frame's DOM/globals instead of relying on `postMessage`.
 
+## Published
+Rough.js edition: https://claude.ai/artifact/ExWRtXi4259kcskjH7bJsF (private until shared from its Share menu). The painted edition from the earlier pass is still at https://claude.ai/artifact/7XWqAj5dd7P4GnyLa5guna.
+
 ## Tested (Rough.js edition)
 - **Headless Chromium, every beat screenshotted**, to check the Rough.js inking (100–180 inked overlays per scene) and look for page errors.
-- **A full autoplay run from Intro to the end card:** muted, with every interaction done by **real mouse drags** (namaste palms, packing goods, pulling vines, the THINK orb) and **mouse taps** (merchant, jackal bushes), every prompt answered with its button, and both games ended with "Continue the story →". No page errors.
+- **A full autoplay run from Intro to the end card**, done in two legs (Intro → Scene 10, then Scene 10 → end) because the first test driver kept tapping an empty bush in Scene 10: muted, with every interaction done by **real mouse drags** (namaste palms, packing goods, pulling vines, the THINK orb) and **mouse taps** (merchant, jackal bushes), every prompt answered with its button, and both games ended with "Continue the story →". No page errors.
 - **Not tested:** real speech voices (headless has none), real camera hand tracking, the games themselves (their host is unreachable from here), and the page inside the claude.ai artifact frame.
 
 ## Open items
