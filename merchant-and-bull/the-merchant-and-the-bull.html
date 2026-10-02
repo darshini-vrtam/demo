@@ -2871,7 +2871,7 @@ async function i2() {
   await say('king', 'My kingdom is happy and strong. And yet… one thing troubles me.');
   setMood(king.inner, 'worry'); setBrow(king.inner, 'worry');
   [minister, ...court].forEach(p => p.parts.head.classList.add('tilt'));
-  focus(800, 500, 1.08, 2200);
+  focus(800, 500, 1.08, 2200).catch(() => { });
   await say('arjun', 'The king had three sons. And they were his biggest worry!');
   await sleep(600);
 }
@@ -2939,7 +2939,7 @@ async function i3() {
   // Anantashakti asleep on his mat: on his back, legs apart, tucked under a quilt
   addArt(r, `<path d="M-270,0 L270,0 L248,-40 L-248,-40Z" fill="#E2B862"/>${Array.from({ length: 12 }, (_, i) => `<path d="M${-240 + i * 44},-40 L${-262 + i * 48},0" stroke="#C99A44" stroke-width="3"/>`).join('')}`, 1, 1190, 900, 1);
   const p3s = actor(sleeper(PRINCES[2]), 1200, 892, 1); r.append(p3s);
-  const p3 = actor(person({ ...PRINCES[2], seated: 'cross' }), 1180, 892, .92); p3.style.opacity = 0; p3.style.transition = 'opacity .7s'; p3s.style.transition = 'opacity .7s'; r.append(p3);
+  const p3 = actor(person({ ...PRINCES[2], seated: 'cross' }), 1180, 892, .92); p3.style.opacity = 0; p3.style.pointerEvents = 'none'; p3.style.transition = 'opacity .7s'; p3s.style.transition = 'opacity .7s'; r.append(p3);
   const zz = mk(`<g class="zzz"><text x="0" y="0" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="40" fill="#6A3E9E" stroke="#FFF6DE" stroke-width="5" paint-order="stroke">z</text><text x="26" y="-30" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="30" fill="#6A3E9E" stroke="#FFF6DE" stroke-width="5" paint-order="stroke">z</text><text x="46" y="-56" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="22" fill="#6A3E9E" stroke="#FFF6DE" stroke-width="4" paint-order="stroke">z</text></g>`);
   place(zz, 1010, 760, 1); zz.setAttribute('pointer-events', 'none'); r.append(zz);
   addArt(r, flowerPot(60, 860, 1.2, '#F25C78') + flowerPot(1560, 880, 1.1, '#C04CC8'), 1.3);
@@ -2966,12 +2966,12 @@ async function i3() {
     tappables(ctx, [p3s], it => { it._done = true; unkey(it); SFX.pop(); ctx.done(); });
   });
   zz.remove(); SFX.yawn();
-  p3s.style.opacity = 0; p3.style.opacity = 1; p3.inner.classList.add('hold'); setMood(p3.inner, 'o');
+  p3s.style.opacity = 0; p3s.style.pointerEvents = 'none'; p3.style.opacity = 1; p3.style.pointerEvents = ''; p3.inner.classList.add('hold'); setMood(p3.inner, 'o');
   later(() => p3s.remove(), 800);
   await sleep(1200);
   p3.inner.classList.remove('hold'); setMood(p3.inner, 'smile'); SFX.chime(); sparkles(r, 1180, 640, 8, 90);
   await say('princes', 'Huh? Is it time to play?');
-  focus(800, 480, 1.08, 2200);
+  focus(800, 480, 1.08, 2200).catch(() => { });
   await say('arjun', 'But the princes ran from every book they saw.');
   await say('arjun', "The king worried. How would his sons ever learn to rule a kingdom if they wouldn't sit still with a book?");
   await ask(`The princes love to play! What is your favourite game${KID.name ? ', ' + KID.name : ''}?`);
