@@ -113,3 +113,6 @@ Headless Chromium run (after the art pass) through all 18 beats, driving every i
 ## Open items
 - The script's title card says `[next story]`. The end card uses the provided subtitle ("A Story of Friendship, Fear & Cleverness") plus "To Be Continued…" until the next story's title is chosen.
 - The artifact linked in the request (`ReCBQGZ4EirKSiEmT8XXfs`) is an unrelated third-party page (an Antikythera diving game), not a Merchant and the Bull build. The account's own "Panchatantra — An Interactive Tale" is the photo/video court-and-princes intro. So this story was built as its own artifact, following the described foundation, rather than overwriting either one.
+
+## v7 — `the-merchant-and-the-bull.html`
+Built from the v6 story by `python3 build_v7.py`: everything (intro, 15 scenes, both games, interactions, narration, parallax, scenery) comes from `v6-source.html`; only the people and animals are replaced by `chars.js` (rounded, joint-free storybook figures). Walking, arm swing, body bob and wagon wheels are driven by one speed-based rig instead of CSS gait loops. Edit `chars.js` or the build script, not the output file.
