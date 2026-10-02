@@ -312,24 +312,37 @@ g[tabindex]:focus-visible{filter:drop-shadow(0 0 0 #fff) drop-shadow(0 0 6px #ff
 @media (prefers-reduced-motion:reduce){.gwave,.cdrift,.sunpulse,.sunrays,.lampsw,.breath2{animation:none !important}}
 #scene{filter:saturate(1.12) contrast(1.02)}
 #warm{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 30%,rgba(255,200,120,.10),rgba(255,140,60,.08) 70%,rgba(200,80,30,.10));mix-blend-mode:soft-light}
-/* ─── onboarding ─── */
-#title{background:radial-gradient(ellipse at 50% 40%,rgba(40,20,40,.35),rgba(20,12,30,.82))}
-.onb{display:flex;flex-direction:column;align-items:center;gap:14px;max-width:min(640px,100%)}
-.onb .arj{width:clamp(110px,18vw,170px);height:auto;filter:drop-shadow(0 6px 0 rgba(59,36,20,.5));animation:arjbob 3s ease-in-out infinite alternate}
-@keyframes arjbob{from{transform:translateY(0)}to{transform:translateY(-6px)}}
-.bubble{position:relative;background:var(--paper);color:var(--ink);border:3px solid var(--ink);border-radius:22px;box-shadow:0 5px 0 var(--ink);padding:14px 22px 10px;font:700 clamp(18px,2.6vw,26px)/1.3 var(--body);text-wrap:balance}
-.bubble::before{content:"";position:absolute;left:50%;top:-14px;width:22px;height:22px;background:var(--paper);border-left:3px solid var(--ink);border-top:3px solid var(--ink);transform:translateX(-50%) rotate(45deg);border-radius:4px 0 0 0}
-#title .bubble p{margin:0;max-width:none;font:inherit;color:var(--ink)}
-#nameform{align-items:center}
-#kidname{font:700 22px/1.2 var(--body);color:var(--ink);background:#FFFDF6;border:3px solid var(--ink);border-radius:999px;padding:10px 18px 8px;width:min(260px,70vw);box-shadow:inset 0 2px 0 rgba(0,0,0,.08);text-align:center}
-#kidname:focus{outline:3px solid var(--gold);outline-offset:2px}
-#bmic{width:52px;height:52px;background:var(--leaf);color:var(--cream)}
-#bmic svg{width:26px;height:26px}
-#bmic.busy{animation:pulse 1s infinite;background:var(--kumkum)}
-.onb .note{margin:0;min-height:1.3em;font:600 15px/1.35 var(--body);color:var(--paper)}
-.onb .eyebrow{font:400 clamp(14px,1.8vw,18px)/1 var(--display);color:var(--gold);letter-spacing:.14em;text-transform:uppercase}
-.onb h1{margin:0;font:400 clamp(34px,6vw,72px)/.95 var(--display);color:var(--cream);text-shadow:0 4px 0 var(--ink),0 10px 30px rgba(0,0,0,.5);text-wrap:balance}
+/* ─── onboarding: Arjun waves from the jungle, the card sits beside him ─── */
+#title{background:linear-gradient(90deg,transparent 0,transparent 34%,rgba(20,40,20,.18) 60%,rgba(20,40,20,.32));align-items:flex-end;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 64px) max(16px,5vw) 24px}
+.onb{display:flex;flex-direction:column;align-items:stretch;gap:14px;width:min(540px,54vw);text-align:left}
+.onb .brand{display:flex;flex-direction:column;gap:4px;margin-bottom:4px}
+.onb .eyebrow{font:400 clamp(13px,1.5vw,16px)/1 var(--display);color:#FFF3C4;letter-spacing:.14em;text-transform:uppercase;text-shadow:0 2px 0 rgba(59,36,20,.6)}
+.onb h1{margin:0;font:400 clamp(26px,3.3vw,44px)/1 var(--display);color:var(--cream);text-shadow:0 4px 0 var(--ink),0 10px 24px rgba(0,0,0,.35);text-wrap:balance}
 .onb h1 span{color:var(--turmeric)}
+.bubble{position:relative;background:var(--paper);color:var(--ink);border:3px solid var(--ink);border-radius:24px;box-shadow:0 6px 0 var(--ink);padding:16px 22px 12px;font:700 clamp(19px,2.4vw,27px)/1.3 var(--body);text-wrap:balance}
+.bubble::before{content:"";position:absolute;left:-15px;top:28px;width:24px;height:24px;background:var(--paper);border-left:3px solid var(--ink);border-bottom:3px solid var(--ink);transform:rotate(45deg);border-radius:0 0 0 5px}
+#title .bubble p{margin:0;max-width:none;font:inherit;color:var(--ink)}
+#title .bubble p small{display:block;margin-top:6px;font:600 clamp(14px,1.6vw,17px)/1.35 var(--body);color:var(--ink-soft)}
+#nameform{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#kidname{flex:1;min-width:160px;font:700 24px/1.2 var(--body);color:var(--ink);background:#FFFDF6;border:3px solid var(--ink);border-radius:999px;padding:11px 20px 9px;box-shadow:0 4px 0 var(--ink)}
+#kidname.typing{caret-color:transparent;background:#FFF6D8}
+#kidname:focus{outline:3px solid var(--gold);outline-offset:2px}
+#bmic{width:56px;height:56px;background:var(--leaf);color:var(--cream)}
+#bmic svg{width:28px;height:28px}
+#bmic.busy{animation:pulse 1s infinite;background:var(--kumkum)}
+.onb .note{margin:0;min-height:1.3em;font:700 15px/1.35 var(--body);color:#FFF8E6;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+#camcard{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center;background:rgba(255,253,246,.94);color:var(--ink);border:3px solid var(--ink);border-radius:20px;box-shadow:0 4px 0 var(--ink);padding:12px 16px}
+#camcard .ic{grid-row:span 2;font-size:38px;line-height:1}
+#camcard b{font:800 17px/1.25 var(--body)}
+#camcard span{font:600 14px/1.35 var(--body);color:var(--ink-soft)}
+#camcard .row{grid-column:1/-1;justify-content:flex-start;margin-top:6px}
+#camcard.done .row{display:none}
+#camres{grid-column:1/-1;margin:0;font:700 15px/1.35 var(--body);color:var(--leaf)}
+#camres:empty{display:none}
+.onb .go{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+#begin.glow{animation:nudge 1.2s ease-in-out infinite}
+.onb .vpick{margin-top:2px}
+@media (max-width:760px),(orientation:portrait){#title{align-items:center;justify-content:flex-end;background:linear-gradient(to top,rgba(20,40,20,.45),transparent 60%)}.onb{width:min(540px,100%)}.bubble::before{left:40px;top:-15px;transform:rotate(135deg)}}
 .pill:disabled{opacity:.6;cursor:default}
 /* ─── camera window ─── */
 #camwin{position:absolute;left:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);width:clamp(120px,15vw,176px);aspect-ratio:4/3;z-index:43;border:3px solid var(--ink);border-radius:16px;box-shadow:0 4px 0 var(--ink),0 10px 24px rgba(0,0,0,.35);background:#1C1830;cursor:grab;touch-action:none}
@@ -341,6 +354,34 @@ g[tabindex]:focus-visible{filter:drop-shadow(0 0 0 #fff) drop-shadow(0 0 6px #ff
 #camtip{position:absolute;left:0;bottom:calc(100% + 10px);width:max-content;max-width:min(300px,80vw);display:flex;gap:8px;align-items:center;background:var(--turmeric);color:var(--ink);border:2px solid var(--ink);border-radius:14px;box-shadow:0 3px 0 var(--ink);padding:8px 12px 6px;font:700 14px/1.3 var(--body);animation:popin-html .45s cubic-bezier(.3,1.6,.5,1)}
 #camtip b{font-size:24px;line-height:1}
 #munchhud{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 120px);transform:translateX(-50%);z-index:16;font:400 clamp(22px,3vw,32px)/1 var(--display);color:var(--ink);background:var(--gold);border:3px solid var(--ink);border-radius:999px;box-shadow:0 4px 0 var(--ink);padding:10px 22px 6px}
+
+/* ─── arms bend at the elbow ─── */
+.fore{transform-box:view-box;transform-origin:0 0;transition:transform .45s ease}
+.armL .fore{transform:rotate(-12deg)}.armR .fore{transform:rotate(12deg)}
+.open .armL .fore{transform:rotate(40deg)}.open .armR .fore{transform:rotate(-40deg)}
+.raise .armR .fore{transform:rotate(-30deg)}
+.hold .fore,.reach .fore,.walking .fore{transform:rotate(0)}
+.char.gesturing:not(.pray):not(.raise):not(.worry):not(.walking) .pose.armR .fore{animation:foreR 1.6s ease-in-out infinite alternate}
+@keyframes foreR{from{transform:rotate(-6deg)}to{transform:rotate(-46deg)}}
+.holder .pose.armR .fore{transform:rotate(0) !important;animation:none !important}
+.char:not(.holder).pray .nam{opacity:1}.char:not(.holder).pray .aswing{opacity:0}
+.wave .pose.armR{animation:waveA .55s ease-in-out infinite alternate !important}
+.wave .pose.armR .fore{animation:waveF .55s ease-in-out infinite alternate !important}
+@keyframes waveA{from{transform:rotate(-104deg)}to{transform:rotate(-92deg)}}
+@keyframes waveF{from{transform:rotate(-96deg)}to{transform:rotate(-58deg)}}
+/* ─── Sanjivaka chews while eating and opens wide to MOO ─── */
+.bmouth{transform-box:view-box;transform-origin:0 0}
+.bmo{opacity:0;transition:opacity .15s}
+.mooing .bmo{opacity:1}.mooing .bms{opacity:0}
+.mooing .bmouth{animation:moomouth .45s ease-in-out infinite alternate}
+.mooing .hidle{animation:moohead .9s ease-in-out infinite alternate !important}
+.eat .bmouth,.graze .bmouth,.chewing .bmouth{animation:chew .3s ease-in-out infinite alternate}
+@keyframes moomouth{from{transform:scale(.8,.7)}to{transform:scale(1.15,1.3)}}
+@keyframes moohead{from{transform:rotate(0)}to{transform:rotate(-12deg) translateY(-4px)}}
+@keyframes chew{from{transform:translate(-4px,0) scaleY(1)}to{transform:translate(4px,4px) scaleY(.45)}}
+/* ─── the lion's legs follow the rig while he runs ─── */
+.lion.moving .paw{animation:none !important}
+@media (prefers-reduced-motion:reduce){.wave .pose.armR,.wave .pose.armR .fore,.mooing .bmouth,.mooing .hidle,.eat .bmouth,.graze .bmouth{animation:none !important}}
 </style>
 
 <div id="app">
@@ -414,67 +455,26 @@ g[tabindex]:focus-visible{filter:drop-shadow(0 0 0 #fff) drop-shadow(0 0 6px #ff
 
   <div id="title" class="overlay">
     <div class="onb" id="onb1">
-      <svg class="arj" viewBox="0 0 200 220" aria-hidden="true">
-        <circle cx="100" cy="92" r="88" fill="#5E8C3F" stroke="#3B2414" stroke-width="5"/>
-        <path d="M40,220 C40,170 70,150 100,150 C130,150 160,170 160,220Z" fill="#E9A23B" stroke="#3B2414" stroke-width="5"/>
-        <circle cx="100" cy="100" r="46" fill="#C98A5E" stroke="#3B2414" stroke-width="4"/>
-        <path d="M54,92 C54,52 146,52 146,92 C132,78 118,72 100,74 C82,72 68,78 54,92Z" fill="#2E1D12" stroke="#3B2414" stroke-width="4"/>
-        <path d="M56,82 C66,46 134,46 144,82 C126,64 74,64 56,82Z" fill="#E9A23B" stroke="#3B2414" stroke-width="4"/>
-        <circle cx="84" cy="102" r="5.5" fill="#3B2414"/><circle cx="116" cy="102" r="5.5" fill="#3B2414"/>
-        <circle cx="86" cy="100" r="1.8" fill="#fff"/><circle cx="118" cy="100" r="1.8" fill="#fff"/>
-        <path d="M84,120 Q100,134 116,120" fill="none" stroke="#3B2414" stroke-width="4" stroke-linecap="round"/>
-        <circle cx="72" cy="116" r="6" fill="#E58B7A" opacity=".6"/><circle cx="128" cy="116" r="6" fill="#E58B7A" opacity=".6"/>
-        <path d="M68,220 C66,200 74,184 88,180 L112,180 C126,184 134,200 132,220Z" fill="#2E7DD8" stroke="#3B2414" stroke-width="4" stroke-linejoin="round"/>
-        <g transform="translate(100 184) scale(.48)"><g transform="translate(27 0) scale(-1 1)"><path d="M-33.5,-20 L-33.5,-59.5 A6.5,6.5 0 0,1 -20.5,-59.5 L-20.5,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-19.0,-20 L-19.0,-89.0 A7.0,7.0 0 0,1 -5.0,-89.0 L-5.0,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-3.0,-20 L-3.0,-97.0 A7.0,7.0 0 0,1 11.0,-97.0 L11.0,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M13.0,-20 L13.0,-86.0 A6.0,6.0 0 0,1 25.0,-86.0 L25.0,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-34,-36 C-36,0 -34,40 -26,62 L27,62 L27,-40 C10,-46 -18,-46 -34,-36Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-31,-31 L25,-31" stroke="#D99A6C" stroke-width="9"/><path d="M27,8 C10,-6 -2,-26 2,-40 C8,-48 16,-40 20,-30 C24,-18 27,-8 27,-2Z" fill="#C98A5E" stroke="#3B2414" stroke-width="4" stroke-linejoin="round"/></g><g transform="translate(-27 0) scale(1 1)"><path d="M-33.5,-20 L-33.5,-59.5 A6.5,6.5 0 0,1 -20.5,-59.5 L-20.5,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-19.0,-20 L-19.0,-89.0 A7.0,7.0 0 0,1 -5.0,-89.0 L-5.0,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-3.0,-20 L-3.0,-97.0 A7.0,7.0 0 0,1 11.0,-97.0 L11.0,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M13.0,-20 L13.0,-86.0 A6.0,6.0 0 0,1 25.0,-86.0 L25.0,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-34,-36 C-36,0 -34,40 -26,62 L27,62 L27,-40 C10,-46 -18,-46 -34,-36Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-31,-31 L25,-31" stroke="#D99A6C" stroke-width="9"/><path d="M27,8 C10,-6 -2,-26 2,-40 C8,-48 16,-40 20,-30 C24,-18 27,-8 27,-2Z" fill="#C98A5E" stroke="#3B2414" stroke-width="4" stroke-linejoin="round"/></g></g>
-      </svg>
-      <div class="eyebrow">Panchatantra · Story Two</div>
-      <h1>The Merchant <span>&amp;</span> the Bull</h1>
-      <div class="bubble"><p>Hello, my little friend! May I know your name?</p></div>
-      <form id="nameform" class="row" autocomplete="off">
-        <input id="kidname" type="text" maxlength="24" placeholder="Type your name" aria-label="Your name" enterkeyhint="next">
+      <div class="brand"><div class="eyebrow">Panchatantra · Story Two</div><h1>The Merchant <span>&amp;</span> the Bull</h1></div>
+      <div class="bubble"><p>Hello, my little friend!<br>May I know your name?</p></div>
+      <form id="nameform" autocomplete="off">
+        <input id="kidname" type="text" maxlength="24" placeholder="Your name" aria-label="Your name" enterkeyhint="next">
         <button class="cbtn" id="bmic" type="button" aria-label="Say your name" title="Say your name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
         <button class="pill big" type="submit">Next →</button>
       </form>
-      <p class="note" id="micnote">Type your name, or tap the microphone and say it.</p>
+      <p class="note" id="micnote">Type your name, or tap the 🎤 and say it out loud.</p>
     </div>
     <div class="onb" id="onb2" hidden>
-      <svg class="arj" viewBox="0 0 200 220" aria-hidden="true">
-        <circle cx="100" cy="92" r="88" fill="#5E8C3F" stroke="#3B2414" stroke-width="5"/>
-        <path d="M40,220 C40,170 70,150 100,150 C130,150 160,170 160,220Z" fill="#E9A23B" stroke="#3B2414" stroke-width="5"/>
-        <circle cx="100" cy="100" r="46" fill="#C98A5E" stroke="#3B2414" stroke-width="4"/>
-        <path d="M54,92 C54,52 146,52 146,92 C132,78 118,72 100,74 C82,72 68,78 54,92Z" fill="#2E1D12" stroke="#3B2414" stroke-width="4"/>
-        <path d="M56,82 C66,46 134,46 144,82 C126,64 74,64 56,82Z" fill="#E9A23B" stroke="#3B2414" stroke-width="4"/>
-        <circle cx="84" cy="102" r="5.5" fill="#3B2414"/><circle cx="116" cy="102" r="5.5" fill="#3B2414"/>
-        <circle cx="86" cy="100" r="1.8" fill="#fff"/><circle cx="118" cy="100" r="1.8" fill="#fff"/>
-        <path d="M84,120 Q100,134 116,120" fill="none" stroke="#3B2414" stroke-width="4" stroke-linecap="round"/>
-        <circle cx="72" cy="116" r="6" fill="#E58B7A" opacity=".6"/><circle cx="128" cy="116" r="6" fill="#E58B7A" opacity=".6"/>
-        <path d="M68,220 C66,200 74,184 88,180 L112,180 C126,184 134,200 132,220Z" fill="#2E7DD8" stroke="#3B2414" stroke-width="4" stroke-linejoin="round"/>
-        <g transform="translate(100 184) scale(.48)"><g transform="translate(27 0) scale(-1 1)"><path d="M-33.5,-20 L-33.5,-59.5 A6.5,6.5 0 0,1 -20.5,-59.5 L-20.5,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-19.0,-20 L-19.0,-89.0 A7.0,7.0 0 0,1 -5.0,-89.0 L-5.0,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-3.0,-20 L-3.0,-97.0 A7.0,7.0 0 0,1 11.0,-97.0 L11.0,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M13.0,-20 L13.0,-86.0 A6.0,6.0 0 0,1 25.0,-86.0 L25.0,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-34,-36 C-36,0 -34,40 -26,62 L27,62 L27,-40 C10,-46 -18,-46 -34,-36Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-31,-31 L25,-31" stroke="#D99A6C" stroke-width="9"/><path d="M27,8 C10,-6 -2,-26 2,-40 C8,-48 16,-40 20,-30 C24,-18 27,-8 27,-2Z" fill="#C98A5E" stroke="#3B2414" stroke-width="4" stroke-linejoin="round"/></g><g transform="translate(-27 0) scale(1 1)"><path d="M-33.5,-20 L-33.5,-59.5 A6.5,6.5 0 0,1 -20.5,-59.5 L-20.5,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-19.0,-20 L-19.0,-89.0 A7.0,7.0 0 0,1 -5.0,-89.0 L-5.0,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-3.0,-20 L-3.0,-97.0 A7.0,7.0 0 0,1 11.0,-97.0 L11.0,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M13.0,-20 L13.0,-86.0 A6.0,6.0 0 0,1 25.0,-86.0 L25.0,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-34,-36 C-36,0 -34,40 -26,62 L27,62 L27,-40 C10,-46 -18,-46 -34,-36Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-31,-31 L25,-31" stroke="#D99A6C" stroke-width="9"/><path d="M27,8 C10,-6 -2,-26 2,-40 C8,-48 16,-40 20,-30 C24,-18 27,-8 27,-2Z" fill="#C98A5E" stroke="#3B2414" stroke-width="4" stroke-linejoin="round"/></g></g>
-      </svg>
-      <div class="bubble"><p><span id="camhi">Nice to meet you!</span> May I use your camera? Then you can help the story with your hands and face!</p></div>
-      <div class="row">
-        <button class="pill big" id="camyes" type="button">Yes, use my camera 📷</button>
-        <button class="pill alt" id="camno" type="button">Not now</button>
+      <div class="bubble"><p><span id="hiname">Lovely to meet you!</span><br>Let’s begin with today’s story!</p></div>
+      <div id="camcard">
+        <div class="ic">📷</div>
+        <b>Want to play with your hands and face?</b>
+        <span>Turn on the camera to wave, pinch and munch along with the story. The picture stays on this device.</span>
+        <div class="row"><button class="pill" id="camyes" type="button">Turn on camera</button><button class="pill alt" id="camno" type="button">No thanks</button></div>
+        <p id="camres"></p>
       </div>
-      <p class="note" id="camres">The picture stays on this device. You can turn it off any time.</p>
-    </div>
-    <div class="onb" id="onb3" hidden>
-      <svg class="arj" viewBox="0 0 200 220" aria-hidden="true">
-        <circle cx="100" cy="92" r="88" fill="#5E8C3F" stroke="#3B2414" stroke-width="5"/>
-        <path d="M40,220 C40,170 70,150 100,150 C130,150 160,170 160,220Z" fill="#E9A23B" stroke="#3B2414" stroke-width="5"/>
-        <circle cx="100" cy="100" r="46" fill="#C98A5E" stroke="#3B2414" stroke-width="4"/>
-        <path d="M54,92 C54,52 146,52 146,92 C132,78 118,72 100,74 C82,72 68,78 54,92Z" fill="#2E1D12" stroke="#3B2414" stroke-width="4"/>
-        <path d="M56,82 C66,46 134,46 144,82 C126,64 74,64 56,82Z" fill="#E9A23B" stroke="#3B2414" stroke-width="4"/>
-        <circle cx="84" cy="102" r="5.5" fill="#3B2414"/><circle cx="116" cy="102" r="5.5" fill="#3B2414"/>
-        <circle cx="86" cy="100" r="1.8" fill="#fff"/><circle cx="118" cy="100" r="1.8" fill="#fff"/>
-        <path d="M84,120 Q100,134 116,120" fill="none" stroke="#3B2414" stroke-width="4" stroke-linecap="round"/>
-        <circle cx="72" cy="116" r="6" fill="#E58B7A" opacity=".6"/><circle cx="128" cy="116" r="6" fill="#E58B7A" opacity=".6"/>
-        <path d="M68,220 C66,200 74,184 88,180 L112,180 C126,184 134,200 132,220Z" fill="#2E7DD8" stroke="#3B2414" stroke-width="4" stroke-linejoin="round"/>
-        <g transform="translate(100 184) scale(.48)"><g transform="translate(27 0) scale(-1 1)"><path d="M-33.5,-20 L-33.5,-59.5 A6.5,6.5 0 0,1 -20.5,-59.5 L-20.5,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-19.0,-20 L-19.0,-89.0 A7.0,7.0 0 0,1 -5.0,-89.0 L-5.0,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-3.0,-20 L-3.0,-97.0 A7.0,7.0 0 0,1 11.0,-97.0 L11.0,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M13.0,-20 L13.0,-86.0 A6.0,6.0 0 0,1 25.0,-86.0 L25.0,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-34,-36 C-36,0 -34,40 -26,62 L27,62 L27,-40 C10,-46 -18,-46 -34,-36Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-31,-31 L25,-31" stroke="#D99A6C" stroke-width="9"/><path d="M27,8 C10,-6 -2,-26 2,-40 C8,-48 16,-40 20,-30 C24,-18 27,-8 27,-2Z" fill="#C98A5E" stroke="#3B2414" stroke-width="4" stroke-linejoin="round"/></g><g transform="translate(-27 0) scale(1 1)"><path d="M-33.5,-20 L-33.5,-59.5 A6.5,6.5 0 0,1 -20.5,-59.5 L-20.5,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-19.0,-20 L-19.0,-89.0 A7.0,7.0 0 0,1 -5.0,-89.0 L-5.0,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-3.0,-20 L-3.0,-97.0 A7.0,7.0 0 0,1 11.0,-97.0 L11.0,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M13.0,-20 L13.0,-86.0 A6.0,6.0 0 0,1 25.0,-86.0 L25.0,-20Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-34,-36 C-36,0 -34,40 -26,62 L27,62 L27,-40 C10,-46 -18,-46 -34,-36Z" fill="#D99A6C" stroke="#3B2414" stroke-width="5" stroke-linejoin="round"/><path d="M-31,-31 L25,-31" stroke="#D99A6C" stroke-width="9"/><path d="M27,8 C10,-6 -2,-26 2,-40 C8,-48 16,-40 20,-30 C24,-18 27,-8 27,-2Z" fill="#C98A5E" stroke="#3B2414" stroke-width="4" stroke-linejoin="round"/></g></g>
-      </svg>
-      <div class="bubble"><p>Let’s begin with today’s story!</p></div>
-      <div class="row">
-        <button class="pill big" id="begin" type="button">Begin Story</button>
+      <div class="go">
+        <button class="pill big" id="begin" type="button">Begin Story ▶</button>
         <button class="pill alt" id="pick" type="button">Choose a scene</button>
       </div>
       <label class="vpick"><span class="vh">Narrator voice</span><select id="voicesel" aria-label="Narrator voice"><option value="">Narrator voice: best Indian voice available</option></select></label>
@@ -1003,13 +1003,19 @@ function personM(o) {
     ? `<g transform="translate(${x} 0)"><g class="foot" data-ph="${ph}"><path d="M-20,-3 C-21,-12 -10,-16 4,-15 C16,-14 24,-10 25,-5 C25,-1 20,0 14,0 L-16,0 C-19,0 -20,-1 -20,-3Z" fill="${sk}"/><path d="M-22,0 L26,0 Q27,4 22,5 L-20,5 Q-24,4 -22,0Z" fill="#6E4024"/><path d="M-4,-12 Q2,-4 10,-12" stroke="#6E4024" stroke-width="4" fill="none" stroke-linecap="round"/></g></g>`
     : `<g transform="translate(${x} 0)"><g class="foot" data-ph="${ph}"><path d="M-22,-4 C-24,-15 -12,-20 2,-18 C12,-17 20,-14 24,-9 C28,-13 31,-17 35,-18 C36,-7 28,0 16,0 L-16,0 C-20,0 -22,-2 -22,-4Z" fill="${c}"/></g></g>`;
   const flare = kid ? 13 : 7;
-  const arm = (cls, x, col, ph, extra = '', after = '') => `<g transform="translate(${x} -240) rotate(${x < 0 ? flare : -flare})"><g class="aswing" data-ph="${ph}"><g class="pose ${cls}">${extra}
+  const arm = (cls, x, col, ph, extra = '', after = '') => `<g transform="translate(${x} -240) rotate(${x < 0 ? flare : -flare})"><g class="aswing" data-ph="${ph}"><g class="pose ${cls}">
     <circle cx="0" cy="4" r="16" fill="${col}"/>
-    <path d="M-15,2 C-17,34 -16,64 -12,90 Q0,96 12,90 C16,64 17,34 15,2 Q0,-10 -15,2Z" fill="${col}"/>
-    ${col !== sk ? `<path d="M-13,84 Q0,92 13,84 L13,92 Q0,99 -13,92Z" fill="${dkc(col, .12)}"/>` : ''}
-    ${o.armband ? `<path d="M-15,28 Q0,35 15,28" stroke="#F2C14E" stroke-width="6" fill="none" stroke-linecap="round"/>` : ''}
-    <circle cx="0" cy="103" r="15" fill="${sk}"/>
-    ${o.bangles || o.robe || o.sari ? `<path d="M-12,89 Q0,96 12,89" stroke="#F2C14E" stroke-width="5" fill="none" stroke-linecap="round"/>` : ''}${after}
+    <path d="M-15,2 C-17,20 -16,38 -13,52 Q0,58 13,52 C16,38 17,20 15,2 Q0,-10 -15,2Z" fill="${col}"/>
+    ${o.armband ? `<path d="M-15,26 Q0,33 15,26" stroke="#F2C14E" stroke-width="6" fill="none" stroke-linecap="round"/>` : ''}
+    <g transform="translate(0 50)"><g class="fore">${extra ? `<g transform="translate(0 -50)">${extra}</g>` : ''}
+      <circle cx="0" cy="0" r="13.5" fill="${col}"/>
+      <path d="M-13.5,0 C-14,16 -13,30 -11,40 Q0,46 11,40 C13,30 14,16 13.5,0Z" fill="${col}"/>
+      ${col !== sk ? `<path d="M-11.5,34 Q0,41 11.5,34 L11.5,42 Q0,48 -11.5,42Z" fill="${dkc(col, .12)}"/>` : `<path d="M-6,-2 Q0,3 6,-2" stroke="${skD}" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".7"/>`}
+      <path d="M-10,42 C-14,50 -14,62 -8,68 C-3,72 5,72 9,67 C13,61 13,50 10,42 Q0,38 -10,42Z" fill="${sk}"/>
+      <path d="M${x < 0 ? 8 : -8},46 C${x < 0 ? 17 : -17},47 ${x < 0 ? 18 : -18},56 ${x < 0 ? 12 : -12},60" stroke="${sk}" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M-5,64 L-5,69 M1,65 L1,71 M6,63 L6,68" stroke="${skD}" stroke-width="1.8" stroke-linecap="round" opacity=".7"/>
+      ${o.bangles || o.robe || o.sari ? `<path d="M-11,40 Q0,47 11,40" stroke="#F2C14E" stroke-width="5" fill="none" stroke-linecap="round"/>` : ''}${after ? `<g transform="translate(0 -50)">${after}</g>` : ''}
+    </g></g>
   </g></g></g>`;
   let held = '';
   if (o.staff) held = `<path d="M0,-150 C2,-40 0,100 0,236" stroke="#7A4B2A" stroke-width="11" fill="none" stroke-linecap="round"/><path d="M-1,-70 q7,-3 9,3 M-1,60 q7,-3 9,3" stroke="#5A351C" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
@@ -1041,12 +1047,16 @@ function personM(o) {
   if (o.dots && (o.robe || o.longLower)) { const yTop = o.seated === 'chair' ? -100 : -140, yBot = o.seated === 'chair' ? -14 : -24, xw = o.seated === 'chair' ? 64 : 46; for (let y = yTop; y < yBot; y += 24) for (let x = -xw + ((y / 24) & 1) * 11; x <= xw; x += 22) lower += `<circle cx="${x}" cy="${y}" r="3.2" fill="${o.dots}"/>`; }
   // namaste: forearms bend up and the palms press together in front of the chest
   const sx = 44 + p * .6;
-  const armL = `M${-sx - 2},-238 C${-sx - 18},-204 ${-sx - 22},-176 ${-sx - 8},-166 C${-sx + 6},-158 -24,-166 -10,-184`, armR = `M${sx + 6},-238 C${sx + 22},-204 ${sx + 26},-176 ${sx + 12},-166 C${sx - 2},-158 28,-166 14,-184`;
+  const elx = sx + 20, ely = -170;
+  const armL = `M${-sx},-236 L${-elx},${ely} L-16,-192`, armR = `M${sx + 4},-236 L${elx + 4},${ely} L20,-192`;
+  const elbows = `<circle cx="${-elx}" cy="${ely}" r="14" fill="${armColL}"/><circle cx="${elx + 4}" cy="${ely}" r="14" fill="${armColR}"/>`;
   const nam = `<g class="nam"><path d="${armL}" stroke="${dkc(armColL, .22)}" stroke-width="33" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${armR}" stroke="${dkc(armColR, .22)}" stroke-width="33" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="${armL}" stroke="${armColL}" stroke-width="28" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${armR}" stroke="${armColR}" stroke-width="28" fill="none" stroke-linecap="round" stroke-linejoin="round"/>${o.bangles || o.robe || o.sari || o.armband ? `<path d="M-22,-176 Q-12,-168 -2,-178 M6,-178 Q16,-168 26,-176" stroke="#F2C14E" stroke-width="5" fill="none" stroke-linecap="round"/>` : ''}
-    <path d="M-18,-178 C-23,-208 -17,-242 2,-272 C21,-242 27,-208 22,-178 Q2,-170 -18,-178Z" fill="${sk}" stroke="${skD}" stroke-width="3" stroke-linejoin="round"/>
-    <path d="M-10,-206 C-17,-202 -17,-190 -10,-185 M14,-206 C21,-202 21,-190 14,-185" stroke="${skD}" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <path d="M2,-268 L2,-176" stroke="${skD}" stroke-width="3" stroke-linecap="round"/><path d="M-8,-250 Q-3,-246 1,-250 M3,-250 Q7,-246 12,-250" stroke="${skD}" stroke-width="2" fill="none" stroke-linecap="round" opacity=".7"/></g>`;
+    <path d="${armL}" stroke="${armColL}" stroke-width="28" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${armR}" stroke="${armColR}" stroke-width="28" fill="none" stroke-linecap="round" stroke-linejoin="round"/>${elbows}
+    <path d="M${-elx + 4},${ely - 6} Q${-elx + 10},${ely + 4} ${-elx + 2},${ely + 10} M${elx},${ely - 6} Q${elx - 6},${ely + 4} ${elx + 2},${ely + 10}" stroke="${dkc(armColL, .25)}" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".6"/>
+    ${o.bangles || o.robe || o.sari || o.armband ? `<path d="M-26,-186 Q-16,-178 -6,-190 M10,-190 Q20,-178 30,-186" stroke="#F2C14E" stroke-width="5" fill="none" stroke-linecap="round"/>` : ''}
+    <path d="M-18,-184 C-23,-212 -17,-244 2,-274 C21,-244 27,-212 22,-184 Q2,-176 -18,-184Z" fill="${sk}" stroke="${skD}" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M-10,-210 C-17,-206 -17,-194 -10,-189 M14,-210 C21,-206 21,-194 14,-189" stroke="${skD}" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M2,-270 L2,-182" stroke="${skD}" stroke-width="3" stroke-linecap="round"/><path d="M-8,-252 Q-3,-248 1,-252 M3,-252 Q7,-248 12,-252" stroke="${skD}" stroke-width="2" fill="none" stroke-linecap="round" opacity=".7"/></g>`;
   // whisper: the right hand cups beside the mouth
   const wsp = `<g class="wsp"><path d="M${sx + 6},-238 C${sx + 22},-204 ${sx + 20},-170 ${sx + 4},-162 C${sx - 12},-170 28,-214 24,-262" stroke="${armColR}" stroke-width="26" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M14,-286 C4,-282 0,-266 6,-254 C14,-252 24,-256 28,-264 C30,-276 24,-286 14,-286Z" fill="${sk}"/></g>`;
   const feet = o.seated === 'cross' ? '' : o.seated === 'chair'
@@ -1076,6 +1086,7 @@ function person(o = {}) {
   return root;
 }
 const KING = { who: 'king', skin: '#E3A274', turban: '#F4B83A', stripe: '#FFD86A', stripe2: '#E0962A', jewel: true, plume: '#2A1A10', tilak: true, beard: '#2A1A10', mustache: true, hair: '#2A1A10', earring: true, robe: '#F2861E', dots: '#FFD25A', waist: '#8E1F3A', pearls: true, shoes: '#B8401C' };
+const ARJUN = { who: 'arjun', kid: true, skin: '#C98A5E', hairStyle: 'kid', hair: '#2E1D12', headband: '#E9A23B', cloth: '#2E9E6A', lower: '#F7F2E8', waist: '#E9A23B', necklace: true, sandals: true, mood: 'smile' };
 const SAGE = { who: 'vishnu', skin: '#E8A577', beard: '#F4F0E8', longBeard: true, topknot: '#EFEBE3', hair: '#EFEBE3', browColor: '#CFC8BA', mustacheColor: '#F4F0E8', mustache: true, tilak: true, staff: true, drape: '#EE9A2E', lower: '#F4B740', longLower: true, mala: true, sandals: true };
 const PRINCES = [
   { who: 'princes', kid: true, bare: true, skin: '#E3A274', hairStyle: 'kid', hair: '#2A1A10', headband: '#6A3E8E', lower: '#7B4FA6', waist: '#F2B23A', necklace: true, armband: true },
@@ -1141,9 +1152,9 @@ function bullM(o) {
         <path d="M8,-42 C-2,-62 -6,-88 8,-112 C14,-88 24,-68 34,-50Z" fill="${horn}"/><path d="M72,-42 C82,-62 86,-88 72,-112 C66,-88 56,-68 46,-50Z" fill="${horn}"/>
         <path d="M-10,-20 C-14,-60 18,-74 40,-74 C62,-74 94,-60 90,-20 C88,10 82,30 80,40 L0,40 C-2,30 -8,10 -10,-20Z" fill="${b}"/>
         <path d="M26,-74 C34,-62 46,-62 54,-74Z" fill="${bd}" opacity=".5"/>
-        <ellipse cx="40" cy="44" rx="50" ry="36" fill="${o.muzzle}"/>
+        <g class="pv muz" transform="translate(40 14)"><ellipse cx="0" cy="30" rx="50" ry="36" fill="${o.muzzle}"/></g>
         <ellipse cx="22" cy="40" rx="7" ry="9" fill="${o.nostril || '#5A4A4A'}"/><ellipse cx="58" cy="40" rx="7" ry="9" fill="${o.nostril || '#5A4A4A'}"/>
-        <path d="M22,62 Q40,74 58,62" stroke="${o.nostril || '#5A4A4A'}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <g transform="translate(40 66)"><g class="bmouth"><path class="bms" d="M-18,-4 Q0,8 18,-4" stroke="${o.nostril || '#5A4A4A'}" stroke-width="3.5" fill="none" stroke-linecap="round"/><g class="bmo"><ellipse cx="0" cy="0" rx="17" ry="12" fill="#4A2A2A"/><ellipse cx="0" cy="6" rx="10" ry="5" fill="#E07A7A"/></g></g></g>
         ${eyeM(18, -12, 13, 15, b)}${eyeM(62, -12, 13, 15, b)}
         <path d="M5,-34 Q16,-40 28,-34 M52,-34 Q64,-40 75,-34" stroke="${dkc(b, .45)}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
       </g></g></g></g></g>
@@ -1161,6 +1172,7 @@ function bull(o = {}) {
   let c = { ...SANJ, ...o };
   if (o.silhouette) { const k = o.body || '#0C0A14'; c = { body: k, belly: k, muzzle: k, ear: k, horn: k, hoof: k, band: k, tuft: k, collar: k, bell: k, bellD: k, nostril: k }; }
   const root = build('char bullc', .8, bullM(c));
+  if (!o.silhouette && c.body === SANJ.body) root.dataset.sanj = '1';
   if (o.silhouette) root.querySelectorAll('[fill]').forEach(e => { if (e.getAttribute('fill') !== 'none') { e.setAttribute('fill', c.body); if (e.getAttribute('stroke') && e.getAttribute('stroke') !== 'none') e.setAttribute('stroke', c.body); } });
   root.parts = { head: root.querySelector('.hp'), mouth: mouthProxy(root), tail: root.querySelector('.tl') };
   root.lie = k => setLying(root.art, k);
@@ -1198,21 +1210,22 @@ function lionHeadM() {
 }
 function lionM() {
   const g = '#F2A93B', gd = dkc(g, .14), cr = '#F9DCA2', mane = '#8C4A1F';
-  const leg = (x, col, thigh = 36, cls = '') => `<g transform="translate(${x} -150)"><g class="${cls}"><path d="M${-thigh},-46 C${-thigh - 4},-6 -30,34 -25,72 C-24,92 -23,106 -22,116 Q0,122 22,116 C23,106 24,92 25,72 C30,34 ${thigh + 4},-6 ${thigh},-46 C${thigh * .5},-64 ${-thigh * .5},-64 ${-thigh},-46Z" fill="${col}"/><ellipse cx="4" cy="134" rx="32" ry="17" fill="${cr}"/><path d="M-8,126 Q-9,133 -8,140 M6,126 Q5,134 6,141 M20,127 Q20,133 19,140" stroke="${dkc(cr, .3)}" stroke-width="3" stroke-linecap="round" fill="none"/></g></g>`;
+  const leg = (x, col, thigh = 36, cls = '', ph = 0) => `<g transform="translate(${x} -150)"><g class="${cls} leg" data-ph="${ph}"><path d="M${-thigh},-46 C${-thigh - 4},-6 -30,34 -25,72 C-24,92 -23,106 -22,116 Q0,122 22,116 C23,106 24,92 25,72 C30,34 ${thigh + 4},-6 ${thigh},-46 C${thigh * .5},-64 ${-thigh * .5},-64 ${-thigh},-46Z" fill="${col}"/><ellipse cx="4" cy="134" rx="32" ry="17" fill="${cr}"/><path d="M-8,126 Q-9,133 -8,140 M6,126 Q5,134 6,141 M20,127 Q20,133 19,140" stroke="${dkc(cr, .3)}" stroke-width="3" stroke-linecap="round" fill="none"/></g></g>`;
   return `<ellipse cx="0" cy="2" rx="190" ry="16" fill="#000" opacity=".18"/>
-  ${leg(-96, gd)}${leg(96, gd, 30)}
+  ${leg(-96, gd, 36, '', .5)}${leg(96, gd, 30, '', 0)}
   <g transform="translate(-146 -196)"><g class="tl"><path d="M0,0 C-54,-14 -76,-84 -46,-150" stroke="${g}" stroke-width="15" fill="none" stroke-linecap="round"/><path d="M-46,-146 C-74,-160 -70,-206 -40,-214 C-30,-196 -22,-166 -46,-146Z" fill="${mane}"/></g></g>
   <g class="bodyb">
     <path d="M-152,-170 C-166,-240 -92,-266 0,-262 C80,-258 140,-246 150,-196 C158,-146 136,-112 100,-110 L-112,-110 C-152,-112 -148,-140 -152,-170Z" fill="${g}"/>
     <path d="M-120,-150 C-40,-162 60,-162 128,-150 C126,-124 112,-112 98,-110 L-104,-110 C-120,-114 -124,-130 -120,-150Z" fill="${cr}"/>
     <path d="M-126,-238 C-60,-258 40,-258 120,-240" stroke="${ltc(g, .25)}" stroke-width="12" fill="none" stroke-linecap="round" opacity=".5"/>
   </g>
-  ${leg(-126, g, 46)}
-  ${leg(70, g, 36, 'pv paw')}
+  ${leg(-126, g, 46, '', 0)}
+  ${leg(70, g, 36, 'pv paw', .5)}
   <g transform="translate(118 -238)"><g class="pose head hp" data-who="pingalaka"><g class="pv hidle">${lionHeadM()}</g></g></g>`;
 }
 function lion() {
   const root = build('char lion', .8, lionM(), { flip: true });
+  regRig(root, root.art, { stride: 170, nominal: 120, swing: 18, bob: 5 });
   root.parts = { head: root.querySelector('.hp'), ears: root.querySelector('.ears'), tail: root.querySelector('.tl'), arm: root.querySelector('.paw'), mouth: mouthProxy(root), brows: browProxy(root) };
   return root;
 }
@@ -1360,17 +1373,20 @@ function rabbit() {
 }
 
 function sleeperM(o) {
-  const sk = o.skin, skD = dkc(sk, .16), q = '#2E9E8A', qd = dkc(q, .2);
-  let quilt = ''; for (let x = -90; x < 110; x += 34) quilt += `<path d="M${x},-56 L${x + 4},0" stroke="${qd}" stroke-width="3" opacity=".6"/>`;
-  for (let x = -76; x < 110; x += 34) quilt += `<circle cx="${x}" cy="-30" r="5" fill="#F2C14E"/>`;
-  return `<ellipse cx="0" cy="4" rx="230" ry="14" fill="#000" opacity=".15"/>
-  <ellipse cx="-176" cy="-30" rx="58" ry="26" fill="#8E5BD6"/><path d="M-230,-30 Q-176,-14 -122,-30" stroke="#F2C14E" stroke-width="4" fill="none"/>
-  <path d="M-140,-52 C-170,-72 -200,-84 -226,-74" stroke="${sk}" stroke-width="22" fill="none" stroke-linecap="round"/><circle cx="-228" cy="-74" r="13" fill="${sk}"/>
-  <path d="M104,-30 C140,-48 170,-66 200,-84" stroke="${o.lower}" stroke-width="30" fill="none" stroke-linecap="round"/><path d="M168,-66 C182,-74 194,-82 204,-88" stroke="${sk}" stroke-width="22" fill="none" stroke-linecap="round"/><ellipse cx="214" cy="-94" rx="14" ry="10" fill="${sk}" transform="rotate(-30 214 -94)"/>
-  <path d="M106,-12 C142,-8 176,-2 206,2" stroke="${o.lower}" stroke-width="30" fill="none" stroke-linecap="round"/><path d="M176,-2 C190,0 202,2 212,3" stroke="${sk}" stroke-width="22" fill="none" stroke-linecap="round"/><ellipse cx="222" cy="2" rx="14" ry="10" fill="${sk}"/>
-  <g class="breath2"><path d="M-130,0 C-132,-44 -80,-70 -10,-68 C60,-66 112,-54 124,-24 C128,-10 124,0 116,2 L-124,2Z" fill="${q}"/>${quilt}<path d="M-128,-6 C-120,-48 -76,-66 -10,-64" stroke="#F7A21B" stroke-width="7" fill="none" stroke-linecap="round"/></g>
-  <path d="M-96,-58 C-80,-90 -60,-96 -40,-100" stroke="${sk}" stroke-width="20" fill="none" stroke-linecap="round"/><circle cx="-36" cy="-100" r="12" fill="${sk}"/>
-  <g transform="translate(-122 -42) rotate(-84)"><g class="face idle closed" data-who="princes"><g transform="scale(.7)">${headM({ ...o, kid: true })}</g></g></g>`;
+  const q = '#2E9E8A', qd = dkc(q, .2), wood = '#A86A34', wd = dkc(wood, .25);
+  let quilt = ''; for (let x = -120; x < 230; x += 40) quilt += `<path d="M${x},-206 C${x + 4},-176 ${x + 2},-140 ${x},-104" stroke="${qd}" stroke-width="3" fill="none" opacity=".5"/>`;
+  for (let x = -100; x < 230; x += 40) for (const y of [-180, -140]) quilt += `<circle cx="${x}" cy="${y + ((x / 40) & 1) * 10}" r="5" fill="#F2C14E"/>`;
+  return `<ellipse cx="0" cy="4" rx="290" ry="16" fill="#000" opacity=".16"/>
+  ${[-250, 250].map(x => `<rect x="${x - 12}" y="-112" width="24" height="112" rx="8" fill="${wd}"/>`).join('')}
+  <rect x="-276" y="-124" width="552" height="30" rx="12" fill="${wood}"/><path d="M-262,-110 L262,-110" stroke="#F2C14E" stroke-width="4" stroke-dasharray="2 12" stroke-linecap="round"/>
+  <rect x="-286" y="-200" width="26" height="110" rx="12" fill="${wood}"/><circle cx="-273" cy="-204" r="14" fill="#F2C14E"/>
+  <rect x="-262" y="-140" width="524" height="20" rx="10" fill="#F7EEDC"/>
+  <ellipse cx="-196" cy="-158" rx="64" ry="26" fill="#8E5BD6"/><path d="M-254,-158 Q-196,-140 -138,-158" stroke="#F2C14E" stroke-width="4" fill="none"/>
+  <g transform="translate(-172 -196) rotate(-80)"><g class="face idle closed" data-who="princes"><g transform="scale(.72)">${headM({ ...o, kid: true })}</g></g></g>
+  <g class="breath2"><path d="M-150,-128 C-154,-176 -120,-210 -60,-214 C10,-218 80,-200 150,-196 C200,-194 236,-206 252,-180 C262,-160 262,-138 258,-120 L-150,-120Z" fill="${q}"/>${quilt}
+    <path d="M-150,-176 C-120,-206 -70,-214 -40,-212" stroke="#F7A21B" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M206,-196 C220,-214 246,-212 252,-190 M180,-198 C190,-212 210,-214 220,-202" stroke="${qd}" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/>
+    <path d="M-150,-120 L258,-120 L254,-86 Q52,-76 -146,-86Z" fill="${dkc(q, .08)}"/><path d="M-146,-90 Q52,-80 254,-90" stroke="#F2C14E" stroke-width="5" stroke-dasharray="1 10" stroke-linecap="round" fill="none"/></g>`;
 }
 function sleeper(o) { const root = build('char closed', .9, sleeperM(o)); setMood(root, 'o'); return root; }
 
@@ -1548,7 +1564,7 @@ const SFX = {
   splash() { noise({ dur: .8, vol: .5, type: 'lowpass', f: 2600, f2: 250 }); noise({ dur: .35, vol: .2, type: 'bandpass', f: 1300, q: 3, delay: .15 }); [0, .12, .22].forEach(d => tone({ f: 300, f2: 760, dur: .08, vol: .09, delay: .25 + d })); },
   crack() { noise({ dur: .09, vol: .8, type: 'highpass', f: 1800 }); noise({ dur: .5, vol: .35, type: 'lowpass', f: 900, f2: 200, delay: .05 }); tone({ type: 'square', f: 180, f2: 60, dur: .15, vol: .12 }); },
   growl() { tone({ type: 'sawtooth', f: 72, f2: 54, dur: 1.6, vol: .3, a: .2, vib: 14, vibRate: 17, lp: 360 }); noise({ dur: 1.4, vol: .12, f: 320, a: .2 }); },
-  moo(k = 1, v = 1) { const d = 2.1 * k; tone({ type: 'sawtooth', f: 150, f2: 116, dur: d, vol: .3 * v, a: .25, vib: 4, vibRate: 5.5, lp: 900 }); tone({ type: 'square', f: 75, f2: 58, dur: d, vol: .09 * v, a: .3, lp: 500 }); noise({ dur: d * .9, vol: .04 * v, type: 'bandpass', f: 700, q: 2, a: .3 }); },
+  moo(k = 1, v = 1) { const d = 2.1 * k; world.querySelectorAll('.bullc[data-sanj]').forEach(b => { b.classList.add('mooing'); setTimeout(() => b.classList.remove('mooing'), d * 1000); }); tone({ type: 'sawtooth', f: 150, f2: 116, dur: d, vol: .3 * v, a: .25, vib: 4, vibRate: 5.5, lp: 900 }); tone({ type: 'square', f: 75, f2: 58, dur: d, vol: .09 * v, a: .3, lp: 500 }); noise({ dur: d * .9, vol: .04 * v, type: 'bandpass', f: 700, q: 2, a: .3 }); },
   whoosh() { noise({ dur: .6, vol: .3, type: 'bandpass', f: 300, f2: 2400, q: 1.2, a: .1 }); },
   rustle() { for (let i = 0; i < 4; i++) noise({ dur: .07, vol: .22, type: 'highpass', f: 2600, delay: i * .07 + Math.random() * .04 }); },
   creak() { tone({ type: 'sawtooth', f: 95, f2: 150, dur: .9, vol: .14, vib: 9, vibRate: 22, lp: 700 }); },
@@ -1899,6 +1915,7 @@ function glowJungle(r) {
 }
 function denseForest(r, o = {}) {
   sky(r, o.sky || [[0, '#9CC7B0'], [.6, '#CFE3BE'], [1, '#B9D39A']]);
+  jungleFar(r, { night: isNightSky(o.sky) });
   const far = [[-40, 600, .9], [180, 590, .8], [420, 600, .85], [700, 585, .8], [980, 600, .9], [1240, 590, .8], [1480, 600, .9], [1700, 600, .9]].map(([x, y, s]) => tree(x, y, s, { leaf: o.farLeaf || '#6E9C62', hi: o.farHi || '#86B478', trunk: o.farTrunk || '#7A5A3E' }));
   r.append(...far);
   const sk = o.sky || [[0, '#9CC7B0'], [.6, '#CFE3BE'], [1, '#B9D39A']];
@@ -1909,6 +1926,7 @@ function denseForest(r, o = {}) {
   r.append(...near);
   hill(r, 735, o.ground || '#6E8F45', { amp: 8, period: 1300 });
   tufts(r, 110, -100, 1700, 740, 900, o.tuft || '#4F7F3A', 9);
+  jungleNear(r, { night: isNightSky(o.sky) });
   return [...far, ...near];
 }
 
@@ -1986,12 +2004,7 @@ async function packWagon(r, rg, RX, GY) {
 }
 async function s2() {
   const r = newStage('#E9C88A');
-  sky(r, [[0, '#F6D38E'], [.7, '#FBE8BE'], [1, '#F3D9A2']]);
-  sun(r, 1330, 160, 64);
-  bazaar(r, 640);
-  hill(r, 650, '#D8B06C', { amp: 8, period: 1200 });
-  r.append(S('path', { d: 'M-2000,760 C200,730 1400,730 3600,760 L3600,860 C1400,830 200,830 -2000,860Z', fill: '#E7C68B', opacity: .8 }));
-  tufts(r, 30, -100, 1700, 660, 900, '#B89455', 4);
+  mahilaBack(r);
   stall(r, 190, 700);
   const RX = 640, GY = 745;
   const rg = rig(), rgA = actor(rg, RX, GY, 1); r.append(rgA);
@@ -2155,13 +2168,9 @@ async function s6() {
   tween(sv[0], { x: 2100 }, 1600, ease.in); tween(sv[1], { x: 2200 }, 1800, ease.in);
   await say('arjun', 'So they abandoned Sanjivaka… and ran away.');
   r = await cut('#E7B98A');
-  sky(r, [[0, '#E79A6B'], [.6, '#F3C995'], [1, '#E8C58A']]);
-  sun(r, 1250, 470, 80, '#FFD58A');
-  hill(r, 610, '#D8A276', { amp: 26, period: 900 });
-  const dbirds = [bird(300, 250, .9), bird(360, 280, .7), bird(420, 235, .8)]; dbirds.forEach(b => { r.append(pwrap(b, 1.1)); tween(b, { x: b._t.x + 900, y: b._t.y - 80 }, 16000, ease.lin); });
-  bazaar(r, 650, { color: '#C98E5E', op: .88, temple: false, list: [[40, 120, 120, true], [170, 170, 120, false], [330, 110, 110, true], [1380, 140, 120, true], [1500, 100, 110, false]] }); hill(r, 660, '#C9A063', { amp: 6, period: 1400 }); r.append(tree(1560, 690, .8, { leaf: '#6E7A40', hi: '#A09A58', trunk: '#6A4A30' }), tree(-30, 700, .95, { leaf: '#6E7A40', hi: '#A09A58', trunk: '#6A4A30' }));
-  stall(r, 250, 690);
-  tufts(r, 70, -100, 1700, 670, 900, '#A88346', 6);
+  mahilaBack(r, { dusk: true });
+  const dbirds = [];
+  stall(r, 250, 700);
   r.append(S('ellipse', { cx: 1150, cy: 700, rx: 700, ry: 120, fill: '#FFD58A', opacity: .18, filter: 'url(#blur)', 'pointer-events': 'none' }));
   const fb = [bush(40, 880, 1.2, '#6E7A40', '#9A9A58'), bush(1580, 890, 1.3, '#6E7A40', '#9A9A58')];
   const mer = actor(person({ ...MERCHANT }), 1020, 760, 1.25); r.append(mer);
@@ -2249,10 +2258,13 @@ async function g1() {
 
 function jungleOfLion(r, o = {}) {
   sky(r, o.sky || [[0, '#F4C57E'], [.6, '#F7DDA8'], [1, '#D7C27E']]);
+  jungleFar(r, { c1: '#B8C47A', c2: '#9AB466' });
+  [[230, 620, .55], [620, 600, .5], [960, 610, .55], [1360, 620, .6]].forEach(([x, y, s]) => r.append(tree(x, y, s, { leaf: '#7FA84E', hi: '#A0C468' })));
   const trees = [[80, 700, 1.3], [380, 640, .9], [1180, 650, 1], [1500, 700, 1.3]].map(([x, y, s]) => tree(x, y, s, { leaf: o.leaf || '#5E8C3F', hi: o.hi || '#7FAE52' }));
   r.append(...trees);
   hill(r, 700, o.ground || '#C9A45E', { amp: 10, period: 1200 });
   tufts(r, 40, -100, 1700, 700, 900, o.tuft || '#A88A45', 61);
+  jungleNear(r);
   return trees;
 }
 async function s8() {
@@ -2269,8 +2281,10 @@ async function s8() {
   await sleep(300);
   pg.parts.ears.classList.add('ears-up'); pg.inner.classList.add('wide'); lionMood(pg.inner, 'scared');
   tween(pg, { y: 640 }, 200, ease.out).then(() => tween(pg, { y: 720 }, 260, ease.in));
+  later(() => pg.inner.classList.add('shiver'), 460);
   await sleep(900);
   await say('pingalaka', 'O Man! What kind of monster makes such a sound?');
+  pg.inner.classList.remove('shiver');
   await ask('Have you ever heard a loud noise that scared you? What was it?');
 }
 
@@ -2280,40 +2294,16 @@ async function hidingLion(r, x, y, s) {
 }
 function banyanScene(r) {
   sky(r, [[0, '#7FA88A'], [.6, '#B9CFA0'], [1, '#8FA86A']]);
+  jungleFar(r);
   const b = banyan(800, 760, 1); r.append(b);
   hill(r, 745, '#6E8F45', { amp: 6, period: 1400 });
   tufts(r, 40, -100, 1700, 745, 900, '#4F7F3A', 71);
+  jungleNear(r);
   return b;
 }
 async function g2() {
   await gameCard('Pingalaka Panic Run', 'GAME TWO');
-  await playGame('run');
-  const r = await cut('#8FA86A');
-  const b = banyanScene(r);
-  const pg = await hidingLion(r, 800, 760, 1.1); r.append(pg);
-  await reveal(); ambience('day');
-  await say('pingalaka', 'Everyone stay quiet! Whatever made that sound… must be terrifying!');
-  await say('arjun', 'And just like that… the mighty lion king ran deep into the forest and hid beneath a banyan tree.');
-}
-
-async function s9() {
-  const r = newStage('#8FA86A');
-  const b = banyanScene(r);
-  const bearA = actor(bear(), 360, 760, 1), deerA = actor(deer(), 1250, 760, 1, { fx: -1 });
-  const pg = await hidingLion(r, 820, 760, 1.1); pg.parts.head.classList.remove('duck');
-  r.append(bearA, deerA, pg);
-  const qs = [[360, 520], [1210, 520], [620, 560]].map(([x, y]) => S('text', { x, y, 'text-anchor': 'middle', 'font-family': "'Yatra One',serif", 'font-size': 64, fill: '#FFF7E6', stroke: INK, 'stroke-width': 7, 'paint-order': 'stroke', class: 'popin' }, '?'));
-  await reveal(); ambience('day');
-  await say('arjun', 'Pingalaka sat beneath the banyan tree. His ministers gathered around him. Everyone looked confused.', { onPart: i => { if (i === 2) r.append(...qs); } });
-  pg.inner.classList.remove('wide');
-  await say('pingalaka', 'Did you hear that?!');
-  hideCaption();
-  SFX.moo(1, .5); shakeScreen(); boom(r, 'MOOOOO!', 1450, 330, { size: 66 });
-  pg.inner.classList.add('wide'); pg.parts.head.classList.add('duck'); tween(pg, { sy: .88 }, 300);
-  bearA.inner.classList.add('shiver'); deerA.parts.head.classList.add('tilt');
-  await sleep(1800);
-  bearA.inner.classList.remove('shiver');
-  await ask('Pingalaka is hiding because he’s scared. What do you do when you feel scared?');
+  await panicRun();
 }
 
 function peekEyes(x, y) {
@@ -2358,11 +2348,13 @@ async function s10() {
 async function s11() {
   const r = newStage('#B7D6A6');
   sky(r, [[0, '#B7D6A6'], [.6, '#D8E6C0'], [1, '#A9C98A']]);
+  jungleFar(r);
   const bny = banyan(800, 640, .42, { leaf: '#6E9C62', hi: '#86B478', bark: '#7A5A3E' }); r.append(bny);
   const far = await hidingLion(r, 800, 640, .4); r.append(far);
   hill(r, 700, '#86B066', { amp: 10, period: 1300 });
   r.append(bush(120, 760, 1.3), bush(1480, 760, 1.3));
   tufts(r, 40, -100, 1700, 720, 900, '#5E8C3F', 81);
+  jungleNear(r);
   const ka = actor(jackal(KARATAKA), 560, 780, 1.4), da = actor(jackal(DAMANAKA), 1040, 780, 1.4, { fx: -1 });
   r.append(ka, da);
   await reveal(); ambience('day');
@@ -2552,8 +2544,6 @@ async function s15() {
   await anim(world, { x: 800 - k * P.x, y: 450 - k * P.y, s: k }, 3600, ease.io);
   const glint = S('circle', { cx: 1420 + .55 * 160, cy: 690 - .55 * 172, r: 4, fill: '#FFF3C4', filter: 'url(#glow)' }); r.append(glint);
   SFX.sparkle(); await sleep(1400);
-  await A(fadeTo(true));
-  await showEnd();
 }
 async function showEnd() {
   ambience(null); hideCaption(); hideHint();
@@ -2711,15 +2701,15 @@ function nameTag(r, text, x, y, col) {
 const focus = (x, y, s, ms = 1800) => anim(world, { x: 800 - s * x, y: 450 - s * y, s }, ms, ease.io);
 
 /* ══════════ Opening 1: Mahilaropya ══════════ */
-async function i1() {
-  const r = newStage('#F7C98A');
-  sky(r, [[0, '#FFC97E'], [.45, '#FFE2AE'], [.8, '#FFF0CF'], [1, '#FCE7C0']]);
-  sun(r, 400, 200, 76, '#FFF2B8');
+function mahilaBack(r, o = {}) {
+  const dusk = !!o.dusk;
+  sky(r, dusk ? [[0, '#E98A5E'], [.45, '#F6B87E'], [.8, '#FBD9A6'], [1, '#F3CF98']] : [[0, '#FFC97E'], [.45, '#FFE2AE'], [.8, '#FFF0CF'], [1, '#FCE7C0']]);
+  sun(r, dusk ? 1250 : 400, dusk ? 430 : 200, dusk ? 86 : 76, dusk ? '#FFD58A' : '#FFF2B8');
   const birds = [bird(220, 250, .8), bird(280, 280, .6), bird(1250, 230, .7), bird(1320, 260, .55)];
   birds.forEach(b => r.append(pwrap(b, 1.2)));
   birds.forEach((b, i) => tween(b, { x: b._t.x + (i < 2 ? 600 : -600), y: b._t.y - 60 }, 30000, ease.lin));
-  addArt(r, hillMk(590, 26, 900, .4, '#B5D47A') + [80, 230, 1380, 1520].map((x, i) => cypressM(x, 620, 150 + i * 14, '#3E8F5A')).join(''), .18);
-  [[120, 640, .55], [330, 650, .5], [1240, 645, .5], [1450, 640, .6]].forEach(([x, y, s]) => r.append(tree(x, y, s, { leaf: '#5FAE4A', hi: '#8ED062' })));
+  addArt(r, hillMk(590, 26, 900, .4, dusk ? '#C9B06A' : '#B5D47A') + [80, 230, 1380, 1520].map((x, i) => cypressM(x, 620, 150 + i * 14, dusk ? '#4E7A4A' : '#3E8F5A')).join(''), .18);
+  [[120, 640, .55], [330, 650, .5], [1240, 645, .5], [1450, 640, .6]].forEach(([x, y, s]) => r.append(tree(x, y, s, { leaf: dusk ? '#6E8F45' : '#5FAE4A', hi: dusk ? '#9AB060' : '#8ED062' })));
   addArt(r, havelliM(220, 210, '#EBB476', { dome: true }), .25, 40, 650);
   addArt(r, havelliM(170, 160, '#F2C48A'), .25, 1320, 650);
   addArt(r, palaceM(), .3, 800, 655, .78, { unified: true });
@@ -2727,6 +2717,12 @@ async function i1() {
   hill(r, 700, '#F3CB92', { amp: 4, period: 1600 });
   r.append(S('path', { d: 'M-2000,712 C200,700 1400,700 3600,712 L3600,2000 L-2000,2000Z', fill: '#EFC58C' }));
   r.append(S('ellipse', { cx: 800, cy: 760, rx: 820, ry: 50, fill: '#F7D9A8', opacity: .55 }));
+  if (dusk) r.append(S('rect', { x: -2000, y: -2000, width: 5600, height: 5000, fill: '#E8743A', opacity: .12, 'pointer-events': 'none' }));
+  tufts(r, 26, -100, 1700, 760, 900, '#C9A45E', 4);
+}
+async function i1() {
+  const r = newStage('#F7C98A');
+  mahilaBack(r);
   // mid-ground stalls and an ox cart crossing the square
   addArt(r, stallM(150, ['#8E5BD6', '#B98AEE'], w => fruitPile(-34, -96, ['#F25C3C', '#F7A21B']) + fruitPile(34, -96, ['#7DBB3C', '#F2C14E']), { cloth: '#2E9E8A', garlands: true, h: 180 }), .7, 470, 720, .62);
   addArt(r, stallM(150, ['#F06A1C', '#F7C24A'], w => fruitPile(-30, -96, ['#E8492C', '#F7A21B']) + potM(36, -92, .5), { cloth: '#3E62C8', garlands: true, h: 180 }), .7, 1130, 720, .62);
@@ -2750,7 +2746,6 @@ async function i1() {
   r.append(actor(person({ turban: '#F7A21B', stripe: '#FFE08A', cloth: '#FFF3E0', lower: '#F4EBDD', skin: '#C98A5E', mustache: true, waist: '#C8452C', carry: 'garland' }), 300, 820, .92));
   addArt(r, flowerPot(40, 930, 1.1, '#C04CC8') + flowerPot(330, 950, .9, '#F25C78'), 1.1);
   addArt(r, stallM(330, ['#3E62C8', '#F2C14E'], w => potM(-110, -94, .8) + potM(-40, -94, .95, '#B85A30') + potM(30, -94, .8, '#D07A48') + potM(100, -94, .9), { cloth: '#7A4B2A', h: 260 }), 1, 1440, 900, 1);
-  const mer = actor(person(MERCHANT), 1250, 860, 1); r.append(mer); mer.inner.classList.add('gesturing');
   addArt(r, potM(1560, 930, 1.1) + potM(1290, 950, .9, '#B85A30') + potM(1620, 960, .8, '#D07A48'), 1.1);
   r.append(tree(-40, 700, 2.3, { leaf: '#3E8F3A', hi: '#6FBF4A', trunk: '#8A5A34' }), tree(1650, 700, 2.3, { leaf: '#3E8F3A', hi: '#6FBF4A', trunk: '#8A5A34' }));
   motes(r, 24, '#FFE9A8', { seed: 301, y0: 120, y1: 700 });
@@ -2759,8 +2754,6 @@ async function i1() {
   tween(world, { x: 800 - 1.12 * 960, y: 450 - 1.12 * 500, s: 1.12 }, 16000, ease.io);
   await say('arjun', `Namaste, ${kidName()}! I'm Arjun. Come with me to a faraway land, long, long ago…`);
   await say('arjun', 'Once upon a time, in the kingdom of Mahilaropya, there lived a king named Amara Shakthi.');
-  await say('arjun', 'Mahilaropya was a busy, happy city, full of markets, flowers and friendly faces.');
-  await say('merchant', 'Pots! Beautiful pots! Fresh from the kiln!');
   hideCaption();
   await anim(world, { x: 800 - 1.9 * 800, y: 450 - 1.9 * 560, s: 1.9 }, 2600, ease.io);
 }
@@ -2937,11 +2930,14 @@ async function i3() {
   // spinning top
   addArt(r, `<g class="spintop"><path d="M0,0 L-24,-30 C-24,-50 24,-50 24,-30Z" fill="#C8452C"/><path d="M-22,-34 Q0,-26 22,-34" stroke="${GOLDC}" stroke-width="5" fill="none"/><rect x="-3" y="-60" width="6" height="18" rx="3" fill="#7A4B2A"/></g>`, 1, 1000, 900, 1, { shade: false });
   // Anantashakti asleep on his mat: on his back, legs apart, tucked under a quilt
-  addArt(r, `<path d="M-270,0 L270,0 L248,-40 L-248,-40Z" fill="#E2B862"/>${Array.from({ length: 12 }, (_, i) => `<path d="M${-240 + i * 44},-40 L${-262 + i * 48},0" stroke="#C99A44" stroke-width="3"/>`).join('')}`, 1, 1190, 900, 1);
-  const p3s = actor(sleeper(PRINCES[2]), 1200, 892, 1); r.append(p3s);
-  const p3 = actor(person({ ...PRINCES[2], seated: 'cross' }), 1180, 892, .92); p3.style.opacity = 0; p3.style.pointerEvents = 'none'; p3.style.transition = 'opacity .7s'; p3s.style.transition = 'opacity .7s'; r.append(p3);
+  const p3s = actor(sleeper(PRINCES[2]), 1275, 870, .86); r.append(p3s);
+  const p3 = actor(person({ ...PRINCES[2], seated: 'cross' }), 1200, 775, .8); p3.style.opacity = 0; p3.style.pointerEvents = 'none'; p3.style.transition = 'opacity .7s'; p3s.style.transition = 'opacity .7s';
+  const bedWake = actor(sleeper(PRINCES[2]), 1275, 870, .86); bedWake.querySelector('.face').remove(); bedWake.querySelector('.breath2').remove(); bedWake.style.opacity = 0; bedWake.style.transition = 'opacity .7s'; bedWake.style.pointerEvents = 'none';
+  const lap = mk(`<path d="M-120,0 C-120,-40 -60,-56 0,-56 C60,-56 120,-40 120,0Z" fill="#2E9E8A"/><path d="M-110,-14 Q0,-30 110,-14" stroke="#F7A21B" stroke-width="7" fill="none" stroke-linecap="round"/>${[-70, -20, 30, 80].map(x => `<circle cx="${x}" cy="-30" r="5" fill="#F2C14E"/>`).join('')}`);
+  place(lap, 1200, 777, .8); lap.style.opacity = 0; lap.style.transition = 'opacity .7s'; lap.setAttribute('pointer-events', 'none');
+  r.append(bedWake, p3, lap);
   const zz = mk(`<g class="zzz"><text x="0" y="0" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="40" fill="#6A3E9E" stroke="#FFF6DE" stroke-width="5" paint-order="stroke">z</text><text x="26" y="-30" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="30" fill="#6A3E9E" stroke="#FFF6DE" stroke-width="5" paint-order="stroke">z</text><text x="46" y="-56" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="22" fill="#6A3E9E" stroke="#FFF6DE" stroke-width="4" paint-order="stroke">z</text></g>`);
-  place(zz, 1010, 760, 1); zz.setAttribute('pointer-events', 'none'); r.append(zz);
+  place(zz, 1080, 660, 1); zz.setAttribute('pointer-events', 'none'); r.append(zz);
   addArt(r, flowerPot(60, 860, 1.2, '#F25C78') + flowerPot(1560, 880, 1.1, '#C04CC8'), 1.3);
   addArt(r, curtainM(-30, 110, -40, 900, '#F3E2C2', 'left') + `<g transform="translate(1600 0) scale(-1 1)">${curtainM(-30, 110, -40, 900, '#F3E2C2', 'left')}</g>`, 1.4, 0, 0, 1, { shade: false });
   motes(r, 18, '#FFF2C0', { seed: 91, depth: .9 });
@@ -2958,18 +2954,18 @@ async function i3() {
   tag.remove(); await focus(690, 640, 1.6);
   tag = nameTag(r, 'Ugrashakti', 690, 450, '#2E8A70'); SFX.hoof(); later(() => SFX.creak(), 500);
   await say('arjun', 'This is Ugrashakti. Giddy-up! He galloped on his wooden horse, pretending to ride into battle.');
-  tag.remove(); await focus(1200, 780, 1.6);
-  tag = nameTag(r, 'Anantashakti', 1200, 680, '#E8642B'); SFX.snore();
+  tag.remove(); await focus(1250, 760, 1.6);
+  tag = nameTag(r, 'Anantashakti', 1260, 590, '#E8642B'); SFX.snore();
   await say('arjun', 'And this is Anantashakti. He loved to sleep… and sleep… and sleep!');
   tag.remove();
   await interaction('Anantashakti is fast asleep! Tap him to wake him up.', null, ctx => {
     tappables(ctx, [p3s], it => { it._done = true; unkey(it); SFX.pop(); ctx.done(); });
   });
   zz.remove(); SFX.yawn();
-  p3s.style.opacity = 0; p3s.style.pointerEvents = 'none'; p3.style.opacity = 1; p3.style.pointerEvents = ''; p3.inner.classList.add('hold'); setMood(p3.inner, 'o');
+  p3s.style.opacity = 0; p3s.style.pointerEvents = 'none'; bedWake.style.opacity = 1; lap.style.opacity = 1; p3.style.opacity = 1; p3.style.pointerEvents = ''; p3.inner.classList.add('hold'); setMood(p3.inner, 'o');
   later(() => p3s.remove(), 800);
   await sleep(1200);
-  p3.inner.classList.remove('hold'); setMood(p3.inner, 'smile'); SFX.chime(); sparkles(r, 1180, 640, 8, 90);
+  p3.inner.classList.remove('hold'); setMood(p3.inner, 'smile'); SFX.chime(); sparkles(r, 1150, 560, 8, 90);
   await say('princes', 'Huh? Is it time to play?');
   focus(800, 480, 1.08, 2200).catch(() => { });
   await say('arjun', 'But the princes ran from every book they saw.');
@@ -2978,7 +2974,7 @@ async function i3() {
 }
 
 /* ══════════ Scene 1: Vishnu Sharma under the banyan ══════════ */
-async function s1() {
+function banyanSchool() {
   const r = newStage('#9CC47A');
   sky(r, [[0, '#E9F3B8'], [.55, '#CFE6A0'], [1, '#B4D68A']]);
   const rays = mk(`<g filter="url(#blur)" opacity=".75"><path class="ray" d="M1500,-50 L1660,-50 L900,900 L620,900Z" fill="url(#rayg)"/><path class="ray" style="animation-delay:-2.5s" d="M1300,-50 L1400,-50 L560,900 L380,900Z" fill="url(#rayg)"/></g>`); rays.setAttribute('pointer-events', 'none');
@@ -2998,6 +2994,10 @@ async function s1() {
   r.append(...pr);
   addArt(r, `<g transform="translate(-40 0)">${['#3E9A3E', '#5EB04A', '#2E8B4E'].map((c, i) => `<path d="M${i * 30},0 C${-20 + i * 30},-60 ${10 + i * 30},-120 ${40 + i * 20},-150 C${30 + i * 30},-100 ${30 + i * 30},-50 ${20 + i * 30},0Z" fill="${c}"/>`).join('')}</g>`, 1.4, 1560, 920, 1.2);
   addArt(r, `<g>${['#3E9A3E', '#5EB04A', '#2E8B4E'].map((c, i) => `<path d="M${i * 30},0 C${-20 + i * 30},-60 ${10 + i * 30},-120 ${40 + i * 20},-150 C${30 + i * 30},-100 ${30 + i * 30},-50 ${20 + i * 30},0Z" fill="${c}"/>`).join('')}</g>`, 1.4, 20, 930, 1.1);
+  return { r, sage, pr };
+}
+async function s1() {
+  const { r, sage, pr } = banyanSchool();
   place(world, 800 - 1.05 * 800, 450 - 1.05 * 520, 1.05);
   await reveal(); ambience('glow'); bgLife('garden');
   tween(world, { x: 800 - 1.1 * 800, y: 450 - 1.1 * 545, s: 1.1 }, 14000, ease.io);
@@ -3037,19 +3037,224 @@ async function s1() {
   await say('princes', `Namaste, ${kidName()}!`);
   sage.parts.head.classList.remove('hdown'); sage.inner.classList.remove('namaste'); pr.forEach(p => { p.parts.head.classList.remove('hdown'); p.inner.classList.remove('namaste'); });
   await say('arjun', 'Vishnu Sharma took the three sons under his fold and said:');
-  const tb = thought(r, 800, 205); place(tb, 800, 205, .05); await anim(tb, { s: 1 }, 600, ease.io);
-  const lh = place(lionHead(), -60, 10, .72); tb.content.append(lh);
+  await anim(world, { x: 0, y: 0, s: 1 }, 1200, ease.io);
+  const tb = thought(r, 800, 260); place(tb, 800, 260, .05); await anim(tb, { s: 1.3 }, 600, ease.io);
+  const cid = uid('tbc');
+  sdefs.append(S('clipPath', { id: cid }, [[-120, 0, 66], [-40, -40, 82], [60, -36, 80], [130, 6, 60], [40, 40, 70], [-60, 40, 66], [0, 0, 90]].map(([x, y, rr]) => S('circle', { cx: x, cy: y, r: rr }))));
+  tb.content.setAttribute('clip-path', `url(#${cid})`);
+  const mini = G({}); tb.content.append(mini);
+  mini.append(mk(`<rect x="-200" y="-140" width="400" height="280" fill="#CFE6A8"/><path d="M-200,60 C-100,40 60,46 200,56 L200,140 L-200,140Z" fill="#8CC25A"/>`));
+  const mlion = shade(lion(), true); mlion.parts.head.style.opacity = 0; mini.append(place(G({}, mlion), -50, 70, .3));
+  mini.append(mk(`<path d="M-104,74 C-98,30 -96,-10 -90,-40 L-58,-40 C-52,-10 -50,30 -44,74Z" fill="#8A5A34"/>${[[-130, -60, 44], [-74, -84, 52], [-20, -62, 42], [-104, -36, 38], [-44, -34, 36]].map(([x, y, rr]) => `<circle cx="${x}" cy="${y}" r="${rr}" fill="#3E8F3A"/>`).join('')}${[[-140, -70], [-80, -100], [-28, -74]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="16" fill="#74C255"/>`).join('')}<path d="M-130,-30 C-128,0 -130,40 -126,74 M-36,-30 C-34,10 -38,40 -34,74" stroke="#6E4A2E" stroke-width="5" fill="none" stroke-linecap="round"/>`));
+  const mlionHead = lionHead(); mlionHead.parts.ears.classList.add('ears-up'); mini.append(place(G({}, mlionHead), -112, 24, .46));
   await say('vishnu', 'Listen carefully. There was once a lion king named Pingalaka.');
-  lh.classList.add('wide'); lh.parts.ears.classList.add('ears-up'); lionMood(lh, 'scared');
-  await say('vishnu', 'One day, a strange sound filled the forest and frightened him.');
-  const jk = place(shade(jackal(DAMANAKA), true), 76, 86, .6); tb.content.append(G({ class: 'popin' }, jk));
+  mlionHead.classList.add('wide'); lionMood(mlionHead, 'scared'); mlionHead.classList.add('shiver');
+  await say('vishnu', 'One day, a strange sound filled the forest and frightened him. He ran and hid behind a banyan tree.');
+  const jk = shade(jackal(DAMANAKA), true); const jkw = G({ class: 'popin' }, place(G({}, jk), 92, 76, .3)); mini.append(jkw);
+  const dots = mk(`<g class="popin"><ellipse cx="0" cy="0" rx="34" ry="20" fill="#FFF"/><circle cx="-12" cy="0" r="4" fill="#3B2414"/><circle cx="0" cy="0" r="4" fill="#3B2414"/><circle cx="12" cy="0" r="4" fill="#3B2414"/><path d="M-6,16 L-14,30 L6,18Z" fill="#FFF"/></g>`); place(dots, 70, -40, 1); mini.append(dots);
+  const jkFaces = [...jk.querySelectorAll('[data-who]')]; jkFaces.forEach(e => e.classList.add('talking'));
   await say('vishnu', 'A cunning jackal came forward and cleverly set out to discover the truth.');
+  jkFaces.forEach(e => e.classList.remove('talking'));
   pr.forEach(p => p.parts.head.classList.add('tilt'));
   await say('princes', 'How?');
   await say('arjun', 'And Vishnu Sharma began…');
-  await ask('Ooh, a story with a lion and a jackal! Do you like lions? What sound do you think a lion makes?');
-  await anim(world, { x: 800 - 3 * 800, y: 450 - 3 * 205, s: 3 }, 1400, ease.io);
+  await ask(`Ooh, a story with a lion and a jackal! Do you like lions${KID.name ? ', ' + KID.name : ''}? What sound do you think a lion makes?`);
+  await anim(world, { x: 800 - 3 * 800, y: 450 - 3 * 260, s: 3 }, 1400, ease.io);
   flash();
+}
+
+/* ══════════ Ending: the same banyan, the story pauses for today ══════════ */
+async function sOutro() {
+  const { r, sage, pr } = banyanSchool();
+  place(world, 800 - 1.05 * 800, 450 - 1.05 * 520, 1.05);
+  await reveal(); ambience('glow'); bgLife('garden');
+  tween(world, { x: 800 - 1.1 * 800, y: 450 - 1.1 * 545, s: 1.1 }, 12000, ease.io);
+  await say('arjun', 'And far away, under the great banyan tree, Vishnu Sharma paused his story for the day.');
+  pr.forEach(p => { setMood(p.inner, 'o'); p.parts.head.classList.add('tilt'); });
+  await say('princes', 'Oh no! What happens next? Will Damanaka find the one who mooed?');
+  pr.forEach(p => { setMood(p.inner, 'smile'); p.parts.head.classList.remove('tilt'); });
+  sage.inner.classList.add('open');
+  await say('vishnu', 'Patience, my princes! A wise mind waits, thinks… and then finds out. We will continue tomorrow.');
+  sage.inner.classList.remove('open');
+  sage.inner.classList.add('namaste'); pr.forEach(p => p.inner.classList.add('namaste'));
+  SFX.chime(); sparkles(r, 800, 520, 14, 200);
+  await say('vishnu', `Thank you for listening so well${KID.name ? ', ' + KID.name : ''}. Namaste!`);
+  await sleep(800);
+  await A(fadeTo(true));
+  await showEnd();
+}
+
+/* ══════════ Jungle dressing · Pingalaka Panic Run · the hiding scene ══════════ */
+
+// Far layer: misty tree line and soft hills, drawn right after the sky.
+function jungleFar(r, o = {}) {
+  const night = !!o.night, c1 = night ? '#22382C' : (o.c1 || '#8DBE86'), c2 = night ? '#1C3026' : (o.c2 || '#74AA70');
+  let d = 'M-600,1200 L-600,560';
+  for (let x = -600; x <= 2200; x += 60) d += ` Q${x + 30},${n1(500 - 40 * Math.abs(Math.sin(x * .013)) - 30 * Math.abs(Math.sin(x * .031)))} ${x + 60},${n1(560 - 10 * Math.sin(x * .02))}`;
+  d += ' L2200,1200Z';
+  let d2 = 'M-600,1200 L-600,610';
+  for (let x = -600; x <= 2200; x += 80) d2 += ` Q${x + 40},${n1(540 - 50 * Math.abs(Math.sin(x * .009 + 1)))} ${x + 80},${n1(610 - 12 * Math.cos(x * .017))}`;
+  d2 += ' L2200,1200Z';
+  addArt(r, `<path d="${d}" fill="${c1}" opacity=".7"/><path d="${d2}" fill="${c2}" opacity=".85"/>`, .12, 0, 0, 1, { shade: false, round: false });
+}
+// Near layer: hanging vines, big leaves in the corners, mossy rocks, mushrooms, flowers and butterflies.
+function jungleNear(r, o = {}) {
+  const night = !!o.night, lf = night ? '#1E3A2A' : '#3E9A3E', lf2 = night ? '#264634' : '#5EB04A', lfD = night ? '#14261C' : '#2E7A30';
+  const vine = (x, len, k) => `<g class="hang" style="animation-duration:${4 + k}s;animation-delay:${-k}s"><path d="M${x},-60 C${x + 20},${len * .3} ${x - 24},${len * .6} ${x + 6},${len}" stroke="${lfD}" stroke-width="7" fill="none" stroke-linecap="round"/>
+    ${Array.from({ length: Math.floor(len / 60) }, (_, i) => { const y = 10 + i * 60, xx = x + 14 * Math.sin(i * 1.7), s = i % 2 ? 1 : -1; return `<path d="M${n1(xx)},${y} C${n1(xx + s * 26)},${y - 18} ${n1(xx + s * 40)},${y} ${n1(xx + s * 34)},${y + 14} C${n1(xx + s * 20)},${y + 16} ${n1(xx + s * 8)},${y + 8} ${n1(xx)},${y}Z" fill="${i % 3 ? lf2 : lf}"/>`; }).join('')}</g>`;
+  addArt(r, vine(40, 330, 0) + vine(190, 220, 1.2) + vine(1420, 260, .6) + vine(1570, 360, 1.8), 1.25, 0, 0, 1, { shade: false });
+  const leaf = (x, y, a, s, c) => `<g transform="translate(${x} ${y}) rotate(${a}) scale(${s})"><path d="M0,0 C-40,-40 -50,-130 0,-200 C50,-130 40,-40 0,0Z" fill="${c}"/><path d="M0,-6 L0,-190" stroke="${lfD}" stroke-width="5" stroke-linecap="round"/>${[-150, -110, -70, -30].map(yy => `<path d="M0,${yy} L-24,${yy - 22} M0,${yy} L24,${yy - 22}" stroke="${lfD}" stroke-width="3" stroke-linecap="round" opacity=".6"/>`).join('')}</g>`;
+  addArt(r, `<g class="hang" style="animation-duration:5s">${leaf(-30, 960, 40, 1.2, lf)}${leaf(10, 960, 12, 1.1, lf2)}${leaf(70, 970, -14, .9, lf)}</g><g class="hang" style="animation-duration:5.6s;animation-delay:-2s">${leaf(1630, 960, -40, 1.2, lf)}${leaf(1590, 960, -12, 1.1, lf2)}${leaf(1530, 970, 16, .9, lf)}</g>`, 1.35, 0, 0, 1, { shade: false });
+  if (o.ground === false) return;
+  const rock = (x, y, s) => `<g transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="2" rx="70" ry="10" fill="#000" opacity=".15"/><path d="M-66,0 C-70,-40 -40,-66 0,-66 C44,-66 70,-40 66,0Z" fill="${night ? '#4A5048' : '#9AA096'}"/><path d="M-40,-50 C-20,-66 30,-66 50,-44 C30,-54 -10,-56 -40,-50Z" fill="${night ? '#2E4A30' : '#5EA84A'}"/><path d="M-30,-20 Q-10,-14 6,-22" stroke="${night ? '#3A403A' : '#7E847A'}" stroke-width="4" fill="none" stroke-linecap="round"/></g>`;
+  const shroom = (x, y, s, c) => `<g transform="translate(${x} ${y}) scale(${s})"><rect x="-6" y="-26" width="12" height="26" rx="5" fill="#F7EEDC"/><path d="M-22,-24 C-22,-44 22,-44 22,-24Z" fill="${c}"/><circle cx="-8" cy="-32" r="3.5" fill="#FFF"/><circle cx="7" cy="-35" r="3" fill="#FFF"/></g>`;
+  const flowers = (x, y) => [0, 1, 2, 3].map(i => { const fx = x + i * 22 - 30, fy = y - 18 - (i % 2) * 12, c = ['#F25C78', '#F7C23A', '#FFFFFF', '#C04CC8'][i]; return `<path d="M${fx},${y} L${fx},${fy}" stroke="${lfD}" stroke-width="3"/>${[0, 1, 2, 3, 4].map(k => `<circle cx="${n1(fx + Math.cos(k * 1.2566) * 5)}" cy="${n1(fy + Math.sin(k * 1.2566) * 5)}" r="4.5" fill="${c}"/>`).join('')}<circle cx="${fx}" cy="${fy}" r="3" fill="#E9A23B"/>`; }).join('');
+  addArt(r, rock(150, 820, .8) + rock(1470, 830, .95) + shroom(250, 830, 1, '#E8492C') + shroom(275, 836, .7, '#F06A1C') + shroom(1360, 840, .9, '#E8492C') + (night ? '' : flowers(380, 846) + flowers(1220, 850) + flowers(80, 870)), .95, 0, 0, 1, { shade: false });
+  if (!night) {
+    const bf = mk([[260, 420, '#F7A21B'], [1300, 380, '#8E5BD6'], [980, 300, '#2E9EE8']].map(([x, y, c], i) => `<g class="floaty" style="animation-duration:${3 + i}s"><g transform="translate(${x} ${y})"><g class="flap2" style="animation-duration:.3s"><path d="M0,0 C-20,-24 -34,-10 -24,4 C-16,12 -6,8 0,0Z M0,0 C20,-24 34,-10 24,4 C16,12 6,8 0,0Z" fill="${c}"/></g><ellipse cx="0" cy="2" rx="3" ry="9" fill="#3B2414"/></g></g>`).join(''));
+    bf.setAttribute('pointer-events', 'none'); r.append(pwrap(bf, 1.1));
+  }
+}
+const isNightSky = st => !!st && HEX.test(st[0][1]) && lum(st[0][1]) < .3;
+
+/* ══════════ Game 2: Pingalaka Panic Run — a side-scrolling runner ══════════ */
+function waveD(y, amp, per, x0, x1, ph = 0) { let d = `M${x0},1200 L${x0},${y}`; for (let x = x0; x <= x1; x += 25) d += ` L${x},${n1(y - amp * Math.sin(2 * Math.PI * x / per + ph))}`; return d + ` L${x1},1200Z`; }
+const OBST = {
+  rock: { w: 96, h: 64, m: () => `<ellipse cx="0" cy="2" rx="56" ry="9" fill="#000" opacity=".2"/><path d="M-50,0 C-54,-36 -30,-64 4,-64 C38,-62 54,-34 50,0Z" fill="#9AA096"/><path d="M-26,-50 C-10,-62 20,-62 36,-44 C20,-52 -4,-54 -26,-50Z" fill="#C8CCC2"/><path d="M-20,-18 Q-4,-12 10,-20" stroke="#7E847A" stroke-width="4" fill="none" stroke-linecap="round"/>` },
+  log: { w: 170, h: 58, m: () => `<ellipse cx="0" cy="2" rx="90" ry="10" fill="#000" opacity=".2"/><rect x="-84" y="-58" width="168" height="58" rx="29" fill="#8A5A2A"/><path d="M-70,-40 L60,-40 M-60,-18 L70,-18" stroke="#6E4420" stroke-width="4" stroke-linecap="round"/><ellipse cx="72" cy="-29" rx="22" ry="29" fill="#D9A66A"/><ellipse cx="72" cy="-29" rx="12" ry="17" fill="none" stroke="#B07A40" stroke-width="3"/><path d="M-30,-58 C-34,-74 -24,-82 -16,-78" stroke="#4FA83A" stroke-width="6" fill="none" stroke-linecap="round"/>` },
+  stump: { w: 80, h: 92, m: () => `<ellipse cx="0" cy="2" rx="50" ry="9" fill="#000" opacity=".2"/><path d="M-36,0 C-34,-30 -32,-60 -32,-84 L32,-84 C32,-60 34,-30 36,0Z" fill="#7A4B2A"/><ellipse cx="0" cy="-84" rx="32" ry="10" fill="#D9A66A"/><path d="M-16,-60 L-14,-10 M12,-70 L14,-20" stroke="#5A3418" stroke-width="4" stroke-linecap="round"/>` }
+};
+async function panicRun() {
+  const r = await cut('#9FD0A0');
+  sky(r, [[0, '#9ED8F2'], [.55, '#DFF0C8'], [1, '#BFD99A']], { clouds: false });
+  sun(r, 1300, 140, 56);
+  const layer = sp => { const g = G({}); g.sp = sp; r.append(g); return g; };
+  const far = layer(.12), mid = layer(.35), near = layer(.7), ground = layer(1);
+  far.append(mk(`<path d="${waveD(560, 40, 800, 0, 3200)}" fill="#9CC88A"/><path d="${waveD(600, 26, 533.33, 0, 3200, 1)}" fill="#86BA74"/>`));
+  for (const k of [0, 1]) {
+    const ox = k * 1600;
+    [[120, 640, .6], [520, 630, .55], [880, 640, .65], [1260, 630, .6]].forEach(([x, y, s]) => mid.append(tree(ox + x, y, s, { leaf: '#6EA860', hi: '#8EC878' })));
+    [[300, 720, 1.2], [1100, 730, 1.35]].forEach(([x, y, s]) => near.append(tree(ox + x, y, s, { leaf: '#3E8F3A', hi: '#6FBF4A', trunk: '#8A5A34' })));
+    [[700, 740, 1.1], [1450, 745, 1]].forEach(([x, y, s]) => near.append(bush(ox + x, y, s, '#4F8F3A', '#74B050')));
+  }
+  ground.append(mk(`<path d="M0,760 L3200,760 L3200,1200 L0,1200Z" fill="#8CC25A"/><path d="M0,800 L3200,800 L3200,860 L0,860Z" fill="#C9A45E" opacity=".55"/>`));
+  for (const k of [0, 1]) tufts(ground, 34, k * 1600, k * 1600 + 1600, 770, 900, '#5EA23E', 517);
+  const obsL = G({}); r.append(obsL);
+  const LX = 380, GY = 772;
+  const pg = actor(lion(), LX, GY, .56, { fx: -1 }); r.append(pg);
+  pg.inner.classList.add('moving'); lionMood(pg.inner, 'worried');
+  const treeL = G({}); r.append(treeL);
+  const fg = layer(1.3);
+  for (const k of [0, 1]) [[200, 960], [1000, 975]].forEach(([x, y]) => fg.append(bush(k * 1600 + x, y, 1.5, '#3F7A30', '#5E9A44')));
+  const hud = $('#munchhud'); hud.hidden = false; cleanups.push(() => { hud.hidden = true; });
+  const D = 15000; let dist = 0, speed = 0, target = 520, jy = 0, vy = 0, air = false, jumps = 0, bumps = 0, mooed = false, nextAt = 1400, slowT = 0, t = 0;
+  const obs = []; let banyanG = null, arriving = false;
+  const bar = () => { const n = Math.round(Math.min(1, dist / D) * 10); hud.textContent = `🦁 ${'●'.repeat(n)}${'○'.repeat(10 - n)} 🌳`; }; bar();
+  place(world, 0, 0, 1);
+  await reveal(); ambience('day');
+  await say('arjun', 'Pingalaka was so scared, he ran and ran through the jungle!');
+  const jump = () => { if (air || arriving) return; air = true; vy = -980; jumps++; SFX.whoosh(); };
+  await interaction('Tap the screen (or press Space) to make Pingalaka jump over the rocks and logs!', 'Tap the screen to help Pingalaka jump over the rocks and logs!', ctx => {
+    ctx.on(type => { if (type === 'down' || type === 'namaste') jump(); });
+    const key = e => { if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'Enter') { e.preventDefault(); jump(); } };
+    document.addEventListener('keydown', key);
+    let last = performance.now(), raf = 0, stopped = false;
+    const stop = () => { stopped = true; cancelAnimationFrame(raf); document.removeEventListener('keydown', key); };
+    cleanups.push(stop);
+    const d0 = ctx.done; ctx.done = v => { stop(); d0(v); };
+    const frame = now => {
+      if (stopped || ctx.fin) return;
+      const dt = Math.min(.05, (now - last) / 1000); last = now; t += dt;
+      // speed: steady jog, a stumble slows him for a moment, the MOO makes him sprint
+      if (!mooed && t > 11) {
+        mooed = true; target = 820; SFX.moo(1.3, .9); boom(r, 'MOOOOO!', 1100, 380, { size: 84 }); shakeScreen();
+        pg.inner.classList.add('running', 'wide'); lionMood(pg.inner, 'scared'); pg.parts.ears && pg.parts.ears.classList.add('ears-flat');
+        showHint('MOOO! Pingalaka runs even faster — keep jumping!');
+      }
+      slowT = Math.max(0, slowT - dt);
+      const want = arriving ? 0 : target * (slowT > 0 ? .55 : 1);
+      speed += (want - speed) * Math.min(1, dt * (arriving ? 8 : 2));
+      dist += speed * dt;
+      for (const L of [far, mid, near, ground, fg]) L.setAttribute('transform', `translate(${n1(-((dist * L.sp) % 1600))} 0)`);
+      // jumping
+      if (air) { vy += 2500 * dt; jy += vy * dt; if (jy >= 0) { jy = 0; vy = 0; air = false; } }
+      pg._t.y = GY + jy; pg._t.r = air ? Math.max(-12, Math.min(12, vy * .012)) : 0; applyT(pg);
+      // obstacles
+      if (!banyanG && dist > nextAt && dist < D - 1800) {
+        const kinds = Object.keys(OBST), k = kinds[Math.floor(Math.random() * kinds.length)], o = OBST[k];
+        const g = mk(o.m()); shade(g, true); obsL.append(g);
+        obs.push({ g, x: 1800, w: o.w, h: o.h, hit: false });
+        nextAt = dist + (mooed ? 620 + Math.random() * 380 : 760 + Math.random() * 480);
+      }
+      for (const o of obs) {
+        o.x -= speed * dt; o.g.setAttribute('transform', `translate(${n1(o.x)} ${GY})${o.hit ? ` rotate(${n1((o.spin = (o.spin || 0) + dt * 400))})` : ''}`);
+        if (!o.hit && Math.abs(o.x - (LX + 10)) < o.w / 2 + 60 && -jy < o.h - 12) {
+          o.hit = true; bumps++; slowT = .7; SFX.thud(); pg.inner.classList.add('wide'); later(() => { if (!mooed) pg.inner.classList.remove('wide'); }, 600);
+          if (!air) { air = true; vy = -420; }
+        }
+      }
+      while (obs.length && obs[0].x < -200) obs.shift().g.remove();
+      // the banyan tree comes into view; Pingalaka dashes behind it
+      if (!banyanG && dist > D - 1500) { banyanG = G({}); banyanG.bx = 1900; banyanG.append(banyan(0, GY + 8, .8, { leaf: '#3E8F3A', hi: '#74C255', bark: '#8A5A34' })); treeL.append(banyanG); }
+      if (banyanG) {
+        banyanG.bx -= speed * dt; banyanG.setAttribute('transform', `translate(${n1(banyanG.bx)} 0)`);
+        if (!arriving && banyanG.bx <= 1060) {
+          arriving = now; hideHint(); speed = Math.min(speed, 200);
+        }
+        if (arriving) {
+          pg._t.x += ((banyanG.bx + 30) - pg._t.x) * Math.min(1, dt * 2.2); applyT(pg);
+          if (now - arriving > 1700 && !pg.hidden2) {
+            pg.hidden2 = true; pg.inner.classList.remove('moving', 'running'); pg.parts.head.classList.add('duck'); SFX.rustle(); later(() => ctx.done(), 700);
+          }
+        }
+      }
+      bar();
+      raf = requestAnimationFrame(frame);
+    };
+    raf = requestAnimationFrame(frame);
+  });
+  hud.hidden = true;
+  SFX.chime();
+  await say('arjun', bumps === 0 ? 'What a run! Pingalaka cleared every rock and log!' : `Phew! ${jumps} big jumps! Pingalaka made it all the way to the banyan tree.`);
+  await say('pingalaka', 'I’ll hide behind this big banyan tree. Whatever made that sound… must be terrifying!');
+}
+
+/* ══════════ Scene 9: Pingalaka behind the banyan, the animals behind the bushes ══════════ */
+async function s9() {
+  const r = newStage('#8FA86A');
+  sky(r, [[0, '#A6D2A8'], [.6, '#D2E6BE'], [1, '#9FC07A']]);
+  jungleFar(r);
+  [[90, 650, .8], [360, 630, .6], [1260, 630, .65], [1520, 650, .85]].forEach(([x, y, s]) => r.append(tree(x, y, s, { leaf: '#5E9C52', hi: '#86B478' })));
+  hill(r, 745, '#6E9F45', { amp: 6, period: 1400 });
+  tufts(r, 40, -100, 1700, 745, 860, '#4F8F3A', 71);
+  // Pingalaka hides behind the trunk, only his head peeking out between the roots
+  const pg = actor(lion(), 815, 772, .88); r.append(pg);
+  pg.parts.head.classList.add('tilt'); pg.inner.classList.add('wide'); lionMood(pg.inner, 'worried');
+  r.append(banyan(830, 780, 1.05, { leaf: '#3E8F3A', hi: '#74C255', bark: '#8A5A34' }));
+  // the other animals have gathered to watch
+  const mk2 = (el, x, y, s, fx) => { const a = actor(el, x, y, s, { fx }); a.home = { x, y, s }; return a; };
+  const animals = [mk2(monkey(), 250, 735, 1.15, 1), mk2(bear(), 470, 745, 1.15, 1), mk2(rabbit(), 1150, 750, 1.3, -1), mk2(deer(), 1390, 740, 1.1, -1)];
+  r.append(...animals);
+  const spots = [[250, 880, 1.8], [500, 895, 1.9], [1150, 895, 1.8], [1400, 880, 1.9]];
+  const bushes = spots.map(([x, y, s], i) => bush(x, y, s, i % 2 ? '#3F7A30' : '#4F8F3A', '#6EAE4C'));
+  r.append(...bushes);
+  jungleNear(r, { ground: false });
+  const qs = [[300, 520], [1300, 520], [520, 560]].map(([x, y]) => S('text', { x, y, 'text-anchor': 'middle', 'font-family': "'Yatra One',serif", 'font-size': 64, fill: '#FFF7E6', stroke: INK, 'stroke-width': 7, 'paint-order': 'stroke', class: 'popin' }, '?'));
+  await reveal(); ambience('day');
+  await say('arjun', 'Pingalaka hid behind the big banyan tree. The other animals gathered around. Everyone looked confused.', { onPart: i => { if (i === 2) r.append(...qs); } });
+  qs.forEach(q => q.remove());
+  pg.parts.head.classList.remove('tilt');
+  await say('pingalaka', 'Did you hear that?! Do any of you know what made that terrible sound?');
+  animals.forEach(a => a.parts.head && a.parts.head.classList.add('tilt'));
+  hideCaption();
+  SFX.moo(1.3, .9); shakeScreen(); boom(r, 'MOOOOO!', 1300, 300, { size: 76 });
+  pg.inner.classList.add('shiver'); pg.parts.head.classList.add('duck'); lionMood(pg.inner, 'scared');
+  // everyone dives behind the bushes in front
+  animals.forEach((a, i) => { a.parts.head && a.parts.head.classList.remove('tilt'); later(() => { SFX.rustle(); tween(a, { x: spots[i][0], y: a.home.y + 210, s: a.home.s * .9 }, 650, ease.in); later(() => { const b = bushes[i]; b.inner && (b.inner.classList.remove('wiggle'), void b.getBoundingClientRect(), b.inner.classList.add('wiggle')); }, 600); }, 200 + i * 160); });
+  await sleep(1800);
+  await say('arjun', 'Whoosh! Pingalaka stayed behind the banyan tree… and everyone else hid behind the bushes!');
+  pg.inner.classList.remove('shiver');
+  await ask('Pingalaka is hiding because he’s scared. What do you do when you feel scared?');
 }
 
 /* ══════════ Onboarding · camera window · hand & face tracking · music ══════════
@@ -3245,7 +3450,7 @@ const MOODS = {
   game: { raga: 'bright', beat: .24, vol: .45, tabla: 'DNDNDDN-', mel: .75, inst: 'pluck', oct: 1 },
   night: { raga: 'calm', beat: .75, vol: .34, tabla: null, mel: .35, inst: 'flute', low: 1, bells: true }
 };
-const MUSIC = { intro: 'town', i2: 'court', i3: 'play', s1: 'calm', s2: 'town', s3: 'travel', s4: 'tense', s5: 'sad', s6: 'sad', s7: 'happy', g1: 'game', s8: 'tense', g2: 'tense', s9: 'tense', s10: 'sneaky', s11: 'sneaky', s12: 'play', s13: 'calm', s14: 'calm', s15: 'night' };
+const MUSIC = { intro: 'town', i2: 'court', i3: 'play', s1: 'calm', s2: 'town', s3: 'travel', s4: 'tense', s5: 'sad', s6: 'sad', s7: 'happy', g1: 'game', s8: 'tense', g2: 'game', s9: 'tense', s10: 'sneaky', s11: 'sneaky', s12: 'play', s13: 'calm', s14: 'calm', s15: 'night', outro: 'calm' };
 const Music = {
   bus: null, mood: null, timer: 0, step: 0, note: 4, talking: 0, duckT: 0, ducked: false,
   init() {
@@ -3359,7 +3564,7 @@ async function mooMunch() {
   const N = 8; let n = 0;
   const upd = () => { hud.textContent = `🌿 ${n} / ${N}`; }; upd();
   cleanups.push(() => { hud.hidden = true; });
-  await say('arjun', `${KID.name ? KID.name + ', l' : 'L'}et's help Sanjivaka eat lots of yummy food so he grows big and strong!`);
+  await say('arjun', "Let's help Sanjivaka eat lots of yummy food so he grows big and strong!");
   const kinds = ['grass', 'mango', 'banana', 'cane', 'melon', 'grass', 'mango', 'cane'];
   let item = null;
   const serve = () => {
@@ -3405,59 +3610,81 @@ async function mooMunch() {
   await say('arjun', `Wow${KID.name ? ', ' + KID.name : ''}! Eight big munches! Sanjivaka is full, happy and super strong!`);
 }
 
-/* ══════════ Onboarding: name → camera → begin ══════════ */
+/* ══════════ Onboarding: Arjun waves hello in the jungle → name → let's begin (camera optional) ══════════ */
+let onbArjun = null;
+function onboardBackdrop() {
+  const r = newStage('#BFE0A8');
+  sky(r, [[0, '#9ED8F2'], [.55, '#DCF0C8'], [1, '#BFE0A0']]);
+  sun(r, 1380, 140, 60);
+  jungleFar(r);
+  [[-20, 660, 1], [260, 640, .7], [1120, 640, .7], [1400, 650, .9], [1640, 670, 1.1]].forEach(([x, y, s]) => r.append(tree(x, y, s, { leaf: '#5FAE4A', hi: '#8ED062' })));
+  hill(r, 720, '#8CC25A', { amp: 10, period: 1300 });
+  tufts(r, 70, -100, 1700, 730, 900, '#5EA23E', 911);
+  [[80, 900, 1.5], [760, 930, 1.2], [1540, 910, 1.5]].forEach(([x, y, s]) => r.append(bush(x, y, s, '#4F8F3A', '#74B050')));
+  const portrait = innerWidth < innerHeight;
+  onbArjun = actor(person(ARJUN), portrait ? 800 : 400, portrait ? 640 : 860, portrait ? 1.15 : 1.75); r.append(onbArjun);
+  onbArjun.inner.classList.add('wave');
+  jungleNear(r, { ground: false });
+  r.append(S('rect', { x: -2000, y: -2000, width: 5600, height: 5000, fill: '#FFF6DC', opacity: .06, 'pointer-events': 'none' }));
+  $('#fade').classList.remove('on'); faded = false;
+}
+// Arjun's mouth moves while he speaks on the welcome screen
+function onbSay(t) {
+  stopSpeech();
+  const f = onbArjun && onbArjun.querySelector('.face'); if (f) f.classList.add('talking');
+  return speakOne(t, 'arjun').then(() => { if (f) f.classList.remove('talking'); });
+}
 (() => {
-  const step = k => { ['onb1', 'onb2', 'onb3'].forEach(id => { $('#' + id).hidden = id !== k; }); const f = $('#' + k).querySelector('input,button'); if (f) setTimeout(() => f.focus({ preventScroll: true }), 60); };
+  const step = k => { ['onb1', 'onb2'].forEach(id => { $('#' + id).hidden = id !== k; }); const f = $('#' + k).querySelector('input,button'); if (f) setTimeout(() => f.focus({ preventScroll: true }), 60); };
   const greet = 'Hello, my little friend! May I know your name?';
   let greeted = false;
-  const sayNow = t => { stopSpeech(); speakOne(t, 'arjun'); };
-  const wake = () => { if (greeted) return; greeted = true; unlockAudio(); sayNow(greet); };
+  const wake = () => { if (greeted) return; greeted = true; unlockAudio(); onbSay(greet); };
   $('#title').addEventListener('pointerdown', wake, { capture: true });
   $('#title').addEventListener('keydown', wake, { capture: true });
   if (KID.name) $('#kidname').value = KID.name;
-  // speech-to-text for the name
+  // the spoken name types itself into the box, letter by letter
+  let typeT = 0;
+  const typeInto = text => {
+    clearInterval(typeT); const inp = $('#kidname'); inp.value = ''; let i = 0; inp.classList.add('typing');
+    typeT = setInterval(() => { inp.value = text.slice(0, ++i); if (i >= text.length) { clearInterval(typeT); inp.classList.remove('typing'); } }, 110);
+  };
+  const clean = t => t.replace(/^(hello|hi|namaste)[,!.\s]*/i, '').replace(/^(my name is|my name's|i am|i'm|it's|it is|this is|call me|mera naam)\s+/i, '').replace(/\s+(hai|hoon|here)$/i, '').replace(/[^\p{L}\s'-]/gu, '').trim().split(/\s+/).slice(0, 2).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   const mic = $('#bmic');
-  if (!SR) mic.hidden = true;
+  if (!SR) { mic.hidden = true; $('#micnote').textContent = 'Type your name in the box.'; }
   else mic.addEventListener('click', () => {
     let rec; try { rec = new SR(); } catch (e) { mic.hidden = true; return; }
     rec.lang = 'en-IN'; rec.interimResults = false; rec.maxAlternatives = 1;
-    mic.classList.add('busy'); $('#micnote').textContent = 'Listening… say your name!';
+    stopSpeech(); mic.classList.add('busy'); $('#micnote').textContent = 'I’m listening… say your name!';
     rec.onresult = e => {
-      let t = (e.results[0][0].transcript || '').trim();
-      t = t.replace(/^(hello|hi|namaste)[,!.\s]*/i, '').replace(/^(my name is|my name's|i am|i'm|it's|it is|this is|call me|mera naam)\s+/i, '').replace(/\s+(hai|hoon|here)$/i, '').replace(/[^\p{L}\s'-]/gu, '').trim();
-      t = t.split(/\s+/).slice(0, 2).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-      if (t) { $('#kidname').value = t; $('#micnote').textContent = `Did I hear “${t}”? Tap Next!`; } else $('#micnote').textContent = "I didn't catch that. You can type it too!";
+      const t = clean(e.results[0][0].transcript || '');
+      if (t) { typeInto(t); $('#micnote').textContent = 'Is that right? Tap Next!'; onbSay(`${t}! What a lovely name. Is that right?`); }
+      else $('#micnote').textContent = "I didn't catch that. Try again, or type it!";
     };
-    rec.onerror = e => { $('#micnote').textContent = e.error === 'not-allowed' ? 'The microphone is off here. Typing works great!' : "I didn't catch that. You can type it too!"; };
+    rec.onerror = e => { $('#micnote').textContent = e.error === 'not-allowed' ? 'The microphone is off here, so please type your name.' : "I didn't catch that. Try again, or type it!"; };
     rec.onend = () => mic.classList.remove('busy');
     try { rec.start(); } catch (e) { mic.classList.remove('busy'); }
   });
   $('#nameform').addEventListener('submit', e => {
-    e.preventDefault(); unlockAudio(); greeted = true;
+    e.preventDefault(); unlockAudio(); greeted = true; clearInterval(typeT);
     const v = $('#kidname').value.replace(/[^\p{L}\s'-]/gu, '').replace(/\s+/g, ' ').trim().slice(0, 24);
     KID.name = v; try { localStorage.setItem('mb-kid-name', v); } catch (_) { }
-    const hi = v ? `Nice to meet you, ${v}!` : 'Nice to meet you!';
-    $('#camhi').textContent = hi;
-    step('onb2'); sayNow(`${hi} May I use your camera? Then you can help the story with your hands and your face!`);
+    $('#hiname').textContent = v ? `Lovely to meet you, ${v}!` : 'Lovely to meet you!';
+    step('onb2');
+    onbSay(`${v ? `Lovely to meet you, ${v}!` : 'Lovely to meet you!'} Let's begin with today's story. Would you like to play with your hands and face too? Then tap, turn on camera. Or just tap Begin Story!`);
   });
-  const toBegin = (msg, ms) => {
-    $('#camres').textContent = msg;
-    setTimeout(() => { step('onb3'); sayNow(`Let's begin with today's story${KID.name ? ', ' + KID.name : ''}!`); }, ms);
-  };
+  const camDone = (msg, say) => { $('#camcard').classList.add('done'); $('#camres').textContent = msg; onbSay(say); $('#begin').classList.add('glow'); };
   $('#camyes').addEventListener('click', async () => {
     unlockAudio(); $('#camyes').disabled = $('#camno').disabled = true;
     try {
       await Cam.start();
-      sayNow('Yay! I can see you! You can drag your little camera window anywhere.');
-      toBegin('Yay! I can see you! Drag the little window anywhere you like.', 2600);
-    } catch (e) {
-      console.warn('[camera] not available:', e); Cam.allowed = false;
-      sayNow("That's okay! You can tap and drag instead.");
-      toBegin("That's okay! You can tap and drag instead.", 2200);
+      camDone('Camera is on! You can drag your little window anywhere.', "Yay, I can see you! You can move your little window anywhere. Now tap Begin Story!");
+    } catch (err) {
+      console.warn('[camera] not available:', err); Cam.allowed = false;
+      camDone("No camera this time, and that's okay! You can tap and drag instead.", "That's okay! You can tap and drag instead. Tap Begin Story when you're ready!");
     }
   });
-  $('#camno').addEventListener('click', () => { unlockAudio(); Cam.allowed = false; sayNow("That's okay! You can tap and drag instead."); toBegin("That's okay! You can tap and drag instead.", 2000); });
+  $('#camno').addEventListener('click', () => { unlockAudio(); Cam.allowed = false; $('#camyes').disabled = $('#camno').disabled = true; camDone("No problem! You can tap and drag instead.", "That's okay! You can tap and drag instead. Tap Begin Story when you're ready!"); });
 })();
 
 const SCENES = [
@@ -3480,7 +3707,8 @@ const SCENES = [
   { id: 's12', label: 'Scene 12', title: 'The Monkey Who Pulled the Wedge', run: s12 },
   { id: 's13', label: 'Scene 13', title: 'What Have We Discovered?', run: s13 },
   { id: 's14', label: 'Scene 14', title: 'The Lesson', run: s14 },
-  { id: 's15', label: 'Scene 15', title: 'To Be Continued…', run: s15 }
+  { id: 's15', label: 'Scene 15', title: 'To Be Continued…', run: s15 },
+  { id: 'outro', label: 'Ending', title: 'Under the Banyan Tree', run: sOutro }
 ];
 
 /* ══════════ Title backdrop ══════════ */
@@ -3548,7 +3776,7 @@ $('#voicesel').addEventListener('change', e => {
 });
 fillVoiceMenu();
 
-titleBackdrop();
+onboardBackdrop();
 window.__story = { play: start, SCENES, Game, Input };
 })();
 </script>

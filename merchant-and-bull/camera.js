@@ -191,7 +191,7 @@ const MOODS = {
   game: { raga: 'bright', beat: .24, vol: .45, tabla: 'DNDNDDN-', mel: .75, inst: 'pluck', oct: 1 },
   night: { raga: 'calm', beat: .75, vol: .34, tabla: null, mel: .35, inst: 'flute', low: 1, bells: true }
 };
-const MUSIC = { intro: 'town', i2: 'court', i3: 'play', s1: 'calm', s2: 'town', s3: 'travel', s4: 'tense', s5: 'sad', s6: 'sad', s7: 'happy', g1: 'game', s8: 'tense', g2: 'tense', s9: 'tense', s10: 'sneaky', s11: 'sneaky', s12: 'play', s13: 'calm', s14: 'calm', s15: 'night' };
+const MUSIC = { intro: 'town', i2: 'court', i3: 'play', s1: 'calm', s2: 'town', s3: 'travel', s4: 'tense', s5: 'sad', s6: 'sad', s7: 'happy', g1: 'game', s8: 'tense', g2: 'game', s9: 'tense', s10: 'sneaky', s11: 'sneaky', s12: 'play', s13: 'calm', s14: 'calm', s15: 'night', outro: 'calm' };
 const Music = {
   bus: null, mood: null, timer: 0, step: 0, note: 4, talking: 0, duckT: 0, ducked: false,
   init() {
@@ -305,7 +305,7 @@ async function mooMunch() {
   const N = 8; let n = 0;
   const upd = () => { hud.textContent = `🌿 ${n} / ${N}`; }; upd();
   cleanups.push(() => { hud.hidden = true; });
-  await say('arjun', `${KID.name ? KID.name + ', l' : 'L'}et's help Sanjivaka eat lots of yummy food so he grows big and strong!`);
+  await say('arjun', "Let's help Sanjivaka eat lots of yummy food so he grows big and strong!");
   const kinds = ['grass', 'mango', 'banana', 'cane', 'melon', 'grass', 'mango', 'cane'];
   let item = null;
   const serve = () => {
@@ -351,57 +351,79 @@ async function mooMunch() {
   await say('arjun', `Wow${KID.name ? ', ' + KID.name : ''}! Eight big munches! Sanjivaka is full, happy and super strong!`);
 }
 
-/* ══════════ Onboarding: name → camera → begin ══════════ */
+/* ══════════ Onboarding: Arjun waves hello in the jungle → name → let's begin (camera optional) ══════════ */
+let onbArjun = null;
+function onboardBackdrop() {
+  const r = newStage('#BFE0A8');
+  sky(r, [[0, '#9ED8F2'], [.55, '#DCF0C8'], [1, '#BFE0A0']]);
+  sun(r, 1380, 140, 60);
+  jungleFar(r);
+  [[-20, 660, 1], [260, 640, .7], [1120, 640, .7], [1400, 650, .9], [1640, 670, 1.1]].forEach(([x, y, s]) => r.append(tree(x, y, s, { leaf: '#5FAE4A', hi: '#8ED062' })));
+  hill(r, 720, '#8CC25A', { amp: 10, period: 1300 });
+  tufts(r, 70, -100, 1700, 730, 900, '#5EA23E', 911);
+  [[80, 900, 1.5], [760, 930, 1.2], [1540, 910, 1.5]].forEach(([x, y, s]) => r.append(bush(x, y, s, '#4F8F3A', '#74B050')));
+  const portrait = innerWidth < innerHeight;
+  onbArjun = actor(person(ARJUN), portrait ? 800 : 400, portrait ? 640 : 860, portrait ? 1.15 : 1.75); r.append(onbArjun);
+  onbArjun.inner.classList.add('wave');
+  jungleNear(r, { ground: false });
+  r.append(S('rect', { x: -2000, y: -2000, width: 5600, height: 5000, fill: '#FFF6DC', opacity: .06, 'pointer-events': 'none' }));
+  $('#fade').classList.remove('on'); faded = false;
+}
+// Arjun's mouth moves while he speaks on the welcome screen
+function onbSay(t) {
+  stopSpeech();
+  const f = onbArjun && onbArjun.querySelector('.face'); if (f) f.classList.add('talking');
+  return speakOne(t, 'arjun').then(() => { if (f) f.classList.remove('talking'); });
+}
 (() => {
-  const step = k => { ['onb1', 'onb2', 'onb3'].forEach(id => { $('#' + id).hidden = id !== k; }); const f = $('#' + k).querySelector('input,button'); if (f) setTimeout(() => f.focus({ preventScroll: true }), 60); };
+  const step = k => { ['onb1', 'onb2'].forEach(id => { $('#' + id).hidden = id !== k; }); const f = $('#' + k).querySelector('input,button'); if (f) setTimeout(() => f.focus({ preventScroll: true }), 60); };
   const greet = 'Hello, my little friend! May I know your name?';
   let greeted = false;
-  const sayNow = t => { stopSpeech(); speakOne(t, 'arjun'); };
-  const wake = () => { if (greeted) return; greeted = true; unlockAudio(); sayNow(greet); };
+  const wake = () => { if (greeted) return; greeted = true; unlockAudio(); onbSay(greet); };
   $('#title').addEventListener('pointerdown', wake, { capture: true });
   $('#title').addEventListener('keydown', wake, { capture: true });
   if (KID.name) $('#kidname').value = KID.name;
-  // speech-to-text for the name
+  // the spoken name types itself into the box, letter by letter
+  let typeT = 0;
+  const typeInto = text => {
+    clearInterval(typeT); const inp = $('#kidname'); inp.value = ''; let i = 0; inp.classList.add('typing');
+    typeT = setInterval(() => { inp.value = text.slice(0, ++i); if (i >= text.length) { clearInterval(typeT); inp.classList.remove('typing'); } }, 110);
+  };
+  const clean = t => t.replace(/^(hello|hi|namaste)[,!.\s]*/i, '').replace(/^(my name is|my name's|i am|i'm|it's|it is|this is|call me|mera naam)\s+/i, '').replace(/\s+(hai|hoon|here)$/i, '').replace(/[^\p{L}\s'-]/gu, '').trim().split(/\s+/).slice(0, 2).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   const mic = $('#bmic');
-  if (!SR) mic.hidden = true;
+  if (!SR) { mic.hidden = true; $('#micnote').textContent = 'Type your name in the box.'; }
   else mic.addEventListener('click', () => {
     let rec; try { rec = new SR(); } catch (e) { mic.hidden = true; return; }
     rec.lang = 'en-IN'; rec.interimResults = false; rec.maxAlternatives = 1;
-    mic.classList.add('busy'); $('#micnote').textContent = 'Listening… say your name!';
+    stopSpeech(); mic.classList.add('busy'); $('#micnote').textContent = 'I’m listening… say your name!';
     rec.onresult = e => {
-      let t = (e.results[0][0].transcript || '').trim();
-      t = t.replace(/^(hello|hi|namaste)[,!.\s]*/i, '').replace(/^(my name is|my name's|i am|i'm|it's|it is|this is|call me|mera naam)\s+/i, '').replace(/\s+(hai|hoon|here)$/i, '').replace(/[^\p{L}\s'-]/gu, '').trim();
-      t = t.split(/\s+/).slice(0, 2).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-      if (t) { $('#kidname').value = t; $('#micnote').textContent = `Did I hear “${t}”? Tap Next!`; } else $('#micnote').textContent = "I didn't catch that. You can type it too!";
+      const t = clean(e.results[0][0].transcript || '');
+      if (t) { typeInto(t); $('#micnote').textContent = 'Is that right? Tap Next!'; onbSay(`${t}! What a lovely name. Is that right?`); }
+      else $('#micnote').textContent = "I didn't catch that. Try again, or type it!";
     };
-    rec.onerror = e => { $('#micnote').textContent = e.error === 'not-allowed' ? 'The microphone is off here. Typing works great!' : "I didn't catch that. You can type it too!"; };
+    rec.onerror = e => { $('#micnote').textContent = e.error === 'not-allowed' ? 'The microphone is off here, so please type your name.' : "I didn't catch that. Try again, or type it!"; };
     rec.onend = () => mic.classList.remove('busy');
     try { rec.start(); } catch (e) { mic.classList.remove('busy'); }
   });
   $('#nameform').addEventListener('submit', e => {
-    e.preventDefault(); unlockAudio(); greeted = true;
+    e.preventDefault(); unlockAudio(); greeted = true; clearInterval(typeT);
     const v = $('#kidname').value.replace(/[^\p{L}\s'-]/gu, '').replace(/\s+/g, ' ').trim().slice(0, 24);
     KID.name = v; try { localStorage.setItem('mb-kid-name', v); } catch (_) { }
-    const hi = v ? `Nice to meet you, ${v}!` : 'Nice to meet you!';
-    $('#camhi').textContent = hi;
-    step('onb2'); sayNow(`${hi} May I use your camera? Then you can help the story with your hands and your face!`);
+    $('#hiname').textContent = v ? `Lovely to meet you, ${v}!` : 'Lovely to meet you!';
+    step('onb2');
+    onbSay(`${v ? `Lovely to meet you, ${v}!` : 'Lovely to meet you!'} Let's begin with today's story. Would you like to play with your hands and face too? Then tap, turn on camera. Or just tap Begin Story!`);
   });
-  const toBegin = (msg, ms) => {
-    $('#camres').textContent = msg;
-    setTimeout(() => { step('onb3'); sayNow(`Let's begin with today's story${KID.name ? ', ' + KID.name : ''}!`); }, ms);
-  };
+  const camDone = (msg, say) => { $('#camcard').classList.add('done'); $('#camres').textContent = msg; onbSay(say); $('#begin').classList.add('glow'); };
   $('#camyes').addEventListener('click', async () => {
     unlockAudio(); $('#camyes').disabled = $('#camno').disabled = true;
     try {
       await Cam.start();
-      sayNow('Yay! I can see you! You can drag your little camera window anywhere.');
-      toBegin('Yay! I can see you! Drag the little window anywhere you like.', 2600);
-    } catch (e) {
-      console.warn('[camera] not available:', e); Cam.allowed = false;
-      sayNow("That's okay! You can tap and drag instead.");
-      toBegin("That's okay! You can tap and drag instead.", 2200);
+      camDone('Camera is on! You can drag your little window anywhere.', "Yay, I can see you! You can move your little window anywhere. Now tap Begin Story!");
+    } catch (err) {
+      console.warn('[camera] not available:', err); Cam.allowed = false;
+      camDone("No camera this time, and that's okay! You can tap and drag instead.", "That's okay! You can tap and drag instead. Tap Begin Story when you're ready!");
     }
   });
-  $('#camno').addEventListener('click', () => { unlockAudio(); Cam.allowed = false; sayNow("That's okay! You can tap and drag instead."); toBegin("That's okay! You can tap and drag instead.", 2000); });
+  $('#camno').addEventListener('click', () => { unlockAudio(); Cam.allowed = false; $('#camyes').disabled = $('#camno').disabled = true; camDone("No problem! You can tap and drag instead.", "That's okay! You can tap and drag instead. Tap Begin Story when you're ready!"); });
 })();

@@ -170,24 +170,37 @@ CSS2 = r"""
 @media (prefers-reduced-motion:reduce){.gwave,.cdrift,.sunpulse,.sunrays,.lampsw,.breath2{animation:none !important}}
 #scene{filter:saturate(1.12) contrast(1.02)}
 #warm{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 30%,rgba(255,200,120,.10),rgba(255,140,60,.08) 70%,rgba(200,80,30,.10));mix-blend-mode:soft-light}
-/* ─── onboarding ─── */
-#title{background:radial-gradient(ellipse at 50% 40%,rgba(40,20,40,.35),rgba(20,12,30,.82))}
-.onb{display:flex;flex-direction:column;align-items:center;gap:14px;max-width:min(640px,100%)}
-.onb .arj{width:clamp(110px,18vw,170px);height:auto;filter:drop-shadow(0 6px 0 rgba(59,36,20,.5));animation:arjbob 3s ease-in-out infinite alternate}
-@keyframes arjbob{from{transform:translateY(0)}to{transform:translateY(-6px)}}
-.bubble{position:relative;background:var(--paper);color:var(--ink);border:3px solid var(--ink);border-radius:22px;box-shadow:0 5px 0 var(--ink);padding:14px 22px 10px;font:700 clamp(18px,2.6vw,26px)/1.3 var(--body);text-wrap:balance}
-.bubble::before{content:"";position:absolute;left:50%;top:-14px;width:22px;height:22px;background:var(--paper);border-left:3px solid var(--ink);border-top:3px solid var(--ink);transform:translateX(-50%) rotate(45deg);border-radius:4px 0 0 0}
-#title .bubble p{margin:0;max-width:none;font:inherit;color:var(--ink)}
-#nameform{align-items:center}
-#kidname{font:700 22px/1.2 var(--body);color:var(--ink);background:#FFFDF6;border:3px solid var(--ink);border-radius:999px;padding:10px 18px 8px;width:min(260px,70vw);box-shadow:inset 0 2px 0 rgba(0,0,0,.08);text-align:center}
-#kidname:focus{outline:3px solid var(--gold);outline-offset:2px}
-#bmic{width:52px;height:52px;background:var(--leaf);color:var(--cream)}
-#bmic svg{width:26px;height:26px}
-#bmic.busy{animation:pulse 1s infinite;background:var(--kumkum)}
-.onb .note{margin:0;min-height:1.3em;font:600 15px/1.35 var(--body);color:var(--paper)}
-.onb .eyebrow{font:400 clamp(14px,1.8vw,18px)/1 var(--display);color:var(--gold);letter-spacing:.14em;text-transform:uppercase}
-.onb h1{margin:0;font:400 clamp(34px,6vw,72px)/.95 var(--display);color:var(--cream);text-shadow:0 4px 0 var(--ink),0 10px 30px rgba(0,0,0,.5);text-wrap:balance}
+/* ─── onboarding: Arjun waves from the jungle, the card sits beside him ─── */
+#title{background:linear-gradient(90deg,transparent 0,transparent 34%,rgba(20,40,20,.18) 60%,rgba(20,40,20,.32));align-items:flex-end;justify-content:center;padding:calc(env(safe-area-inset-top,0px) + 64px) max(16px,5vw) 24px}
+.onb{display:flex;flex-direction:column;align-items:stretch;gap:14px;width:min(540px,54vw);text-align:left}
+.onb .brand{display:flex;flex-direction:column;gap:4px;margin-bottom:4px}
+.onb .eyebrow{font:400 clamp(13px,1.5vw,16px)/1 var(--display);color:#FFF3C4;letter-spacing:.14em;text-transform:uppercase;text-shadow:0 2px 0 rgba(59,36,20,.6)}
+.onb h1{margin:0;font:400 clamp(26px,3.3vw,44px)/1 var(--display);color:var(--cream);text-shadow:0 4px 0 var(--ink),0 10px 24px rgba(0,0,0,.35);text-wrap:balance}
 .onb h1 span{color:var(--turmeric)}
+.bubble{position:relative;background:var(--paper);color:var(--ink);border:3px solid var(--ink);border-radius:24px;box-shadow:0 6px 0 var(--ink);padding:16px 22px 12px;font:700 clamp(19px,2.4vw,27px)/1.3 var(--body);text-wrap:balance}
+.bubble::before{content:"";position:absolute;left:-15px;top:28px;width:24px;height:24px;background:var(--paper);border-left:3px solid var(--ink);border-bottom:3px solid var(--ink);transform:rotate(45deg);border-radius:0 0 0 5px}
+#title .bubble p{margin:0;max-width:none;font:inherit;color:var(--ink)}
+#title .bubble p small{display:block;margin-top:6px;font:600 clamp(14px,1.6vw,17px)/1.35 var(--body);color:var(--ink-soft)}
+#nameform{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#kidname{flex:1;min-width:160px;font:700 24px/1.2 var(--body);color:var(--ink);background:#FFFDF6;border:3px solid var(--ink);border-radius:999px;padding:11px 20px 9px;box-shadow:0 4px 0 var(--ink)}
+#kidname.typing{caret-color:transparent;background:#FFF6D8}
+#kidname:focus{outline:3px solid var(--gold);outline-offset:2px}
+#bmic{width:56px;height:56px;background:var(--leaf);color:var(--cream)}
+#bmic svg{width:28px;height:28px}
+#bmic.busy{animation:pulse 1s infinite;background:var(--kumkum)}
+.onb .note{margin:0;min-height:1.3em;font:700 15px/1.35 var(--body);color:#FFF8E6;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+#camcard{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center;background:rgba(255,253,246,.94);color:var(--ink);border:3px solid var(--ink);border-radius:20px;box-shadow:0 4px 0 var(--ink);padding:12px 16px}
+#camcard .ic{grid-row:span 2;font-size:38px;line-height:1}
+#camcard b{font:800 17px/1.25 var(--body)}
+#camcard span{font:600 14px/1.35 var(--body);color:var(--ink-soft)}
+#camcard .row{grid-column:1/-1;justify-content:flex-start;margin-top:6px}
+#camcard.done .row{display:none}
+#camres{grid-column:1/-1;margin:0;font:700 15px/1.35 var(--body);color:var(--leaf)}
+#camres:empty{display:none}
+.onb .go{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+#begin.glow{animation:nudge 1.2s ease-in-out infinite}
+.onb .vpick{margin-top:2px}
+@media (max-width:760px),(orientation:portrait){#title{align-items:center;justify-content:flex-end;background:linear-gradient(to top,rgba(20,40,20,.45),transparent 60%)}.onb{width:min(540px,100%)}.bubble::before{left:40px;top:-15px;transform:rotate(135deg)}}
 .pill:disabled{opacity:.6;cursor:default}
 /* ─── camera window ─── */
 #camwin{position:absolute;left:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);width:clamp(120px,15vw,176px);aspect-ratio:4/3;z-index:43;border:3px solid var(--ink);border-radius:16px;box-shadow:0 4px 0 var(--ink),0 10px 24px rgba(0,0,0,.35);background:#1C1830;cursor:grab;touch-action:none}
@@ -202,6 +215,37 @@ CSS2 = r"""
 """
 style_end = src.index('</style>\n\n<div id="app">')
 src = src[:style_end] + CSS2 + src[style_end:]
+CSS3 = r"""
+/* ─── arms bend at the elbow ─── */
+.fore{transform-box:view-box;transform-origin:0 0;transition:transform .45s ease}
+.armL .fore{transform:rotate(-12deg)}.armR .fore{transform:rotate(12deg)}
+.open .armL .fore{transform:rotate(40deg)}.open .armR .fore{transform:rotate(-40deg)}
+.raise .armR .fore{transform:rotate(-30deg)}
+.hold .fore,.reach .fore,.walking .fore{transform:rotate(0)}
+.char.gesturing:not(.pray):not(.raise):not(.worry):not(.walking) .pose.armR .fore{animation:foreR 1.6s ease-in-out infinite alternate}
+@keyframes foreR{from{transform:rotate(-6deg)}to{transform:rotate(-46deg)}}
+.holder .pose.armR .fore{transform:rotate(0) !important;animation:none !important}
+.char:not(.holder).pray .nam{opacity:1}.char:not(.holder).pray .aswing{opacity:0}
+.wave .pose.armR{animation:waveA .55s ease-in-out infinite alternate !important}
+.wave .pose.armR .fore{animation:waveF .55s ease-in-out infinite alternate !important}
+@keyframes waveA{from{transform:rotate(-104deg)}to{transform:rotate(-92deg)}}
+@keyframes waveF{from{transform:rotate(-96deg)}to{transform:rotate(-58deg)}}
+/* ─── Sanjivaka chews while eating and opens wide to MOO ─── */
+.bmouth{transform-box:view-box;transform-origin:0 0}
+.bmo{opacity:0;transition:opacity .15s}
+.mooing .bmo{opacity:1}.mooing .bms{opacity:0}
+.mooing .bmouth{animation:moomouth .45s ease-in-out infinite alternate}
+.mooing .hidle{animation:moohead .9s ease-in-out infinite alternate !important}
+.eat .bmouth,.graze .bmouth,.chewing .bmouth{animation:chew .3s ease-in-out infinite alternate}
+@keyframes moomouth{from{transform:scale(.8,.7)}to{transform:scale(1.15,1.3)}}
+@keyframes moohead{from{transform:rotate(0)}to{transform:rotate(-12deg) translateY(-4px)}}
+@keyframes chew{from{transform:translate(-4px,0) scaleY(1)}to{transform:translate(4px,4px) scaleY(.45)}}
+/* ─── the lion's legs follow the rig while he runs ─── */
+.lion.moving .paw{animation:none !important}
+@media (prefers-reduced-motion:reduce){.wave .pose.armR,.wave .pose.armR .fore,.mooing .bmouth,.mooing .hidle,.eat .bmouth,.graze .bmouth{animation:none !important}}
+"""
+style_end = src.index('</style>\n\n<div id="app">')
+src = src[:style_end] + CSS3 + src[style_end:]
 
 ARJ = """<svg class="arj" viewBox="0 0 200 220" aria-hidden="true">
         <circle cx="100" cy="92" r="88" fill="#5E8C3F" stroke="#3B2414" stroke-width="5"/>
@@ -220,31 +264,26 @@ MIC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="
 a = src.index('  <div id="title" class="overlay">'); b = src.index('  <div id="menu" class="overlay" hidden>')
 src = src[:a] + f"""  <div id="title" class="overlay">
     <div class="onb" id="onb1">
-      {ARJ}
-      <div class="eyebrow">Panchatantra · Story Two</div>
-      <h1>The Merchant <span>&amp;</span> the Bull</h1>
-      <div class="bubble"><p>Hello, my little friend! May I know your name?</p></div>
-      <form id="nameform" class="row" autocomplete="off">
-        <input id="kidname" type="text" maxlength="24" placeholder="Type your name" aria-label="Your name" enterkeyhint="next">
+      <div class="brand"><div class="eyebrow">Panchatantra · Story Two</div><h1>The Merchant <span>&amp;</span> the Bull</h1></div>
+      <div class="bubble"><p>Hello, my little friend!<br>May I know your name?</p></div>
+      <form id="nameform" autocomplete="off">
+        <input id="kidname" type="text" maxlength="24" placeholder="Your name" aria-label="Your name" enterkeyhint="next">
         <button class="cbtn" id="bmic" type="button" aria-label="Say your name" title="Say your name">{MIC}</button>
         <button class="pill big" type="submit">Next →</button>
       </form>
-      <p class="note" id="micnote">Type your name, or tap the microphone and say it.</p>
+      <p class="note" id="micnote">Type your name, or tap the 🎤 and say it out loud.</p>
     </div>
     <div class="onb" id="onb2" hidden>
-      {ARJ}
-      <div class="bubble"><p><span id="camhi">Nice to meet you!</span> May I use your camera? Then you can help the story with your hands and face!</p></div>
-      <div class="row">
-        <button class="pill big" id="camyes" type="button">Yes, use my camera 📷</button>
-        <button class="pill alt" id="camno" type="button">Not now</button>
+      <div class="bubble"><p><span id="hiname">Lovely to meet you!</span><br>Let’s begin with today’s story!</p></div>
+      <div id="camcard">
+        <div class="ic">📷</div>
+        <b>Want to play with your hands and face?</b>
+        <span>Turn on the camera to wave, pinch and munch along with the story. The picture stays on this device.</span>
+        <div class="row"><button class="pill" id="camyes" type="button">Turn on camera</button><button class="pill alt" id="camno" type="button">No thanks</button></div>
+        <p id="camres"></p>
       </div>
-      <p class="note" id="camres">The picture stays on this device. You can turn it off any time.</p>
-    </div>
-    <div class="onb" id="onb3" hidden>
-      {ARJ}
-      <div class="bubble"><p>Let’s begin with today’s story!</p></div>
-      <div class="row">
-        <button class="pill big" id="begin" type="button">Begin Story</button>
+      <div class="go">
+        <button class="pill big" id="begin" type="button">Begin Story ▶</button>
         <button class="pill alt" id="pick" type="button">Choose a scene</button>
       </div>
       <label class="vpick"><span class="vh">Narrator voice</span><select id="voicesel" aria-label="Narrator voice"><option value="">Narrator voice: best Indian voice available</option></select></label>
@@ -321,7 +360,40 @@ src = sub1(src, "  g.append(S('circle', { cx: x, cy: y, r: rad * 2.2, fill: colo
            "  g.append(S('circle', { cx: x, cy: y, r: rad * 2.2, fill: color, opacity: .25, filter: 'url(#blur)', class: 'sunpulse' }));", 'sun pulse')
 
 src = sub1(src, "  [/\\bArjun\\b/g, 'Arjun'],", "  [/\\bArjun\\b/g, 'Arjun'], [/Bahushakti/g, 'Bahu-shakti'], [/Ugrashakti/g, 'Ugra-shakti'], [/Anantashakti/g, 'Anant-shakti'],", 'say-as princes')
-src = sub1(src, "\nconst SCENES = [", "\n" + camjs + "\nconst SCENES = [", 'camera inject')
+# 13. scenes 2 & 6 share the Mahilaropya backdrop; jungle scenes get far and near layers; the run game and hiding scene are new
+jung = (root / 'jungle.js').read_text(encoding='utf-8')
+src = sub1(src, """  sky(r, [[0, '#F6D38E'], [.7, '#FBE8BE'], [1, '#F3D9A2']]);
+  sun(r, 1330, 160, 64);
+  bazaar(r, 640);
+  hill(r, 650, '#D8B06C', { amp: 8, period: 1200 });
+  r.append(S('path', { d: 'M-2000,760 C200,730 1400,730 3600,760 L3600,860 C1400,830 200,830 -2000,860Z', fill: '#E7C68B', opacity: .8 }));
+  tufts(r, 30, -100, 1700, 660, 900, '#B89455', 4);
+  stall(r, 190, 700);""", """  mahilaBack(r);
+  stall(r, 190, 700);""", 's2 backdrop')
+a = src.index("  sky(r, [[0, '#E79A6B'], [.6, '#F3C995'], [1, '#E8C58A']]);"); b = src.index("  tufts(r, 70, -100, 1700, 670, 900, '#A88346', 6);\n") + len("  tufts(r, 70, -100, 1700, 670, 900, '#A88346', 6);\n")
+src = src[:a] + "  mahilaBack(r, { dusk: true });\n  const dbirds = [];\n  stall(r, 250, 700);\n" + src[b:]
+src = sub1(src, "  sky(r, o.sky || [[0, '#9CC7B0'], [.6, '#CFE3BE'], [1, '#B9D39A']]);\n", "  sky(r, o.sky || [[0, '#9CC7B0'], [.6, '#CFE3BE'], [1, '#B9D39A']]);\n  jungleFar(r, { night: isNightSky(o.sky) });\n", 'dense far')
+src = sub1(src, "  tufts(r, 110, -100, 1700, 740, 900, o.tuft || '#4F7F3A', 9);\n  return [...far, ...near];", "  tufts(r, 110, -100, 1700, 740, 900, o.tuft || '#4F7F3A', 9);\n  jungleNear(r, { night: isNightSky(o.sky) });\n  return [...far, ...near];", 'dense near')
+src = sub1(src, "  sky(r, o.sky || [[0, '#F4C57E'], [.6, '#F7DDA8'], [1, '#D7C27E']]);\n", "  sky(r, o.sky || [[0, '#F4C57E'], [.6, '#F7DDA8'], [1, '#D7C27E']]);\n  jungleFar(r, { c1: '#B8C47A', c2: '#9AB466' });\n  [[230, 620, .55], [620, 600, .5], [960, 610, .55], [1360, 620, .6]].forEach(([x, y, s]) => r.append(tree(x, y, s, { leaf: '#7FA84E', hi: '#A0C468' })));\n", 'lion far')
+src = sub1(src, "  tufts(r, 40, -100, 1700, 700, 900, o.tuft || '#A88A45', 61);\n  return trees;", "  tufts(r, 40, -100, 1700, 700, 900, o.tuft || '#A88A45', 61);\n  jungleNear(r);\n  return trees;", 'lion near')
+src = sub1(src, "  sky(r, [[0, '#7FA88A'], [.6, '#B9CFA0'], [1, '#8FA86A']]);\n  const b = banyan(800, 760, 1); r.append(b);", "  sky(r, [[0, '#7FA88A'], [.6, '#B9CFA0'], [1, '#8FA86A']]);\n  jungleFar(r);\n  const b = banyan(800, 760, 1); r.append(b);", 'banyan far')
+src = sub1(src, "  tufts(r, 40, -100, 1700, 745, 900, '#4F7F3A', 71);\n  return b;", "  tufts(r, 40, -100, 1700, 745, 900, '#4F7F3A', 71);\n  jungleNear(r);\n  return b;", 'banyan near')
+src = sub1(src, "  sky(r, [[0, '#B7D6A6'], [.6, '#D8E6C0'], [1, '#A9C98A']]);\n  const bny = banyan(800, 640, .42", "  sky(r, [[0, '#B7D6A6'], [.6, '#D8E6C0'], [1, '#A9C98A']]);\n  jungleFar(r);\n  const bny = banyan(800, 640, .42", 's11 far')
+src = sub1(src, "  const ka = actor(jackal(KARATAKA), 560, 780, 1.4), da = actor(jackal(DAMANAKA), 1040, 780, 1.4, { fx: -1 });", "  jungleNear(r);\n  const ka = actor(jackal(KARATAKA), 560, 780, 1.4), da = actor(jackal(DAMANAKA), 1040, 780, 1.4, { fx: -1 });", 's11 near')
+# Pingalaka shivers when he hears the MOO
+src = sub1(src, "  pg.parts.ears.classList.add('ears-up'); pg.inner.classList.add('wide'); lionMood(pg.inner, 'scared');\n  tween(pg, { y: 640 }, 200, ease.out).then(() => tween(pg, { y: 720 }, 260, ease.in));\n  await sleep(900);",
+           "  pg.parts.ears.classList.add('ears-up'); pg.inner.classList.add('wide'); lionMood(pg.inner, 'scared');\n  tween(pg, { y: 640 }, 200, ease.out).then(() => tween(pg, { y: 720 }, 260, ease.in));\n  later(() => pg.inner.classList.add('shiver'), 460);\n  await sleep(900);", 's8 shiver')
+src = sub1(src, "  await say('pingalaka', 'O Man! What kind of monster makes such a sound?');\n", "  await say('pingalaka', 'O Man! What kind of monster makes such a sound?');\n  pg.inner.classList.remove('shiver');\n", 's8 unshiver')
+# Game 2 is now played in the page; v6's g2 and s9 are replaced by jungle.js
+a = src.index('async function g2() {'); b = src.index('function peekEyes(x, y) {')
+src = src[:a] + "async function g2() {\n  await gameCard('Pingalaka Panic Run', 'GAME TWO');\n  await panicRun();\n}\n\n" + src[b:]
+# Sanjivaka's face moves whenever he moos
+src = sub1(src, "  moo(k = 1, v = 1) { const d = 2.1 * k;", "  moo(k = 1, v = 1) { const d = 2.1 * k; world.querySelectorAll('.bullc[data-sanj]').forEach(b => { b.classList.add('mooing'); setTimeout(() => b.classList.remove('mooing'), d * 1000); });", 'moo face')
+# the story ends back under the banyan with Vishnu Sharma and the princes
+src = sub1(src, "  SFX.sparkle(); await sleep(1400);\n  await A(fadeTo(true));\n  await showEnd();\n}", "  SFX.sparkle(); await sleep(1400);\n}", 's15 end')
+src = sub1(src, "  { id: 's15', label: 'Scene 15', title: 'To Be Continued…', run: s15 }", "  { id: 's15', label: 'Scene 15', title: 'To Be Continued…', run: s15 },\n  { id: 'outro', label: 'Ending', title: 'Under the Banyan Tree', run: sOutro }", 'scene outro')
+src = sub1(src, "titleBackdrop();\nwindow.__story", "onboardBackdrop();\nwindow.__story", 'onboard backdrop')
+src = sub1(src, "\nconst SCENES = [", "\n" + jung + "\n" + camjs + "\nconst SCENES = [", 'camera inject')
 
 out = root / 'the-merchant-and-the-bull.html' 
 out.write_text(src, encoding='utf-8')

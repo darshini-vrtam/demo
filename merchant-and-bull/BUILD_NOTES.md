@@ -136,3 +136,18 @@ Built from the v6 story by `python3 build_v7.py`: everything (intro, 15 scenes, 
 - **Living backgrounds everywhere**: grass sways, clouds drift across light skies, the sun's glow breathes, plus a warm colour grade.
 - **Music & SFX**: a procedural score (tanpura drone, bansuri/shehnai melody, soft tabla) with a mood per scene. It dips under speech and pauses for the iframe game. New sounds: fanfare, bell, snore, yawn, wheee, hooves, water, market bustle.
 - **Artifact limits**: claude.ai artifacts block the camera, microphone and external scripts/iframes. There, the page falls back to typing and tap/drag. Host the HTML on a normal web origin (https) for camera, mic and tracking.
+
+### v7.2 — feedback round
+- **Onboarding**: Arjun stands in a sunny jungle and waves while he asks "Hello, my little friend! May I know your name?". A spoken name types itself into the box. After Next, Arjun says "Let's begin with today's story!", and an optional camera card offers to turn the camera on. Arjun is drawn in the story's character style; no Arjun SVG has been received yet.
+- **Using the child's name**: it appears in two of Arjun's questions (Intro 3 and Scene 1), plus the greetings.
+- **Intro 1**: the "busy city" line and Vardhamanaka selling pots are removed.
+- **Intro 3**: Anantashakti sleeps in a bed under a full quilt with only his face showing, framed above the caption.
+- **Scene 1**: the thought bubble sits fully on screen. Inside it, a little scene shows Pingalaka peeking from behind a banyan and Damanaka talking.
+- **Arms**: every person now has an upper arm, elbow, forearm, wrist and a hand with a thumb. The namaste overlay bends at the elbows to joined palms.
+- **Backdrops**: Scenes 2 and 6 use the Mahilaropya backdrop (dusk in Scene 6). Jungle scenes add a misty far tree line, hanging vines, big corner leaves, mossy rocks, mushrooms, flowers and butterflies.
+- **Pingalaka**:
+  - shivers after the MOO in Scene 8.
+  - **Game 2 · Panic Run** is a side-scrolling runner played in the page. Tap or Space to jump rocks, logs and stumps. Halfway through, a MOO makes him sprint. He ends hiding behind the banyan tree.
+  - **Scene 9**: Pingalaka peeks from behind the banyan while a monkey, bear, rabbit and deer watch. He asks about the sound, a loud MOO plays, and they all dive behind the foreground bushes.
+- **Sanjivaka**: his mouth chews while he eats or grazes, and opens wide (head lifting) whenever he moos.
+- **Ending**: a new last scene returns to the Scene 1 banyan with Vishnu Sharma and the princes, then shows the end card.

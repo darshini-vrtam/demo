@@ -146,15 +146,15 @@ function nameTag(r, text, x, y, col) {
 const focus = (x, y, s, ms = 1800) => anim(world, { x: 800 - s * x, y: 450 - s * y, s }, ms, ease.io);
 
 /* ══════════ Opening 1: Mahilaropya ══════════ */
-async function i1() {
-  const r = newStage('#F7C98A');
-  sky(r, [[0, '#FFC97E'], [.45, '#FFE2AE'], [.8, '#FFF0CF'], [1, '#FCE7C0']]);
-  sun(r, 400, 200, 76, '#FFF2B8');
+function mahilaBack(r, o = {}) {
+  const dusk = !!o.dusk;
+  sky(r, dusk ? [[0, '#E98A5E'], [.45, '#F6B87E'], [.8, '#FBD9A6'], [1, '#F3CF98']] : [[0, '#FFC97E'], [.45, '#FFE2AE'], [.8, '#FFF0CF'], [1, '#FCE7C0']]);
+  sun(r, dusk ? 1250 : 400, dusk ? 430 : 200, dusk ? 86 : 76, dusk ? '#FFD58A' : '#FFF2B8');
   const birds = [bird(220, 250, .8), bird(280, 280, .6), bird(1250, 230, .7), bird(1320, 260, .55)];
   birds.forEach(b => r.append(pwrap(b, 1.2)));
   birds.forEach((b, i) => tween(b, { x: b._t.x + (i < 2 ? 600 : -600), y: b._t.y - 60 }, 30000, ease.lin));
-  addArt(r, hillMk(590, 26, 900, .4, '#B5D47A') + [80, 230, 1380, 1520].map((x, i) => cypressM(x, 620, 150 + i * 14, '#3E8F5A')).join(''), .18);
-  [[120, 640, .55], [330, 650, .5], [1240, 645, .5], [1450, 640, .6]].forEach(([x, y, s]) => r.append(tree(x, y, s, { leaf: '#5FAE4A', hi: '#8ED062' })));
+  addArt(r, hillMk(590, 26, 900, .4, dusk ? '#C9B06A' : '#B5D47A') + [80, 230, 1380, 1520].map((x, i) => cypressM(x, 620, 150 + i * 14, dusk ? '#4E7A4A' : '#3E8F5A')).join(''), .18);
+  [[120, 640, .55], [330, 650, .5], [1240, 645, .5], [1450, 640, .6]].forEach(([x, y, s]) => r.append(tree(x, y, s, { leaf: dusk ? '#6E8F45' : '#5FAE4A', hi: dusk ? '#9AB060' : '#8ED062' })));
   addArt(r, havelliM(220, 210, '#EBB476', { dome: true }), .25, 40, 650);
   addArt(r, havelliM(170, 160, '#F2C48A'), .25, 1320, 650);
   addArt(r, palaceM(), .3, 800, 655, .78, { unified: true });
@@ -162,6 +162,12 @@ async function i1() {
   hill(r, 700, '#F3CB92', { amp: 4, period: 1600 });
   r.append(S('path', { d: 'M-2000,712 C200,700 1400,700 3600,712 L3600,2000 L-2000,2000Z', fill: '#EFC58C' }));
   r.append(S('ellipse', { cx: 800, cy: 760, rx: 820, ry: 50, fill: '#F7D9A8', opacity: .55 }));
+  if (dusk) r.append(S('rect', { x: -2000, y: -2000, width: 5600, height: 5000, fill: '#E8743A', opacity: .12, 'pointer-events': 'none' }));
+  tufts(r, 26, -100, 1700, 760, 900, '#C9A45E', 4);
+}
+async function i1() {
+  const r = newStage('#F7C98A');
+  mahilaBack(r);
   // mid-ground stalls and an ox cart crossing the square
   addArt(r, stallM(150, ['#8E5BD6', '#B98AEE'], w => fruitPile(-34, -96, ['#F25C3C', '#F7A21B']) + fruitPile(34, -96, ['#7DBB3C', '#F2C14E']), { cloth: '#2E9E8A', garlands: true, h: 180 }), .7, 470, 720, .62);
   addArt(r, stallM(150, ['#F06A1C', '#F7C24A'], w => fruitPile(-30, -96, ['#E8492C', '#F7A21B']) + potM(36, -92, .5), { cloth: '#3E62C8', garlands: true, h: 180 }), .7, 1130, 720, .62);
@@ -185,7 +191,6 @@ async function i1() {
   r.append(actor(person({ turban: '#F7A21B', stripe: '#FFE08A', cloth: '#FFF3E0', lower: '#F4EBDD', skin: '#C98A5E', mustache: true, waist: '#C8452C', carry: 'garland' }), 300, 820, .92));
   addArt(r, flowerPot(40, 930, 1.1, '#C04CC8') + flowerPot(330, 950, .9, '#F25C78'), 1.1);
   addArt(r, stallM(330, ['#3E62C8', '#F2C14E'], w => potM(-110, -94, .8) + potM(-40, -94, .95, '#B85A30') + potM(30, -94, .8, '#D07A48') + potM(100, -94, .9), { cloth: '#7A4B2A', h: 260 }), 1, 1440, 900, 1);
-  const mer = actor(person(MERCHANT), 1250, 860, 1); r.append(mer); mer.inner.classList.add('gesturing');
   addArt(r, potM(1560, 930, 1.1) + potM(1290, 950, .9, '#B85A30') + potM(1620, 960, .8, '#D07A48'), 1.1);
   r.append(tree(-40, 700, 2.3, { leaf: '#3E8F3A', hi: '#6FBF4A', trunk: '#8A5A34' }), tree(1650, 700, 2.3, { leaf: '#3E8F3A', hi: '#6FBF4A', trunk: '#8A5A34' }));
   motes(r, 24, '#FFE9A8', { seed: 301, y0: 120, y1: 700 });
@@ -194,8 +199,6 @@ async function i1() {
   tween(world, { x: 800 - 1.12 * 960, y: 450 - 1.12 * 500, s: 1.12 }, 16000, ease.io);
   await say('arjun', `Namaste, ${kidName()}! I'm Arjun. Come with me to a faraway land, long, long ago…`);
   await say('arjun', 'Once upon a time, in the kingdom of Mahilaropya, there lived a king named Amara Shakthi.');
-  await say('arjun', 'Mahilaropya was a busy, happy city, full of markets, flowers and friendly faces.');
-  await say('merchant', 'Pots! Beautiful pots! Fresh from the kiln!');
   hideCaption();
   await anim(world, { x: 800 - 1.9 * 800, y: 450 - 1.9 * 560, s: 1.9 }, 2600, ease.io);
 }
@@ -372,11 +375,14 @@ async function i3() {
   // spinning top
   addArt(r, `<g class="spintop"><path d="M0,0 L-24,-30 C-24,-50 24,-50 24,-30Z" fill="#C8452C"/><path d="M-22,-34 Q0,-26 22,-34" stroke="${GOLDC}" stroke-width="5" fill="none"/><rect x="-3" y="-60" width="6" height="18" rx="3" fill="#7A4B2A"/></g>`, 1, 1000, 900, 1, { shade: false });
   // Anantashakti asleep on his mat: on his back, legs apart, tucked under a quilt
-  addArt(r, `<path d="M-270,0 L270,0 L248,-40 L-248,-40Z" fill="#E2B862"/>${Array.from({ length: 12 }, (_, i) => `<path d="M${-240 + i * 44},-40 L${-262 + i * 48},0" stroke="#C99A44" stroke-width="3"/>`).join('')}`, 1, 1190, 900, 1);
-  const p3s = actor(sleeper(PRINCES[2]), 1200, 892, 1); r.append(p3s);
-  const p3 = actor(person({ ...PRINCES[2], seated: 'cross' }), 1180, 892, .92); p3.style.opacity = 0; p3.style.pointerEvents = 'none'; p3.style.transition = 'opacity .7s'; p3s.style.transition = 'opacity .7s'; r.append(p3);
+  const p3s = actor(sleeper(PRINCES[2]), 1275, 870, .86); r.append(p3s);
+  const p3 = actor(person({ ...PRINCES[2], seated: 'cross' }), 1200, 775, .8); p3.style.opacity = 0; p3.style.pointerEvents = 'none'; p3.style.transition = 'opacity .7s'; p3s.style.transition = 'opacity .7s';
+  const bedWake = actor(sleeper(PRINCES[2]), 1275, 870, .86); bedWake.querySelector('.face').remove(); bedWake.querySelector('.breath2').remove(); bedWake.style.opacity = 0; bedWake.style.transition = 'opacity .7s'; bedWake.style.pointerEvents = 'none';
+  const lap = mk(`<path d="M-120,0 C-120,-40 -60,-56 0,-56 C60,-56 120,-40 120,0Z" fill="#2E9E8A"/><path d="M-110,-14 Q0,-30 110,-14" stroke="#F7A21B" stroke-width="7" fill="none" stroke-linecap="round"/>${[-70, -20, 30, 80].map(x => `<circle cx="${x}" cy="-30" r="5" fill="#F2C14E"/>`).join('')}`);
+  place(lap, 1200, 777, .8); lap.style.opacity = 0; lap.style.transition = 'opacity .7s'; lap.setAttribute('pointer-events', 'none');
+  r.append(bedWake, p3, lap);
   const zz = mk(`<g class="zzz"><text x="0" y="0" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="40" fill="#6A3E9E" stroke="#FFF6DE" stroke-width="5" paint-order="stroke">z</text><text x="26" y="-30" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="30" fill="#6A3E9E" stroke="#FFF6DE" stroke-width="5" paint-order="stroke">z</text><text x="46" y="-56" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="22" fill="#6A3E9E" stroke="#FFF6DE" stroke-width="4" paint-order="stroke">z</text></g>`);
-  place(zz, 1010, 760, 1); zz.setAttribute('pointer-events', 'none'); r.append(zz);
+  place(zz, 1080, 660, 1); zz.setAttribute('pointer-events', 'none'); r.append(zz);
   addArt(r, flowerPot(60, 860, 1.2, '#F25C78') + flowerPot(1560, 880, 1.1, '#C04CC8'), 1.3);
   addArt(r, curtainM(-30, 110, -40, 900, '#F3E2C2', 'left') + `<g transform="translate(1600 0) scale(-1 1)">${curtainM(-30, 110, -40, 900, '#F3E2C2', 'left')}</g>`, 1.4, 0, 0, 1, { shade: false });
   motes(r, 18, '#FFF2C0', { seed: 91, depth: .9 });
@@ -393,18 +399,18 @@ async function i3() {
   tag.remove(); await focus(690, 640, 1.6);
   tag = nameTag(r, 'Ugrashakti', 690, 450, '#2E8A70'); SFX.hoof(); later(() => SFX.creak(), 500);
   await say('arjun', 'This is Ugrashakti. Giddy-up! He galloped on his wooden horse, pretending to ride into battle.');
-  tag.remove(); await focus(1200, 780, 1.6);
-  tag = nameTag(r, 'Anantashakti', 1200, 680, '#E8642B'); SFX.snore();
+  tag.remove(); await focus(1250, 760, 1.6);
+  tag = nameTag(r, 'Anantashakti', 1260, 590, '#E8642B'); SFX.snore();
   await say('arjun', 'And this is Anantashakti. He loved to sleep… and sleep… and sleep!');
   tag.remove();
   await interaction('Anantashakti is fast asleep! Tap him to wake him up.', null, ctx => {
     tappables(ctx, [p3s], it => { it._done = true; unkey(it); SFX.pop(); ctx.done(); });
   });
   zz.remove(); SFX.yawn();
-  p3s.style.opacity = 0; p3s.style.pointerEvents = 'none'; p3.style.opacity = 1; p3.style.pointerEvents = ''; p3.inner.classList.add('hold'); setMood(p3.inner, 'o');
+  p3s.style.opacity = 0; p3s.style.pointerEvents = 'none'; bedWake.style.opacity = 1; lap.style.opacity = 1; p3.style.opacity = 1; p3.style.pointerEvents = ''; p3.inner.classList.add('hold'); setMood(p3.inner, 'o');
   later(() => p3s.remove(), 800);
   await sleep(1200);
-  p3.inner.classList.remove('hold'); setMood(p3.inner, 'smile'); SFX.chime(); sparkles(r, 1180, 640, 8, 90);
+  p3.inner.classList.remove('hold'); setMood(p3.inner, 'smile'); SFX.chime(); sparkles(r, 1150, 560, 8, 90);
   await say('princes', 'Huh? Is it time to play?');
   focus(800, 480, 1.08, 2200).catch(() => { });
   await say('arjun', 'But the princes ran from every book they saw.');
@@ -413,7 +419,7 @@ async function i3() {
 }
 
 /* ══════════ Scene 1: Vishnu Sharma under the banyan ══════════ */
-async function s1() {
+function banyanSchool() {
   const r = newStage('#9CC47A');
   sky(r, [[0, '#E9F3B8'], [.55, '#CFE6A0'], [1, '#B4D68A']]);
   const rays = mk(`<g filter="url(#blur)" opacity=".75"><path class="ray" d="M1500,-50 L1660,-50 L900,900 L620,900Z" fill="url(#rayg)"/><path class="ray" style="animation-delay:-2.5s" d="M1300,-50 L1400,-50 L560,900 L380,900Z" fill="url(#rayg)"/></g>`); rays.setAttribute('pointer-events', 'none');
@@ -433,6 +439,10 @@ async function s1() {
   r.append(...pr);
   addArt(r, `<g transform="translate(-40 0)">${['#3E9A3E', '#5EB04A', '#2E8B4E'].map((c, i) => `<path d="M${i * 30},0 C${-20 + i * 30},-60 ${10 + i * 30},-120 ${40 + i * 20},-150 C${30 + i * 30},-100 ${30 + i * 30},-50 ${20 + i * 30},0Z" fill="${c}"/>`).join('')}</g>`, 1.4, 1560, 920, 1.2);
   addArt(r, `<g>${['#3E9A3E', '#5EB04A', '#2E8B4E'].map((c, i) => `<path d="M${i * 30},0 C${-20 + i * 30},-60 ${10 + i * 30},-120 ${40 + i * 20},-150 C${30 + i * 30},-100 ${30 + i * 30},-50 ${20 + i * 30},0Z" fill="${c}"/>`).join('')}</g>`, 1.4, 20, 930, 1.1);
+  return { r, sage, pr };
+}
+async function s1() {
+  const { r, sage, pr } = banyanSchool();
   place(world, 800 - 1.05 * 800, 450 - 1.05 * 520, 1.05);
   await reveal(); ambience('glow'); bgLife('garden');
   tween(world, { x: 800 - 1.1 * 800, y: 450 - 1.1 * 545, s: 1.1 }, 14000, ease.io);
@@ -472,17 +482,49 @@ async function s1() {
   await say('princes', `Namaste, ${kidName()}!`);
   sage.parts.head.classList.remove('hdown'); sage.inner.classList.remove('namaste'); pr.forEach(p => { p.parts.head.classList.remove('hdown'); p.inner.classList.remove('namaste'); });
   await say('arjun', 'Vishnu Sharma took the three sons under his fold and said:');
-  const tb = thought(r, 800, 205); place(tb, 800, 205, .05); await anim(tb, { s: 1 }, 600, ease.io);
-  const lh = place(lionHead(), -60, 10, .72); tb.content.append(lh);
+  await anim(world, { x: 0, y: 0, s: 1 }, 1200, ease.io);
+  const tb = thought(r, 800, 260); place(tb, 800, 260, .05); await anim(tb, { s: 1.3 }, 600, ease.io);
+  const cid = uid('tbc');
+  sdefs.append(S('clipPath', { id: cid }, [[-120, 0, 66], [-40, -40, 82], [60, -36, 80], [130, 6, 60], [40, 40, 70], [-60, 40, 66], [0, 0, 90]].map(([x, y, rr]) => S('circle', { cx: x, cy: y, r: rr }))));
+  tb.content.setAttribute('clip-path', `url(#${cid})`);
+  const mini = G({}); tb.content.append(mini);
+  mini.append(mk(`<rect x="-200" y="-140" width="400" height="280" fill="#CFE6A8"/><path d="M-200,60 C-100,40 60,46 200,56 L200,140 L-200,140Z" fill="#8CC25A"/>`));
+  const mlion = shade(lion(), true); mlion.parts.head.style.opacity = 0; mini.append(place(G({}, mlion), -50, 70, .3));
+  mini.append(mk(`<path d="M-104,74 C-98,30 -96,-10 -90,-40 L-58,-40 C-52,-10 -50,30 -44,74Z" fill="#8A5A34"/>${[[-130, -60, 44], [-74, -84, 52], [-20, -62, 42], [-104, -36, 38], [-44, -34, 36]].map(([x, y, rr]) => `<circle cx="${x}" cy="${y}" r="${rr}" fill="#3E8F3A"/>`).join('')}${[[-140, -70], [-80, -100], [-28, -74]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="16" fill="#74C255"/>`).join('')}<path d="M-130,-30 C-128,0 -130,40 -126,74 M-36,-30 C-34,10 -38,40 -34,74" stroke="#6E4A2E" stroke-width="5" fill="none" stroke-linecap="round"/>`));
+  const mlionHead = lionHead(); mlionHead.parts.ears.classList.add('ears-up'); mini.append(place(G({}, mlionHead), -112, 24, .46));
   await say('vishnu', 'Listen carefully. There was once a lion king named Pingalaka.');
-  lh.classList.add('wide'); lh.parts.ears.classList.add('ears-up'); lionMood(lh, 'scared');
-  await say('vishnu', 'One day, a strange sound filled the forest and frightened him.');
-  const jk = place(shade(jackal(DAMANAKA), true), 76, 86, .6); tb.content.append(G({ class: 'popin' }, jk));
+  mlionHead.classList.add('wide'); lionMood(mlionHead, 'scared'); mlionHead.classList.add('shiver');
+  await say('vishnu', 'One day, a strange sound filled the forest and frightened him. He ran and hid behind a banyan tree.');
+  const jk = shade(jackal(DAMANAKA), true); const jkw = G({ class: 'popin' }, place(G({}, jk), 92, 76, .3)); mini.append(jkw);
+  const dots = mk(`<g class="popin"><ellipse cx="0" cy="0" rx="34" ry="20" fill="#FFF"/><circle cx="-12" cy="0" r="4" fill="#3B2414"/><circle cx="0" cy="0" r="4" fill="#3B2414"/><circle cx="12" cy="0" r="4" fill="#3B2414"/><path d="M-6,16 L-14,30 L6,18Z" fill="#FFF"/></g>`); place(dots, 70, -40, 1); mini.append(dots);
+  const jkFaces = [...jk.querySelectorAll('[data-who]')]; jkFaces.forEach(e => e.classList.add('talking'));
   await say('vishnu', 'A cunning jackal came forward and cleverly set out to discover the truth.');
+  jkFaces.forEach(e => e.classList.remove('talking'));
   pr.forEach(p => p.parts.head.classList.add('tilt'));
   await say('princes', 'How?');
   await say('arjun', 'And Vishnu Sharma began…');
-  await ask('Ooh, a story with a lion and a jackal! Do you like lions? What sound do you think a lion makes?');
-  await anim(world, { x: 800 - 3 * 800, y: 450 - 3 * 205, s: 3 }, 1400, ease.io);
+  await ask(`Ooh, a story with a lion and a jackal! Do you like lions${KID.name ? ', ' + KID.name : ''}? What sound do you think a lion makes?`);
+  await anim(world, { x: 800 - 3 * 800, y: 450 - 3 * 260, s: 3 }, 1400, ease.io);
   flash();
+}
+
+/* ══════════ Ending: the same banyan, the story pauses for today ══════════ */
+async function sOutro() {
+  const { r, sage, pr } = banyanSchool();
+  place(world, 800 - 1.05 * 800, 450 - 1.05 * 520, 1.05);
+  await reveal(); ambience('glow'); bgLife('garden');
+  tween(world, { x: 800 - 1.1 * 800, y: 450 - 1.1 * 545, s: 1.1 }, 12000, ease.io);
+  await say('arjun', 'And far away, under the great banyan tree, Vishnu Sharma paused his story for the day.');
+  pr.forEach(p => { setMood(p.inner, 'o'); p.parts.head.classList.add('tilt'); });
+  await say('princes', 'Oh no! What happens next? Will Damanaka find the one who mooed?');
+  pr.forEach(p => { setMood(p.inner, 'smile'); p.parts.head.classList.remove('tilt'); });
+  sage.inner.classList.add('open');
+  await say('vishnu', 'Patience, my princes! A wise mind waits, thinks… and then finds out. We will continue tomorrow.');
+  sage.inner.classList.remove('open');
+  sage.inner.classList.add('namaste'); pr.forEach(p => p.inner.classList.add('namaste'));
+  SFX.chime(); sparkles(r, 800, 520, 14, 200);
+  await say('vishnu', `Thank you for listening so well${KID.name ? ', ' + KID.name : ''}. Namaste!`);
+  await sleep(800);
+  await A(fadeTo(true));
+  await showEnd();
 }
