@@ -92,6 +92,7 @@ function headM(o) {
     m += `<circle cx="2" cy="-112" r="22" fill="${o.topknot}"/><path d="M-12,-120 C-4,-128 8,-128 16,-120" stroke="${dkc(o.topknot, .12)}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
     for (let i = 0; i < 7; i++) { const a = Math.PI * (.08 + i * .14); m += `<circle cx="${n1(2 - Math.cos(a) * 24)}" cy="${n1(-98 - Math.sin(a) * 6)}" r="4.6" fill="#7A3E1E"/>`; }
   }
+  if (o.bun) m += `<circle cx="-30" cy="-100" r="22" fill="${hair}"/><path d="M-46,-108 Q-30,-96 -14,-110" stroke="#F2C14E" stroke-width="3" fill="none" stroke-linecap="round"/>`;
   m += `<circle cx="-46" cy="-50" r="11" fill="${sk}"/><circle cx="50" cy="-50" r="11" fill="${sk}"/><circle cx="-46" cy="-50" r="5" fill="${skD}"/><circle cx="50" cy="-50" r="5" fill="${skD}"/>`;
   if (o.earring) m += `<circle cx="-47" cy="-36" r="5" fill="#F2C14E"/><circle cx="51" cy="-36" r="5" fill="#F2C14E"/>`;
   m += `<circle cx="2" cy="-52" r="50" fill="${sk}"/>`;
@@ -114,6 +115,8 @@ function headM(o) {
   const mc = o.mustacheColor || o.beard || hair;
   if (o.mustache === 'big' || (o.mustache && o.plump)) m += `<path d="M6,-34 C-2,-42 -18,-42 -27,-32 C-33,-24 -43,-26 -43,-36 C-49,-22 -37,-13 -23,-19 C-12,-23 -2,-25 6,-25 C14,-25 25,-23 35,-19 C49,-13 61,-22 55,-36 C55,-26 45,-24 39,-32 C30,-42 14,-42 6,-34Z" fill="${mc}"/>`;
   else if (o.mustache) m += `<path d="M6,-32 C-4,-38 -18,-36 -22,-26 C-10,-29 0,-28 6,-26 C12,-28 22,-29 34,-26 C30,-36 16,-38 6,-32Z" fill="${mc}"/>`;
+  if (o.bun) m += `<path d="M4,-104 Q2,-92 4,-84" stroke="${dkc(hair, .3)}" stroke-width="2.5" fill="none"/>`;
+  if (o.bindi) m += `<circle cx="4" cy="-78" r="4" fill="#D6302A"/>`;
   if (o.tilak) m += `<path d="M-6,-98 Q2,-80 10,-98" stroke="#F4EEE2" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M2,-96 L2,-86" stroke="#D6302A" stroke-width="4" stroke-linecap="round"/>`;
   if (o.headband) m += `<path d="M-48,-86 C-20,-102 26,-102 52,-86 L53,-77 C26,-92 -20,-92 -49,-77Z" fill="${o.headband}"/><circle cx="2" cy="-92" r="4.5" fill="#F2C14E"/>`;
   if (o.headcloth) m += `<path d="M-54,-62 C-60,-114 64,-114 58,-62 C34,-76 -30,-76 -54,-62Z" fill="${o.headcloth}"/><path d="M50,-70 C62,-64 66,-48 62,-38 C56,-46 52,-54 46,-60Z" fill="${o.headcloth}"/>`;
@@ -140,67 +143,85 @@ function face(o = {}) {
 function personM(o) {
   const kid = !!o.kid, by = kid ? .74 : 1, hs = kid ? 1.2 : 1;
   const sk = o.skin || '#E8A577', skD = dkc(sk, .16), bare = !!o.bare;
-  const top = bare ? sk : (o.cloth || '#F3E9D2'), topD = dkc(top, .1);
-  const dh = o.lower || '#F5EAD2', dhD = dkc(dh, .14), p = o.plump ? 8 : 0;
+  const top = o.robe || (bare ? sk : (o.cloth || '#F3E9D2')), topD = dkc(top, .1);
+  const dh = o.robe || o.sari || o.lower || '#F5EAD2', dhD = dkc(dh, .14), p = o.plump ? 8 : 0;
   const shoe = o.shoes || (kid ? sk : '#7A4424');
-  const armColL = o.drape || (bare ? sk : topD), armColR = bare || o.drape ? sk : top;
+  const drape = o.drape || o.sari;
+  const armColL = drape || (bare ? sk : topD), armColR = bare || (drape && !o.sari) ? sk : top;
+  // seated: 'chair' (on a throne, swing or horse) or 'cross' (cross-legged on a mat); the upper body sits lower
+  const S = (o.seated === 'cross' ? 92 : o.seated === 'chair' ? 46 : 0) * by;
   const foot = (x, ph, c) => o.sandals
     ? `<g transform="translate(${x} 0)"><g class="foot" data-ph="${ph}"><path d="M-20,-3 C-21,-12 -10,-16 4,-15 C16,-14 24,-10 25,-5 C25,-1 20,0 14,0 L-16,0 C-19,0 -20,-1 -20,-3Z" fill="${sk}"/><path d="M-22,0 L26,0 Q27,4 22,5 L-20,5 Q-24,4 -22,0Z" fill="#6E4024"/><path d="M-4,-12 Q2,-4 10,-12" stroke="#6E4024" stroke-width="4" fill="none" stroke-linecap="round"/></g></g>`
     : `<g transform="translate(${x} 0)"><g class="foot" data-ph="${ph}"><path d="M-22,-4 C-24,-15 -12,-20 2,-18 C12,-17 20,-14 24,-9 C28,-13 31,-17 35,-18 C36,-7 28,0 16,0 L-16,0 C-20,0 -22,-2 -22,-4Z" fill="${c}"/></g></g>`;
   const flare = kid ? 13 : 7;
-  const arm = (cls, x, col, ph, extra = '') => `<g transform="translate(${x} -240) rotate(${x < 0 ? flare : -flare})"><g class="aswing" data-ph="${ph}"><g class="pose ${cls}">${extra}
+  const arm = (cls, x, col, ph, extra = '', after = '') => `<g transform="translate(${x} -240) rotate(${x < 0 ? flare : -flare})"><g class="aswing" data-ph="${ph}"><g class="pose ${cls}">${extra}
     <circle cx="0" cy="4" r="16" fill="${col}"/>
     <path d="M-15,2 C-17,34 -16,64 -12,90 Q0,96 12,90 C16,64 17,34 15,2 Q0,-10 -15,2Z" fill="${col}"/>
     ${col !== sk ? `<path d="M-13,84 Q0,92 13,84 L13,92 Q0,99 -13,92Z" fill="${dkc(col, .12)}"/>` : ''}
     ${o.armband ? `<path d="M-15,28 Q0,35 15,28" stroke="#F2C14E" stroke-width="6" fill="none" stroke-linecap="round"/>` : ''}
     <circle cx="0" cy="103" r="15" fill="${sk}"/>
-    ${o.bangles || o.robe ? `<path d="M-12,89 Q0,96 12,89" stroke="#F2C14E" stroke-width="5" fill="none" stroke-linecap="round"/>` : ''}
+    ${o.bangles || o.robe || o.sari ? `<path d="M-12,89 Q0,96 12,89" stroke="#F2C14E" stroke-width="5" fill="none" stroke-linecap="round"/>` : ''}${after}
   </g></g></g>`;
-  const staff = o.staff ? `<path d="M0,-150 C2,-40 0,100 0,236" stroke="#7A4B2A" stroke-width="11" fill="none" stroke-linecap="round"/><path d="M-1,-70 q7,-3 9,3 M-1,60 q7,-3 9,3" stroke="#5A351C" stroke-width="2.5" fill="none" stroke-linecap="round"/>` : '';
-  const lower = o.longLower
-    ? `<path d="M-52,-152 C-62,-100 -66,-40 -60,-12 Q0,-2 60,-12 C66,-40 62,-100 52,-152Z" fill="${dh}"/><path d="M-30,-120 C-34,-80 -34,-40 -30,-16 M26,-120 C30,-80 30,-40 28,-16" stroke="${dhD}" stroke-width="4" fill="none" stroke-linecap="round"/>`
-    : `<path d="M-46,-152 C-62,-110 -60,-50 -46,-18 C-38,-10 -20,-10 -12,-18 C-8,-40 -4,-64 -2,-80 C0,-64 4,-40 8,-18 C16,-10 34,-10 42,-18 C56,-50 62,-110 46,-152Z" fill="${dh}"/><path d="M-30,-120 C-34,-90 -32,-50 -26,-24 M28,-120 C30,-90 30,-60 26,-24" stroke="${dhD}" stroke-width="4" fill="none" stroke-linecap="round"/>${o.hem ? `<path d="M-44,-24 Q-28,-16 -14,-22 M10,-22 Q26,-16 42,-24" stroke="${o.hem}" stroke-width="4" fill="none" stroke-linecap="round"/>` : ''}`;
+  let held = '';
+  if (o.staff) held = `<path d="M0,-150 C2,-40 0,100 0,236" stroke="#7A4B2A" stroke-width="11" fill="none" stroke-linecap="round"/><path d="M-1,-70 q7,-3 9,3 M-1,60 q7,-3 9,3" stroke="#5A351C" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+  if (o.spear) held = `<path d="M0,-190 L0,236" stroke="#8A5A2A" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M-11,-186 C-8,-200 -4,-212 0,-226 C4,-212 8,-200 11,-186 Q0,-180 -11,-186Z" fill="#C9CED6"/><path d="M-10,-182 Q0,-176 10,-182" stroke="#F2C14E" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+  let carry = '';
+  if (o.carry === 'pot') carry = `<path d="M-20,104 C-30,118 -26,140 -10,146 L14,146 C30,140 32,118 22,104 C16,98 -14,98 -20,104Z" fill="#C46A3A"/><path d="M-12,98 Q2,92 16,98" stroke="#A4532A" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M-22,122 Q2,128 26,122" stroke="#F2C14E" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  if (o.carry === 'basket') carry = `<path d="M-30,106 C-28,128 -18,140 2,140 C22,140 32,128 34,106Z" fill="#B88A4A"/><circle cx="-14" cy="104" r="9" fill="#E8492C"/><circle cx="2" cy="100" r="9" fill="#F2B23A"/><circle cx="18" cy="104" r="9" fill="#7DBB3C"/><path d="M-28,116 Q2,122 32,116" stroke="#8E6430" stroke-width="3" fill="none"/>`;
+  if (o.carry === 'garland') carry = `<path d="M0,110 C-26,140 -22,186 0,196 C22,186 26,140 0,110" stroke="#F39A1E" stroke-width="12" fill="none" stroke-dasharray="1 10" stroke-linecap="round"/>`;
+  if (o.carry === 'scroll') carry = `<rect x="-26" y="96" width="52" height="16" rx="8" fill="#F3E3B8"/><circle cx="-26" cy="104" r="8" fill="#C9A46A"/><circle cx="26" cy="104" r="8" fill="#C9A46A"/>`;
+  let lower;
+  if (o.seated === 'cross') lower = `<path d="M-60,${-66} C-94,-62 -122,-42 -116,-16 C-112,2 -62,8 0,8 C62,8 112,2 116,-16 C122,-42 94,-62 60,${-66}Z" fill="${dh}"/><path d="M-80,-30 Q-40,-12 0,-22 Q40,-12 80,-30" stroke="${dhD}" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="-58" cy="-4" rx="17" ry="9" fill="${sk}"/><ellipse cx="58" cy="-4" rx="17" ry="9" fill="${sk}"/>`;
+  else if (o.seated === 'chair') lower = `<path d="M-52,${-152 + S} C-76,${-128 + S} -88,-78 -82,-56 C-78,-34 -72,-16 -64,-6 Q0,4 64,-6 C72,-16 78,-34 82,-56 C88,-78 76,${-128 + S} 52,${-152 + S}Z" fill="${dh}"/><path d="M-40,-70 Q-20,-58 -4,-66 M6,-66 Q22,-58 42,-70" stroke="${dhD}" stroke-width="4" fill="none" stroke-linecap="round"/>${o.robe ? `<path d="M-64,-8 Q0,2 64,-8" stroke="#F2C14E" stroke-width="5" fill="none" stroke-linecap="round"/>` : ''}`;
+  else if (o.longLower || o.robe || o.sari) lower = `<path d="M-52,-152 C-62,-100 -66,-40 -60,-12 Q0,-2 60,-12 C66,-40 62,-100 52,-152Z" fill="${dh}"/><path d="M-30,-120 C-34,-80 -34,-40 -30,-16 M26,-120 C30,-80 30,-40 28,-16" stroke="${dhD}" stroke-width="4" fill="none" stroke-linecap="round"/>${o.robe || o.hem || o.sari ? `<path d="M-60,-16 Q0,-6 60,-16" stroke="${o.hem || '#F2C14E'}" stroke-width="5" fill="none" stroke-linecap="round"/>` : ''}`;
+  else lower = `<path d="M-46,-152 C-62,-110 -60,-50 -46,-18 C-38,-10 -20,-10 -12,-18 C-8,-40 -4,-64 -2,-80 C0,-64 4,-40 8,-18 C16,-10 34,-10 42,-18 C56,-50 62,-110 46,-152Z" fill="${dh}"/><path d="M-30,-120 C-34,-90 -32,-50 -26,-24 M28,-120 C30,-90 30,-60 26,-24" stroke="${dhD}" stroke-width="4" fill="none" stroke-linecap="round"/>${o.hem ? `<path d="M-44,-24 Q-28,-16 -14,-22 M10,-22 Q26,-16 42,-24" stroke="${o.hem}" stroke-width="4" fill="none" stroke-linecap="round"/>` : ''}`;
   let torso = `<path d="M-44,-252 C${-56 - p},-220 ${-62 - p},-160 ${-64 - p},-112 Q0,-98 ${64 + p},-112 C${62 + p},-160 ${56 + p},-220 44,-252 Q0,-262 -44,-252Z" fill="${top}"/>
     <path d="M30,-250 C${44 + p},-220 ${52 + p},-160 ${54 + p},-106 Q${62 + p},-110 ${64 + p},-112 C${62 + p},-160 ${56 + p},-220 44,-252Z" fill="${topD}" opacity=".7"/>`;
   if (bare) torso += `<path d="M-24,-214 Q-12,-206 -2,-212 M8,-212 Q18,-206 30,-214" stroke="${skD}" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/>${p ? `<ellipse cx="2" cy="-150" rx="${50 + p}" ry="40" fill="${sk}"/>` : ''}<circle cx="2" cy="-150" r="3" fill="${skD}"/>`;
-  else torso += `<path d="M-10,-250 Q2,-232 14,-250" stroke="${topD}" stroke-width="3.5" fill="none" stroke-linecap="round"/>${[0, 1, 2].map(k => `<circle cx="2" cy="${-226 + k * 22}" r="3" fill="#F2C14E"/>`).join('')}`;
+  else if (o.robe) torso += `<path d="M2,-250 L2,-120" stroke="#F2C14E" stroke-width="5" stroke-linecap="round"/><path d="M-44,-252 Q2,-232 48,-252" stroke="#F2C14E" stroke-width="6" fill="none" stroke-linecap="round"/>`;
+  else if (!o.sari) torso += `<path d="M-10,-250 Q2,-232 14,-250" stroke="${topD}" stroke-width="3.5" fill="none" stroke-linecap="round"/>${[0, 1, 2].map(k => `<circle cx="2" cy="${-226 + k * 22}" r="3" fill="#F2C14E"/>`).join('')}`;
   if (o.vest) torso += `<path d="M-44,-252 C${-54 - p},-220 ${-58 - p},-170 ${-56 - p},-140 Q-36,-136 -16,-140 C-14,-180 -12,-220 -9,-250 Q-26,-255 -44,-252Z M44,-252 C${54 + p},-220 ${58 + p},-170 ${56 + p},-140 Q36,-136 16,-140 C14,-180 12,-220 9,-250 Q26,-255 44,-252Z" fill="${o.vest}"/><path d="M-16,-142 C-14,-180 -12,-220 -9,-248 M16,-142 C14,-180 12,-220 9,-248" stroke="${dkc(o.vest, .28)}" stroke-width="4" fill="none" stroke-linecap="round"/>`;
-  if (o.drape) torso += `<path d="M-46,-256 C-26,-264 -6,-258 6,-250 C26,-216 46,-176 ${58 + p},-130 L${62 + p},-112 Q0,-98 ${-64 - p},-112 C${-62 - p},-160 ${-58 - p},-222 -46,-256Z" fill="${o.drape}"/><path d="M-30,-238 C-10,-200 12,-166 44,-128 M-40,-200 C-24,-170 -6,-146 16,-120" stroke="${dkc(o.drape, .2)}" stroke-width="3.5" fill="none" stroke-linecap="round" opacity=".8"/>`;
+  if (drape) torso += `<path d="M-46,-256 C-26,-264 -6,-258 6,-250 C26,-216 46,-176 ${58 + p},-130 L${62 + p},-112 Q0,-98 ${-64 - p},-112 C${-62 - p},-160 ${-58 - p},-222 -46,-256Z" fill="${drape}"/><path d="M-30,-238 C-10,-200 12,-166 44,-128 M-40,-200 C-24,-170 -6,-146 16,-120" stroke="${dkc(drape, .2)}" stroke-width="3.5" fill="none" stroke-linecap="round" opacity=".8"/>${o.sari ? `<path d="M6,-250 C26,-216 46,-176 ${58 + p},-130" stroke="#F2C14E" stroke-width="5" fill="none" stroke-linecap="round"/>` : ''}`;
   if (o.waist) torso += `<path d="M${-60 - p},-150 C-20,-140 20,-140 ${60 + p},-150 C${63 + p},-142 ${63 + p},-134 ${62 + p},-127 C20,-117 -20,-117 ${-62 - p},-127 C${-63 - p},-134 ${-63 - p},-142 ${-60 - p},-150Z" fill="${o.waist}"/><path d="M30,-130 C34,-110 30,-92 36,-74 Q42,-72 48,-78 C42,-96 44,-114 44,-132Z" fill="${dkc(o.waist, .1)}"/>`;
-  if (o.sash) torso += `<path d="M-40,-250 C-30,-256 -20,-254 -14,-248 C10,-210 34,-170 ${52 + p},-140 C${46 + p},-132 ${40 + p},-130 ${34 + p},-134 C18,-166 -6,-206 -40,-250Z" fill="${o.sash}"/>`;
-  if (o.necklace) torso += `<path d="M-20,-250 Q2,-220 24,-250" stroke="#F2C14E" stroke-width="4.5" fill="none" stroke-linecap="round"/><circle cx="2" cy="-230" r="6" fill="#F2C14E"/><circle cx="2" cy="-230" r="2.6" fill="${GEM_R}"/>`;
+  if (o.sash) torso += `<path d="M-40,-250 C-30,-256 -20,-254 -14,-248 C10,-210 34,-170 ${52 + p},-140 C${46 + p},-132 ${40 + p},-130 ${34 + p},-134 C18,-166 -6,-206 -40,-250Z" fill="${o.sash}"/>${o.sashTail ? `<path d="M-8,-130 C-8,-110 -10,-90 -8,-70 Q2,-64 12,-70 C12,-90 10,-110 10,-130Z" fill="${o.sash}"/><path d="M-8,-80 Q2,-74 12,-80" stroke="#C8452C" stroke-width="4" fill="none" stroke-linecap="round"/>` : ''}`;
+  if (o.necklace) torso += `<path d="M-20,-250 Q2,-220 24,-250" stroke="#F2C14E" stroke-width="4.5" fill="none" stroke-linecap="round"/><circle cx="2" cy="-230" r="6" fill="#F2C14E"/><circle cx="2" cy="-230" r="2.6" fill="${GEM_R}"/>${o.robe ? `<path d="M-26,-250 Q2,-196 30,-250" stroke="#F2C14E" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="2" cy="-208" r="7" fill="#F2C14E"/><circle cx="2" cy="-208" r="3.4" fill="${GEM_G}"/>` : ''}`;
   if (o.mala) { const pts = []; for (let i = 0; i <= 14; i++) { const t = i / 14, x = -22 + 46 * t, y = -250 + 60 * Math.sin(Math.PI * t) + (t > .5 ? 6 : 0); pts.push(`<circle cx="${n1(x)}" cy="${n1(y)}" r="4.2" fill="#7A3E1E"/>`); } torso += pts.join(''); }
   if (o.bag) torso += `<path d="M36,-252 C10,-210 -22,-172 -48,-144" stroke="#7A4626" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M${-78 - p},-150 C${-80 - p},-120 ${-76 - p},-96 ${-60 - p},-90 L-30,-90 C-16,-98 -14,-124 -18,-150Z" fill="#9A5B32"/><path d="M${-80 - p},-152 L-16,-152 C-18,-130 -32,-124 -48,-124 C-64,-124 ${-76 - p},-132 ${-80 - p},-152Z" fill="#7E4626"/>`;
-  return `<ellipse cx="0" cy="2" rx="${62 + p}" ry="10" fill="#000" opacity=".16"/>
-  ${foot(-16, .5, dkc(shoe, .15))}${foot(16, 0, shoe)}
-  <g class="bodyb"><g class="pbody">
+  const feet = o.seated === 'cross' ? '' : o.seated === 'chair'
+    ? `<path d="M-40,-4 C-42,-12 -32,-16 -20,-14 C-10,-13 -4,-9 -4,-4 Q-4,0 -10,0 L-36,0 Q-40,0 -40,-4Z" fill="${dkc(shoe, .1)}"/><path d="M40,-4 C42,-12 32,-16 20,-14 C10,-13 4,-9 4,-4 Q4,0 10,0 L36,0 Q40,0 40,-4Z" fill="${shoe}"/>`
+    : `${foot(-16, .5, dkc(shoe, .15))}${foot(16, 0, shoe)}`;
+  return `<ellipse cx="0" cy="2" rx="${(o.seated === 'cross' ? 110 : 62) + p}" ry="10" fill="#000" opacity=".16"/>
+  ${o.seated ? `<g transform="scale(1 ${by})">${lower}</g>` : ''}
+  ${feet}
+  <g class="bodyb"><g class="pbody"><g transform="translate(0 ${S})">
     <g transform="scale(1 ${by})">
       ${arm('armL', -44 - p * .6, armColL, 0)}
-      ${lower}${torso}
+      ${o.seated ? '' : lower}${torso}
       <path d="M-13,-282 C-12,-266 -14,-254 -16,-246 Q2,-238 18,-246 C16,-254 14,-266 15,-282Z" fill="${skD}"/>
     </g>
     <g transform="translate(4 ${-256 * by})"><g class="pose hp"><g class="face idle" data-who="${o.who || ''}"><g transform="scale(${hs})">${headM({ ...o, kid })}</g></g></g></g>
-    <g transform="scale(1 ${by})">${arm('armR', 44 + p * .6, armColR, .5, staff)}</g>
-  </g></g>`;
+    <g transform="scale(1 ${by})">${arm('armR', 44 + p * .6, armColR, .5, held, carry)}</g>
+  </g></g></g>`;
 }
 function person(o = {}) {
   const kid = !!o.kid;
-  const root = build('char' + (o.staff ? ' sage' : ''), kid ? .62 : .64, personM(o));
+  const root = build('char' + (o.staff || o.spear ? ' holder' : ''), kid ? .62 : .64, personM(o));
   const face = root.querySelector('.face');
   if (!o.who) face.removeAttribute('data-who');
   if (o.mood) setMood(root, o.mood); if (o.brows) setBrow(root, o.brows === 'normal' ? '' : o.brows);
   root.parts = { head: root.querySelector('.hp'), armL: root.querySelector('.armL'), armR: root.querySelector('.armR'), mouth: mouthProxy(root), brows: browProxy(root) };
-  regRig(root, root.art, { stride: kid ? 58 : 72, nominal: kid ? 90 : 110, bob: 4 });
+  if (!o.seated) regRig(root, root.art, { stride: kid ? 58 : 72, nominal: kid ? 90 : 110, bob: 4 });
   return root;
 }
-const KING = { who: 'king', skin: '#D9966A', crown: true, beard: '#2A1A10', mustache: true, longHair: '#2A1A10', hair: '#2A1A10', earring: true };
+const KING = { who: 'king', skin: '#D9966A', crown: true, beard: '#2A1A10', mustache: true, longHair: '#2A1A10', hair: '#2A1A10', earring: true, robe: '#C0262E', waist: '#2E8B4E', necklace: true, shoes: '#8A5A2A' };
 const SAGE = { who: 'vishnu', skin: '#E8A577', beard: '#F4F0E8', longBeard: true, topknot: '#EFEBE3', hair: '#EFEBE3', browColor: '#CFC8BA', mustacheColor: '#F4F0E8', mustache: true, tilak: true, staff: true, drape: '#EE9A2E', lower: '#F4B740', longLower: true, mala: true, sandals: true };
 const PRINCES = [
   { who: 'princes', kid: true, bare: true, skin: '#E3A274', hairStyle: 'kid', hair: '#2A1A10', headband: '#6A3E8E', lower: '#7B4FA6', waist: '#F2B23A', necklace: true, armband: true },
   { who: 'princes', kid: true, bare: true, skin: '#DE9C6C', hairStyle: 'kid', hair: '#24160C', lower: '#2E8A70', waist: '#F2B23A', necklace: true, armband: true },
   { who: 'princes', kid: true, bare: true, plump: true, skin: '#E8A877', hairStyle: 'kid', hair: '#2A1A10', lower: '#E8642B', waist: '#F6D16A', necklace: true, bangles: true }
 ];
-const MERCHANT = { who: 'merchant', plump: true, skin: '#F2B184', turban: '#E8642B', stripe: '#F6B83E', stripe2: '#C9471F', jewel: true, cloth: '#FBF2DF', vest: '#B5382B', waist: '#F2B23A', lower: '#F5EAD2', shoes: '#7A4424', mustache: 'big', bag: true, earring: true, bangles: true };
+// Vardhamanaka as in v6: bare-chested and plump, saffron sash, red waistband, gold jewellery, big mustache.
+const MERCHANT = { who: 'merchant', plump: true, bare: true, skin: '#D9955F', turban: '#E0562A', stripe: '#F6B83E', stripe2: '#B8401C', jewel: true, mustache: 'big', tilak: true, earring: true, necklace: true, sash: '#F0B830', sashTail: true, waist: '#D23A2A', lower: '#F7F2E8', hem: '#F2C14E', armband: true, bangles: true, shoes: '#6B3F1E' };
 const SERVANTS = [
   { who: 'servant', skin: '#E3A274', turban: '#2E8A70', stripe: '#9ED08A', stripe2: '#1E6E57', cloth: '#F0E2C2', waist: '#D8892B', lower: '#E9DCC0', shoes: '#6E4024', mustache: true },
   { who: 'servant', skin: '#D9966A', headcloth: '#8C6B4A', cloth: '#E7EFE0', vest: '#3E8A5A', waist: '#C9471F', lower: '#EFE4CC', shoes: '#6E4024' }
@@ -209,20 +230,22 @@ const SERVANTS = [
 /* Vardhamanaka seated at the front of the wagon, facing the bulls, reins in hand.
    Origin at his seat; his rein hand rests at about (80,-28). */
 function seatedMerchant() {
-  const o = MERCHANT, sk = o.skin, skD = dkc(sk, .16), top = o.cloth, topD = dkc(top, .1), dh = o.lower, p = 8;
+  const o = MERCHANT, sk = o.skin, skD = dkc(sk, .16), dh = o.lower, p = 8;
   const t = 130; // torso lift: waist sits on the seat
   const m = `
   <path d="M-46,-24 C-30,-38 60,-36 92,-22 C110,-14 108,10 92,14 L-44,16 C-58,6 -58,-14 -46,-24Z" fill="${dh}"/>
-  <path d="M70,0 C74,30 78,60 78,84 Q92,90 104,84 C104,60 102,30 100,0Z" fill="${dh}"/>
+  <path d="M70,0 C74,30 78,60 78,84 Q92,90 104,84 C104,60 102,30 100,0Z" fill="${dh}"/><path d="M76,80 Q90,86 104,80" stroke="#F2C14E" stroke-width="4" fill="none" stroke-linecap="round"/>
   <path d="M70,92 C70,82 82,78 96,80 C106,81 114,84 118,88 C122,84 125,80 129,79 C130,90 122,97 110,97 L74,97 C71,97 70,95 70,92Z" fill="${o.shoes}"/>
   <g transform="translate(0 ${t})">
-    <g transform="translate(-44 -240)"><g class="pose armL2"><circle cx="0" cy="4" r="16" fill="${topD}"/><path d="M-15,2 C-17,34 -16,64 -12,90 Q0,96 12,90 C16,64 17,34 15,2 Q0,-10 -15,2Z" fill="${topD}"/><circle cx="0" cy="103" r="15" fill="${sk}"/></g></g>
-    <path d="M-44,-252 C${-56 - p},-220 ${-62 - p},-160 ${-64 - p},-112 Q0,-98 ${64 + p},-112 C${62 + p},-160 ${56 + p},-220 44,-252 Q0,-262 -44,-252Z" fill="${top}"/>
-    <path d="M-44,-252 C${-54 - p},-220 ${-58 - p},-170 ${-56 - p},-140 Q-36,-136 -16,-140 C-14,-180 -12,-220 -9,-250 Q-26,-255 -44,-252Z M44,-252 C${54 + p},-220 ${58 + p},-170 ${56 + p},-140 Q36,-136 16,-140 C14,-180 12,-220 9,-250 Q26,-255 44,-252Z" fill="${o.vest}"/>
+    <g transform="translate(-44 -240)"><g class="pose armL2"><circle cx="0" cy="4" r="16" fill="${sk}"/><path d="M-15,2 C-17,34 -16,64 -12,90 Q0,96 12,90 C16,64 17,34 15,2 Q0,-10 -15,2Z" fill="${sk}"/><path d="M-15,28 Q0,35 15,28" stroke="#F2C14E" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="0" cy="103" r="15" fill="${sk}"/></g></g>
+    <path d="M-44,-252 C${-56 - p},-220 ${-62 - p},-160 ${-64 - p},-112 Q0,-98 ${64 + p},-112 C${62 + p},-160 ${56 + p},-220 44,-252 Q0,-262 -44,-252Z" fill="${sk}"/>
+    <ellipse cx="2" cy="-150" rx="${50 + p}" ry="40" fill="${sk}"/><circle cx="2" cy="-150" r="3" fill="${skD}"/>
+    <path d="M-40,-250 C-30,-256 -20,-254 -14,-248 C10,-210 34,-170 ${52 + p},-140 C${46 + p},-132 ${40 + p},-130 ${34 + p},-134 C18,-166 -6,-206 -40,-250Z" fill="${o.sash}"/>
     <path d="M${-60 - p},-150 C-20,-140 20,-140 ${60 + p},-150 C${63 + p},-142 ${63 + p},-134 ${62 + p},-127 C20,-117 -20,-117 ${-62 - p},-127 C${-63 - p},-134 ${-63 - p},-142 ${-60 - p},-150Z" fill="${o.waist}"/>
+    <path d="M-20,-250 Q2,-220 24,-250" stroke="#F2C14E" stroke-width="4.5" fill="none" stroke-linecap="round"/><circle cx="2" cy="-230" r="6" fill="#F2C14E"/><circle cx="2" cy="-230" r="2.6" fill="${GEM_R}"/>
     <path d="M-13,-282 C-12,-266 -14,-254 -16,-246 Q2,-238 18,-246 C16,-254 14,-266 15,-282Z" fill="${skD}"/>
     <g transform="translate(4 -256)"><g class="pose hp"><g class="face idle" data-who="merchant">${headM(o)}</g></g></g>
-    <g transform="translate(46 -240)"><g class="pose armS"><circle cx="0" cy="4" r="16" fill="${top}"/><path d="M-15,2 C-17,34 -16,64 -12,90 Q0,96 12,90 C16,64 17,34 15,2 Q0,-10 -15,2Z" fill="${top}"/><path d="M-13,84 Q0,92 13,84 L13,92 Q0,99 -13,92Z" fill="${topD}"/><circle cx="0" cy="103" r="15" fill="${sk}"/><path d="M-12,89 Q0,96 12,89" stroke="#F2C14E" stroke-width="5" fill="none" stroke-linecap="round"/></g></g>
+    <g transform="translate(46 -240)"><g class="pose armS"><circle cx="0" cy="4" r="16" fill="${sk}"/><path d="M-15,2 C-17,34 -16,64 -12,90 Q0,96 12,90 C16,64 17,34 15,2 Q0,-10 -15,2Z" fill="${sk}"/><path d="M-15,28 Q0,35 15,28" stroke="#F2C14E" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="0" cy="103" r="15" fill="${sk}"/><path d="M-12,89 Q0,96 12,89" stroke="#F2C14E" stroke-width="5" fill="none" stroke-linecap="round"/></g></g>
   </g>`;
   const root = build('char', .64, m);
   root.parts = { head: root.querySelector('.hp'), armR: root.querySelector('.armS'), mouth: mouthProxy(root), brows: browProxy(root) };

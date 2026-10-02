@@ -116,3 +116,6 @@ Headless Chromium run (after the art pass) through all 18 beats, driving every i
 
 ## v7 — `the-merchant-and-the-bull.html`
 Built from the v6 story by `python3 build_v7.py`: everything (intro, 15 scenes, both games, interactions, narration, parallax, scenery) comes from `v6-source.html`; only the people and animals are replaced by `chars.js` (rounded, joint-free storybook figures). Walking, arm swing, body bob and wagon wheels are driven by one speed-based rig instead of CSS gait loops. Edit `chars.js` or the build script, not the output file.
+
+### v7 opening (replaces the book)
+`intro.js` holds four illustrated beats: **Intro 1 · Mahilaropya** (palace, bazaar, ox cart, townsfolk, Vardhamanaka at his pot stall), **Intro 2 · The King** (throne room, courtiers, guards, balcony view), **Intro 3 · The Three Princes** (courtyard: swing, rocking horse, sleepy prince — tap to wake him; ask card), **Scene 1** (Vishnu Sharma under the banyan, glowing story animals, namaste interaction, thought bubble). Vardhamanaka uses the v6 look (bare-chested, saffron sash, gold jewellery).

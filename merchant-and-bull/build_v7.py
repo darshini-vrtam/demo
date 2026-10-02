@@ -55,9 +55,36 @@ CSS = r"""
 .wide .eye{transform:scale(1.3)}
 .armS{transform:rotate(-50deg)}
 .worry .armS{transform:rotate(-140deg)}
-.char.sage .pose.armR{animation:none !important}
-.char.sage.pray .pose.armR{transform:none}
-.char.sage.pray .pose.armL{transform:rotate(-70deg)}
+.char.holder .pose.armR{animation:none !important}
+.char.holder.pray .pose.armR{transform:none}
+.char.holder.pray .pose.armL{transform:rotate(-70deg)}
+.open .pose.armL{animation:none !important;transform:rotate(64deg)}.open .pose.armR{animation:none !important;transform:rotate(-64deg)}
+.hold .pose.armL{animation:none !important;transform:rotate(132deg)}.hold .pose.armR{animation:none !important;transform:rotate(-132deg)}
+.reach .pose.armL{animation:none !important;transform:rotate(-40deg)}.reach .pose.armR{animation:none !important;transform:rotate(40deg)}
+/* opening scenes: ambient life */
+.flag{transform-box:fill-box;transform-origin:0 50%;animation:flag 1.8s ease-in-out infinite alternate}
+.hang{transform-box:fill-box;transform-origin:50% 0;animation:hang 3.6s ease-in-out infinite alternate}
+.swingp{transform-box:view-box;transform-origin:0 0;animation:pend 3.4s ease-in-out infinite alternate}
+.rock{transform-box:fill-box;transform-origin:50% 100%;animation:rockk 2.2s ease-in-out infinite alternate}
+.spintop{transform-box:fill-box;transform-origin:50% 100%;animation:wob 1.2s ease-in-out infinite alternate}
+.zzz{animation:zz 2.6s ease-in-out infinite}
+.flow{stroke-dasharray:18 14;animation:flowd 1s linear infinite}
+.floaty{animation:floaty 3.4s ease-in-out infinite alternate}
+.flap2{transform-box:fill-box;transform-origin:50% 100%;animation:flap2 .6s ease-in-out infinite alternate}
+.peck{transform-box:view-box;transform-origin:0 0;animation:peck 3.2s ease-in-out infinite}
+.ray{animation:ray 5s ease-in-out infinite alternate}
+@keyframes flag{from{transform:skewY(-5deg) scaleX(.94)}to{transform:skewY(5deg) scaleX(1.02)}}
+@keyframes hang{from{transform:rotate(-1.6deg)}to{transform:rotate(1.6deg)}}
+@keyframes pend{from{transform:rotate(-13deg)}to{transform:rotate(13deg)}}
+@keyframes rockk{from{transform:rotate(-6deg)}to{transform:rotate(6deg)}}
+@keyframes wob{from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}
+@keyframes zz{0%{opacity:0;transform:translate(0,10px)}30%{opacity:1}100%{opacity:0;transform:translate(20px,-30px)}}
+@keyframes flowd{to{stroke-dashoffset:-32}}
+@keyframes floaty{from{transform:translateY(8px)}to{transform:translateY(-10px)}}
+@keyframes flap2{from{transform:scaleY(1)}to{transform:scaleY(-.4)}}
+@keyframes peck{0%,70%,100%{transform:rotate(0)}80%{transform:rotate(12deg)}}
+@keyframes ray{from{opacity:.45}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.flag,.hang,.swingp,.rock,.spintop,.zzz,.flow,.floaty,.flap2,.peck,.ray{animation:none !important}}
 .crown{transform-box:fill-box;transform-origin:50% 100%}
 @keyframes headidle{0%,100%{transform:rotate(-1.2deg)}50%{transform:rotate(1.4deg)}}
 @keyframes tlswish{from{transform:rotate(-5deg)}to{transform:rotate(7deg)}}
@@ -107,6 +134,18 @@ src = sub1(src, "  tween(sj, { y: 56, r: -7 }, 500, ease.out); sj.parts.head.cla
            "  tween(sj, { y: 30, r: -5 }, 700, ease.io); sj.parts.head.classList.add('droop');", 'mud sink')
 src = sub1(src, "  tween(sj, { y: 40, r: -4 }, 800);", "  tween(sj, { y: 18, r: -3 }, 900, ease.io);", 'mud rise')
 
-out = root / 'the-merchant-and-the-bull.html'
+# 11. the opening: Mahilaropya, the king, the princes at play, Vishnu Sharma under the banyan (replaces the book)
+intro = (root / 'intro.js').read_text(encoding='utf-8')
+a = src.index('const INTRO = ['); b = src.index('async function namaste(r)')
+src = src[:a] + src[b:]
+a = src.index('async function s1() {'); b = src.index('async function tapOne(')
+src = src[:a] + src[b:]
+src = sub1(src, "const SCENES = [", intro + "\nconst SCENES = [", 'intro inject')
+src = sub1(src, "  { id: 'intro', label: 'Intro', title: 'Last Time, in the Panchatantra', run: sIntro },",
+           "  { id: 'intro', label: 'Intro 1', title: 'Mahilaropya', run: i1 },\n  { id: 'i2', label: 'Intro 2', title: 'The King', run: i2 },\n  { id: 'i3', label: 'Intro 3', title: 'The Three Princes', run: i3 },", 'scene list')
+src = sub1(src, "  merchant: { label: 'Vardhamanaka', role: 'M2', pitch: 1.0, rate: .94 },",
+           "  merchant: { label: 'Vardhamanaka', role: 'M2', pitch: 1.0, rate: .94 },\n  king: { label: 'King Amara Shakthi', role: 'M', pitch: .92, rate: .9 },", 'cast king')
+
+out = root / 'the-merchant-and-the-bull.html' 
 out.write_text(src, encoding='utf-8')
 print(f'{out.name}: {len(src.encode()) / 1024:.0f} KB')
