@@ -128,6 +128,11 @@ function headM(o) {
     <ellipse cx="40" cy="-128" rx="16" ry="12" fill="${o.turban}"/><path d="M34,-136 C42,-140 52,-134 54,-126" stroke="${st}" stroke-width="5" fill="none" stroke-linecap="round"/>`;
     if (o.jewel) m += `<circle cx="2" cy="-100" r="8" fill="#F2C14E"/><circle cx="2" cy="-100" r="3.6" fill="${GEM_R}"/><path d="M2,-108 C-2,-118 6,-124 4,-132" stroke="#F2C14E" stroke-width="3" fill="none" stroke-linecap="round"/>`;
   }
+  if (o.plume) m += `<path d="M30,-128 C40,-150 44,-172 36,-192 C30,-176 26,-160 22,-140Z" fill="${o.plume}"/><path d="M28,-132 C34,-150 36,-166 32,-182" stroke="${ltc(o.plume, .3)}" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+  if (o.cap) { let band = ''; for (let i = 0; i < 7; i++) band += `<path d="M${-40 + i * 13},-100 l6,-8 l6,8 l-6,8Z" fill="${['#C8202E', '#2E8B4E', '#F2B23A'][i % 3]}"/>`; m += `<path d="M-50,-84 L-48,-120 Q2,-134 52,-120 L54,-84 Q2,-94 -50,-84Z" fill="${o.cap}"/><path d="M-49,-90 L-48,-110 Q2,-122 53,-110 L53,-90 Q2,-100 -49,-90Z" fill="#7A2030"/>${band}<path d="M-48,-120 Q2,-134 52,-120 Q2,-128 -48,-120Z" fill="${ltc(o.cap, .3)}"/>`; }
+  if (o.dupatta) m += `<path d="M-56,-60 C-66,-120 -30,-146 2,-146 C34,-146 70,-120 60,-60 C58,-20 60,10 66,40 L46,40 C40,6 40,-30 44,-62 C30,-92 -26,-92 -40,-62 C-36,-30 -36,6 -42,40 L-62,40 C-56,10 -54,-20 -56,-60Z" fill="${o.dupatta}"/><path d="M-50,-80 C-30,-104 34,-104 54,-80" stroke="#F2C14E" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="2 7"/>`;
+  if (o.tikka) m += `<path d="M2,-112 L2,-92" stroke="#F2C14E" stroke-width="2.5"/><circle cx="2" cy="-88" r="5" fill="#F2C14E"/><circle cx="2" cy="-88" r="2.4" fill="${GEM_R}"/>`;
+  if (o.nosering) m += `<circle cx="14" cy="-36" r="7" fill="none" stroke="#F2C14E" stroke-width="2.5"/><path d="M20,-38 C30,-44 40,-46 48,-42" stroke="#F2C14E" stroke-width="1.6" fill="none"/>`;
   if (o.crown) m += `<path d="M-40,-92 C-44,-108 -46,-122 -46,-136 C-38,-128 -30,-120 -22,-114 C-16,-128 -8,-142 2,-156 C12,-142 20,-128 26,-114 C34,-120 42,-128 50,-136 C50,-122 48,-108 44,-92 Q2,-84 -40,-92Z" fill="#F5C33B"/><path d="M-40,-98 Q2,-90 44,-98 L44,-90 Q2,-82 -40,-90Z" fill="#E0A82A"/><circle cx="2" cy="-112" r="7" fill="${GEM_G}"/><circle cx="-20" cy="-104" r="4.5" fill="${GEM_R}"/><circle cx="24" cy="-104" r="4.5" fill="${GEM_R}"/><circle cx="2" cy="-158" r="5" fill="${GEM_R}"/><circle cx="-46" cy="-138" r="4.5" fill="#F5C33B"/><circle cx="50" cy="-138" r="4.5" fill="#F5C33B"/>`;
   return m;
 }
@@ -185,8 +190,21 @@ function personM(o) {
   if (o.waist) torso += `<path d="M${-60 - p},-150 C-20,-140 20,-140 ${60 + p},-150 C${63 + p},-142 ${63 + p},-134 ${62 + p},-127 C20,-117 -20,-117 ${-62 - p},-127 C${-63 - p},-134 ${-63 - p},-142 ${-60 - p},-150Z" fill="${o.waist}"/><path d="M30,-130 C34,-110 30,-92 36,-74 Q42,-72 48,-78 C42,-96 44,-114 44,-132Z" fill="${dkc(o.waist, .1)}"/>`;
   if (o.sash) torso += `<path d="M-40,-250 C-30,-256 -20,-254 -14,-248 C10,-210 34,-170 ${52 + p},-140 C${46 + p},-132 ${40 + p},-130 ${34 + p},-134 C18,-166 -6,-206 -40,-250Z" fill="${o.sash}"/>${o.sashTail ? `<path d="M-8,-130 C-8,-110 -10,-90 -8,-70 Q2,-64 12,-70 C12,-90 10,-110 10,-130Z" fill="${o.sash}"/><path d="M-8,-80 Q2,-74 12,-80" stroke="#C8452C" stroke-width="4" fill="none" stroke-linecap="round"/>` : ''}`;
   if (o.necklace) torso += `<path d="M-20,-250 Q2,-220 24,-250" stroke="#F2C14E" stroke-width="4.5" fill="none" stroke-linecap="round"/><circle cx="2" cy="-230" r="6" fill="#F2C14E"/><circle cx="2" cy="-230" r="2.6" fill="${GEM_R}"/>${o.robe ? `<path d="M-26,-250 Q2,-196 30,-250" stroke="#F2C14E" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="2" cy="-208" r="7" fill="#F2C14E"/><circle cx="2" cy="-208" r="3.4" fill="${GEM_G}"/>` : ''}`;
+  if (o.dots) for (let y = -236; y < -130; y += 22) for (let x = -40 + ((y / 22) & 1) * 10; x <= 44; x += 20) torso += `<circle cx="${x}" cy="${y}" r="3.2" fill="${o.dots}"/>`;
+  if (o.pearls) { for (let i = 0; i <= 12; i++) { const t = i / 12; torso += `<circle cx="${n1(-26 + 56 * t)}" cy="${n1(-250 + 48 * Math.sin(Math.PI * t))}" r="4" fill="#FBF6EA"/>`; } for (let i = 0; i <= 10; i++) { const t = i / 10; torso += `<circle cx="${n1(-18 + 40 * t)}" cy="${n1(-250 + 30 * Math.sin(Math.PI * t))}" r="3.4" fill="#FBF6EA"/>`; } }
   if (o.mala) { const pts = []; for (let i = 0; i <= 14; i++) { const t = i / 14, x = -22 + 46 * t, y = -250 + 60 * Math.sin(Math.PI * t) + (t > .5 ? 6 : 0); pts.push(`<circle cx="${n1(x)}" cy="${n1(y)}" r="4.2" fill="#7A3E1E"/>`); } torso += pts.join(''); }
   if (o.bag) torso += `<path d="M36,-252 C10,-210 -22,-172 -48,-144" stroke="#7A4626" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M${-78 - p},-150 C${-80 - p},-120 ${-76 - p},-96 ${-60 - p},-90 L-30,-90 C-16,-98 -14,-124 -18,-150Z" fill="#9A5B32"/><path d="M${-80 - p},-152 L-16,-152 C-18,-130 -32,-124 -48,-124 C-64,-124 ${-76 - p},-132 ${-80 - p},-152Z" fill="#7E4626"/>`;
+  if (o.dots && (o.robe || o.longLower)) { const yTop = o.seated === 'chair' ? -100 : -140, yBot = o.seated === 'chair' ? -14 : -24, xw = o.seated === 'chair' ? 64 : 46; for (let y = yTop; y < yBot; y += 24) for (let x = -xw + ((y / 24) & 1) * 11; x <= xw; x += 22) lower += `<circle cx="${x}" cy="${y}" r="3.2" fill="${o.dots}"/>`; }
+  // namaste: forearms bend up and the palms press together in front of the chest
+  const sx = 44 + p * .6;
+  const armL = `M${-sx - 2},-238 C${-sx - 18},-204 ${-sx - 22},-176 ${-sx - 8},-166 C${-sx + 6},-158 -24,-166 -10,-184`, armR = `M${sx + 6},-238 C${sx + 22},-204 ${sx + 26},-176 ${sx + 12},-166 C${sx - 2},-158 28,-166 14,-184`;
+  const nam = `<g class="nam"><path d="${armL}" stroke="${dkc(armColL, .22)}" stroke-width="33" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${armR}" stroke="${dkc(armColR, .22)}" stroke-width="33" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="${armL}" stroke="${armColL}" stroke-width="28" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${armR}" stroke="${armColR}" stroke-width="28" fill="none" stroke-linecap="round" stroke-linejoin="round"/>${o.bangles || o.robe || o.sari || o.armband ? `<path d="M-22,-176 Q-12,-168 -2,-178 M6,-178 Q16,-168 26,-176" stroke="#F2C14E" stroke-width="5" fill="none" stroke-linecap="round"/>` : ''}
+    <path d="M-18,-178 C-23,-208 -17,-242 2,-272 C21,-242 27,-208 22,-178 Q2,-170 -18,-178Z" fill="${sk}" stroke="${skD}" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M-10,-206 C-17,-202 -17,-190 -10,-185 M14,-206 C21,-202 21,-190 14,-185" stroke="${skD}" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M2,-268 L2,-176" stroke="${skD}" stroke-width="3" stroke-linecap="round"/><path d="M-8,-250 Q-3,-246 1,-250 M3,-250 Q7,-246 12,-250" stroke="${skD}" stroke-width="2" fill="none" stroke-linecap="round" opacity=".7"/></g>`;
+  // whisper: the right hand cups beside the mouth
+  const wsp = `<g class="wsp"><path d="M${sx + 6},-238 C${sx + 22},-204 ${sx + 20},-170 ${sx + 4},-162 C${sx - 12},-170 28,-214 24,-262" stroke="${armColR}" stroke-width="26" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M14,-286 C4,-282 0,-266 6,-254 C14,-252 24,-256 28,-264 C30,-276 24,-286 14,-286Z" fill="${sk}"/></g>`;
   const feet = o.seated === 'cross' ? '' : o.seated === 'chair'
     ? `<path d="M-40,-4 C-42,-12 -32,-16 -20,-14 C-10,-13 -4,-9 -4,-4 Q-4,0 -10,0 L-36,0 Q-40,0 -40,-4Z" fill="${dkc(shoe, .1)}"/><path d="M40,-4 C42,-12 32,-16 20,-14 C10,-13 4,-9 4,-4 Q4,0 10,0 L36,0 Q40,0 40,-4Z" fill="${shoe}"/>`
     : `${foot(-16, .5, dkc(shoe, .15))}${foot(16, 0, shoe)}`;
@@ -195,12 +213,12 @@ function personM(o) {
   ${feet}
   <g class="bodyb"><g class="pbody"><g transform="translate(0 ${S})">
     <g transform="scale(1 ${by})">
-      ${arm('armL', -44 - p * .6, armColL, 0)}
+      ${arm('armL', -44 - p * .6, armColL, 0).replace('class="aswing"', 'class="aswing al"')}
       ${o.seated ? '' : lower}${torso}
       <path d="M-13,-282 C-12,-266 -14,-254 -16,-246 Q2,-238 18,-246 C16,-254 14,-266 15,-282Z" fill="${skD}"/>
     </g>
     <g transform="translate(4 ${-256 * by})"><g class="pose hp"><g class="face idle" data-who="${o.who || ''}"><g transform="scale(${hs})">${headM({ ...o, kid })}</g></g></g></g>
-    <g transform="scale(1 ${by})">${arm('armR', 44 + p * .6, armColR, .5, held, carry)}</g>
+    <g transform="scale(1 ${by})">${arm('armR', 44 + p * .6, armColR, .5, held, carry).replace('class="aswing"', 'class="aswing ar"')}${nam}${wsp}</g>
   </g></g></g>`;
 }
 function person(o = {}) {
@@ -213,7 +231,7 @@ function person(o = {}) {
   if (!o.seated) regRig(root, root.art, { stride: kid ? 58 : 72, nominal: kid ? 90 : 110, bob: 4 });
   return root;
 }
-const KING = { who: 'king', skin: '#D9966A', crown: true, beard: '#2A1A10', mustache: true, longHair: '#2A1A10', hair: '#2A1A10', earring: true, robe: '#C0262E', waist: '#2E8B4E', necklace: true, shoes: '#8A5A2A' };
+const KING = { who: 'king', skin: '#E3A274', turban: '#F4B83A', stripe: '#FFD86A', stripe2: '#E0962A', jewel: true, plume: '#2A1A10', tilak: true, beard: '#2A1A10', mustache: true, hair: '#2A1A10', earring: true, robe: '#F2861E', dots: '#FFD25A', waist: '#8E1F3A', pearls: true, shoes: '#B8401C' };
 const SAGE = { who: 'vishnu', skin: '#E8A577', beard: '#F4F0E8', longBeard: true, topknot: '#EFEBE3', hair: '#EFEBE3', browColor: '#CFC8BA', mustacheColor: '#F4F0E8', mustache: true, tilak: true, staff: true, drape: '#EE9A2E', lower: '#F4B740', longLower: true, mala: true, sandals: true };
 const PRINCES = [
   { who: 'princes', kid: true, bare: true, skin: '#E3A274', hairStyle: 'kid', hair: '#2A1A10', headband: '#6A3E8E', lower: '#7B4FA6', waist: '#F2B23A', necklace: true, armband: true },
@@ -262,7 +280,7 @@ function bullM(o) {
   <g class="rise">
     <g class="legs">${leg(-92, .5, bd)}${leg(108, 0, bd, 30)}</g>
     <g class="bodyb">
-      <g transform="translate(-166 -236)"><g class="tl"><path d="M0,0 C-26,30 -30,80 -26,128" stroke="${b}" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M-26,120 C-42,140 -40,172 -25,180 C-10,172 -10,140 -26,120Z" fill="${o.tuft || '#2E2A33'}"/></g></g>
+      <g transform="translate(-156 -232)"><g class="tl"><path d="M16,-10 C4,-6 -8,0 -14,10 C-26,36 -32,80 -32,124 Q-26,130 -20,124 C-20,82 -14,42 -4,22 C4,12 14,8 26,6Z" fill="${b}"/><path d="M-26,116 C-44,136 -42,170 -26,180 C-10,170 -8,136 -26,116Z" fill="${o.tuft || '#2E2A33'}"/></g></g>
       <path d="M-160,-160 C-178,-236 -120,-280 -40,-284 C20,-288 52,-302 102,-306 C152,-306 186,-262 182,-200 C178,-140 150,-112 105,-108 L-110,-108 C-150,-110 -155,-130 -160,-160Z" fill="${b}"/>
       <path d="M-124,-252 C-60,-272 30,-280 104,-288" stroke="${bl}" stroke-width="14" fill="none" stroke-linecap="round" opacity=".55"/>
       <path d="M-122,-150 C-50,-166 70,-166 142,-150 C132,-120 116,-110 100,-108 L-104,-108 C-122,-112 -128,-130 -122,-150Z" fill="${o.belly}"/>
@@ -306,8 +324,8 @@ function bull(o = {}) {
   regRig(root, root.art, { stride: 140, nominal: 100, swing: 12, bob: 3, nod: 2.5 });
   return root;
 }
-const SANJ = { body: '#6F7A93', belly: '#C3C0BC', muzzle: '#D5CCC4', ear: '#EFA3A0' };
-const NANDAKA = { body: '#D7B486', belly: '#F2E3C6', muzzle: '#F3DDC8', ear: '#EFA3A0' };
+const SANJ = { body: '#A65A2C', belly: '#EBC79E', muzzle: '#F0C4A6', ear: '#F2A8A0' };
+const NANDAKA = { body: '#8C93A2', belly: '#D6D3CE', muzzle: '#E0D8D0', ear: '#EFA3A0' };
 
 /* ══════════ Pingalaka, the lion king ══════════
    Golden body, chunky layered mane, small crown, gold collar with a red gem.
@@ -496,3 +514,18 @@ function rabbit() {
   root.parts = { head: root.querySelector('.hp') };
   return root;
 }
+
+function sleeperM(o) {
+  const sk = o.skin, skD = dkc(sk, .16), q = '#2E9E8A', qd = dkc(q, .2);
+  let quilt = ''; for (let x = -90; x < 110; x += 34) quilt += `<path d="M${x},-56 L${x + 4},0" stroke="${qd}" stroke-width="3" opacity=".6"/>`;
+  for (let x = -76; x < 110; x += 34) quilt += `<circle cx="${x}" cy="-30" r="5" fill="#F2C14E"/>`;
+  return `<ellipse cx="0" cy="4" rx="230" ry="14" fill="#000" opacity=".15"/>
+  <ellipse cx="-176" cy="-30" rx="58" ry="26" fill="#8E5BD6"/><path d="M-230,-30 Q-176,-14 -122,-30" stroke="#F2C14E" stroke-width="4" fill="none"/>
+  <path d="M-140,-52 C-170,-72 -200,-84 -226,-74" stroke="${sk}" stroke-width="22" fill="none" stroke-linecap="round"/><circle cx="-228" cy="-74" r="13" fill="${sk}"/>
+  <path d="M104,-30 C140,-48 170,-66 200,-84" stroke="${o.lower}" stroke-width="30" fill="none" stroke-linecap="round"/><path d="M168,-66 C182,-74 194,-82 204,-88" stroke="${sk}" stroke-width="22" fill="none" stroke-linecap="round"/><ellipse cx="214" cy="-94" rx="14" ry="10" fill="${sk}" transform="rotate(-30 214 -94)"/>
+  <path d="M106,-12 C142,-8 176,-2 206,2" stroke="${o.lower}" stroke-width="30" fill="none" stroke-linecap="round"/><path d="M176,-2 C190,0 202,2 212,3" stroke="${sk}" stroke-width="22" fill="none" stroke-linecap="round"/><ellipse cx="222" cy="2" rx="14" ry="10" fill="${sk}"/>
+  <g class="breath2"><path d="M-130,0 C-132,-44 -80,-70 -10,-68 C60,-66 112,-54 124,-24 C128,-10 124,0 116,2 L-124,2Z" fill="${q}"/>${quilt}<path d="M-128,-6 C-120,-48 -76,-66 -10,-64" stroke="#F7A21B" stroke-width="7" fill="none" stroke-linecap="round"/></g>
+  <path d="M-96,-58 C-80,-90 -60,-96 -40,-100" stroke="${sk}" stroke-width="20" fill="none" stroke-linecap="round"/><circle cx="-36" cy="-100" r="12" fill="${sk}"/>
+  <g transform="translate(-122 -42) rotate(-84)"><g class="face idle closed" data-who="princes"><g transform="scale(.7)">${headM({ ...o, kid: true })}</g></g></g>`;
+}
+function sleeper(o) { const root = build('char closed', .9, sleeperM(o)); setMood(root, 'o'); return root; }

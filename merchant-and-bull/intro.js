@@ -131,6 +131,20 @@ function squirrel() {
 function birdSpirit() { return mk(`<g class="flap2"><path d="M0,0 C-30,-40 -70,-44 -90,-30 C-60,-22 -30,-10 0,0Z" fill="#F7E0A0"/><path d="M0,0 C30,-40 70,-44 90,-30 C60,-22 30,-10 0,0Z" fill="#F7E0A0"/></g><ellipse cx="0" cy="4" rx="26" ry="14" fill="#F7E0A0"/><circle cx="24" cy="-4" r="11" fill="#F7E0A0"/><path d="M33,-6 L44,-2 L33,1Z" fill="#E0A82A"/><circle cx="27" cy="-6" r="2.4" fill="#5A3A10"/><path d="M-24,4 L-44,-4 L-40,12Z" fill="#F7E0A0"/>`); }
 function turtleSpirit() { return mk(`<ellipse cx="-36" cy="10" rx="14" ry="8" fill="#E9D58A"/><ellipse cx="34" cy="12" rx="14" ry="8" fill="#E9D58A"/><path d="M-50,8 C-50,-34 50,-34 50,8Z" fill="#D9B85A"/><path d="M-30,-6 L-10,-20 L10,-20 L30,-6 M-10,-20 L-14,6 M10,-20 L14,6" stroke="#B8943A" stroke-width="4" fill="none" stroke-linecap="round"/><circle cx="60" cy="-2" r="14" fill="#E9D58A"/><circle cx="64" cy="-5" r="2.6" fill="#5A3A10"/><path d="M60,4 Q66,8 70,4" stroke="#5A3A10" stroke-width="2" fill="none"/>`); }
 
+/* background people in regional dress: red pagdi, Himachali cap, red dupatta */
+const FOLK = {
+  pagdi: { turban: '#D8262E', stripe: '#F2B23A', stripe2: '#A81A22', cloth: '#FFFFFF', lower: '#F4EBDD', skin: '#C98A5E', mustache: 'big', waist: '#F2B23A', sandals: true },
+  cap: { cap: '#F4EFE4', cloth: '#EADCC2', vest: '#5A3E8E', lower: '#F4EBDD', skin: '#E3A274', mustache: true, sandals: true },
+  dupatta: { dupatta: '#D8262E', sari: '#F2B23A', cloth: '#D8262E', skin: '#E8A877', hair: '#2A1A10', bindi: true, tikka: true, nosering: true, earring: true, bangles: true, sandals: true },
+  dupatta2: { dupatta: '#C8182E', sari: '#2E9E6A', cloth: '#C8182E', skin: '#DE9C6C', hair: '#2A1A10', bindi: true, nosering: true, earring: true, bangles: true, sandals: true }
+};
+function nameTag(r, text, x, y, col) {
+  const w = text.length * 19 + 56;
+  const g = mk(`<g class="popin"><rect x="${-w / 2}" y="-32" width="${w}" height="60" rx="30" fill="${col}" stroke="#3B2414" stroke-width="5"/><text x="0" y="12" text-anchor="middle" font-family="'Yatra One',serif" font-size="32" fill="#FFF7E6">${text}</text></g>`);
+  g.setAttribute('pointer-events', 'none'); place(g, x, y, 1); r.append(g); return g;
+}
+const focus = (x, y, s, ms = 1800) => anim(world, { x: 800 - s * x, y: 450 - s * y, s }, ms, ease.io);
+
 /* ══════════ Opening 1: Mahilaropya ══════════ */
 async function i1() {
   const r = newStage('#F7C98A');
@@ -159,10 +173,11 @@ async function i1() {
   tween(cartA, { x: 2100 }, 52000, ease.lin);
   // townsfolk
   const folk = [
-    [{ sari: '#2E7DD8', cloth: '#F2B23A', skin: '#E3A274', bun: true, hair: '#2A1A10', bindi: true, earring: true, carry: 'basket', sandals: true }, -160, 812, .8, 1500, 30000],
+    [{ ...FOLK.dupatta, carry: 'basket' }, -160, 812, .8, 1500, 30000],
     [{ kid: true, cloth: '#E8492C', lower: '#F7F2E8', skin: '#DE9C6C', hairStyle: 'kid', hair: '#2A1A10', carry: 'pot' }, -260, 820, .78, 1420, 31000],
-    [{ turban: '#F2F0E6', stripe: '#E8E2D2', cloth: '#FFFFFF', lower: '#F4EBDD', skin: '#C98A5E', mustache: true, waist: '#2E9E8A' }, 1760, 790, .74, -200, 36000, true],
-    [{ sari: '#E8418A', cloth: '#7B4FA6', skin: '#E8A877', bun: true, hair: '#2A1A10', bindi: true, carry: 'pot', sandals: true }, 1900, 805, .76, -260, 40000, true]
+    [FOLK.pagdi, 1760, 790, .74, -200, 36000, true],
+    [{ ...FOLK.dupatta2, carry: 'pot' }, 1900, 805, .76, -260, 40000, true],
+    [FOLK.cap, 2100, 800, .72, -100, 42000, true]
   ];
   for (const [o, x, y, s, to, dur, flip] of folk) { const p = actor(person(o), x, y, s, { fx: flip ? -1 : 1 }); r.append(p); tween(p, { x: to }, dur, ease.lin); }
   // foreground: flower stall (left) and Vardhamanaka at his pottery stall (right)
@@ -175,8 +190,9 @@ async function i1() {
   r.append(tree(-40, 700, 2.3, { leaf: '#3E8F3A', hi: '#6FBF4A', trunk: '#8A5A34' }), tree(1650, 700, 2.3, { leaf: '#3E8F3A', hi: '#6FBF4A', trunk: '#8A5A34' }));
   motes(r, 24, '#FFE9A8', { seed: 301, y0: 120, y1: 700 });
   place(world, 800 - 1.12 * 640, 450 - 1.12 * 500, 1.12);
-  await reveal(); ambience('day');
+  await reveal(); ambience('day'); bgLife('market');
   tween(world, { x: 800 - 1.12 * 960, y: 450 - 1.12 * 500, s: 1.12 }, 16000, ease.io);
+  await say('arjun', `Namaste, ${kidName()}! I'm Arjun. Come with me to a faraway land, long, long ago…`);
   await say('arjun', 'Once upon a time, in the kingdom of Mahilaropya, there lived a king named Amara Shakthi.');
   await say('arjun', 'Mahilaropya was a busy, happy city, full of markets, flowers and friendly faces.');
   await say('merchant', 'Pots! Beautiful pots! Fresh from the kiln!');
@@ -214,60 +230,83 @@ function throneM() {
   <path d="M-160,-130 L160,-130 L150,0 L-150,0Z" fill="${gd}"/><path d="M-140,-110 L140,-110 L132,-10 L-132,-10Z" fill="${g}"/>
   ${[-90, -30, 30, 90].map(x => `<circle cx="${x}" cy="-60" r="10" fill="${red}"/>`).join('')}`;
 }
+function dotCurtain(x0, x1, y0, y1, side) {
+  // a tied-back curtain: full at the top, gathered to a gold tie, flaring to the floor
+  const w = x1 - x0, inner = side === 'left' ? x1 : x0, outer = side === 'left' ? x0 : x1, k = side === 'left' ? 1 : -1, ty = y0 + (y1 - y0) * .5;
+  const d = `M${outer},${y0} L${inner},${y0} C${inner - k * w * .2},${y0 + (y1 - y0) * .25} ${outer + k * w * .55},${ty - 40} ${outer + k * w * .32},${ty} C${outer + k * w * .5},${ty + 60} ${inner - k * w * .1},${y1 - 80} ${inner + k * w * .05},${y1} L${outer},${y1}Z`;
+  const id = uid('cur'); let dots = '';
+  for (let y = y0 + 20; y < y1; y += 34) for (let x = Math.min(x0, x1) + ((y / 34) & 1) * 15; x < Math.max(x0, x1); x += 30) dots += `<circle cx="${x}" cy="${y}" r="5.5" fill="#D8262E"/>`;
+  return `<g class="hang" style="animation-duration:6.5s"><clipPath id="${id}"><path d="${d}"/></clipPath><path d="${d}" fill="#F7941D"/><g clip-path="url(#${id})">${dots}${[.3, .6].map(f => `<path d="M${outer + k * w * f},${y0} C${outer + k * w * f * .9},${ty - 60} ${outer + k * w * .3},${ty} ${outer + k * w * .3},${ty}" stroke="#D9761A" stroke-width="5" fill="none" opacity=".7"/>`).join('')}</g>
+    <ellipse cx="${outer + k * w * .3}" cy="${ty}" rx="${w * .2}" ry="12" fill="${GOLDC}"/><path d="M${outer + k * w * .3},${ty + 8} L${outer + k * w * .3},${ty + 60}" stroke="${GOLDC}" stroke-width="7" stroke-linecap="round"/><circle cx="${outer + k * w * .3}" cy="${ty + 66}" r="10" fill="#E0962A"/></g>`;
+}
+function lampM(x, len) {
+  return `<g class="lampsw" style="animation-delay:${-(x % 4)}s"><path d="M${x},-40 L${x},${len}" stroke="#B8843A" stroke-width="5"/><path d="M${x - 40},${len} L${x + 40},${len} L${x + 26},${len + 46} L${x - 26},${len + 46}Z" fill="${GOLDC}"/><path d="M${x - 30},${len + 46} Q${x},${len + 80} ${x + 30},${len + 46}Z" fill="#D9A22A"/>${[-24, 0, 24].map(dx => `<path d="M${x + dx},${len - 2} C${x + dx - 7},${len - 14} ${x + dx - 4},${len - 26} ${x + dx},${len - 34} C${x + dx + 4},${len - 26} ${x + dx + 7},${len - 14} ${x + dx},${len - 2}Z" fill="#FFB33A" class="flicker" filter="url(#glow)"/>`).join('')}</g>`;
+}
 async function i2() {
-  const r = newStage('#B9875A');
-  sky(r, [[0, '#E9B987'], [1, '#C99868']]);
-  // the balcony view: sunset sky, misty mountains and a distant palace
-  addArt(r, `<rect x="40" y="120" width="560" height="600" fill="#FFD9A0"/><circle cx="250" cy="300" r="60" fill="#FFF0B8"/><circle cx="250" cy="300" r="120" fill="#FFF0B8" opacity=".3"/>
-    ${hillMk(470, 60, 520, 1.2, '#C9A3C8')}`, .1, 0, 0, 1, { round: false });
-  addArt(r, `<path d="M40,560 C120,420 200,380 260,430 C320,380 420,330 520,420 C560,450 590,480 600,520 L600,720 L40,720Z" fill="#7FAF6A"/><path d="M40,610 C160,560 300,560 600,600 L600,720 L40,720Z" fill="#5E9A52"/>`, .15);
-  addArt(r, palaceM(), .15, 380, 590, .28, { unified: true });
-  // the hall: arched opening, carved pillars, banners and curtains
-  addArt(r, `<path d="M-200,-200 L1800,-200 L1800,760 L-200,760Z M30,720 L30,250 Q30,110 320,90 Q610,110 610,250 L610,720Z" fill="#E2B47E" fill-rule="evenodd"/>
-    <path d="M30,720 L30,250 Q30,110 320,90 Q610,110 610,250 L610,720" stroke="#F6D8A8" stroke-width="22" fill="none"/>
-    <path d="M30,720 L30,250 Q30,110 320,90 Q610,110 610,250 L610,720" stroke="#C99666" stroke-width="6" fill="none" stroke-dasharray="2 14" stroke-linecap="round"/>
-    <rect x="-200" y="-200" width="2000" height="70" fill="#C99666"/>
-    ${[660, 720, 780, 840, 900].map(x => '').join('')}
-    <path d="M640,170 L1800,170" stroke="#F6D8A8" stroke-width="16"/>`, .55);
-  addArt(r, `<rect x="30" y="610" width="580" height="22" rx="8" fill="#F6D8A8"/>${Array.from({ length: 12 }, (_, i) => `<path d="M${52 + i * 47},710 C${42 + i * 47},690 ${42 + i * 47},660 ${52 + i * 47},640 C${62 + i * 47},660 ${62 + i * 47},690 ${52 + i * 47},710Z" fill="#F6D8A8"/>`).join('')}<rect x="30" y="700" width="580" height="20" rx="8" fill="#E9C48E"/>`, .55);
-  addArt(r, pillarM(700, 140, 760, 70, '#E8B880') + pillarM(1180, 140, 760, 70, '#E8B880') + pillarM(1520, 140, 760, 80, '#E8B880'), .6);
-  addArt(r, bannerM(950, 200, 90, 230, '#B5182A') + bannerM(1350, 200, 90, 230, '#2E8B4E') + bannerM(1060, 210, 70, 180, '#6A3E9E'), .6, 0, 0, 1, { shade: false });
-  addArt(r, curtainM(-20, 120, 60, 760, '#C0262E', 'left') + curtainM(120, 200, 60, 600, '#2E8B4E', 'left') + `<g transform="translate(1600 0) scale(-1 1)">${curtainM(-20, 110, 60, 760, '#7B3FA6', 'left')}</g>`, .9, 0, 0, 1, { shade: false });
-  // floor tiles and a red carpet
-  addArt(r, `<rect x="-300" y="740" width="2200" height="400" fill="#F2DDB6"/>${Array.from({ length: 16 }, (_, i) => `<path d="M${800 + (i - 7.5) * 60},740 L${800 + (i - 7.5) * 200},1000" stroke="#DCC093" stroke-width="3"/>`).join('')}${[770, 810, 860, 920].map(y => `<path d="M-300,${y} L1900,${y}" stroke="#DCC093" stroke-width="3"/>`).join('')}
-    <path d="M520,760 L1080,760 L1260,1000 L340,1000Z" fill="#B5182A"/><path d="M548,772 L1052,772 L1214,990 L386,990Z" fill="none" stroke="${GOLDC}" stroke-width="7"/>
-    ${[600, 700, 800, 900, 1000].map(x => `<circle cx="${x}" cy="860" r="9" fill="${GOLDC}"/>`).join('')}`, 1, 0, 0, 1, { round: false });
-  // beams of light through the arch
-  const beams = mk(`<path class="ray" d="M180,120 L470,120 L960,1000 L420,1000Z" fill="url(#rayg)"/><path class="ray" style="animation-delay:-3s" d="M380,140 L520,140 L1160,1000 L860,1000Z" fill="url(#rayg)"/>`); beams.setAttribute('pointer-events', 'none'); r.append(pwrap(beams, .7));
-  addArt(r, throneM(), 1, 800, 790, 1, { unified: true });
-  const king = actor(person({ ...KING, seated: 'chair' }), 800, 790, 1.32); r.append(king);
-  // courtiers
-  const ppl = [
-    [{ skin: '#E3A274', beard: '#F4F0E8', mustache: true, mustacheColor: '#F4F0E8', hair: '#EFEBE3', drape: '#2E9E8A', cloth: '#F3EEE2', lower: '#F3EEE2', longLower: true, sandals: true, carry: 'scroll' }, 250, 860, 1.02],
-    [{ skin: '#C98A5E', beard: '#3A2414', mustache: true, hair: '#3A2414', drape: '#E0A82A', cloth: '#2E7DA8', lower: '#F3EEE2', longLower: true, sandals: true }, 400, 840, .96],
-    [{ skin: '#D9966A', beard: '#2A1A10', hair: '#2A1A10', longHair: '#2A1A10', cloth: '#F7F2E8', drape: '#3E7DC8', lower: '#F7F2E8', sandals: true, armband: true }, 530, 830, .94, 'pray'],
-    [{ skin: '#E8A877', sari: '#2E9E6A', cloth: '#C8452C', bun: true, hair: '#2A1A10', bindi: true, earring: true, sandals: true }, 1130, 830, .92, 'pray'],
-    [{ skin: '#C98A5E', turban: '#9AA3AD', stripe: '#C9CED6', stripe2: '#6E7684', cloth: '#C8452C', vest: '#7A8290', waist: '#F2B23A', lower: '#F3EEE2', mustache: true, spear: true }, 1290, 850, 1],
-    [{ skin: '#B87A4E', turban: '#F2F0E6', cloth: '#F7F2E8', drape: '#E0A82A', lower: '#F3EEE2', longLower: true, beard: '#F4F0E8', mustache: true, mustacheColor: '#F4F0E8', sandals: true, carry: 'scroll' }, 1420, 830, .94],
-    [{ skin: '#D9966A', turban: '#9AA3AD', stripe: '#C9CED6', stripe2: '#6E7684', cloth: '#2E5FA8', vest: '#7A8290', waist: '#C8452C', lower: '#F3EEE2', mustache: true, spear: true }, 1560, 870, 1.04]
-  ].map(([o, x, y, s, pose]) => { const p = actor(person(o), x, y, s, { fx: x > 800 ? -1 : 1 }); if (pose) p.inner.classList.add(pose); r.append(p); return p; });
-  // lamp and treasure chest
-  addArt(r, `<path d="M-40,0 L40,0 L30,-120 L-30,-120Z" fill="#B8783A"/><rect x="-50" y="-134" width="100" height="18" rx="8" fill="#D99A50"/>
-    <path d="M-34,-140 C-34,-170 34,-170 40,-150 C50,-156 60,-150 56,-140Z" fill="${GOLDC}"/><path d="M-34,-150 C-50,-150 -54,-164 -44,-168" stroke="${GOLDC}" stroke-width="6" fill="none" stroke-linecap="round"/>`, 1.15, 150, 960, 1);
-  const flame = mk(`<g class="flicker"><path d="M0,-30 C-12,-12 -10,4 0,10 C10,4 12,-12 0,-30Z" fill="#FFB33A" filter="url(#glow)"/><path d="M0,-18 C-5,-8 -5,2 0,6 C5,2 5,-8 0,-18Z" fill="#FFF3C0"/></g>`); place(flame, 108, 812, 1.2); r.append(pwrap(flame, 1.15));
+  const r = newStage('#F2B477');
+  sky(r, [[0, '#F7C98E'], [1, '#EFA968']], { clouds: false });
+  // through the arched window: open sky, a turning sun, drifting clouds and green hills (no buildings)
+  addArt(r, `<rect x="480" y="40" width="680" height="720" fill="#8FD0F0"/><rect x="480" y="300" width="680" height="300" fill="#FFE2B0" opacity=".55"/>
+    <g transform="translate(900 250)"><g class="sunrays">${Array.from({ length: 12 }, (_, i) => `<path d="M0,-58 L10,-110 L-10,-110Z" fill="#FFE27A" transform="rotate(${i * 30})"/>`).join('')}</g><circle r="52" fill="#FFE27A"/><circle r="40" fill="#FFF3B8"/></g>
+    ${[[620, 170, 1, 34], [960, 130, .8, 46], [760, 330, .7, 40]].map(([x, y, sc, d]) => `<g class="cdrift" style="animation-duration:${d}s"><g transform="translate(${x} ${y}) scale(${sc})"><ellipse rx="80" ry="22" fill="#FFFFFF"/><circle cx="-30" cy="-12" r="28" fill="#FFFFFF"/><circle cx="14" cy="-22" r="34" fill="#FFFFFF"/><circle cx="46" cy="-6" r="22" fill="#FFFFFF"/></g></g>`).join('')}
+    ${hillMk(520, 34, 420, .8, '#7FBF5A').replace('M-600,1300 L-600', 'M480,1300 L480')}<path d="M480,600 C620,560 760,580 900,560 C1000,548 1100,566 1160,580 L1160,800 L480,800Z" fill="#5EA84A"/>`, .1, 0, 0, 1, { shade: false, round: false });
+  // the hall: warm walls, a green upper band with gold trim, arched niches and a carved window frame
+  const WALL = '#F8C98C', WALLD = '#E9AE6E', GREEN = '#2E8B57';
+  addArt(r, `<path d="M-300,-200 L1900,-200 L1900,800 L-300,800Z M600,700 L600,330 Q600,170 820,150 Q1040,170 1040,330 L1040,700Z" fill="${WALL}" fill-rule="evenodd"/>
+    <rect x="-300" y="-200" width="2200" height="330" fill="${GREEN}"/><rect x="-300" y="120" width="2200" height="16" fill="${GOLDC}"/>
+    <path d="M-300,136 ${Array.from({ length: 46 }, (_, i) => `Q${-300 + i * 48 + 24},176 ${-300 + (i + 1) * 48},136`).join(' ')}" fill="${GOLDC}"/>
+    ${Array.from({ length: 23 }, (_, i) => `<g transform="translate(${-276 + i * 96} 60)"><path d="M0,-30 C-10,-14 -10,4 0,14 C10,4 10,-14 0,-30Z M0,14 C-20,10 -30,-4 -30,-14 C-16,-12 -6,-4 0,14Z M0,14 C20,10 30,-4 30,-14 C16,-12 6,-4 0,14Z" fill="${GOLDC}" opacity=".9"/></g>`).join('')}
+    <rect x="-300" y="-200" width="2200" height="40" fill="#1E6E44"/>
+    ${[90, 1450].map(x => `<path d="${archD(x, 640, 200, 380)}" fill="${WALLD}"/><path d="${archD(x, 620, 160, 340)}" fill="#E85A8A"/><path d="${archD(x, 620, 120, 300)}" fill="#F7A8C4"/><circle cx="${x}" cy="440" r="34" fill="${GOLDC}"/><circle cx="${x}" cy="440" r="18" fill="#E85A8A"/>`).join('')}
+    <path d="M600,700 L600,330 Q600,170 820,150 Q1040,170 1040,330 L1040,700" stroke="${GOLDC}" stroke-width="20" fill="none"/>
+    <path d="M600,700 L600,330 Q600,170 820,150 Q1040,170 1040,330 L1040,700" stroke="#D9A22A" stroke-width="6" fill="none" stroke-dasharray="3 16" stroke-linecap="round"/>
+    <rect x="580" y="680" width="480" height="30" rx="10" fill="${GOLDC}"/>
+    <rect x="-300" y="700" width="2200" height="60" fill="${WALLD}"/>`, .5);
+  addArt(r, `<rect x="604" y="600" width="432" height="16" rx="6" fill="#D9A22A"/>${Array.from({ length: 9 }, (_, i) => `<path d="${archD(632 + i * 47, 690, 30, 70)}" fill="none" stroke="#D9A22A" stroke-width="8"/>`).join('')}`, .5);
+  addArt(r, dotCurtain(520, 690, 120, 760, 'left') + dotCurtain(950, 1120, 120, 760, 'right') +
+    `<path d="M500,118 L1140,118 L1140,150 C1060,210 980,210 900,160 C860,210 780,210 740,160 C660,210 580,210 500,150Z" fill="#F7941D"/>${[580, 740, 900, 1060].map(x => `<circle cx="${x}" cy="196" r="9" fill="${GOLDC}"/>`).join('')}<rect x="490" y="104" width="660" height="18" rx="9" fill="${GOLDC}"/>`, .6, 0, 0, 1, { shade: false });
+  addArt(r, pillarM(400, 130, 790, 66, '#F2B65E') + pillarM(1240, 130, 790, 66, '#F2B65E'), .6);
+  addArt(r, lampM(250, 150) + lampM(1380, 150), .75, 0, 0, 1, { shade: false });
+  // floor: warm tiles and a red runner with gold borders
+  addArt(r, `<rect x="-300" y="760" width="2200" height="400" fill="#F4CF9A"/>${Array.from({ length: 16 }, (_, i) => `<path d="M${800 + (i - 7.5) * 60},760 L${800 + (i - 7.5) * 200},1000" stroke="#E2B47A" stroke-width="3"/>`).join('')}${[790, 830, 880, 940].map(y => `<path d="M-300,${y} L1900,${y}" stroke="#E2B47A" stroke-width="3"/>`).join('')}
+    <path d="M-300,800 L1900,800 L1900,900 L-300,900Z" fill="#C8202E"/><path d="M-300,812 L1900,812 M-300,888 L1900,888" stroke="${GOLDC}" stroke-width="6"/>
+    ${Array.from({ length: 22 }, (_, i) => `<path d="M${-280 + i * 100},850 l14,-14 l14,14 l-14,14Z" fill="${GOLDC}"/>`).join('')}`, 1, 0, 0, 1, { round: false, shade: false });
+  const beams = mk(`<g filter="url(#blur)" opacity=".7"><path class="ray" d="M640,200 L1000,200 L1180,1000 L560,1000Z" fill="url(#rayg)"/></g>`); beams.setAttribute('pointer-events', 'none'); r.append(pwrap(beams, .7));
+  // the king on his golden throne (left), on a gold dais
+  addArt(r, `<path d="M-200,0 L200,0 L184,-34 L-184,-34Z" fill="#D9A22A"/><path d="M-176,-34 L176,-34 L162,-62 L-162,-62Z" fill="${GOLDC}"/><path d="M-150,-14 L150,-14" stroke="#C8202E" stroke-width="6"/>`, 1, 330, 840, 1, { unified: true });
+  addArt(r, throneM(), 1, 330, 780, .95, { unified: true });
+  const king = actor(person({ ...KING, seated: 'chair' }), 330, 780, 1.22); r.append(king);
+  const guard1 = actor(person({ ...FOLK.pagdi, cloth: '#C8452C', vest: '#7A8290', spear: true, waist: '#F2B23A' }), 110, 850, 1.02); r.append(guard1);
+  // the court: a minister in green with a blue sash, a whispering pair, people in pagdi, cap and dupatta
+  const minister = actor(person({ who: 'servant', skin: '#C98A5E', turban: '#F7F2E8', stripe: '#E9E0CC', robe: '#2E8B57', sash: '#2E7DD8', beard: '#2A1A10', mustache: true, carry: 'scroll', shoes: '#6B3F1E' }), 640, 860, 1, { fx: -1 });
+  const wA = actor(person({ ...FOLK.cap }), 900, 846, .92);
+  const wB = actor(person({ ...FOLK.pagdi, turban: '#F2861E', stripe: '#FFD86A', stripe2: '#C8641A', vest: '#2E7DD8' }), 1000, 846, .94, { fx: -1 });
+  const lady = actor(person(FOLK.dupatta), 1130, 852, .9, { fx: -1 });
+  const elder = actor(person({ skin: '#E3A274', beard: '#F4F0E8', mustache: true, mustacheColor: '#F4F0E8', hair: '#EFEBE3', turban: '#F7F2E8', stripe: '#E9E0CC', drape: '#E0A82A', cloth: '#F3EEE2', lower: '#F3EEE2', longLower: true, sandals: true, carry: 'scroll' }), 1270, 846, .96, { fx: -1 });
+  const pag = actor(person(FOLK.pagdi), 1400, 856, .98, { fx: -1 });
+  const lady2 = actor(person(FOLK.dupatta2), 1510, 850, .9, { fx: -1 });
+  const guard2 = actor(person({ ...FOLK.pagdi, cloth: '#2E5FA8', vest: '#7A8290', spear: true, waist: '#C8452C' }), 1600, 866, 1.04, { fx: -1 });
+  const court = [wA, wB, lady, elder, pag, lady2]; r.append(minister, ...court, guard2);
+  // the whispering pair keep chatting in the background
+  const chat = () => { if (!wB.isConnected) return; wB.inner.classList.toggle('whisper'); wA.parts.head.classList.toggle('tilt', wB.inner.classList.contains('whisper')); };
+  for (let k = 0; k < 12; k++) later(chat, 2500 + k * 2600);
   addArt(r, `<ellipse cx="0" cy="4" rx="120" ry="12" fill="#000" opacity=".2"/><path d="M-110,0 L110,0 L110,-110 L-110,-110Z" fill="#8A5A2A"/><path d="M-110,-110 C-110,-180 110,-180 110,-110Z" fill="#A06A34"/>
-    <path d="M-110,-56 L110,-56 M-60,-160 L-60,0 M60,-160 L60,0" stroke="${GOLDC}" stroke-width="10" stroke-linecap="round"/><rect x="-18" y="-80" width="36" height="40" rx="8" fill="${GOLDC}"/><circle cx="0" cy="-62" r="6" fill="#5A3A10"/>`, 1.15, 1470, 980, .9, { unified: true });
-  const shine = mk(`<circle cx="1470" cy="880" r="130" fill="url(#beam)" class="ray"/>`); shine.setAttribute('pointer-events', 'none'); r.append(pwrap(shine, 1.15));
-  motes(r, 22, '#FFF2C0', { seed: 77, x0: 200, x1: 1100, y0: 150, y1: 800, depth: .8 });
-  place(world, 800 - 1.04 * 800, 450 - 1.04 * 470, 1.04);
-  await reveal(); ambience('glow');
-  tween(world, { x: 800 - 1.16 * 800, y: 450 - 1.16 * 500, s: 1.16 }, 16000, ease.io);
+    <path d="M-110,-56 L110,-56 M-60,-160 L-60,0 M60,-160 L60,0" stroke="${GOLDC}" stroke-width="10" stroke-linecap="round"/><rect x="-18" y="-80" width="36" height="40" rx="8" fill="${GOLDC}"/><circle cx="0" cy="-62" r="6" fill="#5A3A10"/>`, 1.15, 560, 990, .8, { unified: true });
+  addArt(r, flowerPot(40, 990, 1.2, '#F25C78') + flowerPot(1560, 1000, 1.1, '#F7A21B'), 1.2);
+  motes(r, 22, '#FFF2C0', { seed: 77, x0: 300, x1: 1300, y0: 150, y1: 800, depth: .8 });
+  place(world, 800 - 1.02 * 800, 450 - 1.02 * 470, 1.02);
+  await reveal(); ambience('glow'); bgLife('court'); SFX.fanfare();
+  tween(world, { x: 800 - 1.1 * 760, y: 450 - 1.1 * 480, s: 1.1 }, 9000, ease.io);
+  [minister, lady, pag].forEach((p, i) => later(() => p.inner.classList.add('namaste'), 600 + i * 500));
   king.inner.classList.add('gesturing');
   await say('arjun', 'King Amara Shakthi was kind and wise, and his people loved him.');
   king.inner.classList.remove('gesturing');
+  [minister, lady, pag].forEach(p => p.inner.classList.remove('namaste'));
+  await focus(390, 520, 1.6, 2000);
   await say('king', 'My kingdom is happy and strong. And yet… one thing troubles me.');
   setMood(king.inner, 'worry'); setBrow(king.inner, 'worry');
-  ppl.forEach(p => p.parts.head.classList.add('tilt'));
+  [minister, ...court].forEach(p => p.parts.head.classList.add('tilt'));
+  focus(800, 500, 1.08, 2200);
   await say('arjun', 'The king had three sons. And they were his biggest worry!');
   await sleep(600);
 }
@@ -321,44 +360,56 @@ async function i3() {
   const pc1 = actor(peacock(), 980, 760, .8), pc2 = actor(peacock(), 1460, 800, .7, { fx: -1 }); r.append(pc1, pc2);
   const sq = [actor(squirrel(), 600, 840, 1), actor(squirrel(), 140, 960, 1.1, { fx: -1 })]; r.append(...sq);
   sq.forEach((s, i) => { const hop = () => { if (!s.isConnected) return; const x0 = s._t.x; tween(s, { y: s._t.y - 18 }, 220, ease.out).then(() => tween(s, { y: s._t.y + 18, x: x0 + (i ? -14 : 14) }, 260, ease.in)); }; for (let k = 0; k < 14; k++) later(hop, 1500 + k * 2600 + i * 900); });
-  // prince on the swing
+  // Bahushakti on the swing
   const swingPivot = G({ transform: 'translate(300 -60)' }), swingArm = G({ class: 'swingp' });
   swingArm.append(mk(`<path d="M-62,0 L-62,600 M62,0 L62,600" stroke="#B8843A" stroke-width="7" stroke-linecap="round"/><path d="M-62,40 L-62,560 M62,40 L62,560" stroke="#F7A21B" stroke-width="10" stroke-dasharray="1 22" stroke-linecap="round"/><rect x="-84" y="596" width="168" height="20" rx="8" fill="#A86A34"/>`));
   const p1 = actor(person({ ...PRINCES[0], seated: 'chair', mood: 'smile' }), 0, 660, 1); p1.inner.classList.add('hold'); swingArm.append(p1);
   swingPivot.append(swingArm); r.append(swingPivot);
-  // prince on the rocking horse
+  // Ugrashakti on the rocking horse
   const rh = G({ class: 'rock' }); rh.append(mk(rockingHorse()));
   const p2 = actor(person({ ...PRINCES[1], seated: 'chair' }), 0, -40, .95); p2.inner.classList.add('reach'); rh.append(p2);
   const rhA = actor(rh, 690, 820, 1); r.append(rhA); shade(rh.firstChild, true);
   // spinning top
   addArt(r, `<g class="spintop"><path d="M0,0 L-24,-30 C-24,-50 24,-50 24,-30Z" fill="#C8452C"/><path d="M-22,-34 Q0,-26 22,-34" stroke="${GOLDC}" stroke-width="5" fill="none"/><rect x="-3" y="-60" width="6" height="18" rx="3" fill="#7A4B2A"/></g>`, 1, 1000, 900, 1, { shade: false });
-  // the sleepy prince on his mat
-  addArt(r, `<path d="M-170,0 L170,0 L150,-40 L-150,-40Z" fill="#E2B862"/>${Array.from({ length: 8 }, (_, i) => `<path d="M${-150 + i * 40},-40 L${-170 + i * 44},0" stroke="#C99A44" stroke-width="3"/>`).join('')}<ellipse cx="-110" cy="-44" rx="56" ry="24" fill="#8E5BD6"/><path d="M-160,-44 Q-110,-30 -60,-44" stroke="${GOLDC}" stroke-width="4" fill="none"/>`, 1, 1300, 900, 1);
-  const p3 = actor(person({ ...PRINCES[2], seated: 'cross' }), 1300, 880, .9, { r: -76 }); p3.inner.classList.add('closed'); r.append(p3);
+  // Anantashakti asleep on his mat: on his back, legs apart, tucked under a quilt
+  addArt(r, `<path d="M-270,0 L270,0 L248,-40 L-248,-40Z" fill="#E2B862"/>${Array.from({ length: 12 }, (_, i) => `<path d="M${-240 + i * 44},-40 L${-262 + i * 48},0" stroke="#C99A44" stroke-width="3"/>`).join('')}`, 1, 1190, 900, 1);
+  const p3s = actor(sleeper(PRINCES[2]), 1200, 892, 1); r.append(p3s);
+  const p3 = actor(person({ ...PRINCES[2], seated: 'cross' }), 1180, 892, .92); p3.style.opacity = 0; p3.style.transition = 'opacity .7s'; p3s.style.transition = 'opacity .7s'; r.append(p3);
   const zz = mk(`<g class="zzz"><text x="0" y="0" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="40" fill="#6A3E9E" stroke="#FFF6DE" stroke-width="5" paint-order="stroke">z</text><text x="26" y="-30" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="30" fill="#6A3E9E" stroke="#FFF6DE" stroke-width="5" paint-order="stroke">z</text><text x="46" y="-56" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="22" fill="#6A3E9E" stroke="#FFF6DE" stroke-width="4" paint-order="stroke">z</text></g>`);
-  place(zz, 1180, 700, 1); r.append(zz);
+  place(zz, 1010, 760, 1); zz.setAttribute('pointer-events', 'none'); r.append(zz);
   addArt(r, flowerPot(60, 860, 1.2, '#F25C78') + flowerPot(1560, 880, 1.1, '#C04CC8'), 1.3);
   addArt(r, curtainM(-30, 110, -40, 900, '#F3E2C2', 'left') + `<g transform="translate(1600 0) scale(-1 1)">${curtainM(-30, 110, -40, 900, '#F3E2C2', 'left')}</g>`, 1.4, 0, 0, 1, { shade: false });
   motes(r, 18, '#FFF2C0', { seed: 91, depth: .9 });
+  const snoreT = setInterval(() => { if (p3s.isConnected && p3s.style.opacity !== '0') SFX.snore(); }, 3200); cleanups.push(() => clearInterval(snoreT));
   place(world, 800 - 1.06 * 800, 450 - 1.06 * 500, 1.06);
-  await reveal(); ambience('day');
-  tween(world, { x: 800 - 1.12 * 760, y: 450 - 1.12 * 520, s: 1.12 }, 12000, ease.io);
+  await reveal(); ambience('day'); bgLife('garden');
+  tween(world, { x: 800 - 1.1 * 800, y: 450 - 1.1 * 510, s: 1.1 }, 9000, ease.io);
   await say('arjun', 'He had three sons — clever, playful, curious boys… who loved everything except their lessons!');
-  await say('arjun', 'One loved his swing. One loved his wooden horse. And one… loved to sleep!');
-  await anim(world, { x: 800 - 1.25 * 1230, y: 450 - 1.25 * 720, s: 1.25 }, 1800, ease.io);
-  await interaction('The third prince is fast asleep! Tap him to wake him up.', null, ctx => {
-    tappables(ctx, [p3], it => { it._done = true; unkey(it); SFX.pop(); ctx.done(); });
+  // zoom on each prince as he is introduced
+  await focus(300, 450, 1.55);
+  let tag = nameTag(r, 'Bahushakti', 300, 262, '#6A3E8E'); SFX.wheee();
+  await say('arjun', 'This is Bahushakti. He loved his swing — higher and higher, all day long!');
+  await say('princes', 'Wheee!');
+  tag.remove(); await focus(690, 640, 1.6);
+  tag = nameTag(r, 'Ugrashakti', 690, 450, '#2E8A70'); SFX.hoof(); later(() => SFX.creak(), 500);
+  await say('arjun', 'This is Ugrashakti. Giddy-up! He galloped on his wooden horse, pretending to ride into battle.');
+  tag.remove(); await focus(1200, 780, 1.6);
+  tag = nameTag(r, 'Anantashakti', 1200, 680, '#E8642B'); SFX.snore();
+  await say('arjun', 'And this is Anantashakti. He loved to sleep… and sleep… and sleep!');
+  tag.remove();
+  await interaction('Anantashakti is fast asleep! Tap him to wake him up.', null, ctx => {
+    tappables(ctx, [p3s], it => { it._done = true; unkey(it); SFX.pop(); ctx.done(); });
   });
-  zz.remove();
-  await anim(p3, { r: 0, y: 900 }, 1100, ease.io);
-  p3.inner.classList.remove('closed'); p3.inner.classList.add('hold'); setMood(p3.inner, 'o');
-  SFX.chime(); sparkles(r, 1300, 640, 8, 90);
-  await sleep(1300);
-  p3.inner.classList.remove('hold'); setMood(p3.inner, 'smile');
-  tween(world, { x: 800 - 1.08 * 800, y: 450 - 1.08 * 480, s: 1.08 }, 2000, ease.io);
+  zz.remove(); SFX.yawn();
+  p3s.style.opacity = 0; p3.style.opacity = 1; p3.inner.classList.add('hold'); setMood(p3.inner, 'o');
+  later(() => p3s.remove(), 800);
+  await sleep(1200);
+  p3.inner.classList.remove('hold'); setMood(p3.inner, 'smile'); SFX.chime(); sparkles(r, 1180, 640, 8, 90);
+  await say('princes', 'Huh? Is it time to play?');
+  focus(800, 480, 1.08, 2200);
   await say('arjun', 'But the princes ran from every book they saw.');
   await say('arjun', "The king worried. How would his sons ever learn to rule a kingdom if they wouldn't sit still with a book?");
-  await ask('The princes love to play! What is your favourite game?');
+  await ask(`The princes love to play! What is your favourite game${KID.name ? ', ' + KID.name : ''}?`);
 }
 
 /* ══════════ Scene 1: Vishnu Sharma under the banyan ══════════ */
@@ -383,7 +434,7 @@ async function s1() {
   addArt(r, `<g transform="translate(-40 0)">${['#3E9A3E', '#5EB04A', '#2E8B4E'].map((c, i) => `<path d="M${i * 30},0 C${-20 + i * 30},-60 ${10 + i * 30},-120 ${40 + i * 20},-150 C${30 + i * 30},-100 ${30 + i * 30},-50 ${20 + i * 30},0Z" fill="${c}"/>`).join('')}</g>`, 1.4, 1560, 920, 1.2);
   addArt(r, `<g>${['#3E9A3E', '#5EB04A', '#2E8B4E'].map((c, i) => `<path d="M${i * 30},0 C${-20 + i * 30},-60 ${10 + i * 30},-120 ${40 + i * 20},-150 C${30 + i * 30},-100 ${30 + i * 30},-50 ${20 + i * 30},0Z" fill="${c}"/>`).join('')}</g>`, 1.4, 20, 930, 1.1);
   place(world, 800 - 1.05 * 800, 450 - 1.05 * 520, 1.05);
-  await reveal(); ambience('glow');
+  await reveal(); ambience('glow'); bgLife('garden');
   tween(world, { x: 800 - 1.1 * 800, y: 450 - 1.1 * 545, s: 1.1 }, 14000, ease.io);
   await say('arjun', 'So the king called for a wise scholar named Vishnu Sharma, and asked him to teach the princes.');
   sage.inner.classList.add('open');
@@ -406,20 +457,20 @@ async function s1() {
   await say('arjun', 'He called these stories the Panchatantra.');
   const title = mk(`<text x="800" y="170" text-anchor="middle" font-family="'Yatra One',serif" font-size="92" fill="#FFE08A" stroke="#8A4A10" stroke-width="10" paint-order="stroke" filter="url(#glow)">पञ्चतन्त्र</text>`); title.setAttribute('class', 'popin'); title.setAttribute('pointer-events', 'none'); r.append(title);
   SFX.chime();
-  pr.forEach(p => p.inner.classList.add('pray'));
+  pr.forEach(p => p.inner.classList.add('namaste'));
   await say('arjun', "And the princes loved them so much, they couldn't wait to hear what happened next.");
-  pr.forEach(p => p.inner.classList.remove('pray'));
+  pr.forEach(p => p.inner.classList.remove('namaste'));
   spirits.style.opacity = 0; title.style.transition = 'opacity 1s'; title.style.opacity = 0;
   await say('arjun', 'Today, Vishnu Sharma is going to tell the princes — and us — our very first Panchatantra story! Let’s listen closely…');
   sage.inner.classList.remove('open');
   spirits.remove(); title.remove();
-  await say('vishnu', 'Namaste, little one. Are you ready to hear a story?');
-  sage.inner.classList.add('pray');
+  sage.inner.classList.add('namaste'); pr.forEach(p => p.inner.classList.add('namaste'));
+  await say('vishnu', `Namaste, ${kidName()}! Are you ready to hear a story?`);
   await namaste(r);
   SFX.chime(); sparkles(r, 800, 450, 16, 160);
-  sage.parts.head.classList.add('hdown'); pr.forEach(p => p.inner.classList.add('pray'));
-  await sleep(1100);
-  sage.parts.head.classList.remove('hdown'); sage.inner.classList.remove('pray'); pr.forEach(p => p.inner.classList.remove('pray'));
+  sage.parts.head.classList.add('hdown'); pr.forEach(p => p.parts.head.classList.add('hdown'));
+  await say('princes', `Namaste, ${kidName()}!`);
+  sage.parts.head.classList.remove('hdown'); sage.inner.classList.remove('namaste'); pr.forEach(p => { p.parts.head.classList.remove('hdown'); p.inner.classList.remove('namaste'); });
   await say('arjun', 'Vishnu Sharma took the three sons under his fold and said:');
   const tb = thought(r, 800, 205); place(tb, 800, 205, .05); await anim(tb, { s: 1 }, 600, ease.io);
   const lh = place(lionHead(), -60, 10, .72); tb.content.append(lh);

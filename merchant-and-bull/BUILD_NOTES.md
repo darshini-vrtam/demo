@@ -119,3 +119,20 @@ Built from the v6 story by `python3 build_v7.py`: everything (intro, 15 scenes, 
 
 ### v7 opening (replaces the book)
 `intro.js` holds four illustrated beats: **Intro 1 · Mahilaropya** (palace, bazaar, ox cart, townsfolk, Vardhamanaka at his pot stall), **Intro 2 · The King** (throne room, courtiers, guards, balcony view), **Intro 3 · The Three Princes** (courtyard: swing, rocking horse, sleepy prince — tap to wake him; ask card), **Scene 1** (Vishnu Sharma under the banyan, glowing story animals, namaste interaction, thought bubble). Vardhamanaka uses the v6 look (bare-chested, saffron sash, gold jewellery).
+
+### v7.1 — onboarding, camera, tracking, music
+- **Onboarding** (replaces the title card): Arjun greets the child in three steps.
+  1. "Hello, my little friend! May I know your name?" The child can type, or tap the mic and say it (SpeechRecognition, en-IN; phrases like "my name is" are stripped). The name is used in the story ("Namaste, Meera!") and remembered on this device.
+  2. Camera permission. If allowed, a small mirrored camera window appears at the bottom-left; it can be dragged anywhere, and × turns it off. If refused or unavailable: "That's okay! You can tap and drag instead."
+  3. "Let's begin with today's story" → **Begin Story**, Choose a scene, and the narrator voice.
+- **Tracking** (`camera.js`, MediaPipe tasks-vision 0.10.14):
+  - Hand tracking switches on automatically for the namaste, packing-the-wagon and vine-pulling activities (and the glowing-light activity in s14). An instruction card sits above the camera window, and Arjun reads it aloud.
+  - Moo Munch is now played in the page with face tracking: open your mouth wide to munch, 8 munches. Tap or Space also work.
+  - If the models can't load, a toast says so and tap/drag carries on.
+- **Princes** named Bahushakti (swing), Ugrashakti (rocking horse) and Anantashakti (sleeping on his back under a quilt). The camera zooms on each with a name tag; tap to wake Anantashakti (snore → yawn → stretch).
+- **Namaste**: posed arms with joined palms (`.namaste` class), used by the sage, the princes and courtiers. The on-screen namaste hands look like 🙏; with the camera on they follow the child's two hands.
+- **King's court**: green upper wall band, an arched window to the sky (turning sun, drifting clouds, hills — no buildings), orange curtains with red dots, the king on a gold throne at the left, a minister in green with a blue sash, a whispering pair, guards, and people in red pagdi, Himachali cap and red dupatta.
+- **Bulls**: Sanjivaka is brown, Nandaka grey; the tails grow out of the body.
+- **Living backgrounds everywhere**: grass sways, clouds drift across light skies, the sun's glow breathes, plus a warm colour grade.
+- **Music & SFX**: a procedural score (tanpura drone, bansuri/shehnai melody, soft tabla) with a mood per scene. It dips under speech and pauses for the iframe game. New sounds: fanfare, bell, snore, yawn, wheee, hooves, water, market bustle.
+- **Artifact limits**: claude.ai artifacts block the camera, microphone and external scripts/iframes. There, the page falls back to typing and tap/drag. Host the HTML on a normal web origin (https) for camera, mic and tracking.
