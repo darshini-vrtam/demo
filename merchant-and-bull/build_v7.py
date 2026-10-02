@@ -333,12 +333,23 @@ src = sub1(src, """function interaction(hintText, spoken, setup) {
     };
     cleanups.push(() => { offs.forEach(f => f()); hideHint(); });""",
 """function interaction(hintText, spoken, setup) {
-  const tip = tipFor(hintText), cam = tip && Cam.allowed && !Vision.failed;
+  const tip = tipFor(hintText), cam = tip && Cam.allowed && !Vision.failed, T = FACE_TIPS.has(tip) ? Face : Hands;
   if (cam) {
-    spoken = CAMTIP[tip].say; camTip(tip);
-    (tip === 'face' ? Face : Hands).start().then(ok => { if (!ok && Cam.allowed) { camTip(null); toast(tip === 'face' ? "Face tracking couldn't load here, so just tap to munch!" : "Hand tracking couldn't load here, so drag with your finger or mouse instead."); } });
+    spoken = tip === 'point' || tip === 'grab' ? `${spoken || hintText} ${CAMTIP[tip].say}` : CAMTIP[tip].say; camTip(tip);
+    T.start().then(ok => { if (!ok && Cam.allowed) { camTip(null); toast(FACE_TIPS.has(tip) ? "Face tracking couldn't load here, so tap the screen or press Space instead!" : "Hand tracking couldn't load here, so use your mouse or keyboard instead."); } });
   }
-  const camOff = () => { if (!cam) return; camTip(null); (tip === 'face' ? Face : Hands).stop(); };
+  // keyboard: Space or Enter acts on the focused item, or else on the next item in turn
+  let keyN = 0;
+  const onKey = e => {
+    if (e.key !== ' ' && e.key !== 'Enter') return;
+    if (document.activeElement && document.activeElement.closest && document.activeElement.closest('g[tabindex],button,input,select,a')) return;
+    const all = [...world.querySelectorAll('g[tabindex]')].filter(g => g._key && !g._done);
+    const grab = all.filter(g => g.classList.contains('grabbable')), pool = grab.length ? grab : all;
+    if (!pool.length) return;
+    e.preventDefault(); const it = pool[keyN++ % pool.length]; it._key(it);
+  };
+  document.addEventListener('keydown', onKey);
+  const camOff = () => { document.removeEventListener('keydown', onKey); if (!cam) return; camTip(null); T.stop(); };
   return A(new Promise(res => {
     const offs = []; let fin = false;
     const ctx = {
@@ -425,6 +436,7 @@ src = sub1(src, "  g.append(S('path', { d, fill: 'none', stroke: INK, 'stroke-wi
            "  g.append(S('path', { d, fill: 'none', stroke: '#000', 'stroke-opacity': 0, 'stroke-width': 110, 'stroke-linecap': 'round', 'pointer-events': 'stroke', 'data-noshade': '' }));\n  g.append(S('path', { d, fill: 'none', stroke: INK, 'stroke-width': 24, 'stroke-linecap': 'round' }), S('path', { d, fill: 'none', stroke: '#8BD65E', 'stroke-width': 15, 'stroke-linecap': 'round' }));", 'vine grip')
 src = sub1(src, "      onMove: v => { if (Math.hypot(v._t.x - v.home.x, v._t.y - v.home.y) > 130) { yank(v); return 'release'; } },", "      onMove: v => { if (Math.hypot(v._t.x - v.home.x, v._t.y - v.home.y) > 70) { yank(v); return 'release'; } },", 'vine pull')
 src = sub1(src, "      onDrop: v => tween(v, { x: v.home.x, y: v.home.y }, 380, ease.back)\n", "      onDrop: v => { if (Math.hypot(v._t.x - v.home.x, v._t.y - v.home.y) > 30) yank(v); else tween(v, { x: v.home.x, y: v.home.y }, 380, ease.back); }\n", 'vine drop')
+src = sub1(src, "function keyable(it, fn) {\n  it.setAttribute('tabindex', '0');", "function keyable(it, fn) {\n  it._key = fn; it.setAttribute('tabindex', '0');", 'keyable store')
 # Scene 11: Pingalaka peeks out from behind the distant banyan
 src = sub1(src, "  const bny = banyan(800, 640, .42, { leaf: '#6E9C62', hi: '#86B478', bark: '#7A5A3E' }); r.append(bny);\n  const far = await hidingLion(r, 800, 640, .4); r.append(far);",
            "  const far = await hidingLion(r, 852, 650, .55); far.parts.head.classList.remove('duck'); far.parts.head.classList.add('tilt'); r.append(far);\n  const bny = banyan(872, 650, .58, { leaf: '#5E9C52', hi: '#86B478', bark: '#8A5A34' }); r.append(bny);", 's11 peek')

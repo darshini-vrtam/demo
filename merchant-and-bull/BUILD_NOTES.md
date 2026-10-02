@@ -165,3 +165,14 @@ Built from the v6 story by `python3 build_v7.py`: everything (intro, 15 scenes, 
 - **Scene 4:** the vines are thicker, each has a wide invisible grip, and a short pull frees them.
 - **Panic Run:** slower (360 → 470 after the MOO), exactly 11 obstacles, more forgiving hits, and a smoother run cycle and jump tilt.
 - **Scene 11:** Pingalaka peeks out from behind the banyan between the two jackals.
+
+### v7.4 — controls
+- **With the camera on**, every activity is played with gestures, and a tip card above the camera window explains what to do:
+  - tap-type activities (wake the prince, Vardhamanaka's secret, find the jackals): point and pinch
+  - packing, vines and the glowing light: pinch to grab, open the hand to drop
+  - namaste: palms together
+  - Moo Munch: open your mouth (unchanged)
+  - **Panic Run:** raise your eyebrows to jump. This is measured against the child's own resting brows, so it adapts to each face.
+- **Without the camera**, everything works with the mouse, or with the keyboard: Space or Enter acts on the focused item, or else on the next item in turn. Tab moves between items.
+- If the tracking models can't load, a toast says so and mouse/keyboard take over.
+- The name step in onboarding is unchanged.

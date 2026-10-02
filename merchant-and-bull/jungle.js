@@ -68,17 +68,19 @@ async function panicRun() {
   await reveal(); ambience('day');
   await say('arjun', 'Pingalaka was so scared, he ran and ran through the jungle!');
   const jump = () => { if (air || arriving) return; air = true; vy = -900; jumps++; SFX.whoosh(); };
-  await interaction('Tap the screen (or press Space) to make Pingalaka jump over the rocks and logs!', 'Tap the screen to help Pingalaka jump over the rocks and logs!', ctx => {
+  await interaction(Cam.allowed ? 'Raise your eyebrows to make Pingalaka jump over the rocks and logs! (Space or a tap works too.)' : 'Tap the screen (or press Space) to make Pingalaka jump over the rocks and logs!', Cam.allowed ? null : 'Tap the screen to help Pingalaka jump over the rocks and logs!', ctx => {
     ctx.on(type => { if (type === 'down' || type === 'namaste') jump(); });
     const key = e => { if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'Enter') { e.preventDefault(); jump(); } };
     document.addEventListener('keydown', key);
-    let last = performance.now(), raf = 0, stopped = false;
+    let last = performance.now(), raf = 0, stopped = false, browUp = false;
     const stop = () => { stopped = true; cancelAnimationFrame(raf); document.removeEventListener('keydown', key); };
     cleanups.push(stop);
     const d0 = ctx.done; ctx.done = v => { stop(); d0(v); };
     const frame = now => {
       if (stopped || ctx.fin) return;
       const dt = Math.min(.05, (now - last) / 1000); last = now; t += dt;
+      // eyebrow raise = jump (rising edge, measured against the child's resting brows)
+      if (Face.on) { const up = Face.raise > .2 || Face.brow > .6; if (up && !browUp) jump(); browUp = up && Face.raise > .08; }
       // speed: steady jog, a stumble slows him for a moment, the MOO makes him sprint
       if (!mooed && t > 11) {
         mooed = true; target = 470; SFX.moo(1.3, .9); boom(r, 'MOOOOO!', 1100, 380, { size: 84 }); shakeScreen();

@@ -122,7 +122,7 @@ const Hands = {
 
 // Face tracking for Moo Munch: Face.open is the jawOpen blendshape (0 = closed, 1 = wide open).
 const Face = {
-  on: false, busy: false, lm: null, raf: 0, lastT: -1, open: 0,
+  on: false, busy: false, lm: null, raf: 0, lastT: -1, open: 0, brow: 0, browBase: null, raise: 0,
   async start() {
     if (this.on) return true;
     if (this.busy) return false;
@@ -137,7 +137,7 @@ const Face = {
     } catch (e) { console.warn('[face] unavailable:', e); return false; }
     finally { this.busy = false; }
   },
-  stop() { cancelAnimationFrame(this.raf); this.on = false; this.open = 0; $('#camwin').classList.remove('live'); },
+  stop() { cancelAnimationFrame(this.raf); this.on = false; this.open = 0; this.raise = 0; this.browBase = null; $('#camwin').classList.remove('live'); },
   loop() {
     if (!this.on) return;
     const v = $('#camv');
@@ -148,6 +148,11 @@ const Face = {
         const cats = r.faceBlendshapes && r.faceBlendshapes[0] ? r.faceBlendshapes[0].categories : [];
         const j = cats.find(c => c.categoryName === 'jawOpen');
         this.open = j ? j.score : 0;
+        const sc = n => { const c = cats.find(c => c.categoryName === n); return c ? c.score : 0; };
+        const b = Math.max(sc('browInnerUp'), (sc('browOuterUpLeft') + sc('browOuterUpRight')) / 2);
+        this.brow = b;
+        if (this.browBase == null) this.browBase = b; else if (b < this.browBase + .12) this.browBase += (b - this.browBase) * .03;
+        this.raise = Math.max(0, b - this.browBase);
       } catch (e) { }
     }
     this.raf = requestAnimationFrame(() => this.loop());
@@ -158,15 +163,18 @@ const Face = {
 const CAMTIP = {
   namaste: { icon: '🙏', text: 'Show both hands to the camera, then press your palms together.', say: 'Show both your hands to the camera, then press your palms together, and say namaste!' },
   grab: { icon: '✋', text: 'Point with one hand. Pinch or make a fist to grab, open your hand to let go.', say: 'Show one hand to the camera. Pinch your fingers to grab, and open your hand to let go!' },
-  face: { icon: '😮', text: 'Look at the camera and open your mouth wide to munch!', say: 'Look at the camera, and open your mouth wide to help Sanjivaka munch!' }
+  face: { icon: '😮', text: 'Look at the camera and open your mouth wide to munch!', say: 'Look at the camera, and open your mouth wide to help Sanjivaka munch!' },
+  brow: { icon: '🤨', text: 'Look at the camera and raise your eyebrows high to jump!', say: 'Look at the camera, and raise your eyebrows up high to make Pingalaka jump!' },
+  point: { icon: '👆', text: 'Move your hand to point. Pinch your fingers together to tap!', say: 'Use your hand! Point at it, then pinch your fingers together to tap.' }
 };
+const FACE_TIPS = new Set(['face', 'brow']);
 function camTip(k) {
   const el = $('#camtip');
   if (!k || !Cam.allowed || !CAMTIP[k]) { el.hidden = true; return; }
   el.innerHTML = ''; const i = document.createElement('b'); i.textContent = CAMTIP[k].icon; const t = document.createElement('span'); t.textContent = CAMTIP[k].text;
   el.append(i, t); el.hidden = false;
 }
-function tipFor(hint) { return /namaste/i.test(hint) ? 'namaste' : /\bmouth\b/i.test(hint) ? 'face' : /\b(pinch|grab)\b/i.test(hint) ? 'grab' : null; }
+function tipFor(hint) { return /namaste/i.test(hint) ? 'namaste' : /\bmouth\b/i.test(hint) ? 'face' : /eyebrow/i.test(hint) ? 'brow' : /\b(pinch|grab|drag|pull)\b/i.test(hint) ? 'grab' : 'point'; }
 
 /* ══════════ Music: tanpura drone, bansuri melody, soft tabla — one mood per scene ══════════ */
 const SA = 261.63;
