@@ -151,3 +151,17 @@ Built from the v6 story by `python3 build_v7.py`: everything (intro, 15 scenes, 
   - **Scene 9**: Pingalaka peeks from behind the banyan while a monkey, bear, rabbit and deer watch. He asks about the sound, a loud MOO plays, and they all dive behind the foreground bushes.
 - **Sanjivaka**: his mouth chews while he eats or grazes, and opens wide (head lifting) whenever he moos.
 - **Ending**: a new last scene returns to the Scene 1 banyan with Vishnu Sharma and the princes, then shows the end card.
+
+### v7.3 — feedback round
+- **Intro 2:** the court window is gone; a royal red hanging with a gold lotus medallion sits behind the drapes. "The king had three sons… his biggest worry!" now plays over the princes at the start of Intro 3.
+- **Intro 1:** Arjun says "a faraway land"; "long, long ago" is removed.
+- **Intro 3:**
+  - Ugrashakti rides a proper toy rocking horse: red rockers, a cream painted body with dapples, a yarn mane, saddle, bridle and handle.
+  - After the tap, Anantashakti stretches on his bed and jumps down to the floor.
+- **Vishnu Sharma:** his hands sit under his shawl and come out in slow, flowing talking gestures; the stiff open-arms pose is gone. Talking head motion is softer for every character.
+- **Scene 1:** the पञ्चतन्त्र title sits lower so it is never cut off.
+- **Scene 12:** opens under the Scene 1 banyan with Vishnu Sharma and the princes.
+- **Sanjivaka:** keeps a sad face (worried brows, frown) from his injury in Scene 4 until Moo Munch, when he is strong.
+- **Scene 4:** the vines are thicker, each has a wide invisible grip, and a short pull frees them.
+- **Panic Run:** slower (360 → 470 after the MOO), exactly 11 obstacles, more forgiving hits, and a smoother run cycle and jump tilt.
+- **Scene 11:** Pingalaka peeks out from behind the banyan between the two jackals.

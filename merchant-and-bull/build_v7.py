@@ -246,6 +246,28 @@ CSS3 = r"""
 """
 style_end = src.index('</style>\n\n<div id="app">')
 src = src[:style_end] + CSS3 + src[style_end:]
+CSS4 = r"""
+/* ─── Sanjivaka's sad face ─── */
+.bbs,.bmsad{display:none}
+.bsad .bbn,.bsad .bms{display:none}.bsad .bbs,.bsad .bmsad{display:inline}
+.bsad.mooing .bmsad{display:none}
+/* ─── Vishnu Sharma: hands come out from under the shawl in slow, flowing gestures ─── */
+.sagey.gesturing .pose.armR{animation:sgR 3.2s ease-in-out infinite !important}
+.sagey.gesturing .pose.armL{animation:sgL 3.8s ease-in-out infinite !important}
+.sagey.gesturing .pose.armR .fore{animation:sgFR 3.2s ease-in-out infinite !important}
+.sagey.gesturing .pose.armL .fore{animation:sgFL 3.8s ease-in-out infinite !important}
+.sagey .pose.armL,.sagey .pose.armR,.sagey .fore{transition:transform .8s ease-in-out}
+@keyframes sgR{0%,100%{transform:rotate(-16deg)}35%{transform:rotate(-46deg)}65%{transform:rotate(-30deg)}}
+@keyframes sgFR{0%,100%{transform:rotate(-24deg)}35%{transform:rotate(-74deg)}65%{transform:rotate(-52deg)}}
+@keyframes sgL{0%,100%{transform:rotate(12deg)}45%{transform:rotate(34deg)}75%{transform:rotate(20deg)}}
+@keyframes sgFL{0%,100%{transform:rotate(18deg)}45%{transform:rotate(58deg)}75%{transform:rotate(36deg)}}
+/* ─── softer, more natural head motion while anyone talks ─── */
+.face.idle.talking{animation:talknod 1.5s ease-in-out infinite !important}
+@keyframes talknod{0%,100%{transform:rotate(-1.4deg) translateY(0)}30%{transform:rotate(1.6deg) translateY(-1.5px)}60%{transform:rotate(-.6deg) translateY(-.5px)}}
+@media (prefers-reduced-motion:reduce){.sagey .pose.armL,.sagey .pose.armR,.sagey .fore,.face.idle.talking{animation:none !important}}
+"""
+style_end = src.index('</style>\n\n<div id="app">')
+src = src[:style_end] + CSS4 + src[style_end:]
 
 ARJ = """<svg class="arj" viewBox="0 0 200 220" aria-hidden="true">
         <circle cx="100" cy="92" r="88" fill="#5E8C3F" stroke="#3B2414" stroke-width="5"/>
@@ -393,6 +415,22 @@ src = sub1(src, "  moo(k = 1, v = 1) { const d = 2.1 * k;", "  moo(k = 1, v = 1)
 src = sub1(src, "  SFX.sparkle(); await sleep(1400);\n  await A(fadeTo(true));\n  await showEnd();\n}", "  SFX.sparkle(); await sleep(1400);\n}", 's15 end')
 src = sub1(src, "  { id: 's15', label: 'Scene 15', title: 'To Be Continued…', run: s15 }", "  { id: 's15', label: 'Scene 15', title: 'To Be Continued…', run: s15 },\n  { id: 'outro', label: 'Ending', title: 'Under the Banyan Tree', run: sOutro }", 'scene outro')
 src = sub1(src, "titleBackdrop();\nwindow.__story", "onboardBackdrop();\nwindow.__story", 'onboard backdrop')
+# 14. feedback round 3
+# Sanjivaka looks sad from the moment he is hurt until he is strong again (Moo Munch)
+src = sub1(src, "  tween(sj, { y: 30, r: -5 }, 700, ease.io); sj.parts.head.classList.add('droop');", "  tween(sj, { y: 30, r: -5 }, 700, ease.io); sj.parts.head.classList.add('droop'); sj.inner.classList.add('bsad');", 's4 sad')
+src = sub1(src, "  const b = actor(bull({ ...SANJ, lying: true }), x, y + 4 * s, s, { r: -2 }); b.parts.head.classList.add('droop'); r.append(b);", "  const b = actor(bull({ ...SANJ, lying: true }), x, y + 4 * s, s, { r: -2 }); b.parts.head.classList.add('droop'); b.inner.classList.add('bsad'); r.append(b);", 'lying sad')
+src = sub1(src, "  const eyeBull = actor(bull(SANJ), 300, 1000, 3.2); eyeBull.inner.classList.add('closed');", "  const eyeBull = actor(bull(SANJ), 300, 1000, 3.2); eyeBull.inner.classList.add('closed', 'bsad');", 's6 sad')
+# the vines are easy to grab: a wide invisible grip around each one, and a shorter pull frees it
+src = sub1(src, "  g.append(S('path', { d, fill: 'none', stroke: INK, 'stroke-width': 20, 'stroke-linecap': 'round' }), S('path', { d, fill: 'none', stroke: '#8BD65E', 'stroke-width': 11, 'stroke-linecap': 'round' }));",
+           "  g.append(S('path', { d, fill: 'none', stroke: '#000', 'stroke-opacity': 0, 'stroke-width': 110, 'stroke-linecap': 'round', 'pointer-events': 'stroke', 'data-noshade': '' }));\n  g.append(S('path', { d, fill: 'none', stroke: INK, 'stroke-width': 24, 'stroke-linecap': 'round' }), S('path', { d, fill: 'none', stroke: '#8BD65E', 'stroke-width': 15, 'stroke-linecap': 'round' }));", 'vine grip')
+src = sub1(src, "      onMove: v => { if (Math.hypot(v._t.x - v.home.x, v._t.y - v.home.y) > 130) { yank(v); return 'release'; } },", "      onMove: v => { if (Math.hypot(v._t.x - v.home.x, v._t.y - v.home.y) > 70) { yank(v); return 'release'; } },", 'vine pull')
+src = sub1(src, "      onDrop: v => tween(v, { x: v.home.x, y: v.home.y }, 380, ease.back)\n", "      onDrop: v => { if (Math.hypot(v._t.x - v.home.x, v._t.y - v.home.y) > 30) yank(v); else tween(v, { x: v.home.x, y: v.home.y }, 380, ease.back); }\n", 'vine drop')
+# Scene 11: Pingalaka peeks out from behind the distant banyan
+src = sub1(src, "  const bny = banyan(800, 640, .42, { leaf: '#6E9C62', hi: '#86B478', bark: '#7A5A3E' }); r.append(bny);\n  const far = await hidingLion(r, 800, 640, .4); r.append(far);",
+           "  const far = await hidingLion(r, 852, 650, .55); far.parts.head.classList.remove('duck'); far.parts.head.classList.add('tilt'); r.append(far);\n  const bny = banyan(872, 650, .58, { leaf: '#5E9C52', hi: '#86B478', bark: '#8A5A34' }); r.append(bny);", 's11 peek')
+# Scene 12 opens under the same banyan as Scene 1
+src = sub1(src, "  let r = newStage('#0E2626');\n  glowJungle(r);\n  const sage = actor(person(SAGE), 800, 735, 1.3);\n  const pr = [actor(person(PRINCES[0]), 470, 750, .92), actor(person(PRINCES[1]), 600, 765, .86), actor(person(PRINCES[2]), 1070, 755, .9)];\n  r.append(pr[0], pr[1], sage, pr[2]);\n  await reveal(); ambience('glow');",
+           "  let { r, sage, pr } = banyanSchool();\n  place(world, 800 - 1.08 * 800, 450 - 1.08 * 530, 1.08);\n  await reveal(); ambience('glow'); bgLife('garden');", 's12 banyan')
 src = sub1(src, "\nconst SCENES = [", "\n" + jung + "\n" + camjs + "\nconst SCENES = [", 'camera inject')
 
 out = root / 'the-merchant-and-the-bull.html' 

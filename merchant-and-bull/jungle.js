@@ -61,13 +61,13 @@ async function panicRun() {
   const fg = layer(1.3);
   for (const k of [0, 1]) [[200, 960], [1000, 975]].forEach(([x, y]) => fg.append(bush(k * 1600 + x, y, 1.5, '#3F7A30', '#5E9A44')));
   const hud = $('#munchhud'); hud.hidden = false; cleanups.push(() => { hud.hidden = true; });
-  const D = 15000; let dist = 0, speed = 0, target = 520, jy = 0, vy = 0, air = false, jumps = 0, bumps = 0, mooed = false, nextAt = 1400, slowT = 0, t = 0;
+  const D = 11500, NOBS = 11; let dist = 0, speed = 0, target = 360, spawned = 0, jy = 0, vy = 0, air = false, jumps = 0, bumps = 0, mooed = false, nextAt = 1400, slowT = 0, t = 0;
   const obs = []; let banyanG = null, arriving = false;
   const bar = () => { const n = Math.round(Math.min(1, dist / D) * 10); hud.textContent = `🦁 ${'●'.repeat(n)}${'○'.repeat(10 - n)} 🌳`; }; bar();
   place(world, 0, 0, 1);
   await reveal(); ambience('day');
   await say('arjun', 'Pingalaka was so scared, he ran and ran through the jungle!');
-  const jump = () => { if (air || arriving) return; air = true; vy = -980; jumps++; SFX.whoosh(); };
+  const jump = () => { if (air || arriving) return; air = true; vy = -900; jumps++; SFX.whoosh(); };
   await interaction('Tap the screen (or press Space) to make Pingalaka jump over the rocks and logs!', 'Tap the screen to help Pingalaka jump over the rocks and logs!', ctx => {
     ctx.on(type => { if (type === 'down' || type === 'namaste') jump(); });
     const key = e => { if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'Enter') { e.preventDefault(); jump(); } };
@@ -81,7 +81,7 @@ async function panicRun() {
       const dt = Math.min(.05, (now - last) / 1000); last = now; t += dt;
       // speed: steady jog, a stumble slows him for a moment, the MOO makes him sprint
       if (!mooed && t > 11) {
-        mooed = true; target = 820; SFX.moo(1.3, .9); boom(r, 'MOOOOO!', 1100, 380, { size: 84 }); shakeScreen();
+        mooed = true; target = 470; SFX.moo(1.3, .9); boom(r, 'MOOOOO!', 1100, 380, { size: 84 }); shakeScreen();
         pg.inner.classList.add('running', 'wide'); lionMood(pg.inner, 'scared'); pg.parts.ears && pg.parts.ears.classList.add('ears-flat');
         showHint('MOOO! Pingalaka runs even faster — keep jumping!');
       }
@@ -91,18 +91,19 @@ async function panicRun() {
       dist += speed * dt;
       for (const L of [far, mid, near, ground, fg]) L.setAttribute('transform', `translate(${n1(-((dist * L.sp) % 1600))} 0)`);
       // jumping
-      if (air) { vy += 2500 * dt; jy += vy * dt; if (jy >= 0) { jy = 0; vy = 0; air = false; } }
-      pg._t.y = GY + jy; pg._t.r = air ? Math.max(-12, Math.min(12, vy * .012)) : 0; applyT(pg);
+      if (air) { vy += 2000 * dt; jy += vy * dt; if (jy >= 0) { jy = 0; vy = 0; air = false; } }
+      const tilt = air ? Math.max(-8, Math.min(8, vy * .008)) : 0; pg._t.r += (tilt - (pg._t.r || 0)) * Math.min(1, dt * 10);
+      pg._t.y = GY + jy; applyT(pg);
       // obstacles
-      if (!banyanG && dist > nextAt && dist < D - 1800) {
+      if (!banyanG && spawned < NOBS && dist > nextAt && dist < D - 1600) {
         const kinds = Object.keys(OBST), k = kinds[Math.floor(Math.random() * kinds.length)], o = OBST[k];
         const g = mk(o.m()); shade(g, true); obsL.append(g);
-        obs.push({ g, x: 1800, w: o.w, h: o.h, hit: false });
-        nextAt = dist + (mooed ? 620 + Math.random() * 380 : 760 + Math.random() * 480);
+        obs.push({ g, x: 1800, w: o.w, h: o.h, hit: false }); spawned++;
+        nextAt = dist + 760 + Math.random() * 220;
       }
       for (const o of obs) {
         o.x -= speed * dt; o.g.setAttribute('transform', `translate(${n1(o.x)} ${GY})${o.hit ? ` rotate(${n1((o.spin = (o.spin || 0) + dt * 400))})` : ''}`);
-        if (!o.hit && Math.abs(o.x - (LX + 10)) < o.w / 2 + 60 && -jy < o.h - 12) {
+        if (!o.hit && Math.abs(o.x - (LX + 10)) < o.w / 2 + 40 && -jy < o.h - 26) {
           o.hit = true; bumps++; slowT = .7; SFX.thud(); pg.inner.classList.add('wide'); later(() => { if (!mooed) pg.inner.classList.remove('wide'); }, 600);
           if (!air) { air = true; vy = -420; }
         }

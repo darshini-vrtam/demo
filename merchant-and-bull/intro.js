@@ -197,7 +197,7 @@ async function i1() {
   place(world, 800 - 1.12 * 640, 450 - 1.12 * 500, 1.12);
   await reveal(); ambience('day'); bgLife('market');
   tween(world, { x: 800 - 1.12 * 960, y: 450 - 1.12 * 500, s: 1.12 }, 16000, ease.io);
-  await say('arjun', `Namaste, ${kidName()}! I'm Arjun. Come with me to a faraway land, long, long ago…`);
+  await say('arjun', `Namaste, ${kidName()}! I'm Arjun. Come with me to a faraway land…`);
   await say('arjun', 'Once upon a time, in the kingdom of Mahilaropya, there lived a king named Amara Shakthi.');
   hideCaption();
   await anim(world, { x: 800 - 1.9 * 800, y: 450 - 1.9 * 560, s: 1.9 }, 2600, ease.io);
@@ -248,14 +248,14 @@ function lampM(x, len) {
 async function i2() {
   const r = newStage('#F2B477');
   sky(r, [[0, '#F7C98E'], [1, '#EFA968']], { clouds: false });
-  // through the arched window: open sky, a turning sun, drifting clouds and green hills (no buildings)
-  addArt(r, `<rect x="480" y="40" width="680" height="720" fill="#8FD0F0"/><rect x="480" y="300" width="680" height="300" fill="#FFE2B0" opacity=".55"/>
-    <g transform="translate(900 250)"><g class="sunrays">${Array.from({ length: 12 }, (_, i) => `<path d="M0,-58 L10,-110 L-10,-110Z" fill="#FFE27A" transform="rotate(${i * 30})"/>`).join('')}</g><circle r="52" fill="#FFE27A"/><circle r="40" fill="#FFF3B8"/></g>
-    ${[[620, 170, 1, 34], [960, 130, .8, 46], [760, 330, .7, 40]].map(([x, y, sc, d]) => `<g class="cdrift" style="animation-duration:${d}s"><g transform="translate(${x} ${y}) scale(${sc})"><ellipse rx="80" ry="22" fill="#FFFFFF"/><circle cx="-30" cy="-12" r="28" fill="#FFFFFF"/><circle cx="14" cy="-22" r="34" fill="#FFFFFF"/><circle cx="46" cy="-6" r="22" fill="#FFFFFF"/></g></g>`).join('')}
-    ${hillMk(520, 34, 420, .8, '#7FBF5A').replace('M-600,1300 L-600', 'M480,1300 L480')}<path d="M480,600 C620,560 760,580 900,560 C1000,548 1100,566 1160,580 L1160,800 L480,800Z" fill="#5EA84A"/>`, .1, 0, 0, 1, { shade: false, round: false });
   // the hall: warm walls, a green upper band with gold trim, arched niches and a carved window frame
   const WALL = '#F8C98C', WALLD = '#E9AE6E', GREEN = '#2E8B57';
-  addArt(r, `<path d="M-300,-200 L1900,-200 L1900,800 L-300,800Z M600,700 L600,330 Q600,170 820,150 Q1040,170 1040,330 L1040,700Z" fill="${WALL}" fill-rule="evenodd"/>
+  addArt(r, `<path d="M-300,-200 L1900,-200 L1900,800 L-300,800Z" fill="${WALL}"/>
+    <path d="M600,700 L600,330 Q600,170 820,150 Q1040,170 1040,330 L1040,700Z" fill="#B8243E"/>
+    <path d="M630,690 L630,336 Q630,196 820,178 Q1010,196 1010,336 L1010,690Z" fill="#D2344E"/>
+    ${Array.from({ length: 7 }, (_, j) => Array.from({ length: 6 }, (_, i) => `<circle cx="${660 + i * 64 + (j % 2) * 32}" cy="${300 + j * 56}" r="6" fill="#F7C24A" opacity=".85"/><circle cx="${660 + i * 64 + (j % 2) * 32}" cy="${300 + j * 56}" r="2.6" fill="#FFF6D8"/>`).join('')).join('')}
+    <g transform="translate(820 400)"><circle r="104" fill="#F2C14E"/><circle r="88" fill="#D2344E"/>${Array.from({ length: 12 }, (_, i) => `<path d="M0,-84 C-16,-60 -16,-40 0,-26 C16,-40 16,-60 0,-84Z" fill="#F7C24A" transform="rotate(${i * 30})"/>`).join('')}<circle r="30" fill="#F7C24A"/><circle r="16" fill="#2E8B57"/><circle r="7" fill="#FFF6D8"/></g>
+    <path d="M630,600 ${Array.from({ length: 10 }, (_, i) => `Q${649 + i * 38},640 ${668 + i * 38},600`).join(' ')}" fill="#F2C14E"/>
     <rect x="-300" y="-200" width="2200" height="330" fill="${GREEN}"/><rect x="-300" y="120" width="2200" height="16" fill="${GOLDC}"/>
     <path d="M-300,136 ${Array.from({ length: 46 }, (_, i) => `Q${-300 + i * 48 + 24},176 ${-300 + (i + 1) * 48},136`).join(' ')}" fill="${GOLDC}"/>
     ${Array.from({ length: 23 }, (_, i) => `<g transform="translate(${-276 + i * 96} 60)"><path d="M0,-30 C-10,-14 -10,4 0,14 C10,4 10,-14 0,-30Z M0,14 C-20,10 -30,-4 -30,-14 C-16,-12 -6,-4 0,14Z M0,14 C20,10 30,-4 30,-14 C16,-12 6,-4 0,14Z" fill="${GOLDC}" opacity=".9"/></g>`).join('')}
@@ -265,7 +265,6 @@ async function i2() {
     <path d="M600,700 L600,330 Q600,170 820,150 Q1040,170 1040,330 L1040,700" stroke="#D9A22A" stroke-width="6" fill="none" stroke-dasharray="3 16" stroke-linecap="round"/>
     <rect x="580" y="680" width="480" height="30" rx="10" fill="${GOLDC}"/>
     <rect x="-300" y="700" width="2200" height="60" fill="${WALLD}"/>`, .5);
-  addArt(r, `<rect x="604" y="600" width="432" height="16" rx="6" fill="#D9A22A"/>${Array.from({ length: 9 }, (_, i) => `<path d="${archD(632 + i * 47, 690, 30, 70)}" fill="none" stroke="#D9A22A" stroke-width="8"/>`).join('')}`, .5);
   addArt(r, dotCurtain(520, 690, 120, 760, 'left') + dotCurtain(950, 1120, 120, 760, 'right') +
     `<path d="M500,118 L1140,118 L1140,150 C1060,210 980,210 900,160 C860,210 780,210 740,160 C660,210 580,210 500,150Z" fill="#F7941D"/>${[580, 740, 900, 1060].map(x => `<circle cx="${x}" cy="196" r="9" fill="${GOLDC}"/>`).join('')}<rect x="490" y="104" width="660" height="18" rx="9" fill="${GOLDC}"/>`, .6, 0, 0, 1, { shade: false });
   addArt(r, pillarM(400, 130, 790, 66, '#F2B65E') + pillarM(1240, 130, 790, 66, '#F2B65E'), .6);
@@ -274,7 +273,6 @@ async function i2() {
   addArt(r, `<rect x="-300" y="760" width="2200" height="400" fill="#F4CF9A"/>${Array.from({ length: 16 }, (_, i) => `<path d="M${800 + (i - 7.5) * 60},760 L${800 + (i - 7.5) * 200},1000" stroke="#E2B47A" stroke-width="3"/>`).join('')}${[790, 830, 880, 940].map(y => `<path d="M-300,${y} L1900,${y}" stroke="#E2B47A" stroke-width="3"/>`).join('')}
     <path d="M-300,800 L1900,800 L1900,900 L-300,900Z" fill="#C8202E"/><path d="M-300,812 L1900,812 M-300,888 L1900,888" stroke="${GOLDC}" stroke-width="6"/>
     ${Array.from({ length: 22 }, (_, i) => `<path d="M${-280 + i * 100},850 l14,-14 l14,14 l-14,14Z" fill="${GOLDC}"/>`).join('')}`, 1, 0, 0, 1, { round: false, shade: false });
-  const beams = mk(`<g filter="url(#blur)" opacity=".7"><path class="ray" d="M640,200 L1000,200 L1180,1000 L560,1000Z" fill="url(#rayg)"/></g>`); beams.setAttribute('pointer-events', 'none'); r.append(pwrap(beams, .7));
   // the king on his golden throne (left), on a gold dais
   addArt(r, `<path d="M-200,0 L200,0 L184,-34 L-184,-34Z" fill="#D9A22A"/><path d="M-176,-34 L176,-34 L162,-62 L-162,-62Z" fill="${GOLDC}"/><path d="M-150,-14 L150,-14" stroke="#C8202E" stroke-width="6"/>`, 1, 330, 840, 1, { unified: true });
   addArt(r, throneM(), 1, 330, 780, .95, { unified: true });
@@ -309,9 +307,7 @@ async function i2() {
   await say('king', 'My kingdom is happy and strong. And yet… one thing troubles me.');
   setMood(king.inner, 'worry'); setBrow(king.inner, 'worry');
   [minister, ...court].forEach(p => p.parts.head.classList.add('tilt'));
-  focus(800, 500, 1.08, 2200).catch(() => { });
-  await say('arjun', 'The king had three sons. And they were his biggest worry!');
-  await sleep(600);
+  await sleep(1400);
 }
 
 /* ══════════ Opening 3: the three princes at play ══════════ */
@@ -329,14 +325,25 @@ function rangoliM() {
   return m;
 }
 function rockingHorse() {
-  return `<path d="M-120,0 C-60,26 60,26 120,0" stroke="#8A5A2A" stroke-width="14" fill="none" stroke-linecap="round"/>
-  <path d="M-70,10 L-60,-70 M70,10 L60,-70" stroke="#A86A34" stroke-width="16" stroke-linecap="round"/>
-  <path d="M-90,-60 C-96,-100 -50,-112 0,-110 C50,-112 92,-100 90,-64 C88,-46 60,-40 0,-42 C-60,-40 -86,-44 -90,-60Z" fill="#B8783A"/>
-  <path d="M-96,-90 C-116,-90 -126,-70 -120,-56" stroke="#5A3418" stroke-width="10" fill="none" stroke-linecap="round"/>
-  <path d="M60,-96 C70,-140 86,-170 112,-176 C134,-178 146,-160 140,-146 C132,-140 118,-138 108,-130 C100,-116 92,-100 86,-86Z" fill="#B8783A"/>
-  <path d="M74,-150 C66,-160 66,-176 80,-182 C82,-170 84,-160 86,-150Z" fill="#B8783A"/><circle cx="118" cy="-160" r="5" fill="#2A1A10"/>
-  <path d="M66,-130 C58,-150 64,-170 80,-180" stroke="#5A3418" stroke-width="10" fill="none" stroke-linecap="round"/>
-  <path d="M-30,-110 C-20,-120 20,-120 30,-110 L26,-90 L-26,-90Z" fill="#C8452C"/><path d="M90,-140 L40,-100" stroke="#F2C14E" stroke-width="4"/>`;
+  const cream = '#FBF1DE', dap = '#E8C9A0', red = '#D23A3A', blue = '#2E7DD8', mane = '#7A3E1E';
+  const leg = (x1, x2, c) => `<path d="M${x1 - 9},-58 L${x2 - 10},10 L${x2 + 10},10 L${x1 + 9},-58Z" fill="${c}"/><rect x="${x2 - 12}" y="2" width="24" height="12" rx="5" fill="#3B2A1E"/>`;
+  return `<ellipse cx="0" cy="34" rx="160" ry="10" fill="#000" opacity=".15"/>
+  ${leg(-62, -100, '#E3D3B6')}${leg(54, 90, '#E3D3B6')}
+  <path d="M-160,-4 C-90,34 90,34 160,-4 L164,10 C94,48 -94,48 -164,10Z" fill="${red}"/><path d="M-150,10 C-80,40 80,40 150,10" stroke="#F2C14E" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="-160" cy="2" r="9" fill="#F2C14E"/><circle cx="160" cy="2" r="9" fill="#F2C14E"/>
+  ${leg(-74, -118, cream)}${leg(66, 108, cream)}
+  <path d="M-112,-92 C-140,-96 -150,-70 -142,-48 C-136,-62 -128,-74 -112,-78Z" fill="${mane}"/><path d="M-110,-88 C-128,-80 -134,-60 -128,-42" stroke="${mane}" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <path d="M-104,-76 C-108,-116 -66,-126 0,-122 C60,-126 104,-110 102,-76 C100,-50 64,-42 0,-44 C-64,-42 -100,-50 -104,-76Z" fill="${cream}"/>
+  ${[[-70, -96, 9], [-44, -66, 7], [-20, -100, 6], [30, -64, 8], [56, -98, 6], [-84, -64, 6]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${dap}"/>`).join('')}
+  <path d="M-48,-122 C-40,-112 40,-112 48,-122 L44,-78 C20,-70 -20,-70 -44,-78Z" fill="${blue}"/><path d="M-44,-80 C-20,-72 20,-72 44,-80" stroke="#F2C14E" stroke-width="5" stroke-dasharray="2 8" stroke-linecap="round" fill="none"/>
+  <path d="M-34,-124 C-30,-138 30,-138 36,-124 L32,-108 C10,-104 -10,-104 -30,-108Z" fill="${red}"/><path d="M-30,-112 C-10,-106 10,-106 32,-112" stroke="#F2C14E" stroke-width="3" fill="none"/>
+  <path d="M60,-104 C64,-146 82,-180 110,-192 C132,-200 154,-188 160,-170 C164,-156 156,-146 144,-144 C130,-142 122,-134 118,-122 C110,-104 98,-90 86,-80Z" fill="${cream}"/>
+  <path d="M104,-188 L98,-212 L116,-194Z" fill="${cream}"/><path d="M104,-194 L101,-206 L110,-196Z" fill="#F2A8A0"/>
+  ${[[62, -112], [66, -128], [72, -144], [80, -160], [90, -174], [100, -186]].map(([x, y], i) => `<circle cx="${x - 6}" cy="${y}" r="${11 - i * .6}" fill="${mane}"/>`).join('')}
+  <ellipse cx="152" cy="-158" rx="15" ry="13" fill="#F0DCC0"/><circle cx="158" cy="-160" r="2.6" fill="#7A4A30"/>
+  <circle cx="124" cy="-172" r="6" fill="#2A1A10"/><circle cx="126" cy="-174" r="2" fill="#FFF"/><path d="M116,-180 Q124,-186 132,-180" stroke="#2A1A10" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M140,-168 C130,-156 132,-146 146,-144 M110,-176 C122,-160 134,-150 148,-146" stroke="${red}" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="140" cy="-150" r="4" fill="#F2C14E"/>
+  <path d="M104,-150 L132,-150" stroke="#8A5A2A" stroke-width="8" stroke-linecap="round"/><circle cx="102" cy="-150" r="6" fill="#B8783A"/>
+  <path d="M146,-146 C120,-120 70,-108 40,-110" stroke="#C8452C" stroke-width="3" fill="none" stroke-linecap="round"/>`;
 }
 async function i3() {
   const r = newStage('#E7B47E');
@@ -376,7 +383,7 @@ async function i3() {
   addArt(r, `<g class="spintop"><path d="M0,0 L-24,-30 C-24,-50 24,-50 24,-30Z" fill="#C8452C"/><path d="M-22,-34 Q0,-26 22,-34" stroke="${GOLDC}" stroke-width="5" fill="none"/><rect x="-3" y="-60" width="6" height="18" rx="3" fill="#7A4B2A"/></g>`, 1, 1000, 900, 1, { shade: false });
   // Anantashakti asleep on his mat: on his back, legs apart, tucked under a quilt
   const p3s = actor(sleeper(PRINCES[2]), 1275, 870, .86); r.append(p3s);
-  const p3 = actor(person({ ...PRINCES[2], seated: 'cross' }), 1200, 775, .8); p3.style.opacity = 0; p3.style.pointerEvents = 'none'; p3.style.transition = 'opacity .7s'; p3s.style.transition = 'opacity .7s';
+  const p3 = actor(person({ ...PRINCES[2] }), 1180, 770, .8); p3.style.opacity = 0; p3.style.pointerEvents = 'none'; p3.style.transition = 'opacity .7s'; p3s.style.transition = 'opacity .7s';
   const bedWake = actor(sleeper(PRINCES[2]), 1275, 870, .86); bedWake.querySelector('.face').remove(); bedWake.querySelector('.breath2').remove(); bedWake.style.opacity = 0; bedWake.style.transition = 'opacity .7s'; bedWake.style.pointerEvents = 'none';
   const lap = mk(`<path d="M-120,0 C-120,-40 -60,-56 0,-56 C60,-56 120,-40 120,0Z" fill="#2E9E8A"/><path d="M-110,-14 Q0,-30 110,-14" stroke="#F7A21B" stroke-width="7" fill="none" stroke-linecap="round"/>${[-70, -20, 30, 80].map(x => `<circle cx="${x}" cy="-30" r="5" fill="#F2C14E"/>`).join('')}`);
   place(lap, 1200, 777, .8); lap.style.opacity = 0; lap.style.transition = 'opacity .7s'; lap.setAttribute('pointer-events', 'none');
@@ -390,7 +397,8 @@ async function i3() {
   place(world, 800 - 1.06 * 800, 450 - 1.06 * 500, 1.06);
   await reveal(); ambience('day'); bgLife('garden');
   tween(world, { x: 800 - 1.1 * 800, y: 450 - 1.1 * 510, s: 1.1 }, 9000, ease.io);
-  await say('arjun', 'He had three sons — clever, playful, curious boys… who loved everything except their lessons!');
+  await say('arjun', 'The king had three sons. And they were his biggest worry!');
+  await say('arjun', 'Clever, playful, curious boys… who loved everything except their lessons!');
   // zoom on each prince as he is introduced
   await focus(300, 450, 1.55);
   let tag = nameTag(r, 'Bahushakti', 300, 262, '#6A3E8E'); SFX.wheee();
@@ -407,10 +415,13 @@ async function i3() {
     tappables(ctx, [p3s], it => { it._done = true; unkey(it); SFX.pop(); ctx.done(); });
   });
   zz.remove(); SFX.yawn();
-  p3s.style.opacity = 0; p3s.style.pointerEvents = 'none'; bedWake.style.opacity = 1; lap.style.opacity = 1; p3.style.opacity = 1; p3.style.pointerEvents = ''; p3.inner.classList.add('hold'); setMood(p3.inner, 'o');
+  p3s.style.opacity = 0; p3s.style.pointerEvents = 'none'; bedWake.style.opacity = 1; lap.style.opacity = 0; p3.style.opacity = 1; p3.style.pointerEvents = ''; p3.inner.classList.add('hold'); setMood(p3.inner, 'o');
   later(() => p3s.remove(), 800);
   await sleep(1200);
-  p3.inner.classList.remove('hold'); setMood(p3.inner, 'smile'); SFX.chime(); sparkles(r, 1150, 560, 8, 90);
+  p3.inner.classList.remove('hold'); setMood(p3.inner, 'smile');
+  SFX.whoosh(); await anim(p3, { x: 1110, y: 690 }, 330, ease.out); await anim(p3, { x: 1030, y: 900 }, 380, ease.in);
+  SFX.thud(); tween(p3, { sy: .9 }, 110).then(() => tween(p3, { sy: 1 }, 220, ease.back));
+  SFX.chime(); sparkles(r, 1030, 700, 8, 90);
   await say('princes', 'Huh? Is it time to play?');
   focus(800, 480, 1.08, 2200).catch(() => { });
   await say('arjun', 'But the princes ran from every book they saw.');
@@ -434,7 +445,7 @@ function banyanSchool() {
   addArt(r, `<ellipse cx="0" cy="0" rx="230" ry="44" fill="#D9B56A"/><ellipse cx="0" cy="0" rx="206" ry="34" fill="none" stroke="#B88A3A" stroke-width="4" stroke-dasharray="10 8"/>`, 1, 800, 812, 1);
   addArt(r, `<rect x="-60" y="-26" width="130" height="26" rx="6" fill="#8E4A2A"/><rect x="-56" y="-50" width="122" height="24" rx="6" fill="#3E7DA8"/><rect x="-64" y="-72" width="126" height="22" rx="6" fill="#2E8B4E"/><path d="M-60,-62 L60,-62 M-52,-38 L60,-38" stroke="${GOLDC}" stroke-width="3"/>
     <g transform="translate(120 -8)"><rect x="-40" y="-14" width="80" height="20" rx="10" fill="#F3E3B8"/><circle cx="-40" cy="-4" r="10" fill="#C9A46A"/><circle cx="40" cy="-4" r="10" fill="#C9A46A"/></g>`, 1.1, 260, 900, 1);
-  const sage = actor(person({ ...SAGE, staff: false, seated: 'cross' }), 800, 820, 1.25); r.append(sage);
+  const sage = actor(person({ ...SAGE, staff: false, seated: 'cross', armsBack: true }), 800, 820, 1.25); r.append(sage); sage.inner.classList.add('sagey', 'breathe');
   const pr = [actor(person({ ...PRINCES[0], seated: 'cross' }), 430, 850, 1.02), actor(person({ ...PRINCES[1], seated: 'cross' }), 1130, 850, 1, { fx: -1 }), actor(person({ ...PRINCES[2], seated: 'cross' }), 1320, 870, 1.04, { fx: -1 })];
   r.append(...pr);
   addArt(r, `<g transform="translate(-40 0)">${['#3E9A3E', '#5EB04A', '#2E8B4E'].map((c, i) => `<path d="M${i * 30},0 C${-20 + i * 30},-60 ${10 + i * 30},-120 ${40 + i * 20},-150 C${30 + i * 30},-100 ${30 + i * 30},-50 ${20 + i * 30},0Z" fill="${c}"/>`).join('')}</g>`, 1.4, 1560, 920, 1.2);
@@ -447,7 +458,6 @@ async function s1() {
   await reveal(); ambience('glow'); bgLife('garden');
   tween(world, { x: 800 - 1.1 * 800, y: 450 - 1.1 * 545, s: 1.1 }, 14000, ease.io);
   await say('arjun', 'So the king called for a wise scholar named Vishnu Sharma, and asked him to teach the princes.');
-  sage.inner.classList.add('open');
   await say('vishnu', 'I will teach them everything they need to know — not in years… but in just six months!');
   await say('arjun', 'But how? The princes never sat still… So Vishnu Sharma had a clever idea.');
   SFX.chime(); sparkles(r, 800, 420, 10, 70);
@@ -465,14 +475,13 @@ async function s1() {
   await sleep(1400);
   pr.forEach(p => setMood(p.inner, 'smile'));
   await say('arjun', 'He called these stories the Panchatantra.');
-  const title = mk(`<text x="800" y="170" text-anchor="middle" font-family="'Yatra One',serif" font-size="92" fill="#FFE08A" stroke="#8A4A10" stroke-width="10" paint-order="stroke" filter="url(#glow)">पञ्चतन्त्र</text>`); title.setAttribute('class', 'popin'); title.setAttribute('pointer-events', 'none'); r.append(title);
+  const title = mk(`<text x="800" y="290" text-anchor="middle" font-family="'Yatra One',serif" font-size="92" fill="#FFE08A" stroke="#8A4A10" stroke-width="10" paint-order="stroke" filter="url(#glow)">पञ्चतन्त्र</text>`); title.setAttribute('class', 'popin'); title.setAttribute('pointer-events', 'none'); r.append(title);
   SFX.chime();
   pr.forEach(p => p.inner.classList.add('namaste'));
   await say('arjun', "And the princes loved them so much, they couldn't wait to hear what happened next.");
   pr.forEach(p => p.inner.classList.remove('namaste'));
   spirits.style.opacity = 0; title.style.transition = 'opacity 1s'; title.style.opacity = 0;
   await say('arjun', 'Today, Vishnu Sharma is going to tell the princes — and us — our very first Panchatantra story! Let’s listen closely…');
-  sage.inner.classList.remove('open');
   spirits.remove(); title.remove();
   sage.inner.classList.add('namaste'); pr.forEach(p => p.inner.classList.add('namaste'));
   await say('vishnu', `Namaste, ${kidName()}! Are you ready to hear a story?`);
@@ -518,9 +527,7 @@ async function sOutro() {
   pr.forEach(p => { setMood(p.inner, 'o'); p.parts.head.classList.add('tilt'); });
   await say('princes', 'Oh no! What happens next? Will Damanaka find the one who mooed?');
   pr.forEach(p => { setMood(p.inner, 'smile'); p.parts.head.classList.remove('tilt'); });
-  sage.inner.classList.add('open');
   await say('vishnu', 'Patience, my princes! A wise mind waits, thinks… and then finds out. We will continue tomorrow.');
-  sage.inner.classList.remove('open');
   sage.inner.classList.add('namaste'); pr.forEach(p => p.inner.classList.add('namaste'));
   SFX.chime(); sparkles(r, 800, 520, 14, 200);
   await say('vishnu', `Thank you for listening so well${KID.name ? ', ' + KID.name : ''}. Namaste!`);

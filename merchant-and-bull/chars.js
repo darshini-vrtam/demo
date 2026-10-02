@@ -215,6 +215,7 @@ function personM(o) {
     <path d="M2,-270 L2,-182" stroke="${skD}" stroke-width="3" stroke-linecap="round"/><path d="M-8,-252 Q-3,-248 1,-252 M3,-252 Q7,-248 12,-252" stroke="${skD}" stroke-width="2" fill="none" stroke-linecap="round" opacity=".7"/></g>`;
   // whisper: the right hand cups beside the mouth
   const wsp = `<g class="wsp"><path d="M${sx + 6},-238 C${sx + 22},-204 ${sx + 20},-170 ${sx + 4},-162 C${sx - 12},-170 28,-214 24,-262" stroke="${armColR}" stroke-width="26" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M14,-286 C4,-282 0,-266 6,-254 C14,-252 24,-256 28,-264 C30,-276 24,-286 14,-286Z" fill="${sk}"/></g>`;
+  const armRm = arm('armR', 44 + p * .6, armColR, .5, held, carry).replace('class="aswing"', 'class="aswing ar"');
   const feet = o.seated === 'cross' ? '' : o.seated === 'chair'
     ? `<path d="M-40,-4 C-42,-12 -32,-16 -20,-14 C-10,-13 -4,-9 -4,-4 Q-4,0 -10,0 L-36,0 Q-40,0 -40,-4Z" fill="${dkc(shoe, .1)}"/><path d="M40,-4 C42,-12 32,-16 20,-14 C10,-13 4,-9 4,-4 Q4,0 10,0 L36,0 Q40,0 40,-4Z" fill="${shoe}"/>`
     : `${foot(-16, .5, dkc(shoe, .15))}${foot(16, 0, shoe)}`;
@@ -223,12 +224,12 @@ function personM(o) {
   ${feet}
   <g class="bodyb"><g class="pbody"><g transform="translate(0 ${S})">
     <g transform="scale(1 ${by})">
-      ${arm('armL', -44 - p * .6, armColL, 0).replace('class="aswing"', 'class="aswing al"')}
+      ${arm('armL', -44 - p * .6, armColL, 0).replace('class="aswing"', 'class="aswing al"')}${o.armsBack ? armRm : ''}
       ${o.seated ? '' : lower}${torso}
       <path d="M-13,-282 C-12,-266 -14,-254 -16,-246 Q2,-238 18,-246 C16,-254 14,-266 15,-282Z" fill="${skD}"/>
     </g>
     <g transform="translate(4 ${-256 * by})"><g class="pose hp"><g class="face idle" data-who="${o.who || ''}"><g transform="scale(${hs})">${headM({ ...o, kid })}</g></g></g></g>
-    <g transform="scale(1 ${by})">${arm('armR', 44 + p * .6, armColR, .5, held, carry).replace('class="aswing"', 'class="aswing ar"')}${nam}${wsp}</g>
+    <g transform="scale(1 ${by})">${o.armsBack ? '' : armRm}${nam}${wsp}</g>
   </g></g></g>`;
 }
 function person(o = {}) {
@@ -310,9 +311,9 @@ function bullM(o) {
         <path d="M26,-74 C34,-62 46,-62 54,-74Z" fill="${bd}" opacity=".5"/>
         <g class="pv muz" transform="translate(40 14)"><ellipse cx="0" cy="30" rx="50" ry="36" fill="${o.muzzle}"/></g>
         <ellipse cx="22" cy="40" rx="7" ry="9" fill="${o.nostril || '#5A4A4A'}"/><ellipse cx="58" cy="40" rx="7" ry="9" fill="${o.nostril || '#5A4A4A'}"/>
-        <g transform="translate(40 66)"><g class="bmouth"><path class="bms" d="M-18,-4 Q0,8 18,-4" stroke="${o.nostril || '#5A4A4A'}" stroke-width="3.5" fill="none" stroke-linecap="round"/><g class="bmo"><ellipse cx="0" cy="0" rx="17" ry="12" fill="#4A2A2A"/><ellipse cx="0" cy="6" rx="10" ry="5" fill="#E07A7A"/></g></g></g>
+        <g transform="translate(40 66)"><g class="bmouth"><path class="bmsad" d="M-16,5 Q0,-6 16,5" stroke="${o.nostril || '#5A4A4A'}" stroke-width="3.5" fill="none" stroke-linecap="round"/><path class="bms" d="M-18,-4 Q0,8 18,-4" stroke="${o.nostril || '#5A4A4A'}" stroke-width="3.5" fill="none" stroke-linecap="round"/><g class="bmo"><ellipse cx="0" cy="0" rx="17" ry="12" fill="#4A2A2A"/><ellipse cx="0" cy="6" rx="10" ry="5" fill="#E07A7A"/></g></g></g>
         ${eyeM(18, -12, 13, 15, b)}${eyeM(62, -12, 13, 15, b)}
-        <path d="M5,-34 Q16,-40 28,-34 M52,-34 Q64,-40 75,-34" stroke="${dkc(b, .45)}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path class="bbn" d="M5,-34 Q16,-40 28,-34 M52,-34 Q64,-40 75,-34" stroke="${dkc(b, .45)}" stroke-width="3.5" fill="none" stroke-linecap="round"/><path class="bbs" d="M6,-30 Q18,-34 30,-42 M50,-42 Q62,-34 74,-30" stroke="${dkc(b, .45)}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
       </g></g></g></g></g>
     </g>
   </g>`;
@@ -381,7 +382,7 @@ function lionM() {
 }
 function lion() {
   const root = build('char lion', .8, lionM(), { flip: true });
-  regRig(root, root.art, { stride: 170, nominal: 120, swing: 18, bob: 5 });
+  regRig(root, root.art, { stride: 210, nominal: 110, swing: 15, bob: 3 });
   root.parts = { head: root.querySelector('.hp'), ears: root.querySelector('.ears'), tail: root.querySelector('.tl'), arm: root.querySelector('.paw'), mouth: mouthProxy(root), brows: browProxy(root) };
   return root;
 }
