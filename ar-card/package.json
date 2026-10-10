@@ -1,0 +1,17 @@
+{
+  "name": "ar-card",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Web-based image-tracking AR card: scan the card, the video plays on it.",
+  "type": "module",
+  "scripts": {
+    "compile-target": "node tools/compile-target.mjs",
+    "qr": "node tools/make-qr.mjs",
+    "test:ar": "node tools/test-tracking.mjs",
+    "serve": "npx --yes http-server . -p 8080 -c-1"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.1",
+    "qrcode": "^1.5.4"
+  }
+}

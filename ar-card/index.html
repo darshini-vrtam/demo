@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#07080d">
+  <meta name="description" content="Point your camera at the card to reveal its story.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='8' width='26' height='16' rx='3' fill='%23f3c9d6'/%3E%3C/svg%3E">
+  <title>Bring Your Card to Life</title>
+  <link rel="preload" href="assets/card-target.mind" as="fetch" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-state="welcome">
+  <!-- Camera feed + WebGL overlay are injected here by MindAR -->
+  <div id="ar-container" aria-hidden="true"></div>
+
+  <!-- 1. Welcome -->
+  <section class="screen" id="screen-welcome">
+    <div class="welcome-art" aria-hidden="true">
+      <div class="card-glyph"><span></span></div>
+    </div>
+    <div class="welcome-copy">
+      <p class="eyebrow">AR story card</p>
+      <h1>Bring Your Card to Life</h1>
+      <p class="lede">Point your camera at the card to reveal its story.</p>
+      <button class="btn btn-primary" id="btn-start" type="button">Start AR Experience</button>
+      <p class="fine">We use your camera only to find the card. Nothing is recorded or uploaded.</p>
+    </div>
+  </section>
+
+  <!-- 2. Camera permission / loading -->
+  <section class="screen" id="screen-loading" aria-live="polite">
+    <div class="spinner" aria-hidden="true"></div>
+    <p class="loading-title" id="loading-text">Starting camera…</p>
+    <p class="fine" id="loading-hint">If asked, tap <strong>Allow</strong> so we can see the card.</p>
+  </section>
+
+  <!-- 3–6. AR heads-up display -->
+  <section id="hud" aria-live="polite">
+    <div class="scan-frame" aria-hidden="true">
+      <i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i>
+      <div class="scan-line"></div>
+    </div>
+
+    <div class="status" id="status">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span id="status-text">Move your camera slowly over the card.</span>
+    </div>
+
+    <div class="controls">
+      <button class="btn btn-glass" id="btn-tap-play" type="button" hidden>Tap to play</button>
+      <button class="btn btn-glass" id="btn-replay" type="button" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>
+        <span id="btn-replay-label">Replay</span>
+      </button>
+      <button class="btn btn-ghost" id="btn-scan-another" type="button" hidden>Scan Another Card</button>
+    </div>
+  </section>
+
+  <!-- 7–8. Problems: permission denied, unsupported browser, load errors -->
+  <section class="screen" id="screen-message" role="alertdialog" aria-labelledby="msg-title" aria-describedby="msg-body">
+    <div class="msg-icon" id="msg-icon" aria-hidden="true">!</div>
+    <h2 id="msg-title">Something went wrong</h2>
+    <p id="msg-body"></p>
+    <ol id="msg-steps" hidden></ol>
+    <div class="msg-actions">
+      <button class="btn btn-primary" id="btn-retry" type="button">Try again</button>
+    </div>
+  </section>
+
+  <noscript><p class="noscript">This experience needs JavaScript enabled.</p></noscript>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
