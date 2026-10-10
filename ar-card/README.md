@@ -87,6 +87,18 @@ Keep the video muted (no audio track needed): browsers only autoplay muted inlin
 - **Ended:** the final frame stays on the card and **Play Again** appears. No reload needed.
 - **Errors:** a failed target or video load shows a clear message with **Try again** / **Retry video**.
 
+## Loading speed
+
+What's done to keep start-up short:
+- **Tracker warm-up:** while the welcome screen is showing, the page downloads the target and builds the tracker's GPU shaders (the slowest step). Tapping Start then only opens the camera. In testing, tap → scanning went from about 2.9 s to 0.9 s. Turn it off with `tracking.prewarm: false`.
+- **One camera open:** the camera is opened once, not twice.
+- **Parallel downloads:** `modulepreload` fetches every script at once, and the target file is preloaded.
+- **Minified libraries:** about 0.75 MB gzipped in total, including the target file.
+- **Early video buffering:** the video starts buffering on page load (iOS waits for the tap).
+- **Early taps:** a tap before the scripts arrive shows "Loading…" and starts automatically.
+
+If you replace the card, a smaller target image (e.g. 800 px wide) makes `card-target.mind` smaller, at some cost to detection from far away.
+
 ## Deploying over HTTPS
 
 Upload the whole `ar-card/` folder to any static host. All the hosts below serve HTTPS by default:
@@ -129,4 +141,4 @@ Screenshots and state timelines go to `test-output/`. Use `VIEWPORT=800x600` to 
 - **Performance:** tracking runs on the GPU via TensorFlow.js. Phones from roughly 2018 onward run it smoothly; very old devices may track slowly.
 - **In-app browsers** (Instagram, Facebook, some QR-scanner apps) often block the camera. The page detects this and asks the user to open the link in Safari or Chrome.
 - Vendored modules use relative imports (no import map), so the page loads on older Safari too. Camera access needs Safari on iOS 11+, or iOS 14.3+ for Chrome/Firefox on iPhone.
-- `vendor/` files are patched only to replace the bare `three` imports with relative paths. Re-apply that if you upgrade them.
+- `vendor/` holds minified copies of MindAR 1.2.5 (minified with esbuild) and three.js r160 (`three.module.min.js`). The only other change is that bare `three` imports are rewritten to relative paths. Re-apply both if you upgrade them.

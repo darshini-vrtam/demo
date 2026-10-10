@@ -8,6 +8,14 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='8' width='26' height='16' rx='3' fill='%23f3c9d6'/%3E%3C/svg%3E">
   <title>Bring Your Card to Life</title>
   <link rel="preload" href="assets/card-target.mind" as="fetch" crossorigin>
+  <!-- Fetch the whole module graph in parallel instead of one import at a time -->
+  <link rel="modulepreload" href="js/app.js">
+  <link rel="modulepreload" href="js/config.js">
+  <link rel="modulepreload" href="vendor/three/three.module.min.js">
+  <link rel="modulepreload" href="vendor/mind-ar/mindar-image-three.prod.js">
+  <link rel="modulepreload" href="vendor/mind-ar/controller-mGt1s8dJ.js">
+  <link rel="modulepreload" href="vendor/mind-ar/ui-fBadYuor.js">
+  <link rel="modulepreload" href="vendor/three/addons/renderers/CSS3DRenderer.js">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body data-state="welcome">
@@ -70,6 +78,15 @@
 
   <noscript><p class="noscript">This experience needs JavaScript enabled.</p></noscript>
 
+  <script>
+    // If Start is tapped before the app script has loaded, remember it; app.js picks it up.
+    document.getElementById("btn-start").addEventListener("click", function () {
+      if (window.__arcard) return;
+      window.__arStartQueued = true;
+      this.textContent = "Loading…";
+      this.disabled = true;
+    });
+  </script>
   <script type="module" src="js/app.js"></script>
 </body>
 </html>

@@ -47,6 +47,9 @@ export default {
     // Extra time (ms) the overlay stays frozen in place after tracking is lost,
     // so a momentary miss doesn't make it flicker.
     lostGraceMs: 600,
+    // Build the tracker's GPU shaders while the welcome screen shows, so
+    // tapping Start is ~2 s faster. Set false to skip.
+    prewarm: true,
     // Give up starting AR after this long (ms) and show an error.
     startTimeoutMs: 30000,
   },

@@ -1,5 +1,7 @@
-import * as THREE from "../vendor/three/three.module.js";
+import * as THREE from "../vendor/three/three.module.min.js";
 import { MindARThree } from "../vendor/mind-ar/mindar-image-three.prod.js";
+// MindAR's tracking controller (same chunk MindARThree uses; no extra download).
+import { C as Controller } from "../vendor/mind-ar/controller-mGt1s8dJ.js";
 import config from "./config.js";
 
 // ---------------------------------------------------------------------------
@@ -55,6 +57,17 @@ video.setAttribute("webkit-playsinline", "");
 // Kept in the DOM (but invisible) — some iOS versions won't decode detached videos.
 Object.assign(video.style, { position: "absolute", width: "1px", height: "1px", opacity: "0", pointerEvents: "none", left: "0", top: "0" });
 document.body.appendChild(video);
+// Start fetching the video right away (iOS waits for the tap; others buffer now).
+video.src = pickVideoSource();
+
+// MindAR swallows camera errors, so remember the last one to tell
+// "permission denied" apart from "no camera" — without opening the camera twice.
+let lastCameraError = null;
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  const gum = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+  navigator.mediaDevices.getUserMedia = (constraints) =>
+    gum(constraints).catch((err) => { lastCameraError = err; throw err; });
+}
 
 // ---------------------------------------------------------------------------
 // Experience state
@@ -72,6 +85,8 @@ let starting = false;
 // Start-up
 // ---------------------------------------------------------------------------
 ui.start.addEventListener("click", start);
+// A tap that landed before this module finished loading (see index.html).
+if (window.__arStartQueued) queueMicrotask(start);
 ui.retry.addEventListener("click", () => retryAction());
 ui.replay.addEventListener("click", replay);
 ui.tapPlay.addEventListener("click", () => playVideo(true));
@@ -86,6 +101,52 @@ ui.scanAnother.addEventListener("click", () => {
 });
 
 let retryAction = start;
+
+// ---------------------------------------------------------------------------
+// Warm-up: while the welcome screen is showing, download the target and build
+// the tracker's GPU shaders (the slowest part of starting AR, ~2 s on phones).
+// Compiled shaders are cached by the GPU backend, so the real start skips it.
+// ---------------------------------------------------------------------------
+let targetPromise = null;
+function loadTarget() {
+  // Fetch the image target ourselves so a missing/broken file is a clear error
+  // (MindAR would otherwise hang silently). Reuses the <link rel=preload>.
+  if (!targetPromise) {
+    targetPromise = fetch(config.target.src).then((res) => {
+      if (!res.ok) throw new Error(`Target file ${config.target.src} returned ${res.status}`);
+      return res.arrayBuffer();
+    });
+    targetPromise.catch(() => { targetPromise = null; }); // allow a retry
+  }
+  return targetPromise;
+}
+
+let warmPromise = null;
+function warmUp() {
+  if (!warmPromise) {
+    warmPromise = loadTarget().then((buffer) => {
+      if (mindar || unsupportedReason()) return;
+      const c = new Controller({ inputWidth: 640, inputHeight: 480, maxTrack: 1 });
+      try {
+        c.addImageTargetsFromBuffer(buffer.slice(0));
+        const canvas = document.createElement("canvas");
+        canvas.width = 640;
+        canvas.height = 480;
+        c.dummyRun(canvas);
+      } finally {
+        c.dispose();
+        c.worker && c.worker.terminate();
+      }
+    }).catch((err) => console.warn("Warm-up skipped:", err));
+  }
+  return warmPromise;
+}
+
+if (config.tracking.prewarm !== false) {
+  const schedule = () => setTimeout(() => (window.requestIdleCallback || setTimeout)(() => warmUp(), { timeout: 1500 }), 300);
+  if (document.readyState === "complete") schedule();
+  else window.addEventListener("load", schedule, { once: true });
+}
 
 function pickVideoSource() {
   const sources = config.video.sources || [{ src: config.video.src }];
@@ -118,7 +179,6 @@ async function start() {
   // Prime the overlay video inside the user gesture so iOS lets us start it
   // later from the tracking callback.
   if (!video.src) video.src = pickVideoSource();
-  video.load();
   const prime = video.play();
   if (prime) prime.then(() => {
     if (playback === "idle") { video.pause(); video.currentTime = 0; }
@@ -127,28 +187,12 @@ async function start() {
   setState("loading");
   ui.loadingText.textContent = "Starting camera…";
   ui.loadingHint.hidden = false;
+  lastCameraError = null;
 
   try {
-    // 1. Ask for the camera ourselves first: MindAR swallows the error reason,
-    //    and we want to tell "denied" apart from "no camera".
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: "environment" } });
-    stream.getTracks().forEach((t) => t.stop());
-  } catch (err) {
-    starting = false;
-    return showCameraError(err);
-  }
-
-  ui.loadingHint.hidden = true;
-  ui.loadingText.textContent = "Loading card data…";
-
-  try {
-    // 2. Fetch the image target ourselves so a missing/broken file is a clear error
-    //    (MindAR would otherwise hang silently). Reuses the <link rel=preload>.
-    const res = await fetch(config.target.src);
-    if (!res.ok) throw new Error(`Target file ${config.target.src} returned ${res.status}`);
-    const targetUrl = URL.createObjectURL(await res.blob());
-
-    ui.loadingText.textContent = "Preparing tracking…";
+    const buffer = await loadTarget();
+    if (warmPromise) await warmPromise; // a warm-up in flight finishes first (shares its work)
+    const targetUrl = URL.createObjectURL(new Blob([buffer]));
     await withTimeout(startMindAR(targetUrl), config.tracking.startTimeoutMs, "Starting AR took too long.");
     starting = false;
     setState("searching", STATUS.searching);
@@ -156,6 +200,7 @@ async function start() {
     console.error(err);
     starting = false;
     teardown();
+    if (lastCameraError) return showCameraError(lastCameraError);
     showError({
       title: "Couldn't start the AR experience",
       body: err && err.message ? err.message : "The camera or tracking engine failed to start.",
@@ -197,11 +242,18 @@ async function startMindAR(targetUrl) {
     }
   };
 
+  const shownCamera = () => {
+    ui.loadingHint.hidden = true;
+    ui.loadingText.textContent = "Preparing tracking…";
+  };
+  const camTimer = setInterval(() => { if (mindar && mindar.video && mindar.video.videoWidth) { shownCamera(); clearInterval(camTimer); } }, 100);
   try {
     await mindar.start();
   } catch (err) {
     // MindAR rejects without a reason when the camera can't be opened.
     throw err instanceof Error ? err : new Error("The camera could not be opened by the tracking engine.");
+  } finally {
+    clearInterval(camTimer);
   }
 
   // Card proportions come from the compiled target itself.
