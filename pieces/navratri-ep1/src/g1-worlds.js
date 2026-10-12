@@ -63,13 +63,14 @@ function worldsPage(done, rv = 1) {
   if (!done) PEN = null;
   sketchPage({ grid: 'dots' });
   // the open: ~1.5 s of a still, quiet page; then three faint pencil bands ruled across it (three rows of one page)
-  const rule = E(1.5, 0.9);
-  gpencil([[90, 650], [990, 646]], { key: 'band1', part: rule, a: 0.5, w: 2 });
-  gpencil([[90, 975], [990, 979]], { key: 'band2', part: seg(rule, 0.3, 1), a: 0.5, w: 2 });
+  const rule = E(1.2, 0.9);
+  gpencil([[90, 650], [990, 646]], { key: 'band1', part: rule, a: 0.75, w: 2.6 });
+  gpencil([[90, 975], [990, 979]], { key: 'band2', part: seg(rule, 0.3, 1), a: 0.75, w: 2.6 });
+  if (!done && TT >= 0.6 && TT < 1.2) { const k = EZ.o3(seg(TT, 0.6, 1.2)); PEN = toScreen(lerp(1180, 90, k), lerp(560, 650, k)); }   // the pencil comes onto the page
   if (!done && rule > 0 && rule < 1) { const r2 = seg(rule, 0.3, 1); PEN = toScreen(...(r2 > 0 ? [lerp(90, 990, r2), lerp(975, 979, r2)] : [lerp(90, 990, rule), lerp(650, 646, rule)])); }
   // margin labels in pencil, written as the voice names them
   const lab = (s, y, t) => handLetter(s, 96, y, 46, { align: 'left', col: NV.graph, reveal: E(t, 0.4), key: 'lab' + s, jit: 0.8 });
-  if (!done || rv > 0) { lab('devas', 300, VW('b01_worlds', 'devas')); lab('humans', 712, VW('b01_worlds', 'humans')); lab('asuras', 1036, cu.asuras); }
+  if (!done || rv >= 1) { lab('devas', 300, VW('b01_worlds', 'devas')); lab('humans', 712, VW('b01_worlds', 'humans')); lab('asuras', 1036, cu.asuras); }
   // svarga: temples on clouds
   const uD = R(VW('b01_worlds', 'devas') - 0.2, 2.0);
   cloudBank(150, 950, 600, 46, uD, 'cl1');

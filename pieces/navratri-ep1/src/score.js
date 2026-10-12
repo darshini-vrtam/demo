@@ -37,12 +37,12 @@
   to = 'm';
   const pk0 = E('army') - 0.3, pk1 = E('gather') - 0.6;
   drone(pk0, pk1, nz('D2'), 0.045, { att: 1.2, rel: 0.5 });
-  pad(pk0, E('retreat') + 1.0, ['D2', 'A2', 'D3', 'F3', 'A3'], 0.026, { cut: 650, att: 1.0, rel: 0.8 });
+  pad(pk0, E('retreat') + 1.0, ['D2', 'A2', 'D3', 'F3', 'A3'], 0.02, { cut: 650, att: 1.0, rel: 0.8 });
   pad(E('retreat') + 0.5, pk1, ['D2', 'A2', 'F3'], 0.018, { cut: 500, att: 0.8, rel: 0.8 });
   for (let t = E('army'); t < pk1 - 0.3; t += E8) {
     const fade = t < E('retreat') ? 1 : 1 - seg(t, E('retreat'), pk1);
     if (fade <= 0.05) continue;
-    if (((t - E('army')) / E8) % 2 < 1) bass(t, nz(((t - E('army')) / BEAT) % 4 < 2 ? 'D2' : 'C2'), 0.075 * fade);
+    if (((t - E('army')) / E8) % 2 < 1) bass(t, nz(((t - E('army')) / BEAT) % 4 < 2 ? 'D2' : 'C2'), 0.06 * fade);
   }
   to = 's';
   for (let t = E('army'); t < pk1 - 0.3; t += E8) { const fade = t < E('retreat') ? 1 : 1 - seg(t, E('retreat'), pk1); if (fade > 0.05) noiseHit(t, 0.07, 'lowpass', 520, 0.8, 0.05 * fade, ((t / E8) % 2 ? 0.2 : -0.2)); }
@@ -63,14 +63,15 @@
   ['D2', 'D3', 'A3', 'D4', 'Fs4', 'A4'].forEach((n, i) => pluck(hit, nz(n), 0.6 - i * 0.05, -0.3 + i * 0.12, 0.45, 5200, 0.15));   // a short chord stab
   sub(hit, 1.0);
   noiseHit(hit, 0.35, 'lowpass', 2400, 0.7, 0.45, 0, 0.3, 300);
-  pad(hit + 0.4, E('light') + 0.5, ['D3', 'A3', 'Fs3', 'E4'], 0.02, { type: 'triangle', cut: 900, att: 0.6, rel: 0.5, send: 0.5 });   // flat and warm after it
-  drone(hit + 0.35, END('who'), nz('D2'), 0.028, { att: 1.5, rel: 4.0 });
+  pad(hit + 0.4, E('light') + 0.3, ['D3', 'A3', 'Fs3', 'E4'], 0.03, { type: 'triangle', cut: 900, att: 0.6, rel: 0.5, send: 0.5 });   // flat and warm after it
+  drone(hit + 0.35, E('light') + 0.4, nz('D2'), 0.034, { att: 1.5, rel: 0.6 });
+  drone(E('light'), END('who'), nz('D2'), 0.012, { att: 0.5, rel: 4.0 });
   // nine chimes for the nine rings, climbing the D major pentatonic
   const NINE = ['D5', 'E5', 'Fs5', 'A5', 'B5', 'D6', 'E6', 'Fs6', 'A6'];
   cu.rings.forEach((t, i) => chime(t, [nz(NINE[i]), nz(NINE[i]) * 1.5], 0.045, -0.5 + i * 0.12));
 
   // ---- GOODBYE: the comet, the peak, the title, the bell
-  pad(E('light') + 0.2, END('who') - 0.2, ['D3', 'A3', 'E4'], 0.011, { type: 'triangle', cut: 800, att: 1.0, rel: 3.0, send: 0.5 });
+  pad(E('light') + 0.2, END('who') - 0.2, ['D3', 'A3', 'E4'], 0.006, { type: 'triangle', cut: 800, att: 1.0, rel: 3.0, send: 0.5 });
   sweep(cu.firstLight - 0.2, cu.mountains + 0.6, 0.02, 2600, 600, 0.3);
   motif(cu.mountains + 0.4, [['A4', 0], ['Fs4', E8], ['D4', BEAT]], 0.05, 0.2);
   motif(cu.title + 0.4, [['D4', 0], ['A4', E8], ['D5', BEAT]], 0.05, -0.1);
