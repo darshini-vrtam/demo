@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navratri Ep. 1: character sheets</title>
+<style>html, body { margin: 0; height: 100%; background: #1d1a17; } body { display: flex; align-items: center; justify-content: center; } canvas { height: 100vh; aspect-ratio: 9 / 16; }</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+"use strict";
+// CHARACTER SHEETS — each character once, large, on a bare sketchbook page: one per second (t = 0.5, 1.5, ...).
+// Uses the piece's own src/figures.js, so a fix here is a fix in every beat.
+const FPS = 24, W = 1080, H = 1920, BPM = 120, BEAT = 0.5, E8 = 0.25, E16 = 0.125;
+const SAFE = { top: 240, bottom: 420, right: 140 };
+const HAND = '"Ink Free", "Segoe Print", "Bradley Hand", "Comic Sans MS", "Chalkboard SE", "Comic Neue", cursive';
+const CX = 500;
+const SHEET_KEYS = ['walk', 'sit', 'kneel', 'face', 'brahma', 'durga', 'devas'];
+const NFRAMES = SHEET_KEYS.length * FPS, DURATION = NFRAMES / FPS, LOOP_T = DURATION;
+const SHEETS = {};
+const ERA_LIST = SHEET_KEYS.map((k, i) => [i, i + 1, () => SHEETS[k]()]);
+const TIMELINE = { width: W, height: H, fps: FPS, bpm: BPM, duration: DURATION, frames: NFRAMES, loop: LOOP_T, safe: SAFE, format: 'sheets',
+  shots: SHEET_KEYS.map((k, i) => ({ id: i + 1, key: k, era: i, t0: i, t1: i + 1, title: k })), cuts: SHEET_KEYS.slice(1).map((_, i) => i + 1), morphs: [], cues: {}, acts: [], board: [], narration: [] };
+window.TIMELINE = TIMELINE;

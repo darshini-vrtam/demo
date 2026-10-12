@@ -1,0 +1,7 @@
+# generated: renders, review sheets, built pages, scratch voice (timing only, never shipped)
+review/
+renders/
+index.html
+sheets/index.html
+voice/*.wav
+voice/*.mp3

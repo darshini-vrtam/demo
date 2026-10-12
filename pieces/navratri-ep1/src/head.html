@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navratri Ep. 1: The Rise of Mahishasura</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #1d1a17; overflow: hidden; }
+  body { display: flex; align-items: center; justify-content: center; }
+  canvas { height: min(100vh, calc(100vw * 16 / 9)); width: auto; aspect-ratio: 9 / 16; display: block; cursor: pointer; }
+</style>
+</head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script>
+"use strict";
+// =====================================================================
+//  NAVRATRI EP. 1 — THE RISE OF MAHISHASURA. 9:16, 24fps, 120 BPM grid, voice-clocked (~2:19).
+//  Sketchbook look. One page, one pencil. Graphite + ink = Mahishasura's world (the page grows heavier with his
+//  pride); TERRACOTTA = Shakti, first seen as one dot in beat 11, the only colour. Yellow = one caption word.
+//  Red marker = once per scene at most. 16 beats joined by shape morphs; ONE hard cut: the slam on Durga.
+//  Timing: every beat starts ~0.3–0.5s after the previous line ends; morph centres snap to the 8th grid.
+//  Shared parts (this head, src/common.js, src/bridges.js, src/score.js) are owned by the lead; scene files
+//  src/g1..g4 each own a group of eras.
+// =====================================================================
+const FPS = 24, W = 1080, H = 1920;
+const BPM = 120, BEAT = 60 / BPM, E8 = BEAT / 2, E16 = BEAT / 4;
+const SAFE = { top: 240, bottom: 420, right: 140 };
+const HAND = '"Ink Free", "Segoe Print", "Bradley Hand", "Comic Sans MS", "Chalkboard SE", "Comic Neue", cursive';
+const CX = 500;
+const q8 = (t) => Math.round(t / E8) * E8;
+
+// ---- the voice is the clock
+const NORMW = (s) => s.toLowerCase().replace(/[^a-z']/g, '');
+const VL = (id) => VOICE.lines.find((l) => l.id === id);
+// VW(id, word, n): when the n-th `word` of line id starts (falls back to the line start)
+function VW(id, word, n = 1) {
+  const L = VL(id), want = NORMW(word); let k = 0;
+  for (const w of L.words) if (NORMW(w.w) === want && ++k === n) return w.t0;
+  return L.t0;
+}
+const VE = (id, word, n = 1) => { const L = VL(id), want = NORMW(word); let k = 0; for (const w of L.words) if (NORMW(w.w) === want && ++k === n) return w.t1; return L.t1; };
+const NFRAMES = Math.round(VOICE.duration * FPS);
+const DURATION = NFRAMES / FPS;
+const LOOP_T = DURATION;
+const AFTER = (id) => q8(VL(id).t1 + 0.4);           // a morph centre: ~0.4s after the line ends, on the 8th grid
+const CUT = q8(VL('b13a_merge').t1 + 1.5);            // the one hard cut: the slam on Durga, in the silence
+
+// ---- eras (one per beat; beat 13 is split by the cut; beat 14 continues Durga's era)
+const ERA_KEYS = ['worlds', 'power', 'tapasya', 'time', 'stop', 'brahma', 'boon', 'pride', 'army', 'retreat', 'gather', 'energy', 'merge', 'durga', 'light', 'who'];
+const ERA_T = [0, AFTER('b01_worlds'), AFTER('b02_power'), AFTER('b03_tapasya'), AFTER('b04_time'), AFTER('b05_stop'), AFTER('b06_brahma'),
+  AFTER('b07b_grant'), AFTER('b08_pride'), AFTER('b09_army'), AFTER('b10_retreat'), AFTER('b11_gather'), AFTER('b12_energy'),
+  CUT, AFTER('b14b_nine'), AFTER('b15_light'), DURATION];
+const ERA = Object.fromEntries(ERA_KEYS.map((k, i) => [k, i]));
+const SCENES = {};                                     // scene files register: SCENES.worlds = () => { ... }
+const ERA_LIST = ERA_KEYS.map((k, i) => [ERA_T[i], ERA_T[i + 1], () => SCENES[k]()]);
+// bridges: every era boundary but the cut; d 0.4 around the quick beats (4 time, 10 retreat)
+const SHORT = new Set([ERA.time, ERA.stop, ERA.retreat, ERA.gather]);
+const MORPH_LIST = ERA_T.slice(1, -1).map((tc, i) => ({ tc, a: i, b: i + 1, d: SHORT.has(i + 1) ? 0.4 : 0.6 })).filter((m) => m.tc !== CUT);
+const SHOT_TITLES = {
+  worlds: '1 three worlds; a tiny figure on the ridge', power: '2 he strides in; name lettered, red underline', tapasya: '3 tapasya under the tree',
+  time: '4 six boxes: days, months, years', stop: '5 extreme close-up: he did not stop', brahma: '6 Brahma appears, ink only',
+  boon: '7 the boon: card + red BOON stamp', pride: '8 the crown is redrawn bigger; smudges creep in', army: '9 the army (busiest frame)',
+  retreat: '10 the devas retreat; the eraser takes the palaces', gather: '11 the devas gather; the first terracotta dot', energy: '12 terracotta lines to the centre',
+  merge: '13a brighter, brighter: one radiant circle, then silence', durga: '13b/14 THE CUT: Devi Durga on her lion; nine rings', light: '15 the first light flies to the mountains',
+  who: '16 who was waiting? the three worlds, changed; SHAILAPUTRI',
+};
+const SHOTS = ERA_KEYS.map((k, i) => [k, i, ERA_T[i], ERA_T[i + 1], SHOT_TITLES[k]]);
+
+// ---- cues: the words that name things (scene files read TIMELINE.cues; add more in CUE_EXTRA, never edit here)
+const CUES = {
+  worlds: VW('b01_worlds', 'worlds'), asuras: VW('b01_worlds', 'asuras'), named: VW('b01_worlds', 'Mahishasura'),
+  power: VW('b02_power', 'Power'), name2: VW('b02_power', 'Mahishasura'),
+  forest: VW('b03_tapasya', 'forest'), tapasya: VW('b03_tapasya', 'tapasya'),
+  days: VW('b04_time', 'Days'), months: VW('b04_time', 'months'), years: VW('b04_time', 'years'),
+  stop: VW('b05_stop', 'stop'),
+  brahma: VW('b06_brahma', 'Brahma'), appeared: VW('b06_brahma', 'appeared'),
+  boonAsk: VW('b07a_ask', 'boon'), defeatAsk: VW('b07a_ask', 'defeat'), granted: VW('b07b_grant', 'granted'), man: VW('b07b_grant', 'man'), deva: VW('b07b_grant', 'deva'), stamp: q8(VL('b07b_grant').t1 + 0.2),
+  invincible: VW('b08_pride', 'invincible'), pride: VW('b08_pride', 'pride'), grew: VW('b08_pride', 'grew'),
+  army: VW('b09_army', 'army'), attacking: VW('b09_army', 'attacking'),
+  pushed: VW('b10_retreat', 'pushed'), spread: VW('b10_retreat', 'spread'), tried: VW('b10_retreat', 'tried'), couldNot: VW('b10_retreat', 'could'),
+  help: VW('b11_gather', 'help'), together: VW('b11_gather', 'together'), shiva: VW('b11_gather', 'Shiva'), vishnu: VW('b11_gather', 'Vishnu'), brahma2: VW('b11_gather', 'Brahma'), others: VW('b11_gather', 'other'),
+  released: VW('b12_energy', 'released'), energy: VW('b12_energy', 'energy'),
+  merge: VW('b13a_merge', 'together'), bright1: VW('b13a_merge', 'Brighter', 1), bright2: VW('b13a_merge', 'Brighter', 2), radiant: VW('b13a_merge', 'radiant'), silence: VL('b13a_merge').t1, cut: CUT,
+  goddess: VW('b13b_goddess', 'goddess'), durga: VW('b13c_durga', 'Durga'),
+  lion: VW('b14a_lion', 'lion'), fearless: VW('b14a_lion', 'fearless'), face: VW('b14a_lion', 'face'),
+  battle: VW('b14b_nine', 'battle'), nine: VW('b14b_nine', 'Nine'), shakti: VW('b14b_nine', 'Shakti'), begin: VW('b14b_nine', 'begin'),
+  firstLight: VW('b15_light', 'light'), far: VW('b15_light', 'far'), mountains: VW('b15_light', 'mountains'),
+  who: VW('b16a_who', 'Who'), waiting: VW('b16a_who', 'waiting'), first: VW('b16b_first', 'first'), awaken: VW('b16b_first', 'awaken'),
+  title: q8(VL('b16b_first').t1 + 0.3), ding: q8(VL('b16b_first').t1 + 2.2),
+};
+// the nine chimes / rings of beat 14: one per beat (0.5s) from "Nine", cut short before the line's end + pause
+CUES.rings = Array.from({ length: 9 }, (_, i) => CUES.nine + i * BEAT * 0.5);
+// the six season boxes of beat 4: two per word
+CUES.boxes = [CUES.days, CUES.days + 0.5, CUES.months, CUES.months + 0.5, CUES.years, CUES.years + 0.5];
+
+const TIMELINE = {
+  width: W, height: H, fps: FPS, bpm: BPM, duration: DURATION, frames: NFRAMES, loop: LOOP_T, safe: SAFE,
+  format: 'morph-chain',
+  shots: SHOTS.map(([key, era, t0, t1, title], i) => ({ id: i + 1, key, era, t0, t1, title })),
+  cuts: [CUT],
+  morphs: MORPH_LIST.map((m) => m.tc),
+  cues: CUES,
+  acts: [
+    { name: '1-8 Build: worlds, tapasya, boon, pride', role: 'build', t0: 0, t1: ERA_T[ERA.army] },
+    { name: '9-10 Peak: the army, the retreat', role: 'peak', t0: ERA_T[ERA.army], t1: ERA_T[ERA.gather] },
+    { name: '11-13a Silence: gather, energies, one light', role: 'silence', t0: ERA_T[ERA.gather], t1: CUT },
+    { name: '13b-14 Gift: Devi Durga, nine nights', role: 'gift', t0: CUT, t1: ERA_T[ERA.light] },
+    { name: '15-16 Goodbye: the first light, Shailaputri', role: 'goodbye', t0: ERA_T[ERA.light], t1: DURATION },
+  ],
+  board: [],   // filled by bridges.js (one key time per beat)
+  narration: VOICE.lines.map((l) => ({ t0: l.t0, t1: l.t1, text: l.text })),
+};
+window.TIMELINE = TIMELINE;

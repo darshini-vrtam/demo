@@ -1,0 +1,1696 @@
+{
+ "duration": 139.039,
+ "lead": 1.6,
+ "tail": 5.5,
+ "lines": [
+  {
+   "id": "b01_worlds",
+   "text": "Long ago, in a time when devas, humans, and asuras lived across the three worlds, there lived a powerful asura named Mahishasura.",
+   "t0": 1.6,
+   "t1": 10.759,
+   "take": "voice/b01_worlds.scratch.wav",
+   "words": [
+    {
+     "w": "Long",
+     "t0": 1.6,
+     "t1": 1.966,
+     "est": true
+    },
+    {
+     "w": "ago,",
+     "t0": 1.966,
+     "t1": 2.259,
+     "est": true
+    },
+    {
+     "w": "in",
+     "t0": 2.259,
+     "t1": 2.479,
+     "est": true
+    },
+    {
+     "w": "a",
+     "t0": 2.479,
+     "t1": 2.626,
+     "est": true
+    },
+    {
+     "w": "time",
+     "t0": 2.626,
+     "t1": 2.992,
+     "est": true
+    },
+    {
+     "w": "when",
+     "t0": 2.992,
+     "t1": 3.359,
+     "est": true
+    },
+    {
+     "w": "devas,",
+     "t0": 3.359,
+     "t1": 3.798,
+     "est": true
+    },
+    {
+     "w": "humans,",
+     "t0": 3.798,
+     "t1": 4.311,
+     "est": true
+    },
+    {
+     "w": "and",
+     "t0": 4.311,
+     "t1": 4.604,
+     "est": true
+    },
+    {
+     "w": "asuras",
+     "t0": 4.604,
+     "t1": 5.117,
+     "est": true
+    },
+    {
+     "w": "lived",
+     "t0": 5.117,
+     "t1": 5.557,
+     "est": true
+    },
+    {
+     "w": "across",
+     "t0": 5.557,
+     "t1": 6.07,
+     "est": true
+    },
+    {
+     "w": "the",
+     "t0": 6.07,
+     "t1": 6.363,
+     "est": true
+    },
+    {
+     "w": "three",
+     "t0": 6.363,
+     "t1": 6.802,
+     "est": true
+    },
+    {
+     "w": "worlds,",
+     "t0": 6.802,
+     "t1": 7.315,
+     "est": true
+    },
+    {
+     "w": "there",
+     "t0": 7.315,
+     "t1": 7.755,
+     "est": true
+    },
+    {
+     "w": "lived",
+     "t0": 7.755,
+     "t1": 8.194,
+     "est": true
+    },
+    {
+     "w": "a",
+     "t0": 8.194,
+     "t1": 8.341,
+     "est": true
+    },
+    {
+     "w": "powerful",
+     "t0": 8.341,
+     "t1": 9,
+     "est": true
+    },
+    {
+     "w": "asura",
+     "t0": 9,
+     "t1": 9.44,
+     "est": true
+    },
+    {
+     "w": "named",
+     "t0": 9.44,
+     "t1": 9.88,
+     "est": true
+    },
+    {
+     "w": "Mahishasura.",
+     "t0": 9.88,
+     "t1": 10.759,
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "b02_power",
+   "text": "Mahishasura wanted one thing above all else. Power.",
+   "t0": 11.859,
+   "t1": 15.703,
+   "take": "voice/b02_power.scratch.wav",
+   "words": [
+    {
+     "w": "Mahishasura",
+     "t0": 11.859,
+     "t1": 12.782,
+     "est": true
+    },
+    {
+     "w": "wanted",
+     "t0": 12.782,
+     "t1": 13.32,
+     "est": true
+    },
+    {
+     "w": "one",
+     "t0": 13.32,
+     "t1": 13.627,
+     "est": true
+    },
+    {
+     "w": "thing",
+     "t0": 13.627,
+     "t1": 14.089,
+     "est": true
+    },
+    {
+     "w": "above",
+     "t0": 14.089,
+     "t1": 14.55,
+     "est": true
+    },
+    {
+     "w": "all",
+     "t0": 14.55,
+     "t1": 14.857,
+     "est": true
+    },
+    {
+     "w": "else.",
+     "t0": 14.857,
+     "t1": 15.242,
+     "est": true
+    },
+    {
+     "w": "Power.",
+     "t0": 15.242,
+     "t1": 15.703,
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "b03_tapasya",
+   "text": "So he went deep into the forest and began a long and difficult tapasya.",
+   "t0": 16.803,
+   "t1": 21.703,
+   "take": "voice/b03_tapasya.scratch.wav",
+   "words": [
+    {
+     "w": "So",
+     "t0": 16.803,
+     "t1": 17.01,
+     "est": true
+    },
+    {
+     "w": "he",
+     "t0": 17.01,
+     "t1": 17.217,
+     "est": true
+    },
+    {
+     "w": "went",
+     "t0": 17.217,
+     "t1": 17.562,
+     "est": true
+    },
+    {
+     "w": "deep",
+     "t0": 17.562,
+     "t1": 17.907,
+     "est": true
+    },
+    {
+     "w": "into",
+     "t0": 17.907,
+     "t1": 18.252,
+     "est": true
+    },
+    {
+     "w": "the",
+     "t0": 18.252,
+     "t1": 18.528,
+     "est": true
+    },
+    {
+     "w": "forest",
+     "t0": 18.528,
+     "t1": 19.011,
+     "est": true
+    },
+    {
+     "w": "and",
+     "t0": 19.011,
+     "t1": 19.288,
+     "est": true
+    },
+    {
+     "w": "began",
+     "t0": 19.288,
+     "t1": 19.702,
+     "est": true
+    },
+    {
+     "w": "a",
+     "t0": 19.702,
+     "t1": 19.84,
+     "est": true
+    },
+    {
+     "w": "long",
+     "t0": 19.84,
+     "t1": 20.185,
+     "est": true
+    },
+    {
+     "w": "and",
+     "t0": 20.185,
+     "t1": 20.461,
+     "est": true
+    },
+    {
+     "w": "difficult",
+     "t0": 20.461,
+     "t1": 21.151,
+     "est": true
+    },
+    {
+     "w": "tapasya.",
+     "t0": 21.151,
+     "t1": 21.703,
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "b04_time",
+   "text": "Days passed. Then months. Then years.",
+   "t0": 22.703,
+   "t1": 26.036,
+   "take": "voice/b04_time.scratch.wav",
+   "words": [
+    {
+     "w": "Days",
+     "t0": 22.703,
+     "t1": 23.179,
+     "est": true
+    },
+    {
+     "w": "passed.",
+     "t0": 23.179,
+     "t1": 23.846,
+     "est": true
+    },
+    {
+     "w": "Then",
+     "t0": 23.846,
+     "t1": 24.322,
+     "est": true
+    },
+    {
+     "w": "months.",
+     "t0": 24.322,
+     "t1": 24.988,
+     "est": true
+    },
+    {
+     "w": "Then",
+     "t0": 24.988,
+     "t1": 25.465,
+     "est": true
+    },
+    {
+     "w": "years.",
+     "t0": 25.465,
+     "t1": 26.036,
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "b05_stop",
+   "text": "He did not stop.",
+   "t0": 28.236,
+   "t1": 29.309,
+   "take": "voice/b05_stop.scratch.wav",
+   "words": [
+    {
+     "w": "He",
+     "t0": 28.236,
+     "t1": 28.437,
+     "est": true
+    },
+    {
+     "w": "did",
+     "t0": 28.437,
+     "t1": 28.705,
+     "est": true
+    },
+    {
+     "w": "not",
+     "t0": 28.705,
+     "t1": 28.974,
+     "est": true
+    },
+    {
+     "w": "stop.",
+     "t0": 28.974,
+     "t1": 29.309,
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "b06_brahma",
+   "text": "His determination pleased Brahma, who appeared before him.",
+   "t0": 30.409,
+   "t1": 34.342,
+   "take": "voice/b06_brahma.scratch.wav",
+   "words": [
+    {
+     "w": "His",
+     "t0": 30.409,
+     "t1": 30.685,
+     "est": true
+    },
+    {
+     "w": "determination",
+     "t0": 30.685,
+     "t1": 31.651,
+     "est": true
+    },
+    {
+     "w": "pleased",
+     "t0": 31.651,
+     "t1": 32.203,
+     "est": true
+    },
+    {
+     "w": "Brahma,",
+     "t0": 32.203,
+     "t1": 32.686,
+     "est": true
+    },
+    {
+     "w": "who",
+     "t0": 32.686,
+     "t1": 32.962,
+     "est": true
+    },
+    {
+     "w": "appeared",
+     "t0": 32.962,
+     "t1": 33.583,
+     "est": true
+    },
+    {
+     "w": "before",
+     "t0": 33.583,
+     "t1": 34.066,
+     "est": true
+    },
+    {
+     "w": "him.",
+     "t0": 34.066,
+     "t1": 34.342,
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "b07a_ask",
+   "text": "Mahishasura asked for a powerful boon. He wanted to become impossible to defeat.",
+   "t0": 35.542,
+   "t1": 41.182,
+   "take": "voice/b07a_ask.scratch.wav",
+   "words": [
+    {
+     "w": "Mahishasura",
+     "t0": 35.542,
+     "t1": 36.399,
+     "est": true
+    },
+    {
+     "w": "asked",
+     "t0": 36.399,
+     "t1": 36.827,
+     "est": true
+    },
+    {
+     "w": "for",
+     "t0": 36.827,
+     "t1": 37.113,
+     "est": true
+    },
+    {
+     "w": "a",
+     "t0": 37.113,
+     "t1": 37.255,
+     "est": true
+    },
+    {
+     "w": "powerful",
+     "t0": 37.255,
+     "t1": 37.898,
+     "est": true
+    },
+    {
+     "w": "boon.",
+     "t0": 37.898,
+     "t1": 38.255,
+     "est": true
+    },
+    {
+     "w": "He",
+     "t0": 38.255,
+     "t1": 38.469,
+     "est": true
+    },
+    {
+     "w": "wanted",
+     "t0": 38.469,
+     "t1": 38.969,
+     "est": true
+    },
+    {
+     "w": "to",
+     "t0": 38.969,
+     "t1": 39.183,
+     "est": true
+    },
+    {
+     "w": "become",
+     "t0": 39.183,
+     "t1": 39.683,
+     "est": true
+    },
+    {
+     "w": "impossible",
+     "t0": 39.683,
+     "t1": 40.468,
+     "est": true
+    },
+    {
+     "w": "to",
+     "t0": 40.468,
+     "t1": 40.682,
+     "est": true
+    },
+    {
+     "w": "defeat.",
+     "t0": 40.682,
+     "t1": 41.182,
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "b07b_grant",
+   "text": "Brahma granted him a boon that no man or deva could defeat him.",
+   "t0": 42.082,
+   "t1": 46.268,
+   "take": "voice/b07b_grant.scratch.wav",
+   "words": [
+    {
+     "w": "Brahma",
+     "t0": 42.082,
+     "t1": 42.547,
+     "est": true
+    },
+    {
+     "w": "granted",
+     "t0": 42.547,
+     "t1": 43.079,
+     "est": true
+    },
+    {
+     "w": "him",
+     "t0": 43.079,
+     "t1": 43.344,
+     "est": true
+    },
+    {
+     "w": "a",
+     "t0": 43.344,
+     "t1": 43.477,
+     "est": true
+    },
+    {
+     "w": "boon",
+     "t0": 43.477,
+     "t1": 43.81,
+     "est": true
+    },
+    {
+     "w": "that",
+     "t0": 43.81,
+     "t1": 44.142,
+     "est": true
+    },
+    {
+     "w": "no",
+     "t0": 44.142,
+     "t1": 44.341,
+     "est": true
+    },
+    {
+     "w": "man",
+     "t0": 44.341,
+     "t1": 44.607,
+     "est": true
+    },
+    {
+     "w": "or",
+     "t0": 44.607,
+     "t1": 44.806,
+     "est": true
+    },
+    {
+     "w": "deva",
+     "t0": 44.806,
+     "t1": 45.138,
+     "est": true
+    },
+    {
+     "w": "could",
+     "t0": 45.138,
+     "t1": 45.537,
+     "est": true
+    },
+    {
+     "w": "defeat",
+     "t0": 45.537,
+     "t1": 46.002,
+     "est": true
+    },
+    {
+     "w": "him.",
+     "t0": 46.002,
+     "t1": 46.268,
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "b08_pride",
+   "text": "Mahishasura thought he was now invincible. And slowly, his pride grew.",
+   "t0": 47.968,
+   "t1": 53.27,
+   "take": "voice/b08_pride.scratch.wav",
+   "words": [
+    {
+     "w": "Mahishasura",
+     "t0": 47.968,
+     "t1": 48.904,
+     "est": true
+    },
+    {
+     "w": "thought",
+     "t0": 48.904,
+     "t1": 49.527,
+     "est": true
+    },
+    {
+     "w": "he",
+     "t0": 49.527,
+     "t1": 49.761,
+     "est": true
+    },
+    {
+     "w": "was",
+     "t0": 49.761,
+     "t1": 50.073,
+     "est": true
+    },
+    {
+     "w": "now",
+     "t0": 50.073,
+     "t1": 50.385,
+     "est": true
+    },
+    {
+     "w": "invincible.",
+     "t0": 50.385,
+     "t1": 51.243,
+     "est": true
+    },
+    {
+     "w": "And",
+     "t0": 51.243,
+     "t1": 51.555,
+     "est": true
+    },
+    {
+     "w": "slowly,",
+     "t0": 51.555,
+     "t1": 52.1,
+     "est": true
+    },
+    {
+     "w": "his",
+     "t0": 52.1,
+     "t1": 52.412,
+     "est": true
+    },
+    {
+     "w": "pride",
+     "t0": 52.412,
+     "t1": 52.88,
+     "est": true
+    },
+    {
+     "w": "grew.",
+     "t0": 52.88,
+     "t1": 53.27,
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "b09_army",
+   "text": "He gathered an army and began attacking the devas.",
+   "t0": 54.57,
+   "t1": 57.687,
+   "take": "voice/b09_army.scratch.wav",
+   "words": [
+    {
+     "w": "He",
+     "t0": 54.57,
+     "t1": 54.757,
+     "est": true
+    },
+    {
+     "w": "gathered",
+     "t0": 54.757,
+     "t1": 55.318,
+     "est": true
+    },
+    {
+     "w": "an",
+     "t0": 55.318,
+     "t1": 55.505,
+     "est": true
+    },
+    {
+     "w": "army",
+     "t0": 55.505,
+     "t1": 55.817,
+     "est": true
+    },
+    {
+     "w": "and",
+     "t0": 55.817,
+     "t1": 56.066,
+     "est": true
+    },
+    {
+     "w": "began",
+     "t0": 56.066,
+     "t1": 56.44,
+     "est": true
+    },
+    {
+     "w": "attacking",
+     "t0": 56.44,
+     "t1": 57.064,
+     "est": true
+    },
+    {
+     "w": "the",
+     "t0": 57.064,
+     "t1": 57.313,
+     "est": true
+    },
+    {
+     "w": "devas.",
+     "t0": 57.313,
+     "t1": 57.687,
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "b10_retreat",
+   "text": "One by one, the devas were pushed from their kingdoms. Soon, Mahishasura's power had spread across the three worlds. The devas tried to stop him. But they could not.",
+   "t0": 58.787,
+   "t1": 70.673,
+   "take": "voice/b10_retreat.scratch.wav",
+   "words": [
+    {
+     "w": "One",
+     "t0": 58.787,
+     "t1": 59.086,
+     "est": true
+    },
+    {
+     "w": "by",
+     "t0": 59.086,
+     "t1": 59.31,
+     "est": true
+    },
+    {
+     "w": "one,",
+     "t0": 59.31,
+     "t1": 59.609,
+     "est": true
+    },
+    {
+     "w": "the",
+     "t0": 59.609,
+     "t1": 59.908,
+     "est": true
+    },
+    {
+     "w": "devas",
+     "t0": 59.908,
+     "t1": 60.357,
+     "est": true
+    },
+    {
+     "w": "were",
+     "t0": 60.357,
+     "t1": 60.731,
+     "est": true
+    },
+    {
+     "w": "pushed",
+     "t0": 60.731,
+     "t1": 61.254,
+     "est": true
+    },
+    {
+     "w": "from",
+     "t0": 61.254,
+     "t1": 61.628,
+     "est": true
+    },
+    {
+     "w": "their",
+     "t0": 61.628,
+     "t1": 62.076,
+     "est": true
+    },
+    {
+     "w": "kingdoms.",
+     "t0": 62.076,
+     "t1": 62.749,
+     "est": true
+    },
+    {
+     "w": "Soon,",
+     "t0": 62.749,
+     "t1": 63.123,
+     "est": true
+    },
+    {
+     "w": "Mahishasura's",
+     "t0": 63.123,
+     "t1": 64.095,
+     "est": true
+    },
+    {
+     "w": "power",
+     "t0": 64.095,
+     "t1": 64.543,
+     "est": true
+    },
+    {
+     "w": "had",
+     "t0": 64.543,
+     "t1": 64.842,
+     "est": true
+    },
+    {
+     "w": "spread",
+     "t0": 64.842,
+     "t1": 65.365,
+     "est": true
+    },
+    {
+     "w": "across",
+     "t0": 65.365,
+     "t1": 65.889,
+     "est": true
+    },
+    {
+     "w": "the",
+     "t0": 65.889,
+     "t1": 66.188,
+     "est": true
+    },
+    {
+     "w": "three",
+     "t0": 66.188,
+     "t1": 66.636,
+     "est": true
+    },
+    {
+     "w": "worlds.",
+     "t0": 66.636,
+     "t1": 67.16,
+     "est": true
+    },
+    {
+     "w": "The",
+     "t0": 67.16,
+     "t1": 67.459,
+     "est": true
+    },
+    {
+     "w": "devas",
+     "t0": 67.459,
+     "t1": 67.907,
+     "est": true
+    },
+    {
+     "w": "tried",
+     "t0": 67.907,
+     "t1": 68.356,
+     "est": true
+    },
+    {
+     "w": "to",
+     "t0": 68.356,
+     "t1": 68.58,
+     "est": true
+    },
+    {
+     "w": "stop",
+     "t0": 68.58,
+     "t1": 68.954,
+     "est": true
+    },
+    {
+     "w": "him.",
+     "t0": 68.954,
+     "t1": 69.253,
+     "est": true
+    },
+    {
+     "w": "But",
+     "t0": 69.253,
+     "t1": 69.552,
+     "est": true
+    },
+    {
+     "w": "they",
+     "t0": 69.552,
+     "t1": 69.925,
+     "est": true
+    },
+    {
+     "w": "could",
+     "t0": 69.925,
+     "t1": 70.374,
+     "est": true
+    },
+    {
+     "w": "not.",
+     "t0": 70.374,
+     "t1": 70.673,
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "b11_gather",
+   "text": "They needed help. So they came together. Shiva. Vishnu. Brahma. And the other devas.",
+   "t0": 72.673,
+   "t1": 80.36,
+   "take": "voice/b11_gather.scratch.wav",
+   "words": [
+    {
+     "w": "They",
+     "t0": 72.673,
+     "t1": 73.16,
+     "est": true
+    },
+    {
+     "w": "needed",
+     "t0": 73.16,
+     "t1": 73.841,
+     "est": true
+    },
+    {
+     "w": "help.",
+     "t0": 73.841,
+     "t1": 74.327,
+     "est": true
+    },
+    {
+     "w": "So",
+     "t0": 74.327,
+     "t1": 74.619,
+     "est": true
+    },
+    {
+     "w": "they",
+     "t0": 74.619,
+     "t1": 75.106,
+     "est": true
+    },
+    {
+     "w": "came",
+     "t0": 75.106,
+     "t1": 75.592,
+     "est": true
+    },
+    {
+     "w": "together.",
+     "t0": 75.592,
+     "t1": 76.468,
+     "est": true
+    },
+    {
+     "w": "Shiva.",
+     "t0": 76.468,
+     "t1": 77.052,
+     "est": true
+    },
+    {
+     "w": "Vishnu.",
+     "t0": 77.052,
+     "t1": 77.733,
+     "est": true
+    },
+    {
+     "w": "Brahma.",
+     "t0": 77.733,
+     "t1": 78.414,
+     "est": true
+    },
+    {
+     "w": "And",
+     "t0": 78.414,
+     "t1": 78.803,
+     "est": true
+    },
+    {
+     "w": "the",
+     "t0": 78.803,
+     "t1": 79.192,
+     "est": true
+    },
+    {
+     "w": "other",
+     "t0": 79.192,
+     "t1": 79.776,
+     "est": true
+    },
+    {
+     "w": "devas.",
+     "t0": 79.776,
+     "t1": 80.36,
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "b12_energy",
+   "text": "Each one released their divine energy.",
+   "t0": 81.96,
+   "t1": 84.171,
+   "take": "voice/b12_energy.scratch.wav",
+   "words": [
+    {
+     "w": "Each",
+     "t0": 81.96,
+     "t1": 82.251,
+     "est": true
+    },
+    {
+     "w": "one",
+     "t0": 82.251,
+     "t1": 82.484,
+     "est": true
+    },
+    {
+     "w": "released",
+     "t0": 82.484,
+     "t1": 83.007,
+     "est": true
+    },
+    {
+     "w": "their",
+     "t0": 83.007,
+     "t1": 83.356,
+     "est": true
+    },
+    {
+     "w": "divine",
+     "t0": 83.356,
+     "t1": 83.764,
+     "est": true
+    },
+    {
+     "w": "energy.",
+     "t0": 83.764,
+     "t1": 84.171,
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "b13a_merge",
+   "text": "The different lights came together… Brighter… Brighter… Until they became one enormous radiant light.",
+   "t0": 86.171,
+   "t1": 93.125,
+   "take": "voice/b13a_merge.scratch.wav",
+   "words": [
+    {
+     "w": "The",
+     "t0": 86.171,
+     "t1": 86.455,
+     "est": true
+    },
+    {
+     "w": "different",
+     "t0": 86.455,
+     "t1": 87.164,
+     "est": true
+    },
+    {
+     "w": "lights",
+     "t0": 87.164,
+     "t1": 87.661,
+     "est": true
+    },
+    {
+     "w": "came",
+     "t0": 87.661,
+     "t1": 88.016,
+     "est": true
+    },
+    {
+     "w": "together…",
+     "t0": 88.016,
+     "t1": 88.655,
+     "est": true
+    },
+    {
+     "w": "Brighter…",
+     "t0": 88.655,
+     "t1": 89.293,
+     "est": true
+    },
+    {
+     "w": "Brighter…",
+     "t0": 89.293,
+     "t1": 89.932,
+     "est": true
+    },
+    {
+     "w": "Until",
+     "t0": 89.932,
+     "t1": 90.358,
+     "est": true
+    },
+    {
+     "w": "they",
+     "t0": 90.358,
+     "t1": 90.712,
+     "est": true
+    },
+    {
+     "w": "became",
+     "t0": 90.712,
+     "t1": 91.209,
+     "est": true
+    },
+    {
+     "w": "one",
+     "t0": 91.209,
+     "t1": 91.493,
+     "est": true
+    },
+    {
+     "w": "enormous",
+     "t0": 91.493,
+     "t1": 92.132,
+     "est": true
+    },
+    {
+     "w": "radiant",
+     "t0": 92.132,
+     "t1": 92.699,
+     "est": true
+    },
+    {
+     "w": "light.",
+     "t0": 92.699,
+     "t1": 93.125,
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "b13b_goddess",
+   "text": "And from that light appeared a magnificent goddess.",
+   "t0": 95.325,
+   "t1": 98.329,
+   "take": "voice/b13b_goddess.scratch.wav",
+   "words": [
+    {
+     "w": "And",
+     "t0": 95.325,
+     "t1": 95.561,
+     "est": true
+    },
+    {
+     "w": "from",
+     "t0": 95.561,
+     "t1": 95.855,
+     "est": true
+    },
+    {
+     "w": "that",
+     "t0": 95.855,
+     "t1": 96.15,
+     "est": true
+    },
+    {
+     "w": "light",
+     "t0": 96.15,
+     "t1": 96.503,
+     "est": true
+    },
+    {
+     "w": "appeared",
+     "t0": 96.503,
+     "t1": 97.033,
+     "est": true
+    },
+    {
+     "w": "a",
+     "t0": 97.033,
+     "t1": 97.151,
+     "est": true
+    },
+    {
+     "w": "magnificent",
+     "t0": 97.151,
+     "t1": 97.858,
+     "est": true
+    },
+    {
+     "w": "goddess.",
+     "t0": 97.858,
+     "t1": 98.329,
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "b13c_durga",
+   "text": "Devi Durga.",
+   "t0": 99.529,
+   "t1": 100.306,
+   "take": "voice/b13c_durga.scratch.wav",
+   "words": [
+    {
+     "w": "Devi",
+     "t0": 99.529,
+     "t1": 99.882,
+     "est": true
+    },
+    {
+     "w": "Durga.",
+     "t0": 99.882,
+     "t1": 100.306,
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "b14a_lion",
+   "text": "She stood upon a lion, calm and fearless. The devas knew that she was the one who could face Mahishasura.",
+   "t0": 101.806,
+   "t1": 109.153,
+   "take": "voice/b14a_lion.scratch.wav",
+   "words": [
+    {
+     "w": "She",
+     "t0": 101.806,
+     "t1": 102.091,
+     "est": true
+    },
+    {
+     "w": "stood",
+     "t0": 102.091,
+     "t1": 102.519,
+     "est": true
+    },
+    {
+     "w": "upon",
+     "t0": 102.519,
+     "t1": 102.876,
+     "est": true
+    },
+    {
+     "w": "a",
+     "t0": 102.876,
+     "t1": 103.019,
+     "est": true
+    },
+    {
+     "w": "lion,",
+     "t0": 103.019,
+     "t1": 103.375,
+     "est": true
+    },
+    {
+     "w": "calm",
+     "t0": 103.375,
+     "t1": 103.732,
+     "est": true
+    },
+    {
+     "w": "and",
+     "t0": 103.732,
+     "t1": 104.017,
+     "est": true
+    },
+    {
+     "w": "fearless.",
+     "t0": 104.017,
+     "t1": 104.659,
+     "est": true
+    },
+    {
+     "w": "The",
+     "t0": 104.659,
+     "t1": 104.945,
+     "est": true
+    },
+    {
+     "w": "devas",
+     "t0": 104.945,
+     "t1": 105.373,
+     "est": true
+    },
+    {
+     "w": "knew",
+     "t0": 105.373,
+     "t1": 105.729,
+     "est": true
+    },
+    {
+     "w": "that",
+     "t0": 105.729,
+     "t1": 106.086,
+     "est": true
+    },
+    {
+     "w": "she",
+     "t0": 106.086,
+     "t1": 106.371,
+     "est": true
+    },
+    {
+     "w": "was",
+     "t0": 106.371,
+     "t1": 106.656,
+     "est": true
+    },
+    {
+     "w": "the",
+     "t0": 106.656,
+     "t1": 106.942,
+     "est": true
+    },
+    {
+     "w": "one",
+     "t0": 106.942,
+     "t1": 107.227,
+     "est": true
+    },
+    {
+     "w": "who",
+     "t0": 107.227,
+     "t1": 107.512,
+     "est": true
+    },
+    {
+     "w": "could",
+     "t0": 107.512,
+     "t1": 107.94,
+     "est": true
+    },
+    {
+     "w": "face",
+     "t0": 107.94,
+     "t1": 108.297,
+     "est": true
+    },
+    {
+     "w": "Mahishasura.",
+     "t0": 108.297,
+     "t1": 109.153,
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "b14b_nine",
+   "text": "But this battle would not be won in a single day. Nine nights of Shakti were about to begin.",
+   "t0": 110.253,
+   "t1": 116.373,
+   "take": "voice/b14b_nine.scratch.wav",
+   "words": [
+    {
+     "w": "But",
+     "t0": 110.253,
+     "t1": 110.522,
+     "est": true
+    },
+    {
+     "w": "this",
+     "t0": 110.522,
+     "t1": 110.858,
+     "est": true
+    },
+    {
+     "w": "battle",
+     "t0": 110.858,
+     "t1": 111.329,
+     "est": true
+    },
+    {
+     "w": "would",
+     "t0": 111.329,
+     "t1": 111.733,
+     "est": true
+    },
+    {
+     "w": "not",
+     "t0": 111.733,
+     "t1": 112.002,
+     "est": true
+    },
+    {
+     "w": "be",
+     "t0": 112.002,
+     "t1": 112.203,
+     "est": true
+    },
+    {
+     "w": "won",
+     "t0": 112.203,
+     "t1": 112.472,
+     "est": true
+    },
+    {
+     "w": "in",
+     "t0": 112.472,
+     "t1": 112.674,
+     "est": true
+    },
+    {
+     "w": "a",
+     "t0": 112.674,
+     "t1": 112.809,
+     "est": true
+    },
+    {
+     "w": "single",
+     "t0": 112.809,
+     "t1": 113.279,
+     "est": true
+    },
+    {
+     "w": "day.",
+     "t0": 113.279,
+     "t1": 113.548,
+     "est": true
+    },
+    {
+     "w": "Nine",
+     "t0": 113.548,
+     "t1": 113.885,
+     "est": true
+    },
+    {
+     "w": "nights",
+     "t0": 113.885,
+     "t1": 114.355,
+     "est": true
+    },
+    {
+     "w": "of",
+     "t0": 114.355,
+     "t1": 114.557,
+     "est": true
+    },
+    {
+     "w": "Shakti",
+     "t0": 114.557,
+     "t1": 115.028,
+     "est": true
+    },
+    {
+     "w": "were",
+     "t0": 115.028,
+     "t1": 115.364,
+     "est": true
+    },
+    {
+     "w": "about",
+     "t0": 115.364,
+     "t1": 115.768,
+     "est": true
+    },
+    {
+     "w": "to",
+     "t0": 115.768,
+     "t1": 115.969,
+     "est": true
+    },
+    {
+     "w": "begin.",
+     "t0": 115.969,
+     "t1": 116.373,
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "b15_light",
+   "text": "And from Durga's radiant form came the first divine light… It travelled far away… toward the mountains.",
+   "t0": 117.873,
+   "t1": 125.386,
+   "take": "voice/b15_light.scratch.wav",
+   "words": [
+    {
+     "w": "And",
+     "t0": 117.873,
+     "t1": 118.174,
+     "est": true
+    },
+    {
+     "w": "from",
+     "t0": 118.174,
+     "t1": 118.549,
+     "est": true
+    },
+    {
+     "w": "Durga's",
+     "t0": 118.549,
+     "t1": 119.075,
+     "est": true
+    },
+    {
+     "w": "radiant",
+     "t0": 119.075,
+     "t1": 119.676,
+     "est": true
+    },
+    {
+     "w": "form",
+     "t0": 119.676,
+     "t1": 120.052,
+     "est": true
+    },
+    {
+     "w": "came",
+     "t0": 120.052,
+     "t1": 120.427,
+     "est": true
+    },
+    {
+     "w": "the",
+     "t0": 120.427,
+     "t1": 120.728,
+     "est": true
+    },
+    {
+     "w": "first",
+     "t0": 120.728,
+     "t1": 121.179,
+     "est": true
+    },
+    {
+     "w": "divine",
+     "t0": 121.179,
+     "t1": 121.705,
+     "est": true
+    },
+    {
+     "w": "light…",
+     "t0": 121.705,
+     "t1": 122.155,
+     "est": true
+    },
+    {
+     "w": "It",
+     "t0": 122.155,
+     "t1": 122.381,
+     "est": true
+    },
+    {
+     "w": "travelled",
+     "t0": 122.381,
+     "t1": 123.132,
+     "est": true
+    },
+    {
+     "w": "far",
+     "t0": 123.132,
+     "t1": 123.433,
+     "est": true
+    },
+    {
+     "w": "away…",
+     "t0": 123.433,
+     "t1": 123.808,
+     "est": true
+    },
+    {
+     "w": "toward",
+     "t0": 123.808,
+     "t1": 124.334,
+     "est": true
+    },
+    {
+     "w": "the",
+     "t0": 124.334,
+     "t1": 124.635,
+     "est": true
+    },
+    {
+     "w": "mountains.",
+     "t0": 124.635,
+     "t1": 125.386,
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "b16a_who",
+   "text": "Who was waiting there?",
+   "t0": 126.786,
+   "t1": 128.256,
+   "take": "voice/b16a_who.scratch.wav",
+   "words": [
+    {
+     "w": "Who",
+     "t0": 126.786,
+     "t1": 127.053,
+     "est": true
+    },
+    {
+     "w": "was",
+     "t0": 127.053,
+     "t1": 127.321,
+     "est": true
+    },
+    {
+     "w": "waiting",
+     "t0": 127.321,
+     "t1": 127.855,
+     "est": true
+    },
+    {
+     "w": "there?",
+     "t0": 127.855,
+     "t1": 128.256,
+     "est": true
+    }
+   ]
+  },
+  {
+   "id": "b16b_first",
+   "text": "The first power of Shakti was about to awaken.",
+   "t0": 130.456,
+   "t1": 133.539,
+   "take": "voice/b16b_first.scratch.wav",
+   "words": [
+    {
+     "w": "The",
+     "t0": 130.456,
+     "t1": 130.724,
+     "est": true
+    },
+    {
+     "w": "first",
+     "t0": 130.724,
+     "t1": 131.126,
+     "est": true
+    },
+    {
+     "w": "power",
+     "t0": 131.126,
+     "t1": 131.528,
+     "est": true
+    },
+    {
+     "w": "of",
+     "t0": 131.528,
+     "t1": 131.729,
+     "est": true
+    },
+    {
+     "w": "Shakti",
+     "t0": 131.729,
+     "t1": 132.199,
+     "est": true
+    },
+    {
+     "w": "was",
+     "t0": 132.199,
+     "t1": 132.467,
+     "est": true
+    },
+    {
+     "w": "about",
+     "t0": 132.467,
+     "t1": 132.869,
+     "est": true
+    },
+    {
+     "w": "to",
+     "t0": 132.869,
+     "t1": 133.07,
+     "est": true
+    },
+    {
+     "w": "awaken.",
+     "t0": 133.07,
+     "t1": 133.539,
+     "est": true
+    }
+   ]
+  }
+ ]
+}

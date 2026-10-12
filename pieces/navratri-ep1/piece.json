@@ -1,0 +1,10 @@
+{
+  "name": "navratri-ep1",
+  "title": "Navratri Ep. 1: The Rise of Mahishasura",
+  "format": { "width": 1080, "height": 1920, "fps": 24, "bpm": 120 },
+  "storyFormat": "F2 morph chain (16 beats joined by shape morphs; one hard cut on Durga), voice-clocked",
+  "style": "sketchbook",
+  "scenes": ["src/common.js", "src/g1-worlds.js", "src/g2-boon.js", "src/g3-army.js", "src/g4-shakti.js"],
+  "voice": { "file": "voice/voice.wav", "music": -12 },
+  "review": { "safe": { "top": 240, "bottom": 420, "right": 140 }, "refs": {} }
+}
