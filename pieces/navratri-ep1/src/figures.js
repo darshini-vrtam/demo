@@ -102,13 +102,14 @@ function hand(x, y, ang, s, pose, side, key, u = FIG.u) {
   }
   paperFill(palm, key + 'pl', clamp(u * 3));
   // the thumb: two segments out from the base of the palm on the thumb side
-  const th = pose === 'mudra' ? [[0.1, 0.2], [0.3, 0.36], [0.5, 0.36], [0.62, 0.28]] : pose === 'open' ? [[0.1, 0.2], [0.26, 0.4], [0.44, 0.5], [0.56, 0.5]] : [[0.1, 0.2], [0.28, 0.34], [0.46, 0.38], [0.56, 0.32]];
+  const th = pose === 'mudra' ? [[0.1, 0.2], [0.3, 0.36], [0.5, 0.36], [0.62, 0.28]] : pose === 'open' ? [[0.1, 0.2], [0.24, 0.31], [0.38, 0.36], [0.5, 0.34]] : [[0.1, 0.2], [0.28, 0.34], [0.46, 0.38], [0.56, 0.32]];
   const thP = limb(TP(th), [[0, 0.075 * s], [0.6, 0.06 * s], [1, 0.045 * s]]).P;
   paperFill(thP, key + 'tf', clamp(u * 3)); D(thP, 0, 'th');
   // four fingers: tapered capsules from the knuckles, separate strokes, slightly spread
   fingers.forEach(([b, len, bend], i) => {
-    const P = TP([[0.5, b * 1.4], [0.5 + (len - 0.5) * 0.55, b * 1.55 + bend * 0.5], [len, b * 1.7 + bend]]);
-    const F = limb(P, [[0, 0.055 * s], [0.6, 0.048 * s], [1, 0.036 * s]]).P;
+    const spr = pose === 'open' ? [1.0, 1.06, 1.12] : [1.4, 1.55, 1.7], fr = pose === 'open' ? 0.062 : 0.055;
+    const P = TP([[0.48, b * spr[0]], [0.5 + (len - 0.5) * 0.55, b * spr[1] + bend * 0.5], [len, b * spr[2] + bend]]);
+    const F = limb(P, [[0, fr * s], [0.6, fr * 0.88 * s], [1, fr * 0.68 * s]]).P;
     paperFill(F, key + 'ff' + i, clamp(u * 3)); D(F, 1, 'f' + i, 2.3);
     const m = P[1]; ln([[m[0] - sa * 0.03 * s, m[1] + ca * 0.03 * s], [m[0] + sa * 0.03 * s, m[1] - ca * 0.03 * s]], u, key + 'kn' + i, { w: 1.4 });
   });
@@ -469,7 +470,7 @@ function mahishaHead(x, y, h, o = {}) {
   for (let i = 0; i < 3; i++) { const C = [[x - (1.4 - i * 0.12) * h, y + (1.2 + i * 0.03) * h], [x - (1.25 - i * 0.1) * h, y + (1.7 + i * 0.05) * h], [x - (1.3 - i * 0.1) * h, y + 3.3 * h]]; lnS(C, U(3), key + 'clf' + i, { w: 1.8 }); if (U(3) >= 1) foldShade(C, 0.05 * h, key + 'clfs' + i, { side: 1 }); }
   necklace(x, y + 0.86 * h, 1.5 * h, 0.42 * h, key + 'col', { broad: 0.45, u: U(4) });
   face(x, y, h, { kind: 'mahisha', eyes: o.eyes ?? 'closed', smile: o.smile ?? 0, look: o.look, key: key + 'f', u: U(2) });
-  crown(x, y - 0.4 * h, 0.92 * h * (o.crownK ?? 1), 0.66 * h * (o.crownK ?? 1), key + 'cr', { u: U(5) });
+  if (!o.noCrown) crown(x, y - 0.4 * h, 0.92 * h * (o.crownK ?? 1), 0.66 * h * (o.crownK ?? 1), key + 'cr', { u: U(5) });
   FIG.u = prevU; FIG.mode = prevM;
 }
 

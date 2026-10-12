@@ -73,5 +73,69 @@ CAMS.stop = (t) => camOf({ z: 1 + 0.12 * EZ.io(seg(t, ERA_T[ERA.stop], ERA_T[ERA
 BRIDGE_IN.stop = () => ({ P: sketchBox(150, 320, 780, 900, 30, 0), c: NV.graph });
 BRIDGE_OUT.stop = () => ({ P: ellipsePts(G2F.ring[0], G2F.ring[1], G2F.ring[2], G2F.ring[2], 0, 64), c: NV.graph });
 BOARD.stop = [{ t: CUES.stop + 0.3, title: 'extreme close-up: he did not stop; scribbles gather', sound: 'pad thins; scratch on 16ths', next: 'the scribble halo becomes Brahma\'s halo' }];
-SCENES.boon = function () { sketchPage({ grid: 'dots' }); cap(['no man or deva'], [0, 'deva'], ERA_T[ERA.boon] + 0.3); };
-SCENES.pride = function () { sketchPage({ grid: 'dots' }); cap(['now invincible'], [0, 'invincible'], ERA_T[ERA.pride] + 0.3); };
+// ---- era: the boon (beat 7). Brahma's raised palm in ink, Mahishasura kneeling; a card "no man / no deva"; the red BOON stamp.
+const G2B = { palm: [835, 560], stamp: [770, 1060, 104], card: [700, 860] };
+function roundStamp(x, y, r, u, key) {   // a round red rubber stamp, worn; pops in on its beat (the scene's one red)
+  if (u <= 0) return;
+  const k = u < 1 ? EZ.back(u) : 1;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(-0.16); ctx.scale(k, k);
+  gline(loopPts(0, 0, r, r, 0.04), { w: 9, col: NV.red, key: key + 'o', second: false });
+  gline(loopPts(0, 0, r * 0.82, r * 0.82, 0.04), { w: 3, col: NV.red, key: key + 'i', second: false });
+  handLetter('BOON', 0, r * 0.22, r * 0.62, { face: 'marker', col: NV.red, key: key + 't', jit: 0.5 });
+  ctx.fillStyle = NV.paper; const S = RNG('rstk', key); for (let i = 0; i < 180; i++) { ctx.globalAlpha = 0.5; const a = S.r(0, TAU), rr = S.f() * r; ctx.fillRect(Math.cos(a) * rr, Math.sin(a) * rr, 2 + S.f() * 3, 2 + S.f() * 3); }
+  ctx.restore();
+}
+SCENES.boon = function () {
+  const cu = CUES, t0 = ERA_T[ERA.boon]; PEN = null;
+  sketchPage({ grid: 'dots' });
+  // Brahma's raised palm from the top right, in ink, with ray lines (it opened out of the last beat's palm)
+  FIG.mode = 'ink';
+  const fore = limb([[1120, 760], [1000, 700], [G2B.palm[0] + 6, G2B.palm[1] + 70]], [[0, 52], [0.6, 40], [1, 30]]);
+  drawLimb(fore, 1, 'bfore', { hatch: true });
+  bandOn(fore, 0.85, 1, 'bbang', { w: 0.05 }); bandOn(fore, 0.92, 1, 'bbang2', { w: 0.04 });
+  hand(G2B.palm[0] + 6, G2B.palm[1] + 70, -Math.PI / 2 - 0.08, 220, 'open', -1, 'bpalm', 1);
+  rayRing(G2B.palm[0], G2B.palm[1] - 30, 170, 230, 16, ev(t0 + 0.2, 1.2), { key: 'pray', w: 3 });
+  // Mahishasura kneels, facing the palm
+  mahishasura(300, 1290, 104, { pose: 'kneel', u: ev(t0 + 0.2, 2.0), key: 'mh7' });
+  // the card: taped to the page, written on as the voice says it
+  const [cx, cy] = G2B.card, cardP = sketchBox(-170, -120, 340, 240, 10, 0);
+  if (TT > cu.granted - 0.6) {
+    ctx.save(); ctx.translate(cx, cy); ctx.rotate(-0.05);
+    gfill(cardP, SK.sheet, { off: [6, 6], key: 'card7f' }); gline(sketchBox(-170, -120, 340, 240, 10), { w: 3.6, key: 'card7' });
+    tapeStrip(0, -122, 120, 0.04, 'card7t', 34);
+    handLetter('no man', -130, -20, 64, { align: 'left', reveal: ev(cu.man - 0.15, 0.5), key: 'nm7' });
+    handLetter('no deva', -130, 70, 64, { align: 'left', reveal: ev(cu.deva - 0.15, 0.5), key: 'nd7' });
+    ctx.restore();
+  }
+  roundStamp(G2B.stamp[0], G2B.stamp[1], G2B.stamp[2], ev(cu.stamp, 0.25), 'boon7');
+  penDraw(0.9);
+  cap(['no man or deva'], [0, 'deva'], cu.man - 0.5, cu.deva + 0.1);
+};
+CAMS.boon = (t) => push(t, ERA_T[ERA.pride] - 1.0, ERA_T[ERA.pride] - 0.4, { z: 1.6, p: G2B.stamp.slice(0, 2), to: [600, 900] });
+BRIDGE_IN.boon = () => ({ P: palmPts(G2B.palm[0], G2B.palm[1], 2.2), c: NV.graph });
+BRIDGE_OUT.boon = () => ({ P: ellipsePts(G2B.stamp[0], G2B.stamp[1], G2B.stamp[2], G2B.stamp[2], 0, 64), c: NV.red });
+BOARD.boon = [{ t: CUES.stamp + 0.5, title: 'the boon: he kneels; "no man / no deva"; the red BOON stamp', sound: 'a stamp thud on the beat', next: 'the stamp circle becomes his eye' }];
+// ---- era: pride (beat 8). His face, eyes open, a sure smile; the small crown is rubbed out and drawn back bigger;
+//      graphite smudges creep in from the edges as his pride grows.
+const G2P = { x: 540, y: 660, h: 340 };
+SCENES.pride = function () {
+  const cu = CUES, t0 = ERA_T[ERA.pride], t1 = ERA_T[ERA.army], { x, y, h } = G2P; PEN = null;
+  sketchPage({ grid: 'dots' });
+  navMess(0.55 * seg(TT, cu.pride - 0.6, t1 - 0.3), 'messA');
+  mahishaHead(x, y, h, { eyes: 'open', smile: ev(t0 + 0.4, 1.0), look: 0.4, noCrown: true, u: 1, key: 'mh8' });
+  // the crown: the small one is rubbed out from left to right, crumbs fly, then the big one is drawn in
+  const te = cu.invincible - 0.1, er = ev(te, 0.9), small = [x, y - 0.4 * h, 0.92 * h, 0.66 * h], bigK = 1.45;
+  if (er < 1) {
+    crown(small[0], small[1], small[2], small[3], 'cr8s', { u: 1 });
+    if (er > 0) { const ex = small[0] - small[2] * 0.6 + er * small[2] * 1.2;
+      ctx.save(); ctx.beginPath(); ctx.rect(small[0] - small[2] * 0.75, small[1] - small[3] * 1.25, ex - (small[0] - small[2] * 0.75), small[3] * 1.5); ctx.clip(); sketchPage({ grid: 'dots' }); ctx.restore();
+      navEraser(ex, small[1] - small[3] * 0.4 + 18 * Math.sin(B * 2.2), -0.3, 1.1); crumbs(ex - 40, small[1] + 30, 8, 'cr8c' + (B % 3)); }
+  }
+  crown(x, y - 0.4 * h, 0.92 * h * bigK, 0.66 * h * bigK, 'cr8b', { u: ev(te + 1.0, 1.1) });
+  penDraw(0.9);
+  cap(['now invincible'], [0, 'invincible'], cu.invincible - 0.5, cu.invincible + 0.2);
+};
+CAMS.pride = (t) => camMix(camOf({ z: 3.4, p: [G2P.x - 0.22 * 0.8 * G2P.h, G2P.y - 0.06 * G2P.h], to: [540, 760] }), CAM0, EZ.io(seg(t, ERA_T[ERA.pride] + 0.05, ERA_T[ERA.pride] + 1.0)));
+BRIDGE_IN.pride = () => ({ P: ellipsePts(G2P.x - 0.22 * 0.8 * G2P.h, G2P.y - 0.06 * G2P.h, 34, 16, 0, 64), c: NV.ink });
+BRIDGE_OUT.pride = () => ({ P: crownPts(G2P.x, G2P.y - 0.4 * G2P.h, 0.92 * G2P.h * 1.45, 0.66 * G2P.h * 1.45), c: NV.graph });
+BOARD.pride = [{ t: CUES.grew + 0.4, title: 'pride: the crown erased and redrawn bigger; smudges creep in', sound: 'pad thickens, scratch on 16ths', next: 'the crown becomes the fortress' }];

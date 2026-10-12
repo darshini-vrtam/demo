@@ -92,7 +92,7 @@ const CUES = {
 // the nine chimes / rings of beat 14: one per beat (0.5s) from "Nine", cut short before the line's end + pause
 CUES.rings = Array.from({ length: 9 }, (_, i) => CUES.nine + i * BEAT * 0.5);
 // the six season boxes of beat 4: two per word
-CUES.boxes = [CUES.days, CUES.days + 0.5, CUES.months, CUES.months + 0.5, CUES.years, CUES.years + 0.5];
+CUES.boxes = [CUES.days, CUES.days + 0.45, CUES.months, CUES.months + 0.45, CUES.years, CUES.years + 0.4].map((t, i) => Math.min(t, ERA_T[ERA.stop] - 1.1 - (5 - i) * 0.3));
 
 const TIMELINE = {
   width: W, height: H, fps: FPS, bpm: BPM, duration: DURATION, frames: NFRAMES, loop: LOOP_T, safe: SAFE,

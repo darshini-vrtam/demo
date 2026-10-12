@@ -77,6 +77,8 @@ function rayRing(cx, cy, r0, r1, n, u, o = {}) {
 }
 // ---- captions: 1–2 hand-lettered lines at y 1330–1420, one word highlighted. Written on at tw, highlight at tHi.
 function capDraw(lines, hi, tw, tHi, o = {}) {
+  const ei = ERA_T.findIndex((t) => Math.abs(t - E0) < 1e-6), e1 = ei >= 0 ? ERA_T[ei + 1] : DURATION;   // finish writing before the beat leaves
+  tw = Math.min(tw, e1 - 2.0); tHi = Math.min(tHi ?? tw + 0.5, e1 - 1.4);
   const size = o.size ?? 78, lh = size * 1.08, y0 = lines.length === 1 ? 1392 : 1352;
   lines.forEach((line, li) => {
     const y = y0 + li * lh, font = skFont(size, 'hand'), xs = glyphX(line, font), x0 = CX - xs[xs.length - 1] / 2;

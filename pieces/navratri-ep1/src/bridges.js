@@ -11,4 +11,5 @@ const BRIDGES = MORPH_LIST.map(({ tc, a, b, d }) => ({
   B: () => (BRIDGE_IN[ERA_KEYS[b]] || BRIDGE_FALLBACK)(),
 }));
 // the storyboard: every beat's key times, in era order
-TIMELINE.board = ERA_KEYS.flatMap((k) => BOARD[k] || [{ t: (ERA_T[ERA[k]] + ERA_T[ERA[k] + 1]) / 2, title: SHOT_TITLES[k], sound: '', next: '' }]);
+TIMELINE.board = ERA_KEYS.flatMap((k) => (BOARD[k] || [{ t: (ERA_T[ERA[k]] + ERA_T[ERA[k] + 1]) / 2, title: SHOT_TITLES[k], sound: '', next: '' }])
+  .map((b) => ({ ...b, t: k === 'who' ? b.t : clamp(b.t, ERA_T[ERA[k]] + 0.8, ERA_T[ERA[k] + 1] - 1.15) })));   // key frames clear of the morphs and the push-ins
