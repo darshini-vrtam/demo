@@ -5,3 +5,7 @@ index.html
 sheets/index.html
 voice/*.wav
 voice/*.mp3
+frames/
+stems/
+audio*.wav
+*.mp4
