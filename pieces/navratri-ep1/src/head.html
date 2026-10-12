@@ -49,7 +49,7 @@ const CUT = q8(VL('b13a_merge').t1 + 1.5);            // the one hard cut: the s
 // ---- eras (one per beat; beat 13 is split by the cut; beat 14 continues Durga's era)
 const ERA_KEYS = ['worlds', 'power', 'tapasya', 'time', 'stop', 'brahma', 'boon', 'pride', 'army', 'retreat', 'gather', 'energy', 'merge', 'durga', 'light', 'who'];
 const ERA_T = [0, AFTER('b01_worlds'), AFTER('b02_power'), AFTER('b03_tapasya'), AFTER('b04_time'), AFTER('b05_stop'), AFTER('b06_brahma'),
-  AFTER('b07b_grant'), AFTER('b08_pride'), AFTER('b09_army'), AFTER('b10_retreat'), AFTER('b11_gather'), AFTER('b12_energy'),
+  q8(VL('b07b_grant').t1 + 1.2) /* the boon holds into its pause so the stamp lands and is seen */, AFTER('b08_pride'), AFTER('b09_army'), AFTER('b10_retreat'), AFTER('b11_gather'), AFTER('b12_energy'),
   CUT, AFTER('b14b_nine'), AFTER('b15_light'), DURATION];
 const ERA = Object.fromEntries(ERA_KEYS.map((k, i) => [k, i]));
 const SCENES = {};                                     // scene files register: SCENES.worlds = () => { ... }
@@ -75,7 +75,7 @@ const CUES = {
   days: VW('b04_time', 'Days'), months: VW('b04_time', 'months'), years: VW('b04_time', 'years'),
   stop: VW('b05_stop', 'stop'),
   brahma: VW('b06_brahma', 'Brahma'), appeared: VW('b06_brahma', 'appeared'),
-  boonAsk: VW('b07a_ask', 'boon'), defeatAsk: VW('b07a_ask', 'defeat'), granted: VW('b07b_grant', 'granted'), man: VW('b07b_grant', 'man'), deva: VW('b07b_grant', 'deva'), stamp: q8(VL('b07b_grant').t1 + 0.2),
+  boonAsk: VW('b07a_ask', 'boon'), defeatAsk: VW('b07a_ask', 'defeat'), granted: VW('b07b_grant', 'granted'), man: VW('b07b_grant', 'man'), deva: VW('b07b_grant', 'deva'), stamp: q8(VL('b07b_grant').t1 + 0.15),
   invincible: VW('b08_pride', 'invincible'), pride: VW('b08_pride', 'pride'), grew: VW('b08_pride', 'grew'),
   army: VW('b09_army', 'army'), attacking: VW('b09_army', 'attacking'),
   pushed: VW('b10_retreat', 'pushed'), spread: VW('b10_retreat', 'spread'), tried: VW('b10_retreat', 'tried'), couldNot: VW('b10_retreat', 'could'),

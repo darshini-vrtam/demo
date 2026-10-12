@@ -457,7 +457,7 @@ function mahishaHead(x, y, h, o = {}) {
   // a thick neck, the trapezius sloping to round deltoids, the chest edge; a cloth over the left shoulder
   const S = spl([[x - 1.62, 2.5], [x - 1.6, 1.62], [x - 1.4, 1.26], [x - 1.0, 1.06], [x - 0.6, 0.94], [x - 0.42, 0.78]].map(([a, b], i) => [i ? a * 1 : a, 0]).map((_, i) => [[x - 1.62 * h, y + 3.4 * h], [x - 1.6 * h, y + 1.62 * h], [x - 1.4 * h, y + 1.26 * h], [x - 1.0 * h, y + 1.06 * h], [x - 0.62 * h, y + 0.94 * h], [x - 0.44 * h, y + 0.8 * h]][i]));
   const SR = S.map(([px, py]) => [2 * x - px, py]);
-  paperFill([...S, ...SR.slice().reverse()], key + 'sh');
+  paperFill([...S, ...SR.slice().reverse()], key + 'sh', clamp(U(1) * 3));
   ln(S, U(1), key + 'shl', { w: 3.6 }); ln(SR, U(1), key + 'shr', { w: 5.2 });
   for (const s2 of [-1, 1]) lnS([[x + s2 * 1.18 * h, y + 1.2 * h], [x + s2 * 1.12 * h, y + 1.6 * h], [x + s2 * 1.24 * h, y + 2.1 * h]], U(1), key + 'dl' + s2, { w: 2.2 });   // deltoid edge
   const Nk = spl([[x - 0.4 * h, y + 0.32 * h], [x - 0.46 * h, y + 0.62 * h], [x - 0.56 * h, y + 0.9 * h], [x + 0.56 * h, y + 0.9 * h], [x + 0.46 * h, y + 0.62 * h], [x + 0.4 * h, y + 0.32 * h]], true);
@@ -466,7 +466,7 @@ function mahishaHead(x, y, h, o = {}) {
   if (U(1) >= 1) { shade(spl([[x + 0.12 * h, y + 0.5 * h], [x + 0.42 * h, y + 0.42 * h], [x + 0.56 * h, y + 0.88 * h], [x + 0.14 * h, y + 0.92 * h]], true), key + 'nsh', { a: 0.55 }); shade(spl([[x + 0.7 * h, y + 1.02 * h], [x + 1.4 * h, y + 1.3 * h], [x + 1.6 * h, y + 2.4 * h], [x + 1.1 * h, y + 2.3 * h], [x + 1.0 * h, y + 1.5 * h]], true), key + 'ssh', { a: 0.4 }); }
   // the cloth (uttariya) over the left shoulder, falling in curved folds
   const CL = spl([[x - 1.62 * h, y + 1.5 * h], [x - 1.3 * h, y + 1.1 * h], [x - 0.9 * h, y + 1.0 * h], [x - 0.78 * h, y + 1.3 * h], [x - 0.86 * h, y + 1.9 * h], [x - 0.98 * h, y + 3.4 * h], [x - 1.62 * h, y + 3.4 * h]], true);
-  paperFill(CL, key + 'cl'); ln(CL, U(3), key + 'cl', { w: 3.4 });
+  paperFill(CL, key + 'cl', clamp(U(3) * 3)); ln(CL, U(3), key + 'cl', { w: 3.4 });
   for (let i = 0; i < 3; i++) { const C = [[x - (1.4 - i * 0.12) * h, y + (1.2 + i * 0.03) * h], [x - (1.25 - i * 0.1) * h, y + (1.7 + i * 0.05) * h], [x - (1.3 - i * 0.1) * h, y + 3.3 * h]]; lnS(C, U(3), key + 'clf' + i, { w: 1.8 }); if (U(3) >= 1) foldShade(C, 0.05 * h, key + 'clfs' + i, { side: 1 }); }
   necklace(x, y + 0.86 * h, 1.5 * h, 0.42 * h, key + 'col', { broad: 0.45, u: U(4) });
   face(x, y, h, { kind: 'mahisha', eyes: o.eyes ?? 'closed', smile: o.smile ?? 0, look: o.look, key: key + 'f', u: U(2) });
