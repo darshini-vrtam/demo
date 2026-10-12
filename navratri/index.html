@@ -1,0 +1,2003 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Navratri: Nine Powers</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Navratri — The Nine Powers of Shakti. Episodes 1–2: an interactive hand-drawn storybook with narration and two mini-games.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Kalam:wght@400;700&display=swap">
+<!-- Pinned Rough.js UMD build. If it fails to load, the app uses its plain-SVG fallback renderer. -->
+<script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+<style>
+/* One committed sketchbook world: warm paper + brown ink, explicit in light and dark browser themes. */
+:root{
+  color-scheme: light;
+  --ink:#3B2A20; --ink-soft:#6B5444;
+  --paper:#F6EAD0; --paper-2:#EAD6AE; --paper-3:#FFF8E8;
+  --saffron:#E8892B; --gold:#F2B630; --kumkum:#B83A2E; --leaf:#5E8C3F;
+  --hand:'Patrick Hand','Kalam','Caveat',cursive,sans-serif;
+  --display:'Kalam','Patrick Hand',cursive,sans-serif;
+  --safe-t:env(safe-area-inset-top,0px); --safe-b:env(safe-area-inset-bottom,0px);
+  --safe-l:env(safe-area-inset-left,0px); --safe-r:env(safe-area-inset-right,0px);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ color-scheme: light; --paper:#F6EAD0; --ink:#3B2A20; } }
+:root[data-theme="dark"]{ color-scheme: light; --paper:#F6EAD0; --ink:#3B2A20; }
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html,body{height:100%;margin:0}
+body{background:#E7D3AC;color:var(--ink);font-family:var(--hand);overflow:hidden;overscroll-behavior:none;
+  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+#app{position:fixed;inset:0;overflow:hidden;background:var(--paper)}
+#scene{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible;touch-action:none}
+#scene text{font-family:var(--hand)}
+#grain{position:absolute;inset:0;pointer-events:none;opacity:.32;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .42  0 0 0 0 .30  0 0 0 0 .16  0 0 0 .5 0'/></filter><rect width='260' height='260' filter='url(%23n)'/></svg>")}
+#vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 58%,rgba(59,42,32,.38) 100%)}
+#border{position:absolute;inset:0;pointer-events:none;width:100%;height:100%}
+#veil{position:absolute;inset:0;background:var(--paper);opacity:0;pointer-events:none;transition:opacity .45s ease}
+#veil.on{opacity:1}
+#flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,#FFFBE6 0%,#FFE7A0 45%,rgba(255,214,120,.6) 100%);opacity:0;pointer-events:none;transition:opacity .9s ease}
+#flash.on{opacity:.95;transition:opacity .25s ease}
+#app.shake #scene{animation:shake .55s linear}
+@keyframes shake{0%,100%{transform:translate(0,0)}20%{transform:translate(-5px,2px)}40%{transform:translate(5px,-2px)}60%{transform:translate(-4px,1px)}80%{transform:translate(3px,-1px)}}
+
+/* ── rough-framed paper panels (frame svg injected by JS) ── */
+.paper{position:relative;background:var(--paper-3);color:var(--ink);isolation:isolate}
+.paper > svg.rf{position:absolute;inset:-3px;width:calc(100% + 6px);height:calc(100% + 6px);pointer-events:none;z-index:-1;overflow:visible}
+body.norough .paper{border:2.5px solid var(--ink);border-radius:255px 14px 225px 14px/14px 225px 14px 255px}
+.rbtn{position:relative;isolation:isolate;font:400 clamp(17px,2vw,22px)/1.1 var(--hand);color:var(--ink);background:var(--paper-3);
+  border:0;padding:10px 18px 9px;min-height:48px;min-width:48px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.rbtn > svg.rf{position:absolute;inset:-2px;width:calc(100% + 4px);height:calc(100% + 4px);pointer-events:none;z-index:-1;overflow:visible}
+body.norough .rbtn{border:2.5px solid var(--ink);border-radius:20px 8px 18px 9px/9px 18px 8px 20px}
+.rbtn:hover{background:#FFEFC8}
+.rbtn:active{transform:translateY(2px)}
+.rbtn.primary{background:#FFD98A}
+.rbtn[aria-disabled="true"],.rbtn:disabled{opacity:.42;cursor:not-allowed}
+.rbtn[aria-pressed="true"]{background:#F7C66A}
+.rbtn .ic{width:24px;height:24px;display:block}
+button:focus-visible,[tabindex]:focus-visible{outline:3px dashed #B83A2E;outline-offset:4px}
+#scene [tabindex]:focus{outline:none}
+#scene [tabindex]:focus-visible .hitring{stroke:#B83A2E;stroke-width:5;stroke-dasharray:10 8;opacity:1}
+
+/* ── HUD ── */
+#top{position:absolute;top:0;left:0;right:0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+  padding:calc(var(--safe-t) + 10px) calc(var(--safe-r) + 14px) 0 calc(var(--safe-l) + 14px);z-index:40;pointer-events:none}
+#top > *{pointer-events:auto}
+.hgrp{display:flex;gap:8px;align-items:center}
+.hbtn{min-width:48px;min-height:48px;padding:6px}
+#chip{font-size:clamp(14px,1.6vw,19px);padding:8px 14px 7px;max-width:min(38vw,380px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#lamps{width:clamp(150px,22vw,280px);height:auto;display:block}
+#lamps .lit{opacity:1}
+#lamps .unlit{opacity:1}
+#lamps g.diya .flame{opacity:0;transition:opacity .6s}
+#lamps g.diya.on .flame{opacity:1}
+#lamps g.diya.calling .flame{animation:flick 1.1s ease-in-out infinite}
+@keyframes flick{0%,100%{opacity:.25}50%{opacity:1}}
+
+/* ── caption ── */
+#cap{position:absolute;left:50%;bottom:calc(var(--safe-b) + 14px);transform:translateX(-50%);width:calc(100% - 32px - var(--safe-l) - var(--safe-r));max-width:900px;
+  padding:14px 22px 12px;z-index:20;transition:opacity .3s,transform .3s;max-height:32vh;overflow:auto}
+#cap.hide{opacity:0;transform:translateX(-50%) translateY(16px);pointer-events:none}
+#capWho{font:700 13px/1 var(--display);letter-spacing:.12em;color:var(--kumkum);text-transform:uppercase;margin-bottom:4px}
+#capText{margin:0;font:400 clamp(18px,2.35vw,28px)/1.3 var(--hand);text-wrap:pretty}
+
+/* ── instruction note ── */
+#note{position:absolute;left:50%;top:calc(var(--safe-t) + 74px);transform:translateX(-50%) rotate(-1deg);max-width:calc(100% - 40px);width:max-content;
+  padding:12px 24px 10px;z-index:22;text-align:center;transition:opacity .35s,transform .35s}
+#note.hide{opacity:0;transform:translateX(-50%) translateY(-14px);pointer-events:none}
+#noteText{font:700 clamp(19px,2.6vw,30px)/1.15 var(--display);color:var(--ink)}
+#noteSub{font:400 clamp(14px,1.7vw,19px)/1.25 var(--hand);color:var(--ink-soft);margin-top:4px;min-height:1.25em}
+#note .pin{position:absolute;top:-9px;left:50%;width:16px;height:16px;margin-left:-8px;border-radius:50%;background:#B83A2E;border:2px solid var(--ink)}
+
+/* ── game 2 controls ── */
+.pad{position:absolute;bottom:calc(var(--safe-b) + 18px);z-index:25;width:clamp(92px,13vw,150px);height:clamp(92px,13vw,150px);
+  font:700 clamp(15px,1.7vw,20px)/1.1 var(--display);flex-direction:column;touch-action:none}
+.pad .ic{width:44%;height:auto}
+#padL{left:calc(var(--safe-l) + 22px)}
+#padR{right:calc(var(--safe-r) + 22px)}
+.pad.held{background:#F7C66A;transform:translateY(3px)}
+.pad.hint{animation:nudge 1s ease-in-out infinite}
+@keyframes nudge{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+
+/* ── overlays ── */
+.overlay{position:absolute;inset:0;z-index:50;display:grid;place-items:center;padding:calc(var(--safe-t) + 16px) calc(var(--safe-r) + 16px) calc(var(--safe-b) + 16px) calc(var(--safe-l) + 16px);
+  background:rgba(246,234,208,.55);overflow:auto}
+.card{width:min(820px,100%);padding:clamp(16px,3vw,34px) clamp(18px,3.4vw,40px);text-align:center}
+#title .card{background:transparent}
+#titleArt{width:100%;max-width:620px;height:auto;display:block;margin:0 auto}
+.kicker{font:700 clamp(13px,1.4vw,16px)/1 var(--display);letter-spacing:.2em;text-transform:uppercase;color:var(--kumkum)}
+h1{font:700 clamp(30px,5vw,60px)/1.02 var(--display);margin:6px 0 4px;color:var(--ink)}
+.tag{font:400 clamp(17px,2.2vw,25px)/1.25 var(--hand);color:var(--ink-soft);margin:0 0 14px}
+.eps{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:10px}
+.ep{flex-direction:column;align-items:flex-start;text-align:left;min-width:min(300px,100%);padding:12px 18px 11px}
+.ep b{font:700 clamp(19px,2.2vw,25px)/1.05 var(--display)}
+.ep span{font:400 clamp(14px,1.5vw,17px)/1.2 var(--hand);color:var(--ink-soft)}
+.opts{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:16px}
+.small{font-size:clamp(14px,1.5vw,17px);min-height:44px;padding:8px 14px}
+.fine{font:400 14px/1.35 var(--hand);color:var(--ink-soft);margin:12px 0 0}
+#end .card{width:min(720px,100%)}
+#endTitle{font:700 clamp(30px,5vw,58px)/1 var(--display);margin:4px 0 6px;letter-spacing:.02em}
+#endSub{font:700 clamp(18px,2.6vw,30px)/1.15 var(--display);color:var(--kumkum);margin:0 0 6px;letter-spacing:.04em}
+#endNote{font:400 clamp(15px,1.7vw,19px)/1.3 var(--hand);color:var(--ink-soft);margin:0}
+
+#toast{position:absolute;left:50%;top:calc(var(--safe-t) + 74px);transform:translateX(-50%);z-index:60;max-width:calc(100% - 40px);width:max-content;
+  padding:10px 18px 9px;font:400 clamp(15px,1.7vw,19px)/1.25 var(--hand);transition:opacity .3s}
+#toast.hide{opacity:0;pointer-events:none}
+#playAudio{position:absolute;right:calc(var(--safe-r) + 16px);bottom:calc(var(--safe-b) + 16px);z-index:30;background:#FFD98A}
+body.capup #playAudio{bottom:auto;top:calc(var(--safe-t) + 70px)}
+#rotate{position:absolute;inset:0;z-index:70;display:none;place-items:center;background:rgba(246,234,208,.92);padding:24px}
+@media (orientation:portrait) and (max-width:820px){ body:not(.dismissRotate) #rotate{display:grid} }
+#cam{position:absolute;width:96px;height:72px;right:calc(var(--safe-r) + 16px);top:calc(var(--safe-t) + 70px);z-index:24;border:2.5px solid var(--ink);border-radius:10px;transform:scaleX(-1);opacity:.85;object-fit:cover;background:#000}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ── sketch-in reveal (outline draw, then fills) ── */
+.sketch .o{stroke-dasharray:1 1;stroke-dashoffset:1;animation:draw var(--dur,1.1s) ease-out forwards;animation-delay:var(--d,0s)}
+.sketch .f{opacity:0;animation:fin .7s ease-out forwards;animation-delay:calc(var(--d,0s) + .6s)}
+.sketch .later .o,.sketch .later .f{animation:none}
+.later.sketch .o{stroke-dasharray:1 1;stroke-dashoffset:1;animation:draw .9s ease-out forwards}
+.later.sketch .f{opacity:0;animation:fin .6s ease-out forwards .45s}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fin{to{opacity:1}}
+
+/* idle loops — always on inner groups, never on a tweened group */
+.bob{transform-box:fill-box;transform-origin:50% 100%;animation:bob 3.4s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.breathe{transform-box:fill-box;transform-origin:50% 100%;animation:breathe 4s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1,1)}50%{transform:scale(1.008,1.014)}}
+.pulse{transform-box:fill-box;transform-origin:50% 50%;animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.92}50%{transform:scale(1.1);opacity:1}}
+.drift{animation:drift 22s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translateX(-30px)}to{transform:translateX(30px)}}
+.twinkle{animation:tw 2.4s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.35}50%{opacity:1}}
+.flicker{animation:flk 1.3s ease-in-out infinite}
+@keyframes flk{0%,100%{opacity:.35}45%{opacity:1}60%{opacity:.7}}
+.walk{transform-box:fill-box;transform-origin:50% 100%;animation:walk .55s ease-in-out infinite}
+@keyframes walk{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-7px) rotate(2deg)}}
+.shake-spear{transform-box:fill-box;transform-origin:50% 100%;animation:spear .35s ease-in-out infinite}
+@keyframes spear{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+.flutter{transform-box:fill-box;transform-origin:0% 0%;animation:flutter .9s ease-in-out infinite}
+@keyframes flutter{0%,100%{transform:skewY(0)}50%{transform:skewY(6deg)}}
+.swish{transform-box:fill-box;transform-origin:100% 50%;animation:swish 1.6s ease-in-out infinite}
+@keyframes swish{0%,100%{transform:rotate(0)}50%{transform:rotate(-14deg)}}
+.spin{transform-box:fill-box;transform-origin:50% 50%;animation:spin 14s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media (prefers-reduced-motion: reduce){
+  .sketch .o,.sketch .f,.later.sketch .o,.later.sketch .f{animation:none !important;stroke-dasharray:none;opacity:1}
+  .bob,.breathe,.pulse,.drift,.twinkle,.flicker,.walk,.shake-spear,.flutter,.swish,.spin,.pad.hint,#lamps g.diya.calling .flame{animation:none !important}
+  #veil,#flash,#cap,#note{transition-duration:.15s}
+}
+body.rm .sketch .o,body.rm .sketch .f,body.rm .later.sketch .o,body.rm .later.sketch .f{animation:none !important;stroke-dasharray:none;opacity:1}
+body.rm .bob,body.rm .breathe,body.rm .pulse,body.rm .drift,body.rm .twinkle,body.rm .flicker,body.rm .walk,body.rm .shake-spear,body.rm .flutter,body.rm .swish,body.rm .spin{animation:none !important}
+body.low .twinkle,body.low .drift,body.low .breathe{animation:none}
+body.low #grain{display:none}
+
+@media (max-height:500px){
+  #top{padding-top:calc(var(--safe-t) + 6px)}
+  .hbtn{min-width:44px;min-height:44px;padding:4px}
+  #cap{padding:8px 16px 7px;bottom:calc(var(--safe-b) + 8px)}
+  #capWho{display:none}
+  #note{top:calc(var(--safe-t) + 58px);padding:8px 16px 7px}
+  #toast{top:calc(var(--safe-t) + 58px)}
+  #titleArt{max-width:360px}
+  .card{padding:12px 18px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <svg id="scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Story scene">
+    <defs id="defs"></defs>
+    <g id="sceneRoot"></g>
+  </svg>
+  <div id="grain"></div>
+  <div id="vignette"></div>
+  <svg id="border" aria-hidden="true"></svg>
+  <div id="flash"></div>
+  <div id="veil"></div>
+
+  <div id="top" hidden>
+    <div class="hgrp">
+      <button class="rbtn hbtn" id="btnHome" aria-label="Home (leave episode)" title="Home"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg></button>
+      <div class="rbtn" id="chip" role="status" style="cursor:default">Episode</div>
+    </div>
+    <svg id="lamps" viewBox="0 0 300 40" role="img" aria-label="Nine nights of Shakti progress"></svg>
+    <div class="hgrp">
+      <button class="rbtn hbtn" id="btnMute" aria-pressed="false" aria-label="Mute narration (M)" title="Mute (M)"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="w1" d="M16 9a4 4 0 0 1 0 6"/><path class="w2" d="M18.5 6.5a8 8 0 0 1 0 11"/><path class="x" d="M16 9l5 6M21 9l-5 6" style="display:none"/></svg></button>
+      <button class="rbtn hbtn" id="btnReplay" aria-label="Replay this line (R)" title="Replay line (R)"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 3-6.2"/><path d="M4 4v5h5"/></svg></button>
+      <button class="rbtn hbtn" id="btnSkip" aria-label="Skip this line (S)" title="Skip line (S)"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l9 7-9 7z"/><path d="M18 5v14"/></svg></button>
+    </div>
+  </div>
+
+  <div id="note" class="paper hide" role="status" aria-live="assertive"><span class="pin"></span><div id="noteText"></div><div id="noteSub"></div></div>
+  <div id="cap" class="paper hide" aria-live="polite"><div id="capWho">Narrator</div><p id="capText"></p></div>
+
+  <button class="rbtn pad" id="padL" hidden aria-label="Lean left (Left arrow or A)"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>Lean left</button>
+  <button class="rbtn pad" id="padR" hidden aria-label="Lean right (Right arrow or D)"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>Lean right</button>
+
+  <button class="rbtn" id="playAudio" hidden aria-label="Play narration audio">🔊 Tap to play narration</button>
+  <div id="toast" class="paper hide" role="status" aria-live="polite"></div>
+  <video id="cam" hidden muted playsinline aria-hidden="true"></video>
+
+  <div id="title" class="overlay">
+    <div class="card">
+      <svg id="titleArt" viewBox="0 0 620 210" role="img" aria-label="Nine glowing diyas around the emblem of Shakti"></svg>
+      <div class="kicker">Navratri</div>
+      <h1>The Nine Powers of Shakti</h1>
+      <p class="tag">Nine nights. Nine powers. One great Shakti.</p>
+      <div class="eps">
+        <button class="rbtn ep primary" id="ep1btn"><b>Episode 1 · The Rise of Mahishasura</b><span>Why Navratri began</span></button>
+        <button class="rbtn ep" id="ep2btn"><b>Episode 2 · Shailaputri</b><span>The Power of Strength</span></button>
+      </div>
+      <div class="opts">
+        <button class="rbtn small" id="optMute" aria-pressed="false">🔊 Narration on</button>
+        <button class="rbtn small" id="optCam" aria-pressed="false">📷 Camera wave controls (optional)</button>
+      </div>
+      <p class="fine" id="titleFine">Mouse, touch and keyboard work everywhere. Keys: M mute · R replay · S skip line.</p>
+    </div>
+  </div>
+
+  <div id="end" class="overlay" hidden>
+    <div class="card paper" role="dialog" aria-labelledby="endTitle">
+      <div class="kicker" id="endKicker">Navratri</div>
+      <div id="endTitle">EPISODE 1 COMPLETE</div>
+      <p id="endSub">THE FIRST LIGHT IS CALLING.</p>
+      <p id="endNote"></p>
+      <div class="opts" id="endBtns"></div>
+    </div>
+  </div>
+
+  <div id="rotate" role="dialog" aria-label="Rotate your device">
+    <div class="card paper"><h1 style="font-size:30px">Turn your phone sideways</h1><p class="tag">This storybook is drawn for landscape screens.</p><button class="rbtn" id="rotateOk">Continue anyway</button></div>
+  </div>
+</div>
+<script>
+'use strict';
+/* ════════════════════════════════════════════════════════════════════
+   NAVRATRI — engine: config, drawing helpers (R), tweens, voice, sfx
+   ════════════════════════════════════════════════════════════════════ */
+const NS = 'http://www.w3.org/2000/svg';
+const Q = new URLSearchParams(location.search);
+const MQ_RM = matchMedia('(prefers-reduced-motion: reduce)');
+let RM = MQ_RM.matches || Q.has('reduced');
+const FAST = Q.has('fast') ? (+Q.get('fast') || 8) : 1;          // test-only time compression
+let LOW = Q.has('low') || (navigator.hardwareConcurrency || 8) <= 2 || (navigator.deviceMemory || 8) <= 2;
+const HAS_ROUGH = !Q.has('norough') && typeof window.rough !== 'undefined' && typeof window.rough.svg === 'function';
+const $id = id => document.getElementById(id);
+if (RM) document.body.classList.add('rm');
+if (LOW) document.body.classList.add('low');
+if (!HAS_ROUGH) document.body.classList.add('norough');
+MQ_RM.addEventListener && MQ_RM.addEventListener('change', e => { RM = e.matches || Q.has('reduced'); document.body.classList.toggle('rm', RM); });
+
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('navratri.' + k); return v == null ? d : JSON.parse(v); } catch (_) { return d; } },
+  set(k, v) { try { localStorage.setItem('navratri.' + k, JSON.stringify(v)); } catch (_) { } }
+};
+
+/* Palette tokens */
+const P = {
+  ink: '#3B2A20', inkSoft: '#6B5444', paper: '#F6EAD0', cream: '#FFF8E8', white: '#FFFDF6',
+  saffron: '#E8892B', gold: '#F2B630', goldL: '#FFE08A', goldD: '#C98A12', kumkum: '#B83A2E', maroon: '#7A2331',
+  rose: '#E8A0A0', pink: '#F2B5C4', sky: '#9CC3DE', blue: '#5B86B8', shiva: '#86A9CB', vishnu: '#4767A8', aqua: '#6FB2B0',
+  green: '#6E9A4A', leaf: '#86B35A', forest: '#3F6B3A', pine: '#2F5A3A', moss: '#7D8F4A',
+  stone: '#A99682', stoneD: '#7A6858', stoneL: '#CDBEA8', snow: '#FBF6EC', earth: '#B98B5A', sand: '#D9B98A',
+  asura: '#6A4458', asuraD: '#4A2E3E', soldier: '#5E6B52', soldierSkin: '#A3AE8C', horn: '#EFE3C8',
+  skin: '#E3A877', skinL: '#F0C49A', skinG: '#E2A35F', hair: '#2E211B', night: '#2B2546', indigo: '#3F3A6B', violet: '#6C5A8E',
+  fire: '#F06B2B', lion: '#E3A43C', mane: '#B5651D'
+};
+const col = c => (c && P[c]) || c;
+
+function hashStr(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0); }
+function svgEl(tag, attrs, parent) {
+  const e = document.createElementNS(NS, tag);
+  if (attrs) for (const k in attrs) if (attrs[k] != null) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+const rot = (x, y, a) => [x * Math.cos(a) - y * Math.sin(a), x * Math.sin(a) + y * Math.cos(a)];
+
+/* ── Groups with tracked transform state (pivot = group origin) ── */
+function G(parent, name, t, cls) {
+  const g = document.createElementNS(NS, 'g');
+  if (name) g.dataset.n = name;
+  const s = { x: 0, y: 0, r: 0, s: 1, sy: null, o: 1 };
+  if (t) Object.assign(s, t);
+  g.dataset.t = JSON.stringify(s);
+  applyT(g, s);
+  if (cls) g.setAttribute('class', cls);
+  if (parent) parent.appendChild(g);
+  return g;
+}
+function st(g) { return g.__t || (g.__t = JSON.parse(g.dataset.t || '{"x":0,"y":0,"r":0,"s":1,"sy":null,"o":1}')); }
+function applyT(g, s) {
+  const sy = s.sy == null ? s.s : s.sy;
+  let tr = '';
+  if (s.x || s.y) tr += `translate(${+s.x.toFixed(2)} ${+s.y.toFixed(2)})`;
+  if (s.r) tr += ` rotate(${+s.r.toFixed(2)})`;
+  if (s.s !== 1 || sy !== s.s) tr += ` scale(${+s.s.toFixed(4)} ${+sy.toFixed(4)})`;
+  if (tr) g.setAttribute('transform', tr); else g.removeAttribute('transform');
+  if (s.o < 1) g.setAttribute('opacity', +s.o.toFixed(3)); else g.removeAttribute('opacity');
+}
+function setT(g, to) { if (!g) return; const s = st(g); Object.assign(s, to); applyT(g, s); if (!g.isConnected) g.dataset.t = JSON.stringify(s); }
+
+/* ════════ R — the semantic Rough.js helper layer (with plain-SVG fallback) ════════ */
+const R = (() => {
+  let rc = null;
+  const scratch = svgEl('svg');
+  if (HAS_ROUGH) { try { rc = window.rough.svg(scratch); } catch (e) { rc = null; } }
+  let seedBase = 1, idx = 0, stack = [], target = null, count = 0;
+  function begin(id, g) { seedBase = hashStr(id) % 100000 * 13 + 7; idx = 0; target = g; stack = []; count = 0; }
+  function inG(g, fn) { stack.push(target); target = g; try { fn(); } finally { target = stack.pop(); } return g; }
+  const nextSeed = () => ((seedBase + (++idx) * 7919) % 2147480000) + 1;
+
+  function plain(kind, a) {
+    switch (kind) {
+      case 'rect': return svgEl('rect', { x: a[0], y: a[1], width: a[2], height: a[3] });
+      case 'ellipse': return svgEl('ellipse', { cx: a[0], cy: a[1], rx: a[2] / 2, ry: a[3] / 2 });
+      case 'circle': return svgEl('circle', { cx: a[0], cy: a[1], r: a[2] / 2 });
+      case 'polygon': return svgEl('polygon', { points: a[0].map(p => p.join(',')).join(' ') });
+      case 'linearPath': return svgEl('polyline', { points: a[0].map(p => p.join(',')).join(' ') });
+      case 'line': return svgEl('line', { x1: a[0], y1: a[1], x2: a[2], y2: a[3] });
+      case 'path': return svgEl('path', { d: a[0] });
+      case 'curve': {
+        const p = a[0]; let d = `M${p[0][0]} ${p[0][1]}`;
+        for (let i = 1; i < p.length; i++) { const m = [(p[i - 1][0] + p[i][0]) / 2, (p[i - 1][1] + p[i][1]) / 2]; d += ` Q${p[i - 1][0]} ${p[i - 1][1]} ${m[0]} ${m[1]}`; }
+        const L = p[p.length - 1]; d += ` L${L[0]} ${L[1]}`; return svgEl('path', { d });
+      }
+      case 'arc': {
+        const [cx, cy, w, h, a0, a1, closed] = a, rx = w / 2, ry = h / 2;
+        const x0 = cx + rx * Math.cos(a0), y0 = cy + ry * Math.sin(a0), x1 = cx + rx * Math.cos(a1), y1 = cy + ry * Math.sin(a1);
+        const large = (a1 - a0) > Math.PI ? 1 : 0;
+        return svgEl('path', { d: `M${x0} ${y0} A${rx} ${ry} 0 ${large} 1 ${x1} ${y1}${closed ? ` L${cx} ${cy} Z` : ''}` });
+      }
+    }
+  }
+  const closedKinds = { rect: 1, ellipse: 1, circle: 1, polygon: 1, path: 1, arc: 1 };
+
+  function shape(kind, args, o = {}) {
+    const parent = o.into || target;
+    const stroke = o.stroke === undefined ? P.ink : col(o.stroke);
+    const fill = o.fill ? col(o.fill) : null;
+    const style = o.style || 'hachure';
+    const wash = o.wash !== undefined ? o.wash : (style === 'solid' ? 0 : .55);
+    const sw = o.sw != null ? o.sw : 2.4;
+    const g = document.createElementNS(NS, 'g');
+    if (o.cls) g.setAttribute('class', o.cls);
+    if (o.name) g.dataset.n = o.name;
+    if (o.op != null) g.setAttribute('opacity', o.op);
+    const canFill = fill && closedKinds[kind];
+    if (!rc) {
+      /* plain-SVG fallback: same geometry, palette and composition */
+      if (canFill) { const f = plain(kind, args); f.setAttribute('fill', fill); f.setAttribute('fill-opacity', style === 'solid' ? 1 : Math.max(wash, .8)); f.setAttribute('stroke', 'none'); f.setAttribute('class', 'f'); g.appendChild(f); }
+      if (stroke !== 'none') { const p = plain(kind, args); p.setAttribute('fill', 'none'); p.setAttribute('stroke', stroke); p.setAttribute('stroke-width', sw); p.setAttribute('stroke-linecap', 'round'); p.setAttribute('stroke-linejoin', 'round'); p.setAttribute('pathLength', '1'); p.setAttribute('class', 'o'); g.appendChild(p); }
+    } else {
+      if (canFill && wash > 0) { const w = plain(kind, args); w.setAttribute('fill', fill); w.setAttribute('fill-opacity', wash); w.setAttribute('stroke', 'none'); w.setAttribute('class', 'f'); g.appendChild(w); }
+      const opts = {
+        stroke, strokeWidth: sw, roughness: o.rough != null ? o.rough : 1.4, bowing: o.bow != null ? o.bow : 1,
+        seed: nextSeed(), disableMultiStroke: !!o.single, preserveVertices: !!o.pv
+      };
+      if (canFill) Object.assign(opts, { fill, fillStyle: style, hachureGap: o.gap || (style === 'dots' ? 9 : 7), fillWeight: o.fw || (style === 'dots' ? 2.4 : 1.6), hachureAngle: o.angle != null ? o.angle : -41, zigzagOffset: o.zz });
+      let node;
+      try { node = rc[kind](...args, opts); } catch (e) { node = null; }
+      if (node) {
+        const kids = [...node.childNodes];
+        kids.forEach((k, i) => {
+          const isOutline = stroke !== 'none' && i === kids.length - 1 && k.getAttribute('fill') === 'none' && (k.getAttribute('stroke') === stroke);
+          if (isOutline) { k.setAttribute('pathLength', '1'); k.setAttribute('class', 'o'); k.setAttribute('stroke-linecap', 'round'); }
+          else k.setAttribute('class', 'f');
+          g.appendChild(k);
+        });
+      }
+    }
+    count++;
+    parent.appendChild(g);
+    return g;
+  }
+  return {
+    begin, in: inG, get count() { return count; }, rough: !!rc,
+    rect: (x, y, w, h, o) => shape('rect', [x, y, w, h], o),
+    ellipse: (cx, cy, w, h, o) => shape('ellipse', [cx, cy, w, h], o),
+    circle: (cx, cy, d, o) => shape('circle', [cx, cy, d], o),
+    poly: (pts, o) => shape('polygon', [pts], o),
+    path: (d, o) => shape('path', [d], o),
+    arc: (cx, cy, w, h, a0, a1, closed, o) => shape('arc', [cx, cy, w, h, a0, a1, !!closed], o),
+    curve: (pts, o) => shape('curve', [pts], o),
+    lines: (pts, o) => shape('linearPath', [pts], o),
+    line: (x1, y1, x2, y2, o) => shape('line', [x1, y1, x2, y2], o),
+    /* plain (non-rough) helpers for glows and gradients */
+    glow(cx, cy, r, grad, o = {}) { const c = svgEl('circle', { cx, cy, r, fill: `url(#${grad})`, class: 'f', opacity: o.op }); (o.into || target).appendChild(c); return c; },
+    fillRect(x, y, w, h, fill, o = {}) { const r = svgEl('rect', { x, y, width: w, height: h, fill, opacity: o.op }); (o.into || target).appendChild(r); return r; },
+    text(x, y, s, o = {}) { const t = svgEl('text', { x, y, 'text-anchor': o.anchor || 'middle', 'font-size': o.size || 40, fill: col(o.fill || 'ink'), 'font-weight': o.weight || 400, 'letter-spacing': o.ls, class: 'f' }); t.textContent = s; (o.into || target).appendChild(t); return t; },
+    get target() { return target; }
+  };
+})();
+
+/* Shared gradients (plain SVG; procedural) */
+function buildDefs(defs) {
+  const lin = (id, stops, x2 = 0, y2 = 1) => { const g = svgEl('linearGradient', { id, x1: 0, y1: 0, x2, y2 }, defs); stops.forEach(([o, c, a]) => svgEl('stop', { offset: o, 'stop-color': c, 'stop-opacity': a == null ? 1 : a }, g)); };
+  const rad = (id, stops) => { const g = svgEl('radialGradient', { id }, defs); stops.forEach(([o, c, a]) => svgEl('stop', { offset: o, 'stop-color': c, 'stop-opacity': a == null ? 1 : a }, g)); };
+  lin('skyGold', [[0, '#F3C77B'], [.6, '#F8DDA4'], [1, '#FBEBC6']]);
+  lin('skyDawn', [[0, '#E9A9A0'], [.45, '#F5C890'], [1, '#FBE6BE']]);
+  lin('skyDusk', [[0, '#5B4A7E'], [.5, '#C97C78'], [1, '#F2B97C']]);
+  lin('skyNight', [[0, '#1F1B3A'], [.6, '#3C3466'], [1, '#6A5A8C']]);
+  lin('skyCrimson', [[0, '#5A1E2C'], [.55, '#A2412E'], [1, '#E58A4A']]);
+  lin('skyCeleste', [[0, '#2E2A5C'], [.45, '#7A5B8E'], [.8, '#E4A86A'], [1, '#F6CF86']]);
+  lin('skyForest', [[0, '#26402F'], [.6, '#4D6B45'], [1, '#7E9A5C']]);
+  lin('skyStorm', [[0, '#7D7FA0'], [.6, '#B9B1BF'], [1, '#E2D3C0']]);
+  lin('skyBright', [[0, '#9CC7E4'], [.6, '#F4DDB0'], [1, '#FBEED0']]);
+  lin('under', [[0, '#4A3346'], [1, '#2A1C2A']]);
+  rad('gGold', [[0, '#FFF6CF', 1], [.35, '#FFE08A', .85], [.7, '#F2B630', .35], [1, '#F2B630', 0]]);
+  rad('gWhite', [[0, '#FFFFFF', 1], [.4, '#FFF6DA', .8], [1, '#FFF6DA', 0]]);
+  rad('gRed', [[0, '#FF8A5B', .85], [.5, '#C0392B', .4], [1, '#7A2331', 0]]);
+  rad('gRose', [[0, '#FFE3E3', .95], [.5, '#F5B5B5', .45], [1, '#F5B5B5', 0]]);
+  rad('gBlue', [[0, '#EAF4FF', 1], [.45, '#A9CBF0', .6], [1, '#A9CBF0', 0]]);
+  rad('gDark', [[0, '#2A1724', .85], [.6, '#3B2433', .55], [1, '#3B2433', 0]]);
+}
+
+/* ════════ Tweens: transforms + opacity only, on tracked groups ════════ */
+const Tw = (() => {
+  const list = new Set(); let raf = 0;
+  const E = { lin: t => t, io: t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2, out: t => 1 - Math.pow(1 - t, 3), back: t => { const c = 1.6; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); } };
+  function frame(now) {
+    raf = 0;
+    for (const a of list) {
+      const k = Math.min(1, (now - a.t0) / a.dur), e = a.ease(k), s = st(a.g);
+      for (const key in a.to) s[key] = a.from[key] + (a.to[key] - a.from[key]) * e;
+      applyT(a.g, s);
+      if (k >= 1) { list.delete(a); a.res(); }
+    }
+    if (list.size) raf = requestAnimationFrame(frame);
+    Perf.tick(now);
+  }
+  function to(g, target, dur = 600, ease = 'io') {
+    return new Promise(res => {
+      if (!g) return res();
+      const s = st(g);
+      for (const a of list) if (a.g === g) { for (const k in target) delete a.to[k]; }
+      const onlyOpacity = Object.keys(target).every(k => k === 'o');
+      let d = dur / FAST;
+      if (RM) d = onlyOpacity ? Math.min(d, 250) : 0;
+      if (d <= 0) { Object.assign(s, target); applyT(g, s); return res(); }
+      const from = {}; for (const k in target) from[k] = s[k] == null ? (k === 'sy' ? s.s : 0) : s[k];
+      list.add({ g, from, to: { ...target }, dur: d, ease: E[ease] || E.io, t0: performance.now(), res });
+      if (!raf) raf = requestAnimationFrame(frame);
+    });
+  }
+  function clear() { list.clear(); if (raf) cancelAnimationFrame(raf); raf = 0; }
+  return { to, clear, E };
+})();
+
+/* frame-time monitor → simplifies effects on slow devices */
+const Perf = { n: 0, sum: 0, last: 0, strikes: 0,
+  tick(now) {
+    if (this.last) { const dt = now - this.last; if (dt < 250) { this.sum += dt; this.n++; } }
+    this.last = now;
+    if (this.n >= 90) { const avg = this.sum / this.n; this.sum = 0; this.n = 0; if (avg > 42) { if (++this.strikes >= 2 && !LOW) { LOW = true; document.body.classList.add('low'); console.info('[navratri] performance mode enabled (avg frame', avg.toFixed(1), 'ms)'); } } else this.strikes = 0; }
+  }
+};
+
+/* ════════ Sound effects (WebAudio, optional, silent on failure) ════════ */
+const SFX = {
+  ctx: null, windNode: null, windGain: null,
+  init() { if (this.ctx) return; try { const AC = window.AudioContext || window.webkitAudioContext; if (AC) this.ctx = new AC(); } catch (_) { this.ctx = null; } },
+  ok() { if (Voice.muted || !this.ctx) return false; try { if (this.ctx.state === 'suspended') this.ctx.resume(); } catch (_) { } return true; },
+  tone(freq, when, dur, type = 'sine', vol = .12) {
+    try { const c = this.ctx, o = c.createOscillator(), g = c.createGain(); o.type = type; o.frequency.value = freq; g.gain.setValueAtTime(0, c.currentTime + when); g.gain.linearRampToValueAtTime(vol, c.currentTime + when + .02); g.gain.exponentialRampToValueAtTime(.0008, c.currentTime + when + dur); o.connect(g).connect(c.destination); o.start(c.currentTime + when); o.stop(c.currentTime + when + dur + .05); } catch (_) { }
+  },
+  chime(step = 0) { if (!this.ok()) return; const base = [523.25, 587.33, 659.25, 783.99, 880, 987.77][step % 6]; this.tone(base, 0, .7, 'sine', .1); this.tone(base * 1.5, .06, .6, 'triangle', .05); },
+  success() { if (!this.ok()) return; [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => this.tone(f, i * .12, 1.1, 'sine', .09)); },
+  soft() { if (!this.ok()) return; this.tone(330, 0, .25, 'triangle', .05); },
+  whoosh() { if (!this.ok()) return; this.tone(220, 0, .35, 'sine', .04); this.tone(180, .05, .3, 'sine', .03); },
+  wind(level) {
+    if (!this.ctx) return;
+    try {
+      if (!this.windNode && level > 0) {
+        const c = this.ctx, len = c.sampleRate * 2, buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
+        for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+        const src = c.createBufferSource(); src.buffer = buf; src.loop = true;
+        const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 520; bp.Q.value = .7;
+        this.windGain = c.createGain(); this.windGain.gain.value = 0;
+        src.connect(bp).connect(this.windGain).connect(c.destination); src.start(); this.windNode = src;
+      }
+      if (this.windGain) this.windGain.gain.setTargetAtTime(Voice.muted ? 0 : Math.min(.09, level * .1), this.ctx.currentTime, .25);
+    } catch (_) { }
+  },
+  stopWind() { try { if (this.windNode) { this.windNode.stop(); this.windNode.disconnect(); } } catch (_) { } this.windNode = null; this.windGain = null; }
+};
+
+/* ════════ Voice — Web Speech narration with timed-caption fallback ════════ */
+const Voice = {
+  supported: 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window,
+  muted: false, gen: 0, voice: null, blocked: false, onBlocked: null, onUnblocked: null, everStarted: false,
+  estimate(text) { const w = text.trim().split(/\s+/).length; const pauses = (text.match(/[….,:?!]/g) || []).length; return Math.max(1500, 420 * w + 260 * pauses + 500); },
+  pick() {
+    if (!this.supported) return;
+    const vs = speechSynthesis.getVoices(); if (!vs.length) return;
+    const pref = [v => /en-IN/i.test(v.lang), v => /en-GB/i.test(v.lang), v => /^en/i.test(v.lang)];
+    for (const f of pref) { const v = vs.find(f); if (v) { this.voice = v; return; } }
+  },
+  cancel() { this.gen++; if (this.supported) { try { speechSynthesis.cancel(); } catch (_) { } } },
+  /* Speak one segment; done() fires exactly once, unless superseded by cancel()/another say(). */
+  say(text, done, opts = {}) {
+    const id = ++this.gen;
+    let finished = false;
+    const timers = [];
+    const fin = () => { if (finished || id !== this.gen) return; finished = true; timers.forEach(clearTimeout); done && done(); };
+    const est = this.estimate(text) / FAST;
+    if (this.supported) { try { speechSynthesis.cancel(); } catch (_) { } }
+    if (this.muted || !this.supported || FAST > 1) { timers.push(setTimeout(fin, est)); return; }
+    let started = false;
+    let u;
+    try {
+      u = new SpeechSynthesisUtterance(text.replace(/…/g, '...'));
+      if (this.voice) { u.voice = this.voice; u.lang = this.voice.lang; } else u.lang = 'en-IN';
+      u.rate = opts.rate || .88; u.pitch = opts.pitch || 1;
+      u.onstart = () => { started = true; this.everStarted = true; if (this.blocked) { this.blocked = false; this.onUnblocked && this.onUnblocked(); } };
+      u.onend = () => { if (id === this.gen) timers.push(setTimeout(fin, 250)); };
+      u.onerror = e => {
+        if (id !== this.gen) return;
+        if (e && (e.error === 'not-allowed' || e.error === 'audio-busy')) { this.blocked = true; this.onBlocked && this.onBlocked(); }
+        timers.push(setTimeout(fin, started ? 300 : est));
+      };
+      speechSynthesis.speak(u);
+      if (speechSynthesis.paused) speechSynthesis.resume();
+    } catch (_) { timers.push(setTimeout(fin, est)); return; }
+    /* autoplay restriction / silent engine: no onstart within 1.8s → timed captions continue, offer a play button */
+    timers.push(setTimeout(() => { if (!started && id === this.gen) { this.blocked = true; this.onBlocked && this.onBlocked(); timers.push(setTimeout(fin, Math.max(400, est - 1800))); } }, 1800));
+    /* watchdog: never let a stuck engine freeze the story */
+    timers.push(setTimeout(fin, est * 2.6 + 5000));
+  }
+};
+if (Voice.supported) { Voice.pick(); try { speechSynthesis.addEventListener('voiceschanged', () => Voice.pick()); } catch (_) { } }
+
+/* ════════ Rough frames for HTML panels & buttons ════════ */
+const Frames = (() => {
+  const rc = R.rough ? window.rough.svg(svgEl('svg')) : null;
+  const items = new Map();
+  function draw(el) {
+    const meta = items.get(el); if (!meta) return;
+    const w = el.offsetWidth, h = el.offsetHeight; if (!w || !h) return;
+    if (Math.abs(w - meta.w) < 2 && Math.abs(h - meta.h) < 2 && meta.svg.firstChild) return;
+    meta.w = w; meta.h = h;
+    const s = meta.svg; s.innerHTML = ''; s.setAttribute('viewBox', `-3 -3 ${w + 6} ${h + 6}`);
+    try { s.appendChild(rc.rectangle(1, 1, w - 2, h - 2, { stroke: P.ink, strokeWidth: meta.sw, roughness: meta.rough, bowing: 1.2, seed: meta.seed })); } catch (_) { }
+  }
+  const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(es => es.forEach(e => draw(e.target))) : null;
+  function add(el, o = {}) {
+    if (!rc || items.has(el)) return;
+    const svg = svgEl('svg', { class: 'rf', 'aria-hidden': 'true' }); el.prepend(svg);
+    items.set(el, { svg, w: 0, h: 0, seed: (hashStr(el.id || el.textContent || 'x') % 9999) + 1, sw: o.sw || 2.4, rough: o.rough || 1.6 });
+    draw(el); ro && ro.observe(el);
+  }
+  return { add, refresh() { items.forEach((m, el) => { m.w = 0; draw(el); }); } };
+})();
+
+/* async helpers bound to the director's token: stale waits never resolve */
+let TOK = 0;
+const wait = ms => { const t = TOK; return new Promise(r => setTimeout(() => { if (t === TOK) r(); }, ms / FAST)); };
+const tw = (g, to, d, e) => { const t = TOK; return Tw.to(g, to, d, e).then(() => t === TOK ? undefined : new Promise(() => { })); };
+</script>
+<script>
+'use strict';
+/* ════════════════════════════════════════════════════════════════════
+   ART — semantic drawing functions built on R (scenery, props, cast)
+   All characters: local origin at the feet, ~300 units tall at s=1.
+   ════════════════════════════════════════════════════════════════════ */
+const A = {};
+
+/* ── scenery ── */
+A.sky = (grad, y0 = -200, y1 = 1100) => R.fillRect(-500, y0, 2600, y1 - y0, `url(#${grad})`);
+A.cloud = (x, y, w, o = {}) => {
+  const g = G(R.target, o.name, { x, y });
+  const inner = o.cls ? G(g, null, {}, o.cls) : g;   /* idle CSS loops live on an inner group, never on a positioned one */
+  R.in(inner, () => {
+    const h = w * .34, fill = o.fill || 'white', st = { fill, style: 'hachure', wash: o.wash != null ? o.wash : .9, sw: 1.7, stroke: o.stroke || '#7B6656', rough: 1.6, gap: 9, angle: 20 };
+    R.ellipse(-w * .26, h * .1, w * .5, h * .9, st);
+    R.ellipse(w * .24, h * .12, w * .52, h * .8, st);
+    R.ellipse(0, -h * .2, w * .56, h * 1.1, st);
+  });
+  return g;
+};
+A.stars = (n, seed, box = [0, 0, 1600, 380], cls = 'twinkle') => {
+  let s = seed; const rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280;
+  for (let i = 0; i < n; i++) {
+    const x = box[0] + rnd() * box[2], y = box[1] + rnd() * box[3], r = 5 + rnd() * 6;
+    const g = G(R.target, null, { x, y }, cls); g.style.animationDelay = (rnd() * 2.4).toFixed(2) + 's';
+    R.in(g, () => R.path(`M0 ${-r} L${r * .28} ${-r * .28} L${r} 0 L${r * .28} ${r * .28} L0 ${r} L${-r * .28} ${r * .28} L${-r} 0 L${-r * .28} ${-r * .28}Z`, { fill: '#FFF3C4', style: 'solid', sw: 1, stroke: '#E8C46A', rough: .6 }));
+  }
+};
+A.range = (pts, fill, o = {}) => R.poly(pts, { fill, style: o.style || 'hachure', gap: o.gap || 9, angle: o.angle != null ? o.angle : -60, wash: o.wash != null ? o.wash : .75, sw: o.sw || 2.2, stroke: o.stroke, rough: 1.5 });
+A.peak = (x, base, w, h, fill, snow = true, o = {}) => {
+  A.range([[x - w / 2, base], [x - w * .12, base - h * .78], [x, base - h], [x + w * .16, base - h * .74], [x + w / 2, base]], fill, o);
+  if (snow) R.poly([[x - w * .2, base - h * .64], [x - w * .12, base - h * .78], [x, base - h], [x + w * .16, base - h * .74], [x + w * .22, base - h * .62], [x + w * .08, base - h * .68], [x - w * .02, base - h * .6], [x - w * .1, base - h * .68]], { fill: P.snow, style: 'solid', sw: 1.8, rough: 1.2 });
+};
+A.pine = (x, y, h, fill = P.pine) => {
+  R.rect(x - 5, y - h * .18, 10, h * .2, { fill: '#5A3B26', style: 'solid', sw: 1.6 });
+  for (let i = 0; i < 3; i++) { const yy = y - h * .15 - i * h * .26, ww = h * (.5 - i * .1); R.poly([[x - ww / 2, yy], [x + ww / 2, yy], [x, yy - h * .42]], { fill, gap: 7, angle: 50, sw: 1.9 }); }
+};
+A.tree = (x, y, h, fill = P.green) => {
+  R.path(`M${x - 8} ${y} L${x - 5} ${y - h * .5} L${x + 5} ${y - h * .5} L${x + 9} ${y}Z`, { fill: '#6B4A2F', style: 'solid', sw: 1.8 });
+  R.circle(x - h * .18, y - h * .62, h * .5, { fill, gap: 7, sw: 1.9 });
+  R.circle(x + h * .2, y - h * .66, h * .46, { fill, gap: 7, sw: 1.9, angle: 40 });
+  R.circle(x, y - h * .88, h * .52, { fill, gap: 7, sw: 1.9 });
+};
+A.grass = (x, y, w, fill = P.leaf) => R.path(`M${x} ${y} l${w * .15} ${-w * .5} l${w * .1} ${w * .45} l${w * .15} ${-w * .62} l${w * .12} ${w * .6} l${w * .18} ${-w * .48} l${w * .3} ${w * .55}Z`, { fill, style: 'zigzag', gap: 6, sw: 1.6, wash: .7 });
+A.hut = (x, y, s = 1) => {
+  R.rect(x - 40 * s, y - 50 * s, 80 * s, 50 * s, { fill: P.sand, sw: 1.9, style: 'hachure', gap: 8 });
+  R.poly([[x - 52 * s, y - 48 * s], [x + 52 * s, y - 48 * s], [x, y - 92 * s]], { fill: '#B9773D', sw: 1.9, gap: 7, angle: 30 });
+  R.rect(x - 10 * s, y - 30 * s, 20 * s, 30 * s, { fill: '#5A3B26', style: 'solid', sw: 1.4 });
+};
+A.palace = (x, y, s = 1, fill = P.gold) => {
+  R.rect(x - 90 * s, y - 70 * s, 180 * s, 70 * s, { fill: P.cream, sw: 2, gap: 9 });
+  [-60, 0, 60].forEach((dx, i) => { const w = (i === 1 ? 70 : 46) * s; R.path(`M${x + dx * s - w / 2} ${y - 70 * s} Q${x + dx * s} ${y - 70 * s - w * 1.25} ${x + dx * s + w / 2} ${y - 70 * s}Z`, { fill, gap: 6, sw: 2 }); });
+  R.rect(x - 16 * s, y - 40 * s, 32 * s, 40 * s, { fill: P.saffron, style: 'solid', sw: 1.6 });
+};
+A.diya = (x, y, s = 1, name) => {
+  const g = G(R.target, name, { x, y, s });
+  R.in(g, () => {
+    R.path('M-24 0 Q 0 22 24 0 Q 0 6 -24 0Z', { fill: '#C46A2B', style: 'solid', sw: 1.6, rough: .8 });
+    const fl = G(g, 'flame');
+    R.in(G(fl, null, {}, 'flicker'), () => { R.glow(0, -14, 26, 'gGold'); R.path('M0 -2 Q -9 -14 0 -30 Q 9 -14 0 -2Z', { fill: P.goldL, style: 'solid', sw: 1.4, stroke: P.saffron, rough: .6 }); });
+  });
+  return g;
+};
+A.orb = (g, r = 34, grad = 'gGold', fill = P.gold) => R.in(g, () => {
+  R.glow(0, 0, r * 2.4, grad);
+  R.circle(0, 0, r * 2, { fill, style: 'zigzag', gap: 7, sw: 2, stroke: '#C98A12', wash: .8, rough: 1.2 });
+  R.circle(-r * .3, -r * .3, r * .55, { fill: '#FFFDF0', style: 'solid', stroke: 'none' });
+});
+
+/* The Strength emblem (first power of Shakti): lotus ring, mountain, trident. Built as boil variants. */
+A.strengthEmblem = (parent, name, s = 1, variants = 3) => {
+  const g = G(parent, name, { s }, 'boil');
+  R.in(g, () => R.glow(0, 0, 170, 'gGold'));
+  for (let v = 0; v < variants; v++) {
+    const vg = G(g, 'v' + v); if (v) vg.setAttribute('visibility', 'hidden');
+    R.in(vg, () => {
+      for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4; const [px, py] = rot(0, -78, a); const [c1x, c1y] = rot(-22, -64, a), [c2x, c2y] = rot(22, -64, a), [tx, ty] = rot(0, -100, a); R.path(`M${px * .7} ${py * .7} Q${c1x} ${c1y} ${tx} ${ty} Q${c2x} ${c2y} ${px * .7} ${py * .7}Z`, { fill: i % 2 ? P.pink : P.saffron, style: 'hachure', gap: 6, sw: 1.8, wash: .8 }); }
+      R.circle(0, 0, 124, { fill: P.cream, style: 'solid', sw: 2.6 });
+      R.circle(0, 0, 108, { stroke: P.goldD, sw: 1.6 });
+      R.poly([[-44, 30], [-10, -18], [6, 4], [20, -10], [46, 30]], { fill: P.stone, style: 'cross-hatch', gap: 7, sw: 2, wash: .7 });
+      R.poly([[-10, -18], [-18, -6], [-3, -8], [6, 4]], { fill: P.snow, style: 'solid', sw: 1.4 });
+      R.path('M0 30 L0 -46 M-16 -34 Q-16 -18 0 -16 Q16 -18 16 -34', { stroke: P.kumkum, sw: 3.2, rough: .8 });
+      R.poly([[0, -58], [-5, -44], [5, -44]], { fill: P.kumkum, style: 'solid', sw: 1.4 });
+    });
+  }
+  return g;
+};
+
+/* ── hand-held items (drawn at hand origin, upright) ── */
+const ell = (cx, cy, rx, ry) => `M${cx - rx} ${cy} a${rx} ${ry} 0 1 0 ${2 * rx} 0 a${rx} ${ry} 0 1 0 ${-2 * rx} 0Z`;
+const ITEMS = {
+  trident(L = 210) {
+    R.line(0, L * .38, 0, -L * .55, { stroke: '#6B4A2F', sw: 4.2, rough: .7 });
+    const t = -L * .55;
+    R.path(`M-20 ${t - 4} Q-22 ${t + 22} 0 ${t + 24} Q22 ${t + 22} 20 ${t - 4} M0 ${t + 24} L0 ${t - 30}`, { stroke: P.ink, sw: 3.4, rough: .7 });
+    R.poly([[-20, t - 18], [-26, t - 2], [-14, t - 2]], { fill: '#C9CCD1', style: 'solid', sw: 1.4 });
+    R.poly([[20, t - 18], [26, t - 2], [14, t - 2]], { fill: '#C9CCD1', style: 'solid', sw: 1.4 });
+    R.poly([[0, t - 44], [-7, t - 26], [7, t - 26]], { fill: '#C9CCD1', style: 'solid', sw: 1.4 });
+    R.rect(-8, t + 26, 16, 6, { fill: P.gold, style: 'solid', sw: 1.2 });
+  },
+  lotus() { for (let i = -2; i <= 2; i++) { const a = i * .45; const [tx, ty] = rot(0, -30, a), [c1x, c1y] = rot(-11, -14, a), [c2x, c2y] = rot(11, -14, a); R.path(`M0 0 Q${c1x} ${c1y} ${tx} ${ty} Q${c2x} ${c2y} 0 0Z`, { fill: P.pink, style: 'solid', sw: 1.5, rough: .7 }); } },
+  chakra() { R.circle(0, -6, 46, { fill: P.gold, style: 'zigzag', gap: 6, sw: 2, rough: .9 }); R.circle(0, -6, 14, { fill: P.cream, style: 'solid', sw: 1.4 }); },
+  conch() { R.path('M-10 4 Q-18 -18 2 -30 Q18 -22 12 -4 Q4 8 -10 4Z', { fill: P.white, style: 'solid', sw: 1.8, rough: .8 }); R.path('M-4 -6 Q2 -16 8 -10', { sw: 1.4, rough: .5 }); },
+  sword() { R.poly([[-4, 0], [4, 0], [3, -78], [0, -90], [-3, -78]], { fill: '#D7DBE0', style: 'solid', sw: 1.6, rough: .6 }); R.rect(-12, -2, 24, 6, { fill: P.gold, style: 'solid', sw: 1.4 }); },
+  bow() { R.arc(18, -20, 46, 120, Math.PI * .5, Math.PI * 1.5, false, { stroke: '#7B4B26', sw: 3.4, rough: .7 }); R.line(18, -80, 18, 40, { sw: 1.2, rough: .3 }); },
+  mace() { R.line(0, 10, 0, -50, { stroke: '#6B4A2F', sw: 4, rough: .6 }); R.circle(0, -58, 26, { fill: P.gold, style: 'cross-hatch', gap: 6, sw: 1.8 }); },
+  book() { R.rect(-16, -22, 32, 24, { fill: P.kumkum, style: 'solid', sw: 1.6, rough: .7 }); R.line(0, -22, 0, 2, { sw: 1.2, rough: .3 }); },
+  pot() { R.ellipse(0, -10, 30, 26, { fill: P.gold, style: 'solid', sw: 1.6, rough: .8 }); R.path('M12 -14 Q24 -18 26 -28', { sw: 2, rough: .5 }); },
+  vajra() { R.line(0, 14, 0, -46, { stroke: P.goldD, sw: 4, rough: .5 }); R.poly([[0, -60], [-8, -44], [8, -44]], { fill: P.gold, style: 'solid', sw: 1.4 }); R.poly([[0, 28], [-8, 12], [8, 12]], { fill: P.gold, style: 'solid', sw: 1.4 }); },
+  flame() { R.path('M0 0 Q-16 -16 -4 -40 Q0 -26 6 -34 Q16 -18 0 0Z', { fill: P.fire, style: 'zigzag', gap: 5, sw: 1.6, wash: .85 }); },
+  noose() { R.ellipse(0, -18, 34, 30, { stroke: '#3D6E8C', sw: 3, rough: .7 }); },
+  palm() { R.ellipse(0, -10, 20, 26, { fill: P.skin, style: 'solid', sw: 1.5, rough: .5 }); }
+};
+
+/* ── generic arm: group at shoulder pivot; hangs along +y; hand holds an upright item ── */
+function arm(parent, name, x, y, r, skin, o = {}) {
+  const g = G(parent, name, { x, y, r });
+  const w = o.w || 22, L = o.L || 86;
+  R.in(g, () => {
+    R.ellipse(0, L * .48, w, L + 8, { fill: o.sleeve || skin, gap: 7, sw: 2.1, angle: 60 });
+    if (!o.lite) R.rect(-w / 2 - 1, L * .74, w + 2, 7, { fill: P.gold, style: 'solid', sw: 1.4, rough: .7 });
+    R.circle(0, L + 4, w * .95, { fill: skin, style: 'solid', sw: 1.8, rough: .7 });
+  });
+  const hand = G(g, 'hand', { x: 0, y: L + 4, r: -r });
+  if (o.item && ITEMS[o.item]) R.in(hand, () => ITEMS[o.item](o.itemArg));
+  return g;
+}
+
+/* ── head with expression sub-groups ── */
+function head(parent, o) {
+  const h = G(parent, 'head', { x: 0, y: o.hy != null ? o.hy : -248, s: o.hs || 1 });
+  const sk = o.skin, fine = { rough: .5, sw: 1.8 };
+  R.in(h, () => {
+    if (o.hairBack) {
+      if (o.longHair) R.path('M-30 6 Q-40 -42 0 -40 Q40 -42 30 6 Q40 40 44 78 L24 80 Q24 40 20 16 L-20 16 Q-24 40 -24 80 L-44 78 Q-40 40 -30 6Z', { fill: o.hairBack, style: 'cross-hatch', gap: 7, sw: 2, wash: .85 });
+      else R.ellipse(0, -6, 68, 62, { fill: o.hairBack, style: 'cross-hatch', gap: 7, sw: 2, wash: .85 });
+    }
+    if (o.crown === 'horns') {
+      R.path('M-24 -14 C-62 -18 -84 -48 -70 -82 C-62 -58 -46 -42 -20 -30Z', { fill: P.horn, gap: 6, sw: 2.2, wash: .9 });
+      R.path('M24 -14 C62 -18 84 -48 70 -82 C62 -58 46 -42 20 -30Z', { fill: P.horn, gap: 6, sw: 2.2, wash: .9 });
+      R.ellipse(-36, -2, 26, 12, { fill: sk, style: 'solid', sw: 1.8 }); R.ellipse(36, -2, 26, 12, { fill: sk, style: 'solid', sw: 1.8 });
+    } else {
+      if (!o.lite) R.path(ell(-28, 4, 5.5, 8.5) + ell(28, 4, 5.5, 8.5), { fill: sk, style: 'solid', ...fine });
+    }
+    R.ellipse(0, 0, o.fw || 56, o.fh || 64, { fill: sk, gap: 6, sw: 2.3, angle: 60 });
+    if (o.beard) R.path('M-22 12 Q0 62 22 12 Q0 26 -22 12Z', { fill: P.white, gap: 5, sw: 1.8, wash: .95 });
+    if (!o.lite) R.path(ell(-28, 20, 4.5, 4.5) + ell(28, 20, 4.5, 4.5), { fill: P.gold, style: 'solid', ...fine });
+    if (o.hairFront) R.path('M-28 -6 Q-30 -34 0 -34 Q30 -34 28 -6 Q16 -22 0 -24 Q-16 -22 -28 -6Z', { fill: o.hairFront, style: 'solid', sw: 1.8, rough: .8 });
+  });
+  const eyes = G(h, 'eyes', { o: o.closed ? 0 : 1 });
+  R.in(eyes, () => {
+    if (o.fierce) R.path(ell(-11, -1, 6.5, 5.5) + ell(11, -1, 6.5, 5.5), { fill: P.white, style: 'solid', ...fine });
+    R.path(ell(-11, -1, 4, 5) + ell(11, -1, 4, 5), { fill: o.eyeCol || P.ink, style: 'solid', sw: 1, rough: .4 });
+    if (!o.lite) R.path(ell(-9, -4, 1.5, 1.5) + ell(13, -4, 1.5, 1.5), { fill: '#fff', style: 'solid', stroke: 'none' });
+  });
+  const eyesC = G(h, 'eyesC', { o: o.closed ? 1 : 0 });
+  R.in(eyesC, () => R.path('M-18 -1 Q-11 5 -4 -1 M4 -1 Q11 5 18 -1', { sw: 2.2, rough: .4 }));
+  const brows = G(h, 'brows');
+  R.in(brows, () => {
+    if (o.fierce) R.path('M-21 -17 L-4 -10 M21 -17 L4 -10', { sw: 3.6, rough: .4 });
+    else R.path('M-18 -11 Q-11 -16 -4 -12 M18 -11 Q11 -16 4 -12', { sw: 1.8, rough: .4 });
+  });
+  R.in(h, () => {
+    if (!o.lite) R.path('M0 -1 Q3 7 -1 9', { sw: 1.6, rough: .4 });
+    if (o.noseRing) R.circle(5, 10, 9, { stroke: P.gold, sw: 2.2, rough: .4 });
+    if (o.tilak !== false) R.ellipse(0, -21, 4, 9, { fill: o.tilakCol || P.kumkum, style: 'solid', stroke: 'none' });
+  });
+  const mouth = G(h, 'mouth');
+  R.in(mouth, () => o.fierce ? R.path('M-9 17 Q2 21 11 13', { sw: 2.4, rough: .4 }) : R.arc(0, 13, 15, 8, .25, Math.PI - .25, false, { sw: 2, rough: .4, stroke: '#7A2E25' }));
+  const mouthO = G(h, 'mouthO', { o: 0 }); R.in(mouthO, () => R.ellipse(0, 16, 9, 11, { fill: '#5A2420', style: 'solid', sw: 1.4, rough: .4 }));
+  crown(h, o);
+  return h;
+}
+function crown(h, o) {
+  R.in(h, () => {
+    switch (o.crown) {
+      case 'mukut':
+        R.poly([[-29, -22], [29, -22], [25, -48], [13, -40], [0, -70], [-13, -40], [-25, -48]], { fill: P.gold, gap: 6, sw: 2.1, wash: .8 });
+        R.rect(-31, -27, 62, 9, { fill: P.goldD, style: 'solid', sw: 1.6, rough: .7 });
+        R.circle(0, -38, 11, { fill: P.kumkum, style: 'solid', sw: 1.4, rough: .5 });
+        break;
+      case 'kirita':
+        R.poly([[-27, -22], [27, -22], [22, -96], [-22, -96]], { fill: P.gold, gap: 6, sw: 2.1, wash: .8 });
+        R.poly([[-22, -96], [22, -96], [0, -120]], { fill: P.goldD, style: 'solid', sw: 1.8 });
+        R.line(-24, -52, 24, -52, { sw: 1.6 }); R.line(-23, -76, 23, -76, { sw: 1.6 });
+        R.circle(0, -38, 11, { fill: P.blue, style: 'solid', sw: 1.4, rough: .5 }); R.circle(0, -64, 9, { fill: P.kumkum, style: 'solid', sw: 1.4, rough: .5 });
+        break;
+      case 'jata':
+        R.ellipse(0, -40, 44, 30, { fill: '#4A3426', style: 'cross-hatch', gap: 6, sw: 2 });
+        R.ellipse(0, -64, 32, 32, { fill: '#4A3426', style: 'cross-hatch', gap: 6, sw: 2 });
+        R.path('M10 -78 A13 13 0 1 0 25 -58 A9 9 0 1 1 10 -78Z', { fill: '#FFF6D6', style: 'solid', sw: 1.5, rough: .5 });
+        R.path('M-14 -24 L14 -24 M-14 -18 L14 -18', { stroke: P.white, sw: 2.4, rough: .3 });
+        break;
+      case 'horns':
+        R.poly([[-26, -22], [-18, -40], [-8, -28], [0, -46], [8, -28], [18, -40], [26, -22]], { fill: P.hair, style: 'solid', sw: 1.8 });
+        R.rect(-27, -27, 54, 8, { fill: P.gold, style: 'solid', sw: 1.4, rough: .6 });
+        break;
+      case 'tiara':
+        R.poly([[-26, -24], [26, -24], [18, -42], [8, -36], [0, -50], [-8, -36], [-18, -42]], { fill: P.gold, gap: 6, sw: 2, wash: .85 });
+        R.path('M-12 -68 A16 16 0 1 0 12 -68 A12 12 0 1 1 -12 -68Z', { fill: '#FFF8E0', style: 'solid', sw: 1.6, rough: .5 });
+        break;
+      case 'flame':
+        R.path('M-28 -16 L-22 -48 L-12 -30 L-4 -64 L4 -32 L14 -56 L20 -30 L28 -18Z', { fill: P.fire, style: 'zigzag', gap: 5, sw: 2, wash: .85 });
+        R.rect(-28, -24, 56, 8, { fill: P.gold, style: 'solid', sw: 1.4, rough: .6 });
+        break;
+    }
+  });
+}
+
+/* ── deity / figure builder (standing or seated) ── */
+function figure(parent, name, o) {
+  const root = G(parent, name, { x: o.x || 0, y: o.y || 0, s: o.s || 1, o: o.op != null ? o.op : 1 }, o.later ? 'later' : null);
+  const body = G(root, 'body', {}, o.idle === false ? null : 'breathe');
+  const k = o.k || 1, sk = o.skin, dy = o.seated ? 70 : 0;
+  if (o.aura) R.in(body, () => R.glow(0, -250 + dy, 120, o.aura));
+  const back = G(body, 'back');
+  const up = G(body, 'upper', { y: dy });
+  (o.backArms || []).forEach((a, i) => arm(back, 'barm' + i, (a.side < 0 ? -40 : 40) * k, -192 + dy, a.r, sk, { item: a.item, w: 18, L: 80, lite: true }));
+  R.in(body, () => {
+    if (o.seated) {
+      R.ellipse(0, -26, 210 * k, 66, { fill: o.robe, gap: 7, sw: 2.3, angle: 20 });
+      R.path(ell(-60 * k, -14, 23, 13) + ell(60 * k, -14, 23, 13), { fill: sk, style: 'solid', sw: 1.8 });
+    } else {
+      R.poly([[-58 * k, 0], [58 * k, 0], [42 * k, -128], [-42 * k, -128]], { fill: o.robe, gap: 7, sw: 2.3, angle: o.robeAngle || -50 });
+      if (o.stripes) R.path(`M${-40 * k} -30 l20 -6 M${-30 * k} -80 l20 -6 M${10 * k} -50 l22 -6 M${20 * k} -100 l18 -5`, { stroke: P.ink, sw: 3.2, rough: .6 });
+      R.rect(-58 * k, -16, 116 * k, 14, { fill: o.border || P.gold, style: 'zigzag', gap: 5, sw: 1.8, wash: .9 });
+      if (!o.lite) R.path(ell(-24, 2, 15, 6.5) + ell(24, 2, 15, 6.5), { fill: sk, style: 'solid', sw: 1.6 });
+    }
+  });
+  R.in(up, () => {
+    R.poly([[-42 * k, -128], [42 * k, -128], [50 * k, -200], [-50 * k, -200]], { fill: o.top || sk, gap: 7, sw: 2.3, style: o.topStyle || 'hachure' });
+    if (o.armor) R.path(`M${-40 * k} -196 Q0 ${-150} ${40 * k} -196 L${36 * k} -150 Q0 -128 ${-36 * k} -150Z`, { fill: P.gold, style: 'cross-hatch', gap: 7, sw: 2 });
+    if (!o.lite) R.rect(-44 * k, -138, 88 * k, 12, { fill: o.belt || P.gold, style: 'solid', sw: 1.6, rough: .7 });
+    if (o.sash) R.path(`M${-48 * k} -198 Q${-6} -150 ${42 * k} -130`, { stroke: col(o.sash), sw: 9, rough: .9 });
+    if (o.snake) R.path(`M${-30 * k} -206 Q0 -170 ${30 * k} -206 Q${36 * k} -214 ${28 * k} -220`, { stroke: '#4E8A4A', sw: 6, rough: .8 });
+    if (o.garland) R.arc(0, -200, 76 * k, 110, 0.15, Math.PI - .15, false, { stroke: P.saffron, sw: 6, rough: 1.2 });
+    R.arc(0, -202, 54 * k, 38, .2, Math.PI - .2, false, { stroke: P.gold, sw: 3.4, rough: .7 });
+    R.rect(-9, -222, 18, 24, { fill: sk, style: 'solid', sw: 1.8, rough: .6 });
+  });
+  const ar = o.arms || {};
+  arm(up, 'armL', -50 * k, -194, ar.L != null ? ar.L : 14, sk, { item: ar.Li, itemArg: ar.LiA, w: 22 * (o.armW || 1), L: 86, sleeve: o.sleeve, lite: o.lite });
+  arm(up, 'armR', 50 * k, -194, ar.R != null ? ar.R : -14, sk, { item: ar.Ri, itemArg: ar.RiA, w: 22 * (o.armW || 1), L: 86, sleeve: o.sleeve, lite: o.lite });
+  const extraHeads = o.sideHeads ? G(up, 'sideHeads') : null;
+  if (extraHeads) { [-38, 38].forEach(dx => { const sh = G(extraHeads, null, { x: dx, y: -238, s: .78 }); head(sh, { ...o, hy: 0, hs: 1, crown: 'mukut', beard: true, lite: true }); }); }
+  head(up, o);
+  return root;
+}
+
+/* ── cast ── */
+const CAST = {
+  mahisha(p, name, t = {}) {
+    return figure(p, name, { ...t, k: 1.32, armW: 1.35, skin: P.asura, robe: P.maroon, border: P.gold, top: P.asura, armor: true, crown: 'horns', fierce: true, noseRing: true, tilak: false, eyeCol: '#2A1418', hairBack: P.hair, fw: 64, fh: 66,
+      arms: t.arms || { L: 18, R: -18 }, seated: t.seated, closed: t.closed });
+  },
+  brahma(p, name, t = {}) {
+    return figure(p, name, { ...t, skin: P.skinG, robe: P.saffron, top: P.skinG, border: P.kumkum, sash: P.cream, crown: 'mukut', beard: true, sideHeads: true, aura: t.aura || 'gGold',
+      arms: t.arms || { L: 24, Li: 'book', R: -24, Ri: 'pot' } });
+  },
+  shiva(p, name, t = {}) {
+    return figure(p, name, { ...t, skin: P.shiva, robe: '#E39A3C', stripes: true, border: '#8C5A2B', top: P.shiva, crown: 'jata', snake: true, tilak: false, hairBack: '#4A3426', longHair: true,
+      arms: t.arms || { L: 20, Li: 'palm', R: -16, Ri: 'trident', RiA: 220 } });
+  },
+  vishnu(p, name, t = {}) {
+    return figure(p, name, { ...t, skin: P.vishnu, robe: '#F2C230', border: P.kumkum, top: P.vishnu, crown: 'kirita', garland: true, hairBack: P.hair, tilakCol: '#F7F0DC',
+      backArms: [{ side: -1, r: 130, item: 'chakra' }, { side: 1, r: -130, item: 'conch' }],
+      arms: t.arms || { L: 22, Li: 'lotus', R: -22, Ri: 'mace' } });
+  },
+  deva(p, name, t = {}) {
+    return figure(p, name, { skin: P.skin, robe: P.blue, top: P.skin, crown: 'mukut', hairBack: P.hair, sash: P.gold, ...t });
+  },
+  durga(p, name, t = {}) {
+    return figure(p, name, { ...t, skin: P.skin, robe: P.kumkum, border: P.gold, top: '#C2402F', sash: P.gold, crown: 'mukut', hairBack: P.hair, longHair: true, garland: false,
+      backArms: [{ side: -1, r: 62, item: 'chakra' }, { side: -1, r: 100, item: 'conch' }, { side: -1, r: 136, item: 'bow' }, { side: 1, r: -62, item: 'sword' }, { side: 1, r: -100, item: 'lotus' }, { side: 1, r: -136, item: 'mace' }],
+      arms: { L: 26, Li: 'palm', R: -24, Ri: 'trident', RiA: 240 } });
+  },
+  shailaputri(p, name, t = {}) {
+    return figure(p, name, { ...t, skin: P.skinL, robe: '#E9A3A8', border: P.saffron, top: '#D9767E', sash: '#6E9A4A', crown: 'tiara', hairBack: P.hair, longHair: true,
+      arms: { L: 20, Li: 'lotus', R: -14, Ri: 'trident', RiA: 260 } });
+  },
+  lion(p, name, t = {}) {
+    const g = G(p, name, t);
+    const body = G(g, 'lbody', {}, 'breathe');
+    R.in(body, () => {
+      [[-120, 0], [-80, 0], [90, 0], [128, 0]].forEach(([x], i) => R.rect(x - 15, -96, 30, 96, { fill: P.lion, gap: 7, sw: 2, angle: 70 + i }));
+      R.ellipse(0, -118, 330, 128, { fill: P.lion, gap: 8, sw: 2.4, angle: -30 });
+    });
+    const tail = G(g, 'tail', { x: -160, y: -128 });
+    const tailIn = G(tail, null, {}, 'swish');
+    R.in(tailIn, () => { R.path('M0 0 Q-60 -10 -70 -70', { stroke: P.ink, sw: 5, rough: .8 }); R.circle(-72, -78, 30, { fill: P.mane, style: 'zigzag', gap: 5, sw: 1.8 }); });
+    const hd = G(g, 'lhead', { x: 150, y: -168 });
+    R.in(hd, () => {
+      R.circle(0, 0, 150, { fill: P.mane, style: 'zigzag', gap: 7, sw: 2.4, wash: .8 });
+      R.circle(10, 6, 92, { fill: P.lion, gap: 6, sw: 2.2 });
+      R.path(ell(-8, -8, 6, 6) + ell(26, -8, 6, 6), { fill: P.ink, style: 'solid', sw: 1, rough: .4 });
+      R.path('M10 10 L22 10 L16 20Z', { fill: '#5A2420', style: 'solid', sw: 1.4, rough: .4 });
+      R.path('M16 20 Q10 30 2 26 M16 20 Q22 30 30 26', { sw: 1.8, rough: .4 });
+      R.path(ell(-30, -38, 13, 13) + ell(46, -36, 13, 13), { fill: P.lion, style: 'solid', sw: 1.8 });
+    });
+    return g;
+  },
+  soldier(p, name, t = {}) {
+    const g = G(p, name, t);
+    const b = G(g, 'sb');
+    R.in(b, () => {
+      R.path('M-15 0 L-15 -44 L-4 -44 L-4 0Z M4 0 L4 -44 L15 -44 L15 0Z', { fill: '#4B3C33', style: 'solid', sw: 1.6, rough: .9 });
+      R.poly([[-26, -40], [26, -40], [21, -98], [-21, -98]], { fill: P.soldier, style: 'cross-hatch', gap: 7, sw: 2 });
+      R.rect(-24, -58, 48, 8, { fill: '#8A6A3A', style: 'solid', sw: 1.4, rough: .7 });
+      R.circle(0, -118, 40, { fill: P.soldierSkin, gap: 6, sw: 2 });
+      R.path(ell(-8, -118, 4.5, 4.5) + ell(8, -118, 4.5, 4.5), { fill: '#F6D35B', style: 'solid', sw: 1.2, rough: .4 });
+      R.path(ell(-8, -118, 1.8, 1.8) + ell(8, -118, 1.8, 1.8), { fill: P.ink, style: 'solid', stroke: 'none' });
+      R.path('M-22 -122 Q0 -152 22 -122Z', { fill: '#5A5F66', style: 'cross-hatch', gap: 6, sw: 1.9 });
+      R.path('M-18 -132 Q-32 -138 -28 -152 M18 -132 Q32 -138 28 -152', { sw: 3, rough: .6 });
+      R.circle(-26, -72, 44, { fill: '#7A4A3A', gap: 7, sw: 2, angle: 30 }); R.circle(-26, -72, 12, { fill: P.gold, style: 'solid', sw: 1.2, rough: .5 });
+    });
+    const sp = G(b, 'spear', { x: 22, y: -86 });
+    const spIn = G(sp, 'spIn');
+    R.in(spIn, () => { R.line(0, 56, 0, -70, { stroke: '#5A3B26', sw: 3.4, rough: .6 }); R.poly([[-7, -70], [7, -70], [0, -94]], { fill: '#B8BEC6', style: 'solid', sw: 1.4, rough: .6 }); });
+    return g;
+  }
+};
+/* Distant army: rows of silhouettes, one rough shape per row */
+A.armyRow = (x0, y, n, gap, h, fill = '#3D2E3A', o = {}) => {
+  let d = '', sp = '';
+  for (let i = 0; i < n; i++) {
+    const x = x0 + i * gap + (i % 2) * gap * .2, hh = h * (.9 + (i % 3) * .06);
+    d += `M${x - h * .22} ${y} L${x - h * .18} ${y - hh * .62} Q${x} ${y - hh * 1.02} ${x + h * .18} ${y - hh * .62} L${x + h * .22} ${y}Z `;
+    sp += `M${x + h * .26} ${y - hh * .2} L${x + h * .3} ${y - hh * 1.35} `;
+  }
+  R.path(sp, { stroke: o.spear || '#2A1E26', sw: 2.2, rough: 1 });
+  return R.path(d, { fill, style: 'solid', sw: 1.6, stroke: '#24181F', rough: 1.1 });
+};
+A.wavyBand = (y, amp, fill, o = {}) => { let d = `M-500 ${y}`; for (let x = -500; x <= 2100; x += 200) d += ` Q${x + 100} ${y + (x / 200 % 2 ? amp : -amp)} ${x + 200} ${y}`; d += ` L2100 ${o.to || 1100} L-500 ${o.to || 1100}Z`; return R.path(d, { fill, style: o.style || 'hachure', gap: o.gap || 10, wash: o.wash != null ? o.wash : .8, sw: o.sw || 2.2, angle: o.angle || -20, fw: o.fw }); };
+</script>
+<script>
+'use strict';
+/* ════════════════════════════════════════════════════════════════════
+   STORY — exact narration (never edited), scenes, cues
+   Each scene's script lists narration indices in order; 'GAME' marks the
+   mandatory interaction point. compile() verifies every line appears
+   exactly once, in the original order.
+   ════════════════════════════════════════════════════════════════════ */
+const TEXT = {
+  ep1: [
+    'Long ago, in a time when devas, humans, and asuras lived across the three worlds, there lived a powerful asura named Mahishasura.',
+    'Mahishasura wanted one thing above all else.',
+    'Power.',
+    'So he went deep into the forest and began a long and difficult tapasya.',
+    'Days passed.',
+    'Then months.',
+    'Then years.',
+    'He did not stop.',
+    'His determination pleased Brahma, who appeared before him.',
+    'Mahishasura asked for a powerful boon.',
+    'He wanted to become impossible to defeat.',
+    'Brahma granted him a boon that no man or deva could defeat him.',
+    'Mahishasura thought he was now invincible.',
+    'And slowly, his pride grew.',
+    'He gathered an army and began attacking the devas.',
+    'One by one, the devas were pushed from their kingdoms.',
+    'Soon, Mahishasura’s power had spread across the three worlds.',
+    'The devas tried to stop him.',
+    'But they could not.',
+    'They needed help.',
+    'So they came together.',
+    'Shiva.',
+    'Vishnu.',
+    'Brahma.',
+    'And the other devas.',
+    'Each released their divine energy.',
+    'The different lights came together…',
+    'Brighter…',
+    'Brighter…',
+    'Until they became one enormous radiant light.',
+    'And from that light appeared a magnificent goddess.',
+    'Devi Durga.',
+    'She stood upon a lion, calm and fearless.',
+    'The devas knew that she was the one who could face Mahishasura.',
+    'But this battle would not be won in a single day.',
+    'Nine nights of Shakti were about to begin.',
+    'And from Durga’s radiant form came the first divine light…',
+    'It travelled far away…',
+    'toward the mountains.',
+    'Who was waiting there?',
+    'The first power of Shakti was about to awaken.'
+  ],
+  ep2: [
+    'High among the mountains, the first divine light touched the earth.',
+    'From it appeared Shailaputri.',
+    'The daughter of the mountains.',
+    'She stood quietly beneath the great peaks.',
+    'But far away, Mahishasura’s army was moving closer.',
+    'His soldiers wanted to frighten everyone who stood against their king.',
+    'They marched through forests.',
+    'They crossed valleys.',
+    'They shook the earth beneath their feet.',
+    'Soon, they reached the mountains.',
+    'The soldiers expected everyone to run.',
+    'But Shailaputri did not move.',
+    'The mountains stood behind her.',
+    'The wind blew around her.',
+    'The army moved closer.',
+    'Still, she stood firm.',
+    'Mahishasura’s soldiers tried to frighten her.',
+    'But Shailaputri remained calm.',
+    'She knew something important:',
+    'Strength does not always mean attacking.',
+    'Sometimes…',
+    'strength means standing firm when something tries to push you down.',
+    'The soldiers finally stepped back.',
+    'The first light of Shakti had awakened.',
+    'Strength.',
+    'But the journey was far from over.',
+    'Because strength alone would not be enough.',
+    'The road ahead would be long.',
+    'And the next challenge would ask a difficult question:',
+    'Can you keep going when the journey becomes hard?',
+    'The second light of Shakti was beginning to awaken…'
+  ]
+};
+
+/* ── scene helpers ── */
+function layer(g, name, d) { const l = G(g, name); l.style.setProperty('--d', d + 's'); return l; }
+function part(fig, n) {
+  if (!fig) return null;
+  const up = fig.querySelector('[data-n="upper"]');
+  if (!up) return fig.querySelector(`[data-n="${n}"]`);
+  if (n === 'armL' || n === 'armR' || n === 'head') return up.querySelector(`:scope > [data-n="${n}"]`);
+  const h = up.querySelector(':scope > [data-n="head"]');
+  return h ? h.querySelector(`:scope > [data-n="${n}"]`) : null;
+}
+function show(g, d = 700, extra) {
+  if (!g) return Promise.resolve();
+  if (g.classList.contains('later') && !RM && !LOW) { g.classList.remove('sketch'); void g.getBBox; g.classList.add('sketch'); setTimeout(() => g.classList.remove('sketch'), 2200 / FAST); }
+  return tw(g, { o: 1, ...(extra || {}) }, d);
+}
+const hide = (g, d = 500) => tw(g, { o: 0 }, d);
+function flash(ms = 500) { const f = $id('flash'); f.classList.add('on'); setTimeout(() => f.classList.remove('on'), ms / FAST); }
+async function cut(fn) { const v = $id('veil'); v.classList.add('on'); await wait(450); fn(); v.classList.remove('on'); }
+function shakeApp() { if (RM) return; const a = $id('app'); a.classList.remove('shake'); void a.offsetWidth; a.classList.add('shake'); setTimeout(() => a.classList.remove('shake'), 700); }
+const walkOn = (army, on) => army && army.querySelectorAll('[data-n="sb"]').forEach((b, i) => { b.classList.toggle('walk', on); b.style.animationDelay = (i * .11) + 's'; });
+
+/* ════════ EPISODE 1 ════════ */
+const DEVAS = [
+  { key: 'agni', x: 150, y: 690, s: .78, out: -90, draw: (p, n, t) => CAST.deva(p, n, { ...t, skin: '#E8925A', robe: P.fire, top: '#E8925A', crown: 'flame', sash: P.gold, arms: { L: 20, Li: 'flame', R: -20, Ri: 'flame' } }) },
+  { key: 'shiva', x: 345, y: 700, s: .95, out: -70, draw: (p, n, t) => CAST.shiva(p, n, t) },
+  { key: 'brahma', x: 520, y: 640, s: .8, out: -50, draw: (p, n, t) => CAST.brahma(p, n, { ...t, aura: null }) },
+  { key: 'indra', x: 1080, y: 640, s: .8, out: 50, draw: (p, n, t) => CAST.deva(p, n, { ...t, skin: P.skinG, robe: '#7E57A6', top: P.skinG, crown: 'mukut', arms: { L: 20, Li: 'vajra', R: -20, Ri: 'palm' } }) },
+  { key: 'vishnu', x: 1255, y: 700, s: .95, out: 70, draw: (p, n, t) => CAST.vishnu(p, n, t) },
+  { key: 'varuna', x: 1450, y: 690, s: .78, out: 90, draw: (p, n, t) => CAST.deva(p, n, { ...t, skin: P.aqua, robe: '#3D6E8C', top: P.aqua, crown: 'mukut', sash: P.cream, arms: { L: 20, Li: 'noose', R: -20, Ri: 'palm' } }) }
+];
+const CENTER = { x: 800, y: 392 };
+const orbStart = d => ({ x: d.x, y: Math.round(d.y - 400 * d.s) });
+
+const EP1 = {
+  id: 'ep1', num: 1, title: 'The Rise of Mahishasura', theme: 'Why Navratri began',
+  end: { title: 'EPISODE 1 COMPLETE', sub: 'THE FIRST LIGHT IS CALLING.', note: 'Nine nights. Nine powers. One great Shakti.' },
+  scenes: [
+    {
+      id: 'e1-worlds', alt: 'The three worlds: golden heavens above, green earth in the middle, the dark underworld below. The asura Mahishasura appears.',
+      build(g) {
+        const bg = layer(g, 'bg', 0), mid = layer(g, 'mid', .25), ch = layer(g, 'ch', .5);
+        R.in(bg, () => {
+          A.sky('skyGold', -200, 340);
+          A.cloud(180, 230, 300); A.cloud(1420, 220, 320); A.cloud(520, 270, 260); A.cloud(1100, 265, 280);
+          A.cloud(800, 250, 420); A.palace(800, 168, 1);
+          A.cloud(380, 120, 200, { cls: 'drift' }); A.cloud(1240, 100, 220, { cls: 'drift' });
+          A.wavyBand(330, 16, '#C7D99A', { to: 640, gap: 11, angle: -25 });
+        });
+        R.in(mid, () => {
+          R.path('M-500 470 Q150 360 520 450 Q820 380 1100 455 Q1400 380 2100 460 L2100 640 L-500 640Z', { fill: P.green, gap: 9, sw: 2.2, wash: .7 });
+          R.path('M-100 560 Q300 520 600 580 Q900 630 1250 570 Q1500 540 1800 590', { stroke: '#5B86B8', sw: 9, rough: 1 });
+          A.tree(150, 520, 120); A.tree(980, 500, 100, P.leaf); A.pine(640, 500, 110); A.pine(1500, 520, 120);
+          A.hut(360, 540, .9); A.hut(780, 545, .8);
+          R.fillRect(-500, 620, 2600, 600, 'url(#under)');
+          A.wavyBand(625, 12, '#5A3D52', { style: 'cross-hatch', wash: .9, gap: 12, to: 1100 });
+          [[200, 800], [520, 760], [900, 820], [1500, 780]].forEach(([x, y]) => R.arc(x, y, 180, 150, Math.PI, Math.PI * 2, false, { stroke: '#1E141E', sw: 3 }));
+          [[300, 720], [700, 700], [1080, 740]].forEach(([x, y]) => { R.glow(x, y, 50, 'gRed'); R.poly([[x - 12, y + 16], [x, y - 22], [x + 12, y + 16]], { fill: '#E2603A', style: 'solid', sw: 1.6 }); });
+        });
+        G(ch, 'maura', { x: 1250, y: 520, o: 0 }); R.in(ch.lastChild, () => R.glow(0, 0, 270, 'gRed'));
+        CAST.mahisha(ch, 'mahisha', { x: 1320, y: 870, s: 1.45, op: 0, later: true });
+      },
+      script: [
+        [0, async S => { await wait(2800); show(S.$('mahisha'), 900, { x: 1250 }); }],
+        [1, S => tw(part(S.$('mahisha'), 'head'), { r: -7 }, 700)],
+        [2, S => { show(S.$('maura'), 600); tw(part(S.$('mahisha'), 'armR'), { r: -165 }, 800, 'back'); }]
+      ]
+    },
+    {
+      id: 'e1-tapasya', alt: 'Deep in the forest Mahishasura sits in tapasya while days, months and years pass. Brahma appears in golden light.',
+      build(g) {
+        const bg = layer(g, 'bg', 0), mid = layer(g, 'mid', .2), ch = layer(g, 'ch', .45), fx = layer(g, 'fx', .6);
+        R.in(bg, () => {
+          A.sky('skyForest');
+          R.path('M-500 520 Q0 420 300 470 Q600 380 900 460 Q1200 400 1500 470 L2100 450 L2100 760 L-500 760Z', { fill: '#2C4A33', style: 'cross-hatch', gap: 10, wash: .8 });
+        });
+        const sun = G(bg, 'sun', { x: 240, y: 200 }); R.in(sun, () => { R.glow(0, 0, 110, 'gGold'); R.circle(0, 0, 70, { fill: P.gold, style: 'solid', sw: 2 }); });
+        const moons = G(bg, 'moons', { o: 0 }, 'later');
+        R.in(moons, () => [0, 1, 2, 3].forEach(i => { const x = 520 + i * 190, y = 140; R.circle(x, y, 54, { fill: '#FFF6D6', style: 'solid', sw: 1.8 }); if (i < 3) R.circle(x + 12 + i * 8, y - 4, 50 - i * 10, { fill: '#2C4A33', style: 'solid', stroke: 'none' }); }));
+        R.in(mid, () => {
+          R.rect(40, -40, 110, 800, { fill: '#4A3426', style: 'cross-hatch', gap: 9, sw: 2.6 });
+          R.rect(1450, -40, 120, 800, { fill: '#4A3426', style: 'cross-hatch', gap: 9, sw: 2.6 });
+          R.circle(90, 40, 360, { fill: P.forest, gap: 9, sw: 2.2 }); R.circle(1510, 30, 380, { fill: P.forest, gap: 9, sw: 2.2, angle: 40 });
+          A.pine(330, 690, 230, '#355E3B'); A.pine(1270, 690, 250, '#355E3B');
+          A.wavyBand(690, 10, P.moss, { style: 'dots', gap: 12, wash: .85, angle: 0 });
+          A.grass(220, 720, 80); A.grass(1180, 720, 90); A.grass(560, 760, 70); A.grass(980, 770, 70);
+          R.ellipse(470, 715, 110, 46, { fill: P.stone, style: 'cross-hatch', gap: 8, sw: 2 });
+        });
+        G(ch, 'tglow', { x: 760, y: 560, o: .25 }); R.in(ch.lastChild, () => R.glow(0, 0, 230, 'gGold'));
+        CAST.mahisha(ch, 'mahisha', { x: 760, y: 700, s: 1.1, seated: true, closed: true, arms: { L: 32, R: -32 } });
+        const vines = G(ch, 'vines', { o: 0 }, 'later');
+        R.in(vines, () => { R.path('M620 700 Q600 640 650 610 Q700 590 690 540 M900 700 Q930 640 880 600 Q840 570 860 530', { stroke: '#4E7A3A', sw: 4, rough: 1.2 }); [[650, 610], [690, 548], [880, 600], [860, 535]].forEach(([x, y]) => R.ellipse(x, y, 22, 12, { fill: P.leaf, style: 'solid', sw: 1.4 })); });
+        const leaves = G(fx, 'leaves');
+        [180, 430, 640, 980, 1180, 1380].forEach((x, i) => { const l = G(leaves, 'lf' + i, { x, y: -20 - i * 30, o: 0 }); R.in(l, () => R.ellipse(0, 0, 26, 13, { fill: i % 2 ? '#C9772E' : P.leaf, style: 'solid', sw: 1.4 })); });
+        const gw = G(fx, 'gwash', { o: 0 }); R.in(gw, () => R.glow(1230, 380, 700, 'gGold'));
+        const bG = G(fx, 'brahmaG', { x: 1230, y: 690, o: 0 }, 'later');
+        R.in(bG, () => { for (let i = -3; i <= 3; i++) { const a = i * .38; const [tx, ty] = rot(0, -60, a), [c1x, c1y] = rot(-26, -30, a), [c2x, c2y] = rot(26, -30, a); R.path(`M0 0 Q${c1x} ${c1y} ${tx} ${ty} Q${c2x} ${c2y} 0 0Z`, { fill: P.pink, style: 'hachure', gap: 6, sw: 1.8, wash: .9 }); } });
+        CAST.brahma(bG, 'brahma', { y: -24, s: .9 });
+        const beam = G(fx, 'beam', { o: 0 }, 'later');
+        R.in(beam, () => { const p = [[1118, 410]]; for (let i = 1; i <= 7; i++) p.push([1118 - i * 50, 410 + i * 14 + (i % 2 ? -16 : 16)]); R.glow(760, 500, 120, 'gGold'); R.lines(p, { stroke: P.gold, sw: 6, rough: 1 }); R.lines(p, { stroke: '#FFF6D6', sw: 2, rough: .6 }); });
+      },
+      script: [
+        [3],
+        [4, async S => { const s = S.$('sun'); await tw(s, { x: 800, y: 110 }, 1600, 'out'); await tw(s, { x: 1330, y: 200, o: .2 }, 1500, 'io'); }],
+        [5, async S => { hide(S.$('sun'), 400); show(S.$('moons'), 1200); }],
+        [6, S => { show(S.$('vines'), 1400); hide(S.$('moons'), 1600); for (let i = 0; i < 6; i++) { const l = S.$('lf' + i); setT(l, { o: 1 }); tw(l, { y: 720 + (i % 3) * 20, r: 200 + i * 40, x: st(l).x + (i % 2 ? 60 : -60) }, 2600 + i * 220, 'io'); } }],
+        [7, S => tw(S.$('tglow'), { o: .75, s: 1.3 }, 1400)],
+        [8, async S => { show(S.$('gwash'), 1200); show(S.$('brahmaG'), 1200, { y: 650 }); }],
+        [9, S => { const m = S.$('mahisha'); tw(part(m, 'eyesC'), { o: 0 }, 300); tw(part(m, 'eyes'), { o: 1 }, 300); tw(part(m, 'head'), { r: 6 }, 600); }],
+        [10, S => tw(part(S.$('mahisha'), 'armR'), { r: -95 }, 700, 'back')],
+        [11, async S => { await tw(part(S.$('brahma'), 'armL'), { r: 128 }, 700, 'out'); show(S.$('beam'), 600); flash(300); tw(S.$('tglow'), { o: 1, s: 1.6 }, 900); }]
+      ]
+    },
+    {
+      id: 'e1-pride', alt: 'Under a crimson sky Mahishasura stands on a rocky crag, growing prouder, as rows of his army gather below.',
+      build(g) {
+        const bg = layer(g, 'bg', 0), mid = layer(g, 'mid', .2), ch = layer(g, 'ch', .45);
+        R.in(bg, () => {
+          A.sky('skyCrimson');
+          A.cloud(260, 150, 300, { fill: '#E7A08A', stroke: '#5A2A2A' }); A.cloud(1330, 120, 340, { fill: '#E7A08A', stroke: '#5A2A2A' });
+          A.range([[-200, 640], [200, 380], [420, 520], [700, 330], [980, 500], [1250, 360], [1500, 480], [1800, 640]], '#6B3346', { style: 'cross-hatch', gap: 11 });
+        });
+        R.in(mid, () => {
+          A.wavyBand(640, 10, '#9E5A3A', { style: 'dots', gap: 13, wash: .85, angle: 0 });
+          R.poly([[540, 900], [610, 650], [700, 606], [900, 600], [990, 650], [1060, 900]], { fill: P.stoneD, style: 'cross-hatch', gap: 9, sw: 2.6, wash: .85 });
+        });
+        const sh = G(mid, 'mshadow', { x: 800, y: 720, o: .5 }); R.in(sh, () => R.ellipse(0, 0, 340, 60, { fill: '#2A1724', style: 'solid', stroke: 'none' }));
+        G(ch, 'maura', { x: 800, y: 380, o: 0 }); R.in(ch.lastChild, () => R.glow(0, 0, 300, 'gRed'));
+        CAST.mahisha(ch, 'mahisha', { x: 800, y: 612, s: 1.12, arms: { L: 34, R: -34 } });
+        const a2 = G(ch, 'army2', { o: 0 }); R.in(a2, () => { A.armyRow(40, 700, 6, 85, 90, '#4A3346'); A.armyRow(1110, 700, 6, 85, 90, '#4A3346'); });
+        const a0 = G(ch, 'army0', { o: 0 }); R.in(a0, () => A.armyRow(-20, 790, 6, 100, 120));
+        const a1 = G(ch, 'army1', { o: 0 }); R.in(a1, () => A.armyRow(1100, 790, 6, 100, 120));
+      },
+      script: [
+        [12, S => { tw(S.$('mahisha'), { s: 1.22 }, 1200, 'back'); show(S.$('maura'), 900); }],
+        [13, S => { tw(S.$('mahisha'), { s: 1.45 }, 2400, 'io'); tw(S.$('mshadow'), { s: 2.4, o: .7 }, 2400); }],
+        [14, async S => { show(S.$('army2'), 700); await wait(600); show(S.$('army0'), 700); await wait(500); show(S.$('army1'), 700); }]
+      ]
+    },
+    {
+      id: 'e1-conquest', alt: 'The devas’ golden palaces in the heavens lose their banners one by one as a dark shadow spreads across the three worlds.',
+      build(g) {
+        const bg = layer(g, 'bg', 0), mid = layer(g, 'mid', .25), fx = layer(g, 'fx', .5);
+        R.in(bg, () => {
+          A.sky('skyGold', -200, 360);
+          A.wavyBand(360, 14, '#C7D99A', { to: 640, gap: 11 });
+          R.path('M-500 480 Q300 400 700 470 Q1100 410 2100 480 L2100 640 L-500 640Z', { fill: P.green, gap: 10, wash: .7 });
+          A.hut(300, 560, .8); A.hut(1240, 575, .8); A.tree(700, 560, 90); A.pine(1000, 560, 100);
+          R.fillRect(-500, 630, 2600, 600, 'url(#under)');
+          A.wavyBand(635, 10, '#5A3D52', { style: 'cross-hatch', wash: .9, gap: 12 });
+        });
+        [[300, 250], [800, 210], [1300, 250]].forEach(([x, y], i) => {
+          R.in(mid, () => { A.cloud(x, y + 30, 330); A.palace(x, y, .8); });
+          const fl = G(mid, 'flag' + i, { x: x + 4, y: y - 104 });
+          R.in(fl, () => R.line(0, 0, 0, -60, { sw: 2.4 }));
+          const fg = G(fl, 'fg' + i); R.in(fg, () => R.poly([[0, -60], [44, -48], [0, -36]], { fill: P.gold, style: 'solid', sw: 1.8 }));
+          const fm = G(fl, 'fm' + i, { o: 0 }); R.in(fm, () => R.poly([[0, -60], [44, -48], [0, -36]], { fill: P.maroon, style: 'solid', sw: 1.8 }));
+          const td = G(mid, 'td' + i, { x: x + 120, y: y + 6 });
+          R.in(td, () => { R.poly([[-14, 0], [14, 0], [8, -34], [-8, -34]], { fill: P.saffron, style: 'solid', sw: 1.6 }); R.circle(0, -44, 20, { fill: P.skin, style: 'solid', sw: 1.6 }); R.poly([[-9, -52], [9, -52], [0, -66]], { fill: P.gold, style: 'solid', sw: 1.2 }); });
+        });
+        const dk = G(fx, 'dark', { x: 1700, y: 470, s: .25, o: 0 });
+        R.in(dk, () => {
+          R.glow(-700, 0, 900, 'gDark');
+          R.path('M0 -470 Q-500 -380 -900 -300 Q-1400 -200 -1900 -260 L-1900 470 L0 470Z', { fill: '#3B2433', style: 'cross-hatch', gap: 14, wash: .45, sw: 2 });
+          A.armyRow(-1500, 400, 12, 120, 110, '#2E1F2A');
+        });
+        for (let i = 0; i < 3; i++) {
+          const b = G(fx, 'bolt' + i, { o: 0 }, 'later'); const x = [300, 800, 1300][i];
+          R.in(b, () => { R.glow(x + 80, 520, 60, 'gGold'); R.lines([[x, 300], [x + 30, 360], [x + 10, 380], [x + 60, 450], [x + 40, 470], [x + 90, 540]], { stroke: P.gold, sw: 5, rough: .8 }); });
+        }
+      },
+      script: [
+        [15, async S => { for (let i = 0; i < 3; i++) { hide(S.$('fg' + i), 500); show(S.$('fm' + i), 500); tw(S.$('td' + i), { y: st(S.$('td' + i)).y - 140, o: 0 }, 1300, 'io'); await wait(900); } }],
+        [16, S => tw(S.$('dark'), { o: .92, s: 1 }, 3000, 'io')],
+        [17, async S => { for (let i = 0; i < 3; i++) { show(S.$('bolt' + i), 400); await wait(350); } }],
+        [18, async S => { for (let i = 0; i < 3; i++) hide(S.$('bolt' + i), 700); await tw(S.$('dark'), { s: 1.05 }, 600); tw(S.$('dark'), { s: 1 }, 600); }]
+      ]
+    },
+    {
+      id: 'e1-gather', alt: 'The devas gather in the heavens and release their divine lights, which merge into one radiant light from which Devi Durga appears upon her lion.',
+      game: 'unite',
+      build(g) {
+        const bg = layer(g, 'bg', 0), mid = layer(g, 'mid', .2), ch = layer(g, 'ch', .4), fx = layer(g, 'fx', .6);
+        R.in(bg, () => {
+          A.sky('skyCeleste'); A.stars(8, 7, [0, 0, 1600, 300]);
+          R.path([0, 1, 2, 3, 4, 5, 6, 7].map(i => { const a = -Math.PI / 2 + (i - 3.5) * .3; return `M800 392 L${800 + Math.cos(a) * 900} ${392 + Math.sin(a) * 900}`; }).join(' '), { stroke: '#F7D58A', sw: 1.6, rough: 2 });
+        });
+        const dim = G(bg, 'dim', { o: 0 }); R.in(dim, () => R.fillRect(-500, -200, 2600, 1400, '#1E1838'));
+        R.in(mid, () => {
+          A.cloud(130, 780, 420); A.cloud(480, 760, 460); A.cloud(1120, 760, 460); A.cloud(1470, 780, 420); A.cloud(800, 820, 600);
+        });
+        const big = G(mid, 'bigglow', { x: CENTER.x, y: CENTER.y, o: 0 }); R.in(big, () => R.glow(0, 0, 420, 'gWhite'));
+        const halo = G(mid, 'halo', { x: 800, y: 300, o: 0 }, 'later'); R.in(halo, () => { R.glow(0, 0, 260, 'gGold'); R.circle(0, 0, 330, { stroke: P.gold, sw: 3.4, rough: 1.2 }); R.circle(0, 0, 360, { stroke: '#FFF0B8', sw: 1.6, rough: 1.6 }); });
+        const dur = G(ch, 'durga', { x: 800, y: 730, s: .95, o: 0 });
+        CAST.lion(dur, 'lion', {});
+        CAST.durga(dur, 'durgaFig', { y: -168, s: .92 });
+        DEVAS.forEach((d, i) => {
+          const ring = G(ch, 'ring' + i, { x: d.x, y: d.y + 4, o: 0 }); R.in(ring, () => { R.glow(0, -10, 90, 'gGold'); R.ellipse(0, 0, 150 * d.s, 34, { stroke: P.gold, sw: 3, rough: 1.2 }); });
+          d.draw(ch, 'dv' + i, { x: d.x + d.out, y: d.y, s: d.s, op: .85, lite: true });
+        });
+        const dy = G(fx, 'diyas');
+        for (let i = 0; i < 9; i++) { const x = 400 + i * 100, y = 120 + Math.pow((x - 800) / 400, 2) * 70; R.in(dy, () => A.diya(x, y, 1.1, 'dy' + i)); setT(dy.lastChild, { o: 0 }); }
+        /* game layer: beams, target, orbs, guides, hint hand */
+        const beams = G(fx, 'beams');
+        DEVAS.forEach((d, i) => { const s = orbStart(d); const b = G(beams, 'beam' + i, { o: 0 }, 'later'); const pts = []; for (let k = 0; k <= 6; k++) { const t = k / 6; pts.push([s.x + (CENTER.x - s.x) * t + (k % 2 ? 0 : 0), s.y + (CENTER.y - s.y) * t + (k > 0 && k < 6 ? (k % 2 ? -14 : 14) : 0)]); } R.in(b, () => R.lines(pts, { stroke: P.gold, sw: 7, rough: .9 })); svgEl('polyline', { points: pts.map(q => q.join(',')).join(' '), fill: 'none', stroke: '#FFF8DA', 'stroke-width': 2.4, 'stroke-linecap': 'round', class: 'f' }, b); });
+        const guides = G(fx, 'guides');
+        DEVAS.forEach((d, i) => { const s = orbStart(d); const gd = G(guides, 'guide' + i, { o: 0 }); R.in(gd, () => R.path(`M${s.x} ${s.y} Q${(s.x + CENTER.x) / 2} ${Math.min(s.y, CENTER.y) - 90} ${CENTER.x} ${CENTER.y}`, { stroke: P.kumkum, sw: 3.2, rough: 1 })); gd.querySelectorAll('path').forEach(p => p.setAttribute('stroke-dasharray', '4 14')); });
+        const tgt = G(fx, 'target', { x: CENTER.x, y: CENTER.y, o: 0 }, 'later');
+        const tcore = G(tgt, 'tcore');
+        R.in(tcore, () => { R.glow(0, 0, 120, 'gGold'); R.circle(0, 0, 92, { fill: P.goldL, style: 'zigzag', gap: 7, sw: 2.6, stroke: P.goldD }); R.circle(0, 0, 130, { stroke: P.gold, sw: 2, rough: 2 }); });
+        const tring = G(tgt, 'tring', {}, 'spin'); R.in(tring, () => { for (let i = 0; i < 8; i++) { const [x, y] = rot(0, -84, i * Math.PI / 4); R.circle(x, y, 10, { fill: '#FFF6D6', style: 'solid', sw: 1.2 }); } });
+        const orbs = G(fx, 'orbs');
+        DEVAS.forEach((d, i) => {
+          const s = orbStart(d);
+          const o = G(orbs, 'orb' + i, { x: s.x, y: s.y, o: 0 });
+          const inner = G(o, 'orbIn', {}, 'pulse');
+          A.orb(inner, 34, 'gGold', [P.gold, P.goldL, '#FFD27A'][i % 3]);
+          const hit = svgEl('circle', { cx: 0, cy: 0, r: 68, fill: 'none', 'pointer-events': 'all', class: 'hitring', stroke: 'none' }, o);
+          hit.dataset.i = i;
+        });
+        const hand = G(fx, 'hand', { o: 0 });
+        R.in(hand, () => { R.path('M0 0 L-6 -46 Q-6 -56 4 -56 Q12 -56 12 -46 L14 -14 L28 -18 Q40 -18 40 -8 L42 26 Q40 50 20 52 L-2 52 Q-18 48 -24 30 L-34 6 Q-38 -4 -28 -6 Q-20 -6 -14 6Z', { fill: P.cream, style: 'solid', sw: 2.4, rough: 1 }); });
+        const fl = G(fx, 'fl', { x: 800, y: 420, o: 0 }); A.orb(fl, 22, 'gGold', P.goldL);
+      },
+      enter(S) { /* devas begin slightly apart */ },
+      script: [
+        [19, S => DEVAS.forEach((d, i) => tw(part(S.$('dv' + i), 'head'), { r: (d.out < 0 ? 8 : -8) }, 800))],
+        [20, S => DEVAS.forEach((d, i) => { tw(S.$('dv' + i), { x: d.x, o: 1 }, 1400, 'io'); tw(part(S.$('dv' + i), 'head'), { r: 0 }, 900); })],
+        [21, S => hop(S, 1)], [22, S => hop(S, 4)], [23, S => hop(S, 2)],
+        [24, async S => { hop(S, 0); await wait(250); hop(S, 3); await wait(250); hop(S, 5); }],
+        [25, async S => { DEVAS.forEach((d, i) => { const f = S.$('dv' + i); tw(part(f, 'armL'), { r: 150 }, 900, 'back'); tw(part(f, 'armR'), { r: -150 }, 900, 'back'); }); await wait(500); DEVAS.forEach((d, i) => { const o = S.$('orb' + i); setT(o, { s: .3 }); tw(o, { o: 1, s: 1 }, 800, 'back'); }); SFX.chime(2); }],
+        [26, S => { show(S.$('target'), 1000, { o: .55 }); }],
+        'GAME',
+        [27, async S => { tw(S.$('tcore'), { s: 3.2 }, 1200, 'out'); flash(350); }],
+        [28, async S => { tw(S.$('tcore'), { s: 4.3 }, 1200, 'out'); show(S.$('bigglow'), 1200, { o: .6 }); flash(450); }],
+        [29, async S => { tw(S.$('bigglow'), { o: 1, s: 1.7 }, 1800); flash(900); hide(S.$('beams'), 1200); }],
+        [30, async S => { tw(S.$('durga'), { o: 1, s: .95 }, 1800, 'out'); tw(S.$('bigglow'), { o: .35, s: 1.2 }, 2000); hide(S.$('target'), 1500); DEVAS.forEach((d, i) => { const f = S.$('dv' + i); tw(part(f, 'armL'), { r: 30 }, 1200); tw(part(f, 'armR'), { r: -30 }, 1200); }); }],
+        [31, S => { show(S.$('halo'), 1000); SFX.success(); }],
+        [32, S => { const l = S.$('lion'); tw(l.querySelector('[data-n="lhead"]'), { r: -9 }, 700, 'back'); }],
+        [33, S => DEVAS.forEach((d, i) => { const f = S.$('dv' + i); tw(f, { r: d.out < 0 ? 5 : -5 }, 900); tw(part(f, 'mouthO'), { o: 0 }, 300); tw(part(f, 'mouth'), { o: 1 }, 300); tw(part(f, 'head'), { r: d.out < 0 ? 8 : -8 }, 900); })],
+        [34, S => { tw(S.$('dim'), { o: .3 }, 1600); DEVAS.forEach((d, i) => tw(S.$('dv' + i), { r: 0 }, 900)); }],
+        [35, async S => { UI.lamps({ calling: 0 }); for (let i = 0; i < 9; i++) { show(S.$('dy' + i), 400); SFX.chime(i % 6); await wait(260); } }],
+        [36, async S => { const f = S.$('fl'); setT(f, { x: 800, y: 420, s: .4 }); await tw(f, { o: 1, s: 1 }, 700, 'back'); tw(f, { x: 1760, y: 60, s: .6 }, 3200, 'io'); }]
+      ]
+    },
+    {
+      id: 'e1-journey', alt: 'At night, the first divine light travels across the sky toward distant mountains, where the first Shakti emblem appears.',
+      build(g) {
+        const bg = layer(g, 'bg', 0), mid = layer(g, 'mid', .25);
+        R.in(bg, () => { A.sky('skyNight'); A.stars(22, 3, [0, 0, 1600, 420]); R.path('M1380 110 A44 44 0 1 0 1430 170 A34 34 0 1 1 1380 110Z', { fill: '#FFF6D6', style: 'solid', sw: 1.8 }); A.cloud(300, 300, 260, { fill: '#B9B2D6', cls: 'drift' }); });
+        const w = G(mid, 'world');
+        R.in(w, () => {
+          A.range([[-300, 720], [100, 440], [380, 560], [640, 400], [860, 540], [1150, 400], [1420, 520], [1700, 430], [1900, 720]], '#6F6699', { gap: 11 });
+          A.peak(1150, 720, 640, 330, '#4F4A7E');
+          A.peak(560, 760, 560, 260, '#4F4A7E');
+          A.range([[-300, 900], [-100, 700], [300, 760], [700, 680], [1000, 760], [1400, 690], [1900, 780], [1900, 900]], '#2F2A4E', { style: 'cross-hatch', gap: 12 });
+          A.pine(240, 790, 120, '#22362C'); A.pine(1320, 780, 130, '#22362C'); A.pine(1450, 800, 100, '#22362C');
+        });
+        const trail = G(w, 'trail', { o: 0 }, 'later');
+        R.in(trail, () => R.curve([[-40, 110], [300, 150], [620, 240], [900, 330], [1150, 395]], { stroke: P.goldL, sw: 4, rough: 1.4 }));
+        const pg = G(w, 'pglow', { x: 1150, y: 395, o: 0 }); R.in(pg, () => R.glow(0, 0, 160, 'gGold'));
+        const orb = G(w, 'orb', { x: -60, y: 110, o: 0 }); A.orb(orb, 22, 'gGold', P.goldL);
+        A.strengthEmblem(w, 'emblem', .82); setT(w.lastChild, { x: 1150, y: 200, s: .82, o: 0 }); w.lastChild.classList.add('later');
+      },
+      script: [
+        [37, async S => { show(S.$('orb'), 400); show(S.$('trail'), 900); await tw(S.$('orb'), { x: 620, y: 240 }, 2600, 'io'); }],
+        [38, async S => { await tw(S.$('orb'), { x: 1150, y: 395 }, 1700, 'io'); show(S.$('pglow'), 800); SFX.chime(4); }],
+        [39, S => { tw(S.$('world'), { s: 1.15, x: 1150 - 1150 * 1.15, y: 395 - 395 * 1.15 }, 2200, 'io'); }],
+        [40, S => { show(S.$('emblem'), 1400); flash(400); SFX.success(); UI.lamps({ calling: 0 }); }]
+      ]
+    }
+  ]
+};
+function hop(S, i) { const f = S.$('dv' + i), r = S.$('ring' + i); show(r, 500); const y = st(f).y; tw(f, { y: y - 26 }, 260, 'out').then(() => tw(f, { y }, 380, 'back')); SFX.chime(i); }
+
+/* ════════ EPISODE 2 ════════ */
+function ledgeSoldiers(g, n, x0, gap, y, s) { const army = G(g, 'army'); for (let i = 0; i < n; i++) CAST.soldier(army, 'sol' + i, { x: x0 + i * gap, y: y + (i % 2) * 14, s }); return army; }
+const EP2 = {
+  id: 'ep2', num: 2, title: 'Shailaputri', theme: 'The Power of Strength',
+  end: { title: 'EPISODE 2 COMPLETE', sub: 'STRENGTH IS ONLY THE BEGINNING.', note: 'Episode 3 — the second light — is coming soon.' },
+  scenes: [
+    {
+      id: 'e2-peaks', alt: 'High among majestic snowy peaks, a divine light touches the earth and Shailaputri, the daughter of the mountains, appears.',
+      build(g) {
+        const bg = layer(g, 'bg', 0), mid = layer(g, 'mid', .2), ch = layer(g, 'ch', .45), fx = layer(g, 'fx', .5);
+        R.in(bg, () => { A.sky('skyDawn'); R.glow(1260, 250, 180, 'gGold'); R.circle(1260, 250, 110, { fill: '#FCE3A6', style: 'solid', sw: 1.8 }); });
+        const mg = G(bg, 'mglow', { o: 0 }); R.in(mg, () => R.glow(800, 380, 650, 'gRose'));
+        R.in(bg, () => {
+          A.cloud(200, 170, 260, { cls: 'drift', name: 'cl0' }); A.cloud(1450, 380, 240, { cls: 'drift' });
+          A.range([[-300, 660], [0, 400], [260, 520], [480, 360], [700, 500], [1000, 330], [1300, 470], [1600, 380], [1900, 660]], '#B49AB8', { gap: 12 });
+        });
+        R.in(mid, () => {
+          A.peak(430, 660, 760, 430, '#8C7B9C'); A.peak(1120, 660, 820, 510, '#7E7096'); A.peak(1520, 680, 520, 320, '#8C7B9C');
+          A.cloud(760, 470, 380, { cls: 'drift' });
+          R.poly([[-200, 900], [-200, 700], [300, 664], [620, 648], [980, 650], [1300, 672], [1800, 700], [1800, 900]], { fill: P.stone, style: 'cross-hatch', gap: 10, sw: 2.6, wash: .85 });
+          A.pine(120, 690, 190); A.pine(250, 700, 150); A.pine(1380, 700, 170); A.pine(1500, 690, 200);
+          A.grass(520, 670, 60); A.grass(1060, 674, 60);
+        });
+        const burst = G(ch, 'burst', { x: 800, y: 600, o: 0 }); R.in(burst, () => { R.glow(0, 0, 260, 'gGold'); R.ellipse(0, 52, 260, 40, { stroke: P.gold, sw: 3, rough: 1.4 }); });
+        CAST.shailaputri(ch, 'shai', { x: 800, y: 652, s: .95, op: 0, later: true });
+        const orb = G(fx, 'orb', { x: 800, y: -80 }); A.orb(orb, 26, 'gGold', P.goldL);
+      },
+      script: [
+        [0, async S => { await tw(S.$('orb'), { y: 560 }, 2400, 'io'); flash(450); hide(S.$('orb'), 400); show(S.$('burst'), 500); SFX.chime(3); }],
+        [1, S => { show(S.$('shai'), 1500, { s: 1.08 }); tw(S.$('burst'), { o: .55, s: 1.3 }, 1500); }],
+        [2, S => show(S.$('mglow'), 1600, { o: .85 })],
+        [3]
+      ]
+    },
+    {
+      id: 'e2-march', alt: 'Mahishasura’s soldiers march closer through dark forests and across valleys, shaking the earth.',
+      build(g) {
+        const w = G(g, 'world', { x: -1600 });
+        const bg = layer(w, 'bg', 0), mid = layer(w, 'mid', .2), ch = layer(w, 'ch', .4);
+        R.in(bg, () => {
+          R.fillRect(-500, -200, 2120, 1300, 'url(#skyForest)'); R.fillRect(1600, -200, 2200, 1300, 'url(#skyStorm)');
+          A.range([[1600, 640], [1900, 420], [2200, 520], [2500, 380], [2800, 500], [3100, 400], [3400, 640]], '#9A8FA8', { gap: 12 });
+          A.peak(2950, 560, 420, 260, '#867A98');
+          R.path('M-200 520 Q200 440 600 500 Q1000 430 1640 500 L1640 760 L-200 760Z', { fill: '#2C4A33', style: 'cross-hatch', gap: 10, wash: .8 });
+        });
+        R.in(mid, () => {
+          R.rect(-200, 690, 1840, 400, { fill: P.moss, style: 'dots', gap: 13, wash: .85, sw: 2 });
+          [60, 260, 470, 690, 900, 1110, 1320, 1520].forEach((x, i) => A.pine(x, 700 - (i % 2) * 20, 230 + (i % 3) * 30, i % 2 ? '#2F5A3A' : '#3D6B45'));
+          R.path('M1600 540 Q2000 470 2400 560 Q2800 640 3300 520 L3300 1000 L1600 1000Z', { fill: '#A9B97A', gap: 10, wash: .8 });
+          R.path('M1650 900 Q1900 700 2300 680 Q2700 660 3000 560', { stroke: P.blue, sw: 30, rough: 1.2 });
+          R.rect(2380, 640, 240, 14, { fill: '#7B4B26', style: 'solid', sw: 2 }); R.line(2380, 610, 2620, 610, { sw: 2.4 }); [2390, 2470, 2550, 2610].forEach(x => R.line(x, 610, x, 646, { sw: 2.2 }));
+          [[1800, 760], [2150, 820], [2800, 760], [3100, 820]].forEach(([x, y]) => R.ellipse(x, y, 110, 50, { fill: P.stone, style: 'cross-hatch', gap: 8, sw: 2 }));
+        });
+        const army = G(ch, 'army', { x: 2850, y: 500, s: .42, o: 0 });
+        for (let i = 0; i < 5; i++) CAST.soldier(army, 'sol' + i, { x: i * 110, y: (i % 2) * 18 });
+        const dust = G(ch, 'dust', { o: 0 });
+        R.in(dust, () => [[2400, 700], [2520, 690], [2650, 705], [2300, 690]].forEach(([x, y]) => R.circle(x, y, 60, { fill: P.sand, style: 'dots', gap: 9, wash: .6, sw: 1.6 })));
+      },
+      script: [
+        [4, S => show(S.$('army'), 1800, { x: 2700 })],
+        [5, async S => { S.root.querySelectorAll('[data-n="spear"]').forEach(sp => tw(sp, { r: -22 }, 500, 'back')); S.root.querySelectorAll('[data-n="spIn"]').forEach(s => s.classList.add('shake-spear')); await wait(1600); S.root.querySelectorAll('[data-n="spIn"]').forEach(s => s.classList.remove('shake-spear')); }],
+        [6, async S => { const a = S.$('army'); await cut(() => { setT(S.$('world'), { x: 0 }); setT(a, { x: 1500, y: 720, s: .82, o: 1 }); walkOn(a, true); }); tw(a, { x: 900 }, 4200, 'lin'); }],
+        [7, async S => { const a = S.$('army'); await cut(() => { setT(S.$('world'), { x: -1600 }); setT(a, { x: 3080, y: 640, s: .72 }); }); tw(a, { x: 2380 }, 4200, 'lin'); }],
+        [8, async S => { shakeApp(); show(S.$('dust'), 500, { o: .9 }); await wait(700); shakeApp(); }]
+      ],
+      exit(S) { walkOn(S.$('army'), false); }
+    },
+    {
+      id: 'e2-ledge', alt: 'Shailaputri stands calmly on a broad mountain ledge as wind and dust swirl and the soldiers approach, then step back.',
+      game: 'stand',
+      build(g) {
+        const bg = layer(g, 'bg', 0), mid = layer(g, 'mid', .2), ch = layer(g, 'ch', .4), fx = layer(g, 'fx', .55);
+        R.in(bg, () => A.sky('skyStorm'));
+        const br = G(bg, 'bright', { o: 0 }); R.in(br, () => { A.sky('skyBright'); R.glow(1300, 160, 220, 'gGold'); });
+        const mg = G(bg, 'mglow', { o: 0 }); R.in(mg, () => R.glow(700, 400, 700, 'gGold'));
+        R.in(bg, () => {
+          A.cloud(260, 140, 280, { cls: 'drift', fill: '#E4DDEA' }); A.cloud(1250, 120, 320, { cls: 'drift', fill: '#E4DDEA' });
+          A.range([[-300, 640], [0, 380], [300, 470], [560, 260], [900, 430], [1200, 300], [1500, 420], [1900, 640]], '#9B8DB0', { gap: 12 });
+        });
+        R.in(mid, () => {
+          A.peak(560, 650, 700, 470, '#7E7096'); A.peak(1180, 660, 640, 380, '#8C7B9C');
+          R.poly([[880, 712], [1700, 690], [1700, 900], [860, 900]], { fill: P.sand, style: 'dots', gap: 12, sw: 2.2, wash: .85 });
+          R.poly([[160, 900], [190, 702], [300, 656], [820, 650], [920, 700], [950, 900]], { fill: P.stone, style: 'cross-hatch', gap: 10, sw: 2.8, wash: .9 });
+          A.pine(1560, 700, 160, '#3D6B45'); A.grass(980, 720, 60); A.grass(1300, 720, 50);
+        });
+        const ring = G(ch, 'calm', { x: 540, y: 656, o: 0 }); R.in(ring, () => { R.glow(0, -10, 120, 'gGold'); R.ellipse(0, 0, 220, 40, { stroke: P.gold, sw: 3, rough: 1.3 }); });
+        const aura = G(ch, 'aura', { x: 540, y: 420, o: 0 }); R.in(aura, () => R.glow(0, 0, 220, 'gRose'));
+        const sw = G(ch, 'shaiW', { x: 540, y: 652 });
+        const sway = G(sw, 'sway');
+        CAST.shailaputri(sway, 'shai', { s: 1.12 });
+        const army = ledgeSoldiers(ch, 5, 1060, 115, 712, .78); setT(army, { x: 700 });
+        /* wind: swirls, leaves, dust (moved by the game loop) */
+        const wind = G(fx, 'wind', { o: 0 });
+        for (let i = 0; i < 6; i++) { const gu = G(wind, 'gu' + i, { x: 200 + i * 260, y: 260 + (i % 3) * 120 }); R.in(gu, () => R.path('M-90 0 Q-40 -30 0 0 Q40 30 70 0 Q90 -20 70 -36 Q50 -44 46 -24', { stroke: '#FFFFFF', sw: 3.4, rough: 1.4 })); }
+        for (let i = 0; i < 8; i++) { const lv = G(wind, 'lv' + i, { x: 100 + i * 190, y: 300 + (i % 4) * 90 }); R.in(lv, () => R.ellipse(0, 0, 22, 11, { fill: i % 2 ? '#C9772E' : P.leaf, style: 'solid', sw: 1.3 })); }
+        for (let i = 0; i < 6; i++) { const du = G(wind, 'du' + i, { x: 150 + i * 260, y: 620 + (i % 2) * 30 }); R.in(du, () => R.circle(0, 0, 34, { fill: P.sand, style: 'dots', gap: 8, wash: .5, sw: 1.2 })); }
+        /* stability meter */
+        const meter = G(fx, 'meter', { x: 800, y: 800, o: 0 });
+        R.in(meter, () => {
+          R.rect(-370, -28, 740, 56, { fill: P.cream, style: 'solid', sw: 2.8, rough: 1.3 });
+          R.rect(-110, -28, 220, 56, { fill: P.leaf, style: 'hachure', gap: 7, sw: 2, wash: .5, angle: 45 });
+          [-260, -185, 185, 260].forEach(x => R.line(x, -14, x, 14, { sw: 1.8, rough: .6 }));
+          R.text(0, -40, 'STEADY', { size: 26, fill: P.ink });
+          R.text(-330, 10, '◀', { size: 26 }); R.text(330, 10, '▶', { size: 26 });
+        });
+        const prog = G(meter, 'prog', { x: -370, y: 40, s: .001, sy: 1 }); R.in(prog, () => R.fillRect(0, 0, 740, 12, P.saffron));
+        R.in(meter, () => R.rect(-370, 40, 740, 12, { sw: 1.6, rough: .6 }));
+        const sq = G(meter, 'seqs');
+        for (let i = 0; i < 3; i++) { R.in(sq, () => A.diya(420 + i * 58, 8, .9, 'sq' + i)); setT(sq.lastChild.querySelector('[data-n="flame"]'), { o: 0 }); }
+        const mk = G(meter, 'mk');
+        R.in(mk, () => R.poly([[0, -44], [20, -6], [0, 34], [-20, -6]], { fill: P.saffron, style: 'solid', sw: 2.4, rough: .8 }));
+        const ok = G(mk, 'mkOk'); R.in(ok, () => R.path('M-8 -6 L-2 2 L10 -14', { stroke: P.white, sw: 4, rough: .3 }));
+        const warn = G(mk, 'mkWarn', { o: 0 }); R.in(warn, () => { R.line(0, -18, 0, 0, { stroke: P.white, sw: 4.5, rough: .3 }); R.circle(0, 9, 5, { fill: P.white, style: 'solid', stroke: 'none' }); });
+        A.strengthEmblem(fx, 'emblem', .8); const em = fx.lastChild; setT(em, { x: 800, y: 180, s: .8, o: 0 }); em.classList.add('later');
+        const lab = G(fx, 'elabel', { x: 800, y: 300, o: 0 }); R.in(lab, () => { R.rect(-120, -34, 240, 50, { fill: P.cream, style: 'solid', sw: 2.4 }); R.text(0, 2, 'STRENGTH', { size: 34, weight: 700, fill: P.kumkum, ls: 3 }); });
+      },
+      script: [
+        [9, async S => { const a = S.$('army'); walkOn(a, true); await tw(a, { x: 0 }, 3000, 'out'); walkOn(a, false); }],
+        [10, S => S.root.querySelectorAll('[data-n="spear"]').forEach(sp => tw(sp, { r: -18 }, 500, 'back'))],
+        [11, S => show(S.$('aura'), 1200, { o: .5 })],
+        'GAME',
+        [12, S => show(S.$('mglow'), 1400, { o: .8 })],
+        [13, S => { show(S.$('wind'), 1200, { o: .35 }); }],
+        [14, async S => { const a = S.$('army'); walkOn(a, true); await tw(a, { x: st(a).x - 90 }, 1600, 'io'); walkOn(a, false); }],
+        [15, S => { show(S.$('calm'), 900); hide(S.$('wind'), 1600); }],
+        [16, S => S.root.querySelectorAll('[data-n="spIn"]').forEach(s => s.classList.add('shake-spear'))],
+        [17, S => { const f = S.$('shai'); tw(part(f, 'eyes'), { o: 0 }, 500); tw(part(f, 'eyesC'), { o: 1 }, 500); tw(S.$('aura'), { o: .85, s: 1.15 }, 1400); }],
+        [18, S => tw(S.$('emblem'), { s: .86 }, 900, 'back')],
+        [19, S => tw(S.$('aura'), { s: 1.3 }, 1400)],
+        [20],
+        [21, S => { const f = S.$('shai'); tw(part(f, 'eyesC'), { o: 0 }, 500); tw(part(f, 'eyes'), { o: 1 }, 500); tw(S.$('aura'), { s: 1.45, o: 1 }, 1600); }],
+        [22, async S => { S.root.querySelectorAll('[data-n="spIn"]').forEach(s => s.classList.remove('shake-spear')); S.root.querySelectorAll('[data-n="spear"]').forEach(sp => tw(sp, { r: 0 }, 500)); const a = S.$('army'); walkOn(a, true); await tw(a, { x: 520, o: .3 }, 2600, 'io'); walkOn(a, false); }],
+        [23, S => { tw(S.$('emblem'), { s: 1.02 }, 1200, 'back'); flash(500); SFX.success(); }],
+        [24, S => { show(S.$('elabel'), 800); UI.lamps({ on: 1 }); }]
+      ]
+    },
+    {
+      id: 'e2-path', alt: 'At dusk a luminous trail winds along a mountain path toward a far peak, where the second light begins to glow.',
+      build(g) {
+        const bg = layer(g, 'bg', 0), mid = layer(g, 'mid', .2), fx = layer(g, 'fx', .45);
+        R.in(bg, () => { A.sky('skyDusk'); A.stars(10, 11, [0, 0, 1600, 220]); A.cloud(900, 170, 300, { fill: '#F2C6B0', cls: 'drift' }); });
+        const w = G(mid, 'world');
+        R.in(w, () => {
+          A.range([[-300, 620], [100, 420], [400, 500], [700, 380], [1000, 470], [1330, 330], [1600, 450], [1900, 620]], '#7A6A9A', { gap: 12 });
+          A.peak(1330, 640, 520, 330, '#665A8A');
+          A.peak(300, 680, 600, 380, '#7E7096');
+          R.path('M-200 1000 L-200 660 Q300 600 800 640 Q1200 660 1800 610 L1800 1000Z', { fill: '#5E5170', style: 'cross-hatch', gap: 12, wash: .85 });
+          R.path('M60 920 Q380 820 300 760 Q240 700 620 680 Q980 660 920 600 Q880 540 1200 470 Q1290 440 1330 330 L1350 336 Q1320 470 1230 500 Q960 560 1000 610 Q1060 690 640 720 Q330 740 400 780 Q470 840 220 940Z', { fill: P.sand, style: 'dots', gap: 11, sw: 2, wash: .75 });
+          A.pine(150, 760, 140, '#2F4A3A'); A.pine(1520, 700, 150, '#2F4A3A'); A.tree(1100, 720, 110, '#4E6B3E');
+        });
+        const trail = G(w, 'trail', { o: 0 }, 'later');
+        R.in(trail, () => { R.curve([[140, 925], [360, 800], [280, 735], [620, 700], [960, 640], [940, 580], [1230, 485], [1335, 345]], { stroke: P.goldL, sw: 6, rough: 1.2 }); R.curve([[140, 925], [360, 800], [280, 735], [620, 700], [960, 640], [940, 580], [1230, 485], [1335, 345]], { stroke: '#FFFDF0', sw: 2, rough: .8 }); });
+        A.strengthEmblem(fx, 'emblem', .5); const em = fx.lastChild; setT(em, { x: 290, y: 170, s: .5 });
+        const o2 = G(w, 'orb2', { x: 1336, y: 300, o: 0 }, 'later'); const o2i = G(o2, 'o2i', {}, 'flicker'); A.orb(o2i, 20, 'gBlue', '#CFE2F7');
+      },
+      script: [
+        [25, S => show(S.$('trail'), 1400)],
+        [26, S => tw(S.$('emblem'), { s: .56 }, 900, 'back').then(() => tw(S.$('emblem'), { s: .5 }, 700))],
+        [27, S => tw(S.$('world'), { s: 1.08, x: -1336 * .08, y: -345 * .08 }, 3000, 'io')],
+        [28],
+        [29, S => tw(S.$('world'), { s: 1.16, x: -1336 * .16, y: -345 * .16 }, 2600, 'io')],
+        [30, S => { show(S.$('orb2'), 1600); UI.lamps({ on: 1, calling: 1 }); SFX.chime(5); }]
+      ]
+    }
+  ]
+};
+const EPISODES = { ep1: EP1, ep2: EP2 };
+
+/* compile an episode into a flat item list, verifying narration integrity */
+function compile(ep) {
+  const text = TEXT[ep.id], items = []; let expect = 0, games = 0;
+  ep.scenes.forEach(sc => {
+    items.push({ t: 'scene', scene: sc });
+    sc.script.forEach(e => {
+      if (e === 'GAME') { items.push({ t: 'game', game: sc.game, after: expect - 1 }); games++; return; }
+      const [idx, cue] = e;
+      if (idx !== expect) throw new Error(`[${ep.id}] narration out of order: expected ${expect}, got ${idx}`);
+      items.push({ t: 'line', idx, text: text[idx], cue, scene: sc });
+      expect++;
+    });
+  });
+  if (expect !== text.length) throw new Error(`[${ep.id}] narration incomplete: ${expect}/${text.length}`);
+  return items;
+}
+</script>
+<script>
+'use strict';
+/* ════════════════════════════════════════════════════════════════════
+   GAMES — each returns a Promise that resolves only after the player
+   completes the activity AND its success animation has played.
+   ════════════════════════════════════════════════════════════════════ */
+const Games = {
+  cleanup: null,
+  abort() { if (this.cleanup) { try { this.cleanup(); } catch (_) { } } this.cleanup = null; },
+
+  /* GAME 1 — UNITE THE DIVINE LIGHT */
+  unite(S) {
+    const svg = $id('scene'), N = DEVAS.length;
+    const orbs = DEVAS.map((d, i) => S.$('orb' + i)), starts = DEVAS.map(orbStart);
+    const tcore = S.$('tcore'), target = S.$('target'), hand = S.$('hand');
+    const done = new Array(N).fill(false);
+    let connected = 0, misses = 0, drag = null, lastProgress = performance.now(), hintOn = -1, hintTimer = 0, finished = false;
+    const tetherLayer = G(null, 'tethers'); S.$('orbs').before(tetherLayer);
+    const tethers = starts.map(s => svgEl('path', { d: '', stroke: '#FFE7A0', 'stroke-width': 6, 'stroke-linecap': 'round', fill: 'none', opacity: .85, 'stroke-dasharray': '2 12' }, tetherLayer));
+    setT(target, { o: .7 });
+    UI.note('Bring the divine lights together!', 'Drag each glowing light into the golden centre.');
+    UI.instruction('Bring the divine lights together!');
+    orbs.forEach((o, i) => {
+      const hit = o.querySelector('.hitring');
+      o.setAttribute('tabindex', '0'); o.setAttribute('role', 'button'); o.setAttribute('aria-label', `Light of ${DEVAS[i].key[0].toUpperCase() + DEVAS[i].key.slice(1)}. Drag it to the centre, or press Enter to send it.`);
+      o.style.cursor = 'grab'; hit.style.cursor = 'grab';
+    });
+    const toSvg = (inv, e) => { const p = new DOMPoint(e.clientX, e.clientY).matrixTransform(inv); return { x: p.x, y: p.y }; };
+    const near = p => Math.hypot(p.x - CENTER.x, p.y - CENTER.y) < 135;
+
+    return new Promise(resolve => {
+      const sub = () => UI.noteSub(connected ? `${connected} of ${N} lights joined${connected < N ? ' — keep going!' : '!'}` : 'Drag each glowing light into the golden centre.');
+      function clearHint() { if (hintOn >= 0) { hide(S.$('guide' + hintOn), 300); setT(hand, { o: 0 }); } hintOn = -1; clearInterval(hintTimer); hintTimer = 0; }
+      function showHint() {
+        const i = done.findIndex(d => !d); if (i < 0 || hintOn === i) return;
+        clearHint(); hintOn = i; show(S.$('guide' + i), 400);
+        const s = starts[i];
+        const loop = () => { if (hintOn !== i) return; setT(hand, { x: s.x + 10, y: s.y + 20, o: 0 }); Tw.to(hand, { o: 1 }, 250).then(() => Tw.to(hand, { x: CENTER.x + 10, y: CENTER.y + 20 }, 1300)).then(() => Tw.to(hand, { o: 0 }, 300)); };
+        loop(); hintTimer = setInterval(loop, 2300);
+        UI.noteSub('Hint: follow the dotted path — pull the light into the centre.');
+      }
+      const watch = setInterval(() => { if (!drag && !finished && (misses >= 2 || performance.now() - lastProgress > 9000 / FAST)) showHint(); }, 500);
+
+      function grow() { Tw.to(tcore, { s: 1 + connected * .14 }, 500, 'back'); setT(target, { o: .7 + connected * .05 }); }
+      function connect(i) {
+        if (done[i] || finished) return;
+        done[i] = true; connected++; lastProgress = performance.now(); misses = 0;
+        if (hintOn === i) clearHint();
+        const o = orbs[i]; o.removeAttribute('tabindex'); o.style.cursor = 'default'; o.querySelector('.hitring').style.cursor = 'default';
+        tethers[i].setAttribute('d', '');
+        Tw.to(o, { x: CENTER.x, y: CENTER.y, s: .45 }, 350, 'out').then(() => Tw.to(o, { o: 0 }, 300));
+        show(S.$('beam' + i), 500); grow(); SFX.chime(connected - 1); sub();
+        UI.announce(`${connected} of ${N} lights joined.`);
+        if (connected === N) win();
+      }
+      function home(i) {
+        misses++; SFX.whoosh(); tethers[i].setAttribute('d', '');
+        Tw.to(orbs[i], { x: starts[i].x, y: starts[i].y, s: 1 }, 520, 'back');
+        UI.noteSub(misses >= 2 ? 'Almost! Let go right on the golden centre.' : 'Not quite — bring it all the way to the centre.');
+      }
+      function down(e) {
+        if (finished || drag) return;
+        const o = e.target.closest('[data-n^="orb"]'); if (!o || !o.dataset.n.match(/^orb\d$/)) return;
+        const i = +o.dataset.n.slice(3); if (done[i]) return;
+        e.preventDefault();
+        const inv = svg.getScreenCTM().inverse();
+        drag = { i, id: e.pointerId, inv }; o.parentNode.appendChild(o);
+        try { svg.setPointerCapture(e.pointerId); } catch (_) { }
+        Tw.to(orbs[i], { s: 1.15 }, 150);
+        o.style.cursor = 'grabbing';
+      }
+      function move(e) {
+        if (!drag || e.pointerId !== drag.id) return;
+        e.preventDefault();
+        const p = toSvg(drag.inv, e), i = drag.i, s = starts[i];
+        setT(orbs[i], { x: p.x, y: p.y });
+        tethers[i].setAttribute('d', `M${s.x} ${s.y} L${p.x.toFixed(1)} ${p.y.toFixed(1)}`);
+        st(tcore); setT(target, { o: near(p) ? 1 : .7 + connected * .05 });
+      }
+      function up(e) {
+        if (!drag || e.pointerId !== drag.id) return;
+        const p = toSvg(drag.inv, e), i = drag.i; drag = null;
+        try { svg.releasePointerCapture(e.pointerId); } catch (_) { }
+        orbs[i].style.cursor = 'grab';
+        if (near(p)) connect(i); else home(i);
+      }
+      function cancel(e) { if (!drag || e.pointerId !== drag.id) return; const i = drag.i; drag = null; tethers[i].setAttribute('d', ''); Tw.to(orbs[i], { x: starts[i].x, y: starts[i].y, s: 1 }, 400); }
+      function key(e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        const o = document.activeElement && document.activeElement.closest && document.activeElement.closest('[data-n^="orb"]');
+        if (!o || !svg.contains(o)) return; e.preventDefault(); connect(+o.dataset.n.slice(3));
+        const nxt = orbs.find((x, j) => !done[j]); nxt && nxt.focus();
+      }
+      svg.addEventListener('pointerdown', down); svg.addEventListener('pointermove', move); svg.addEventListener('pointerup', up); svg.addEventListener('pointercancel', cancel);
+      document.addEventListener('keydown', key);
+      const detach = () => { svg.removeEventListener('pointerdown', down); svg.removeEventListener('pointermove', move); svg.removeEventListener('pointerup', up); svg.removeEventListener('pointercancel', cancel); document.removeEventListener('keydown', key); clearInterval(watch); clearHint(); };
+      Games.cleanup = () => { finished = true; detach(); tetherLayer.remove(); UI.noteHide(); };
+
+      async function win() {
+        finished = true; detach(); tetherLayer.remove();
+        orbs.forEach(o => { o.removeAttribute('tabindex'); o.removeAttribute('role'); });
+        D.set('INTERACTION_COMPLETE');
+        UI.note('The lights are one!', ''); UI.announce('All the divine lights are joined.');
+        SFX.success();
+        /* success: brighten → converge → golden flash → Durga emerges → devas in awe */
+        await tw(tcore, { s: 2.2 }, 900, 'out');
+        DEVAS.forEach((d, i) => tw(S.$('beam' + i), { o: .6 }, 600));
+        await tw(tcore, { s: 2.6 }, 500, 'back');
+        flash(900);
+        show(S.$('bigglow'), 600, { o: .45 });
+        await wait(500);
+        tw(S.$('durga'), { o: .45, s: .9 }, 1800, 'out');
+        DEVAS.forEach((d, i) => { const f = S.$('dv' + i); tw(part(f, 'head'), { r: d.out < 0 ? -6 : 6 }, 700); tw(part(f, 'mouth'), { o: 0 }, 300); tw(part(f, 'mouthO'), { o: 1 }, 300); });
+        await wait(2000);
+        UI.noteHide(); Games.cleanup = null;
+        resolve();
+      }
+      sub();
+      setTimeout(() => { const f = orbs[0]; if (document.activeElement === document.body && UI.kbUser) f.focus(); }, 300);
+    });
+  },
+
+  /* GAME 2 — STAND YOUR GROUND */
+  stand(S) {
+    const svg = $id('scene'), padL = $id('padL'), padR = $id('padR');
+    const sway = S.$('sway'), meter = S.$('meter'), mk = S.$('mk'), prog = S.$('prog'), wind = S.$('wind'), army = S.$('army');
+    const mkOk = S.$('mkOk'), mkWarn = S.$('mkWarn');
+    const gusts = [...Array(6)].map((_, i) => S.$('gu' + i)), leaves = [...Array(8)].map((_, i) => S.$('lv' + i)), dusts = [...Array(6)].map((_, i) => S.$('du' + i));
+    const nLeaves = LOW ? 4 : 8, nDust = LOW ? 3 : 6;
+    leaves.forEach((l, i) => { if (i >= nLeaves) setT(l, { o: 0 }); }); dusts.forEach((d, i) => { if (i >= nDust) setT(d, { o: 0 }); });
+    const PATTERNS = [
+      [{ d: 1, t: 2.4 }, { d: -1, t: 2.6 }],
+      [{ d: -1, t: 1.9 }, { d: 1, t: 1.7 }, { d: -1, t: 1.6 }],
+      [{ d: 1, t: 1.5 }, { d: -1, t: 1.3 }, { d: 1, t: 1.2 }, { d: -1, t: 1.4 }]
+    ];
+    const MAG = [.55, .7, .85], NEED = 3.2, SAFE = .3;
+    let lastInput = -9, m = 0, W = 0, seq = 0, seg = 0, segT = 0, steady = 0, calm = 0, inZone = true, outT = 0, raf = 0, last = 0, finished = false, t = 0;
+    const held = { L: false, R: false }, stageHold = { id: null, side: 0 };
+    show(meter, 600); show(wind, 800, { o: .9 });
+    padL.hidden = false; padR.hidden = false; Frames.add(padL); Frames.add(padR);
+    UI.note('Stand firm. Keep Shailaputri steady!', `Gust 1 of 3 — lean against the wind with ◀ ▶ (or arrow keys / A D).`);
+    UI.instruction('Stand firm. Keep Shailaputri steady!');
+    let lastStatus = '';
+    const status = s => { if (s !== lastStatus) { lastStatus = s; UI.noteSub(s); } };
+
+    return new Promise(resolve => {
+      const setHeld = (side, on) => { held[side] = on; (side === 'L' ? padL : padR).classList.toggle('held', on); };
+      const pd = side => e => { e.preventDefault(); setHeld(side, true); try { e.currentTarget.setPointerCapture(e.pointerId); } catch (_) { } };
+      const pu = side => e => { setHeld(side, false); };
+      const hL = { d: pd('L'), u: pu('L') }, hR = { d: pd('R'), u: pu('R') };
+      padL.addEventListener('pointerdown', hL.d); padL.addEventListener('pointerup', hL.u); padL.addEventListener('pointercancel', hL.u); padL.addEventListener('lostpointercapture', hL.u);
+      padR.addEventListener('pointerdown', hR.d); padR.addEventListener('pointerup', hR.u); padR.addEventListener('pointercancel', hR.u); padR.addEventListener('lostpointercapture', hR.u);
+      const noClick = e => e.preventDefault(); padL.addEventListener('click', noClick); padR.addEventListener('click', noClick);
+      const kd = e => { const k = e.key.toLowerCase(); if (k === 'arrowleft' || k === 'a') { setHeld('L', true); e.preventDefault(); } if (k === 'arrowright' || k === 'd') { setHeld('R', true); e.preventDefault(); } };
+      const ku = e => { const k = e.key.toLowerCase(); if (k === 'arrowleft' || k === 'a') setHeld('L', false); if (k === 'arrowright' || k === 'd') setHeld('R', false); };
+      /* press-and-hold on either half of the scene also works */
+      const sd = e => { if (stageHold.id != null) return; const r = svg.getBoundingClientRect(); stageHold.id = e.pointerId; stageHold.side = e.clientX < r.left + r.width / 2 ? -1 : 1; try { svg.setPointerCapture(e.pointerId); } catch (_) { } e.preventDefault(); };
+      const su = e => { if (e.pointerId === stageHold.id) { stageHold.id = null; stageHold.side = 0; } };
+      document.addEventListener('keydown', kd); document.addEventListener('keyup', ku);
+      svg.addEventListener('pointerdown', sd); svg.addEventListener('pointerup', su); svg.addEventListener('pointercancel', su);
+      const blur = () => { held.L = held.R = false; padL.classList.remove('held'); padR.classList.remove('held'); };
+      window.addEventListener('blur', blur);
+
+      const detach = () => {
+        cancelAnimationFrame(raf); raf = 0;
+        padL.removeEventListener('pointerdown', hL.d); padL.removeEventListener('pointerup', hL.u); padL.removeEventListener('pointercancel', hL.u); padL.removeEventListener('lostpointercapture', hL.u);
+        padR.removeEventListener('pointerdown', hR.d); padR.removeEventListener('pointerup', hR.u); padR.removeEventListener('pointercancel', hR.u); padR.removeEventListener('lostpointercapture', hR.u);
+        padL.removeEventListener('click', noClick); padR.removeEventListener('click', noClick);
+        document.removeEventListener('keydown', kd); document.removeEventListener('keyup', ku);
+        svg.removeEventListener('pointerdown', sd); svg.removeEventListener('pointerup', su); svg.removeEventListener('pointercancel', su);
+        window.removeEventListener('blur', blur);
+        padL.hidden = padR.hidden = true; padL.classList.remove('held', 'hint'); padR.classList.remove('held', 'hint');
+        SFX.wind(0);
+      };
+      Games.cleanup = () => { finished = true; detach(); SFX.stopWind(); UI.noteHide(); };
+
+      function render() {
+        setT(sway, { r: m * 9 });
+        setT(mk, { x: m * 340 });
+        setT(prog, { s: Math.max(.001, steady / NEED) });
+        const a = Math.min(1, Math.abs(W) / .85), dir = Math.sign(W) || 1;
+        if (!RM) {
+          gusts.forEach((g, i) => { const x = ((i * 290 + t * 520 * dir) % 1900 + 1900) % 1900 - 150; setT(g, { x, s: dir, sy: 1, o: .25 + a * .75 }); });
+          leaves.forEach((l, i) => { if (i >= nLeaves) return; const x = ((i * 210 + t * (380 + i * 30) * dir) % 1800 + 1800) % 1800 - 100; setT(l, { x, y: 280 + (i % 4) * 95 + Math.sin(t * 3 + i) * 30, r: t * 300 * dir + i * 40, o: a }); });
+          dusts.forEach((d, i) => { if (i >= nDust) return; const x = ((i * 300 + t * 300 * dir) % 1800 + 1800) % 1800 - 100; setT(d, { x, o: a * .8 }); });
+        } else { setT(wind, { o: .3 + a * .6 }); }
+        setT(mkOk, { o: inZone ? 1 : 0 }); setT(mkWarn, { o: inZone ? 0 : 1 });
+      }
+      function frame(now) {
+        raf = requestAnimationFrame(frame);
+        const dt = Math.min(.05, (now - (last || now)) / 1000); last = now; t += dt;   /* real time, always */
+        Perf.tick(now);
+        let u = (held.R ? 1 : 0) - (held.L ? 1 : 0) + stageHold.side + Cam.read();
+        u = Math.max(-1, Math.min(1, u));
+        if (u) lastInput = t;
+        if (calm > 0) {
+          calm -= dt; W += (0 - W) * Math.min(1, dt * 4); m += (0 - m) * Math.min(1, dt * 3);
+          inZone = true;
+          if (calm <= 0) {
+            if (seq >= 3) return win();
+            seg = 0; segT = 0; steady = 0;
+            status(`Gust ${seq + 1} of 3 — here comes the wind!`);
+          }
+        } else {
+          const pat = PATTERNS[seq]; segT += dt; if (segT > pat[seg % pat.length].t) { segT = 0; seg++; }
+          const Wt = pat[seg % pat.length].d * MAG[seq];
+          W += (Wt - W) * Math.min(1, dt * 2.6);
+          m += (0.8 * W + 0.95 * u - 0.3 * m) * dt;
+          m = Math.max(-1, Math.min(1, m));
+          const wasIn = inZone; inZone = Math.abs(m) < SAFE;
+          const steering = t - lastInput < 1.5;   /* progress needs the player: drifting through the zone doesn't count */
+          if (inZone && steering) { steady += dt; outT = 0; if (!wasIn) SFX.soft(); status(`Steady! Gust ${seq + 1} of 3 — keep her calm.`); padL.classList.remove('hint'); padR.classList.remove('hint'); }
+          else if (inZone) { outT += dt * .5; status('Lean against the wind to hold her steady!'); if (outT > 2.2) (W > 0 ? padL : padR).classList.add('hint'); }
+          else { outT += dt; status(m > 0 ? 'The wind pushes right — lean ◀ left!' : 'The wind pushes left — lean right ▶!'); if (outT > 2.2) (m > 0 ? padL : padR).classList.add('hint'); }
+          /* the soldiers creep forward a little during each gust, but keep their distance */
+          const ax = st(army).x; if (ax > -60) setT(army, { x: ax - dt * 8 });
+          if (steady >= NEED) {
+            seq++; calm = 1.5; SFX.chime(seq + 1);
+            const f = S.$('sq' + (seq - 1)).querySelector('[data-n="flame"]'); Tw.to(f, { o: 1 }, 400);
+            UI.announce(`Gust ${seq} of 3 calmed.`);
+            status(seq < 3 ? `Gust ${seq} of 3 calmed! Get ready…` : 'All three gusts calmed!');
+            padL.classList.remove('hint'); padR.classList.remove('hint');
+          }
+        }
+        SFX.wind(Math.abs(W));
+        render();
+      }
+      async function win() {
+        if (finished) return; finished = true; detach();
+        D.set('INTERACTION_COMPLETE');
+        UI.note('She stands firm.', ''); UI.announce('Shailaputri stood firm through all three gusts.');
+        /* success: wind settles → grounded → soldiers stop → step back → brighter → Strength emblem */
+        await tw(wind, { o: 0 }, 1500); SFX.stopWind();
+        tw(sway, { r: 0 }, 600); hide(meter, 600);
+        show(S.$('calm'), 800);
+        await wait(500);
+        const a = army; walkOn(a, true); await tw(a, { x: st(a).x + 130 }, 1400, 'io'); walkOn(a, false);
+        show(S.$('bright'), 2000); show(S.$('mglow'), 2000, { o: .5 });
+        await wait(900);
+        show(S.$('emblem'), 1400); flash(500); SFX.success();
+        await wait(1800);
+        UI.noteHide(); Games.cleanup = null;
+        resolve();
+      }
+      render();
+      raf = requestAnimationFrame(frame);
+    });
+  }
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   DIRECTOR — data-driven state machine for both episodes
+   ════════════════════════════════════════════════════════════════════ */
+const STATES = ['IDLE', 'SCENE_ENTER', 'NARRATING', 'INTERACTION_READY', 'INTERACTION_ACTIVE', 'INTERACTION_COMPLETE', 'TRANSITIONING', 'EPISODE_COMPLETE'];
+const Templates = new Map();
+function template(sc) {
+  if (!Templates.has(sc.id)) {
+    const g = G(null, null); g.dataset.scene = sc.id;
+    R.begin(sc.id, g); sc.build(g);
+    g.dataset.shapes = R.count;
+    Templates.set(sc.id, g);
+  }
+  return Templates.get(sc.id);
+}
+const idle = fn => (window.requestIdleCallback ? requestIdleCallback(fn, { timeout: 1500 }) : setTimeout(fn, 300));
+
+const D = {
+  state: 'IDLE', ep: null, items: [], pos: -1, line: null, lineTok: 0, root: null, scene: null, S: null, spoken: [], instr: '',
+  set(s) { this.state = s; document.body.dataset.state = s; UI.sync(); },
+  start(epId) {
+    this.leave();
+    const ep = EPISODES[epId]; this.ep = ep; this.items = compile(ep); this.pos = -1; this.spoken = []; this.root = null;
+    UI.enterEpisode(ep);
+    this.next();
+  },
+  leave() {
+    TOK++; Voice.cancel(); Tw.clear(); Games.abort(); SFX.stopWind();
+    if (this.scene && this.scene.exit && this.S) { try { this.scene.exit(this.S); } catch (_) { } }
+    $id('sceneRoot').innerHTML = ''; this.root = null; this.scene = null; this.line = null;
+    this.set('IDLE');
+  },
+  next() {
+    if (this.state === 'EPISODE_COMPLETE') return;
+    this.pos++;
+    const it = this.items[this.pos];
+    if (!it) return this.complete();
+    if (it.t === 'scene') return this.enterScene(it.scene);
+    if (it.t === 'line') return this.narrate(it);
+    if (it.t === 'game') return this.runGame(it);
+  },
+  async enterScene(sc) {
+    const tok = TOK;
+    this.set('TRANSITIONING');
+    UI.capHide();
+    if (this.root) { if (this.scene && this.scene.exit) { try { this.scene.exit(this.S); } catch (_) { } } $id('veil').classList.add('on'); await wait(480); }
+    if (tok !== TOK) return;
+    const node = template(sc).cloneNode(true);
+    const sketch = !RM && !LOW;
+    if (sketch) node.classList.add('sketch');
+    const root = $id('sceneRoot'); root.innerHTML = ''; root.appendChild(node);
+    this.root = node; this.scene = sc;
+    const cache = new Map();
+    this.S = { root: node, $: n => { if (!cache.has(n)) cache.set(n, node.querySelector(`[data-n="${n}"]`)); return cache.get(n); } };
+    $id('scene').setAttribute('aria-label', sc.alt);
+    this.set('SCENE_ENTER');
+    $id('veil').classList.remove('on');
+    if (sc.enter) sc.enter(this.S);
+    const nextScene = this.items.slice(this.pos + 1).find(i => i.t === 'scene');
+    if (nextScene) idle(() => template(nextScene.scene));
+    await wait(sketch ? 1500 : 400);
+    if (tok !== TOK) return;
+    setTimeout(() => node.classList.remove('sketch'), 900);
+    this.next();
+  },
+  narrate(it) {
+    this.line = it; const lt = ++this.lineTok;
+    this.set('NARRATING');
+    this.spoken.push(it.idx);
+    UI.caption(it.text);
+    if (it.cue && !it.cued) { it.cued = true; try { const r = it.cue(this.S); r && r.catch && r.catch(e => console.error(e)); } catch (e) { console.error(e); } }
+    this.speak(lt);
+  },
+  speak(lt) { if (!this.line) return; Voice.say(this.line.text, () => this.advance(lt)); },
+  advance(lt) {
+    if (lt !== this.lineTok || this.state !== 'NARRATING') return;
+    this.lineTok++;
+    this.next();   /* synchronous: a second skip can never queue a second advance */
+  },
+  /* player controls */
+  skip() { if (this.state !== 'NARRATING') return false; Voice.cancel(); this.advance(this.lineTok); return true; },
+  replay() {
+    if (this.state === 'NARRATING') { this.speak(++this.lineTok); return true; }
+    if (this.state === 'INTERACTION_ACTIVE' && this.instr) { Voice.say(this.instr, null, { rate: .92 }); return true; }
+    return false;
+  },
+  async runGame(it) {
+    const tok = TOK;
+    this.set('INTERACTION_READY');
+    Voice.cancel(); UI.capHide();
+    await wait(450);
+    if (tok !== TOK) return;
+    this.set('INTERACTION_ACTIVE');
+    await Games[it.game](this.S);
+    if (tok !== TOK) return;
+    this.instr = '';
+    this.next();
+  },
+  async complete() {
+    const tok = TOK;
+    this.set('EPISODE_COMPLETE');
+    UI.capHide();
+    await wait(1600);
+    if (tok !== TOK) return;
+    const done = store.get('done', {}); done[this.ep.id] = true; store.set('done', done);
+    UI.endCard(this.ep);
+  }
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   UI
+   ════════════════════════════════════════════════════════════════════ */
+const UI = {
+  kbUser: false, toastT: 0,
+  init() {
+    ['chip', 'btnHome', 'btnMute', 'btnReplay', 'btnSkip', 'cap', 'note', 'toast', 'ep1btn', 'ep2btn', 'optMute', 'optCam', 'playAudio', 'rotateOk'].forEach(id => Frames.add($id(id)));
+    $id('ep1btn').onclick = () => this.begin('ep1');
+    $id('ep2btn').onclick = () => this.begin('ep2');
+    $id('btnHome').onclick = () => this.home();
+    $id('btnMute').onclick = () => this.toggleMute();
+    $id('optMute').onclick = () => this.toggleMute();
+    $id('btnReplay').onclick = () => D.replay();
+    $id('btnSkip').onclick = () => D.skip();
+    $id('cap').onclick = () => { };
+    $id('optCam').onclick = () => Cam.toggle();
+    $id('playAudio').onclick = () => { SFX.init(); Voice.blocked = false; $id('playAudio').hidden = true; if (D.state === 'NARRATING') D.speak(++D.lineTok); };
+    $id('rotateOk').onclick = () => document.body.classList.add('dismissRotate');
+    Voice.onBlocked = () => { if (!Voice.muted && D.state !== 'IDLE') { $id('playAudio').hidden = false; Frames.add($id('playAudio')); } };
+    Voice.onUnblocked = () => { $id('playAudio').hidden = true; };
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Tab') this.kbUser = true;
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+      if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+      const k = e.key.toLowerCase();
+      if (D.state === 'IDLE' && $id('title').hidden && $id('end').hidden) return;
+      if (k === 'm') this.toggleMute();
+      else if (k === 'r' && D.state !== 'IDLE') D.replay();
+      else if ((k === 's' || k === 'n') && D.state !== 'IDLE') D.skip();
+    });
+    Voice.muted = store.get('muted', false);
+    this.syncMute();
+    if (!Voice.supported) $id('titleFine').textContent += ' Spoken narration isn’t available in this browser — captions will guide you.';
+  },
+  begin(epId) {
+    SFX.init();
+    if (Voice.supported && !Voice.muted) { try { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } catch (_) { } } /* unlock speech with this user gesture */
+    $id('title').hidden = true; $id('end').hidden = true;
+    D.start(epId);
+  },
+  home() { D.leave(); $id('end').hidden = true; $id('top').hidden = true; this.capHide(); this.noteHide(); $id('playAudio').hidden = true; this.title(); },
+  enterEpisode(ep) {
+    $id('top').hidden = false; $id('chip').textContent = `Episode ${ep.num} · ${ep.title}`;
+    this.lamps(ep.id === 'ep2' ? { on: 0 } : {}); this.noteHide(); this.capHide();
+    requestAnimationFrame(() => Frames.refresh());
+  },
+  title() {
+    $id('title').hidden = false;
+    const done = store.get('done', {});
+    $id('ep2btn').classList.toggle('primary', !!done.ep1);
+    $id('ep1btn').classList.toggle('primary', !done.ep1);
+    this.lamps({});
+    requestAnimationFrame(() => Frames.refresh());
+  },
+  caption(text) { $id('capText').textContent = text; $id('cap').classList.remove('hide'); document.body.classList.add('capup'); },
+  capHide() { $id('cap').classList.add('hide'); document.body.classList.remove('capup'); },
+  note(text, sub) { $id('noteText').textContent = text; $id('noteSub').textContent = sub || ''; $id('note').classList.remove('hide'); },
+  noteSub(s) { $id('noteSub').textContent = s; },
+  noteHide() { $id('note').classList.add('hide'); },
+  instruction(text) { D.instr = text; if (!Voice.muted) Voice.say(text, null, { rate: .92 }); },
+  announce(s) { /* the note itself is aria-live; this keeps screen readers informed of progress */ $id('noteSub').setAttribute('aria-label', s); },
+  toast(msg, ms = 4200) { const t = $id('toast'); t.textContent = msg; t.classList.remove('hide'); Frames.add(t); requestAnimationFrame(() => Frames.refresh()); clearTimeout(this.toastT); this.toastT = setTimeout(() => t.classList.add('hide'), ms); },
+  toggleMute() {
+    Voice.muted = !Voice.muted; store.set('muted', Voice.muted); this.syncMute();
+    if (Voice.muted) { $id('playAudio').hidden = true; SFX.wind(0); }
+    if (D.state === 'NARRATING') D.speak(++D.lineTok);   /* restart this line in the new mode; never overlaps */
+    else Voice.cancel();
+  },
+  syncMute() {
+    const b = $id('btnMute'), m = Voice.muted;
+    b.setAttribute('aria-pressed', m); b.setAttribute('aria-label', m ? 'Unmute narration (M)' : 'Mute narration (M)');
+    b.querySelector('.x').style.display = m ? '' : 'none'; b.querySelectorAll('.w1,.w2').forEach(p => p.style.display = m ? 'none' : '');
+    $id('optMute').setAttribute('aria-pressed', m); $id('optMute').textContent = m ? '🔇 Narration muted' : '🔊 Narration on';
+  },
+  sync() {
+    const s = D.state, skip = $id('btnSkip'), rep = $id('btnReplay');
+    const canSkip = s === 'NARRATING', canReplay = s === 'NARRATING' || s === 'INTERACTION_ACTIVE';
+    skip.setAttribute('aria-disabled', !canSkip); skip.title = canSkip ? 'Skip line (S)' : 'Finish the activity to continue';
+    rep.setAttribute('aria-disabled', !canReplay);
+  },
+  lamps(o) {
+    const L = $id('lamps');
+    L.querySelectorAll('g.diya').forEach((d, i) => { d.classList.toggle('on', o.on != null && i <= o.on && i !== o.calling); d.classList.toggle('calling', o.calling === i); });
+  },
+  endCard(ep) {
+    $id('endTitle').textContent = ep.end.title; $id('endSub').textContent = ep.end.sub; $id('endNote').textContent = ep.end.note;
+    $id('endKicker').textContent = `Navratri · Episode ${ep.num} · ${ep.theme}`;
+    const btns = $id('endBtns'); btns.innerHTML = '';
+    const mk = (label, fn, primary) => { const b = document.createElement('button'); b.className = 'rbtn' + (primary ? ' primary' : ''); b.textContent = label; b.onclick = fn; btns.appendChild(b); Frames.add(b); return b; };
+    if (ep.id === 'ep1') mk('Continue to Episode 2 ▶', () => this.begin('ep2'), true);
+    mk('↺ Replay episode', () => this.begin(ep.id), ep.id === 'ep2');
+    mk('⌂ Home', () => this.home());
+    $id('end').hidden = false; Frames.add($id('end').querySelector('.card'));
+    requestAnimationFrame(() => { Frames.refresh(); btns.firstChild.focus({ preventScroll: true }); });
+  }
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   CAMERA — optional motion "lean" enhancement for Game 2 only.
+   Never required; asked only after the player opts in; never re-prompts.
+   ════════════════════════════════════════════════════════════════════ */
+const Cam = {
+  denied: store.get('camDenied', false), on: false, stream: null, u: 0, until: 0, timer: 0, prev: null,
+  read() { return this.on && performance.now() < this.until ? this.u : 0; },
+  fail(msg) { this.denied = true; store.set('camDenied', true); this.sync(); UI.toast(msg); },
+  sync() {
+    const b = $id('optCam');
+    b.setAttribute('aria-pressed', this.on);
+    b.textContent = this.denied ? '📷 Camera unavailable — touch & keys work' : this.on ? '📷 Camera wave controls: on' : '📷 Camera wave controls (optional)';
+    b.setAttribute('aria-disabled', this.denied);
+  },
+  toggle() { if (this.on) return this.stop(); this.enable(); },
+  async enable() {
+    if (this.denied) { UI.toast('Camera controls are off on this device. Touch, mouse and keys work everywhere.'); return; }
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.isSecureContext) return this.fail('Camera controls aren’t supported here — no problem! Touch, mouse and keys work everywhere.');
+    try { if (navigator.permissions) { const p = await navigator.permissions.query({ name: 'camera' }); if (p.state === 'denied') return this.fail('Camera permission is blocked — no problem! Touch, mouse and keys work everywhere.'); } } catch (_) { }
+    UI.toast('Asking for camera… the story works without it.', 2500);
+    try {
+      this.stream = await navigator.mediaDevices.getUserMedia({ video: { width: 160, height: 120, facingMode: 'user' }, audio: false });
+    } catch (e) { return this.fail('Camera isn’t available — no problem! Touch, mouse and keys work everywhere.'); }
+    const v = $id('cam'); v.srcObject = this.stream; v.hidden = false; try { await v.play(); } catch (_) { }
+    const c = document.createElement('canvas'); c.width = 32; c.height = 24; const ctx = c.getContext('2d', { willReadFrequently: true });
+    this.on = true; this.sync(); UI.toast('Camera on: in “Stand Your Ground”, wave on the left or right side to lean.');
+    this.timer = setInterval(() => {
+      try {
+        ctx.drawImage(v, 0, 0, 32, 24); const d = ctx.getImageData(0, 0, 32, 24).data;
+        if (this.prev) {
+          let left = 0, right = 0;
+          for (let y = 0; y < 24; y++) for (let x = 0; x < 32; x++) { const i = (y * 32 + x) * 4, diff = Math.abs(d[i] - this.prev[i]) + Math.abs(d[i + 1] - this.prev[i + 1]); if (diff > 60) { if (x < 11) right++; else if (x > 20) left++; } }
+          /* raw frame is un-mirrored: motion on the camera's right = the player's left */
+          if (Math.max(left, right) > 18 && Math.abs(left - right) > 10) { this.u = left > right ? -1 : 1; this.until = performance.now() + 350; }
+        }
+        this.prev = new Uint8ClampedArray(d);
+      } catch (_) { }
+    }, 110);
+  },
+  stop() { clearInterval(this.timer); if (this.stream) this.stream.getTracks().forEach(t => t.stop()); this.stream = null; this.on = false; this.prev = null; $id('cam').hidden = true; this.sync(); }
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   BOOT
+   ════════════════════════════════════════════════════════════════════ */
+function drawChrome() {
+  /* sketchbook border */
+  const b = $id('border'), w = innerWidth, h = innerHeight; b.innerHTML = ''; b.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  const g = G(b, null); R.begin('border', g);
+  R.rect(7, 7, w - 14, h - 14, { stroke: '#5A4232', sw: 2.2, rough: 1.8 });
+  R.rect(13, 13, w - 26, h - 26, { stroke: '#8A7058', sw: 1.2, rough: 2.2 });
+}
+function drawLamps() {
+  const L = $id('lamps'); L.innerHTML = ''; const g = G(L, null); R.begin('lamps', g);
+  for (let i = 0; i < 9; i++) { const d = A.diya(18 + i * 33, 30, .55); d.classList.add('diya'); const f = d.querySelector('[data-n="flame"]'); f.setAttribute('class', 'flame'); }
+}
+function drawTitleArt() {
+  const s = $id('titleArt'), g = G(s, null); R.begin('title', g);
+  R.in(g, () => {
+    R.path('M-20 200 L80 120 L150 165 L240 70 L310 140 L380 80 L470 160 L540 110 L640 200Z', { fill: '#B49AB8', gap: 10, sw: 2, wash: .6, angle: -60 });
+  });
+  A.strengthEmblem(g, 'temb', .72, (RM || LOW) ? 1 : 3); setT(g.lastChild, { x: 310, y: 98, s: .72 });
+  for (let i = 0; i < 9; i++) { const k = i - 4; R.in(g, () => A.diya(310 + k * 66, 150 + Math.abs(k) * k * 0 + (16 - k * k) * 2.2, .8)); }
+  g.classList.add('sketch'); setTimeout(() => g.classList.remove('sketch'), 2600);
+}
+/* boiling lines: cycle pre-generated emblem variants at ~6 fps */
+setInterval(() => {
+  if (RM || LOW || document.hidden) return;
+  document.querySelectorAll('.boil').forEach(b => { const vs = [...b.children].filter(c => /^v\d$/.test(c.dataset.n || '')); if (vs.length < 2) return; const cur = vs.findIndex(v => v.getAttribute('visibility') !== 'hidden'); const nx = (cur + 1) % vs.length; vs[cur].setAttribute('visibility', 'hidden'); vs[nx].removeAttribute('visibility'); });
+}, 166);
+
+function boot() {
+  buildDefs($id('defs'));
+  drawChrome(); drawLamps(); drawTitleArt();
+  let rt = 0; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { drawChrome(); Frames.refresh(); }, 200); });
+  UI.init(); Cam.sync(); UI.title();
+  try { compile(EP1); compile(EP2); } catch (e) { console.error(e); UI.toast('Story data error: ' + e.message, 10000); }
+  idle(() => { template(EP1.scenes[0]); idle(() => template(EP2.scenes[0])); });
+  if (!HAS_ROUGH) { console.warn('[navratri] Rough.js unavailable — using the plain-SVG fallback renderer.'); }
+  document.addEventListener('visibilitychange', () => { if (document.hidden && Voice.supported) { try { speechSynthesis.pause(); } catch (_) { } } else if (Voice.supported) { try { speechSynthesis.resume(); } catch (_) { } } });
+  window.__nav = { st, D, R, Voice, Cam, TEXT, EPISODES, compile, Templates, get rough() { return HAS_ROUGH; }, get reduced() { return RM; }, get low() { return LOW; } };
+}
+boot();
+</script>
+</body>
+</html>
