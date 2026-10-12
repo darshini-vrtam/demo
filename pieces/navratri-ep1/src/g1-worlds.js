@@ -104,6 +104,38 @@ BRIDGE_OUT.worlds = () => ({ P: standSil(G1.fig[0], G1.fig[1], 92), c: NV.graph 
 BOARD.worlds = [{ t: VL('b01_worlds').t1 - 0.8, title: 'three worlds; the tiny figure on the ridge', sound: 'thin pad, pencil scratch on 16ths', next: 'the figure grows into Mahishasura' }];
 
 // ---- eras still to draw (storyboard stage)
-SCENES.power = function () { sketchPage({ grid: 'dots' }); cap(['he wanted power'], [0, 'power'], ERA_T[ERA.power] + 0.3); };
+// ---- era: he enters (beat 2). The forest in tree outlines, Mahishasura striding in, his name lettered and underlined in red.
+const G1P = { x: 600, y: 1290, H: 125 };
+const G1P_CROWN = () => [G1P.x + 0.16 * G1P.H, G1P.y - 7.27 * G1P.H - 0.3 * G1P.H];
+// a forest tree: two trunk lines with a fork, a crown of looping outline; far trees stay pencil, near trees are inked
+function forestTree(x, y, h, w, u, key, near) {
+  const D = (P, k, kk, o = {}) => (near ? dr(P, stag(u, k, 3), key + kk, { w: 3.6, ...o }) : gpencil(P, { key: key + kk, part: stag(u, k, 3), w: 2.4, a: 0.7 }));
+  D([[x - w * 0.12, y], [x - w * 0.1, y - h * 0.5], [x - w * 0.16, y - h * 0.78]], 0, 't1'); D([[x + w * 0.12, y], [x + w * 0.1, y - h * 0.5], [x + w * 0.2, y - h * 0.8]], 0, 't2');
+  D([[x - w * 0.1, y - h * 0.62], [x - w * 0.4, y - h * 0.82]], 1, 'b1'); D([[x + w * 0.1, y - h * 0.58], [x + w * 0.45, y - h * 0.8]], 1, 'b2');
+  const C = []; for (let i = 0; i <= 9; i++) { const a = Math.PI * (0.95 + 1.1 * i / 9), r = w * (0.7 + 0.12 * Math.sin(i * 2.3)); C.push([x + Math.cos(a) * r, y - h * 0.86 + Math.sin(a) * r * 0.6]); }
+  D(spl(C), 2, 'cr');
+  if (near && u >= 1) { ctx.save(); gclip([[x + w * 0.02, y], [x + w * 0.12, y - h * 0.5], [x + w * 0.2, y - h * 0.8], [x + w * 0.1, y - h * 0.8], [x + w * 0.02, y - h * 0.5]]); ghatch(x - w * 0.2, y - h, x + w * 0.3, y, { gap: 6, a: 0.5, key: key + 'h' }); ctx.restore(); }
+}
+SCENES.power = function () {
+  const cu = CUES, t0 = ERA_T[ERA.power]; PEN = null;
+  sketchPage({ grid: 'dots' });
+  // far trees in pencil, near trees inked (they frame him; none in the top-left where his name goes)
+  [[150, 1250, 760, 110, 0], [900, 1240, 820, 130, 0.1], [760, 1260, 600, 90, 0.2]].forEach(([x, y, h, w, d], i) => forestTree(x, y, h, w, ev(t0 + d, 1.2), 'ft' + i, false));
+  [[70, 1300, 700, 120, 0.4], [330, 1300, 820, 110, 0.3]].forEach(([x, y, h, w, d], i) => forestTree(x, y, h, w, ev(t0 + d, 1.2), 'fn' + i, true));
+  dr([[60, 1296], [300, 1290], [620, 1294], [1000, 1288]], ev(t0, 0.8), 'ground', { w: 4 });
+  for (let i = 0; i < 3; i++) gpencil([[300 + i * 170, 1296], [330 + i * 170 + 8 * ((B + i) % 2), 1288]], { key: 'gr' + i, w: 2.2, a: 0.6 });   // grass ticks
+  // he strides in: drawn pencil-first then inked as the line begins
+  mahishasura(G1P.x, G1P.y, G1P.H, { pose: 'walk', u: ev(t0 + 0.15, 2.4), key: 'mhP' });
+  // his name, lettered as it is spoken, the scene's one red: the underline
+  const [n0, n1] = handLetter('Mahishasura', 92, 318, 66, { align: 'left', reveal: ev(cu.name2 - 0.1, 0.7), key: 'name2', face: 'marker' });
+  underline(n0, n1, 340, { col: NV.red, w: 6, key: 'nameU', part: ev(cu.name2 + 0.7, 0.3) });
+  for (let i = 0; i < 2; i++) doodleBird(820 + 60 * Math.sin(TT * 0.7 + i), 330 + i * 28, 1.1, (B + i) % 2, 'pb' + i);
+  penDraw(0.9);
+  cap(['he wanted power'], [0, 'power'], cu.power - 0.6, cu.power + 0.05);
+};
+CAMS.power = (t) => push(t, VL('b02_power').t1 - 0.1, ERA_T[ERA.tapasya] - 0.3, { z: 2.4, p: G1P_CROWN(), to: [540, 760] });
+BRIDGE_IN.power = () => ({ P: standSil(G1P.x + 0.1 * G1P.H, G1P.y, 8.1 * G1P.H), c: NV.graph });
+BRIDGE_OUT.power = () => { const [cx, cy] = G1P_CROWN(); return { P: crownPts(cx, cy + 0.3 * G1P.H, 0.78 * G1P.H, 0.66 * G1P.H), c: NV.graph }; };
+BOARD.power = [{ t: VL('b02_power').t1 - 0.3, title: 'he strides in; his name, red underline', sound: 'pad + pencil scratch on 16ths', next: 'his crown becomes the tree trunk' }];
 SCENES.tapasya = function () { sketchPage({ grid: 'dots' }); cap(['a long tapasya'], [0, 'tapasya'], ERA_T[ERA.tapasya] + 0.3); };
 SCENES.time = function () { sketchPage({ grid: 'dots' }); cap(['years'], [0, 'years'], ERA_T[ERA.time] + 0.3); };

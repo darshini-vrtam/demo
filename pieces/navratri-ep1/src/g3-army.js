@@ -40,7 +40,7 @@ SCENES.army = function () {
     }
   }
   // Mahishasura at the front, striding, crown big now
-  mahisha(540, 1210, 0.62, { pose: 'stride', step: (beat8 % 2 ? 0.7 : 1), crown: 1.5, key: 'mhA', smile: 1 });
+  mahishasura(540, 1160, 74, { pose: 'walk', crownK: 1.5, smile: 1, key: 'mhA' });
   // dust ticks on the ground line, on 8ths
   for (let i = 0; i < 6; i++) gpencil([[140 + i * 160, 1290], [160 + i * 160 + 10 * ((B + i) % 2), 1282]], { key: 'dust' + i, w: 2.4, a: 0.6 });
   penDraw(0.9);
