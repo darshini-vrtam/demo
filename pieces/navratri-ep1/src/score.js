@@ -63,7 +63,7 @@
   ['D2', 'D3', 'A3', 'D4', 'Fs4', 'A4'].forEach((n, i) => pluck(hit, nz(n), 0.6 - i * 0.05, -0.3 + i * 0.12, 0.45, 5200, 0.15));   // a short chord stab
   sub(hit, 1.0);
   noiseHit(hit, 0.35, 'lowpass', 2400, 0.7, 0.45, 0, 0.3, 300);
-  pad(hit + 0.4, E('light') + 0.3, ['D3', 'A3', 'Fs3', 'E4'], 0.03, { type: 'triangle', cut: 900, att: 0.6, rel: 0.5, send: 0.5 });   // flat and warm after it
+  pad(hit + 0.4, E('light') + 0.3, ['D3', 'A3', 'Fs3', 'E4'], 0.021, { type: 'triangle', cut: 900, att: 0.6, rel: 0.5, send: 0.5 });   // flat and warm after it
   drone(hit + 0.35, E('light') + 0.4, nz('D2'), 0.034, { att: 1.5, rel: 0.6 });
   drone(E('light'), END('who'), nz('D2'), 0.012, { att: 0.5, rel: 4.0 });
   // nine chimes for the nine rings, climbing the D major pentatonic
