@@ -59,12 +59,14 @@ function fortress(cx, y, s, u, key, o = {}) {
 }
 // ---- era: the three worlds
 function worldsPage(done, rv = 1) {
-  const cu = CUES, E = done ? () => 1 : ev, R = done ? () => rv : ev;   // rv: the top and bottom bands' write-on in the ending if (!done) PEN = null;
+  const cu = CUES, E = done ? () => 1 : ev, R = done ? () => rv : ev;   // rv: the top and bottom bands' write-on in the ending
+  if (!done) PEN = null;
   sketchPage({ grid: 'dots' });
-  // three faint pencil bands ruled across the page first (the "three worlds" are three rows of one page)
-  const rule = E(0.4, 0.9);
+  // the open: ~1.5 s of a still, quiet page; then three faint pencil bands ruled across it (three rows of one page)
+  const rule = E(1.5, 0.9);
   gpencil([[90, 650], [990, 646]], { key: 'band1', part: rule, a: 0.5, w: 2 });
   gpencil([[90, 975], [990, 979]], { key: 'band2', part: seg(rule, 0.3, 1), a: 0.5, w: 2 });
+  if (!done && rule > 0 && rule < 1) { const r2 = seg(rule, 0.3, 1); PEN = toScreen(...(r2 > 0 ? [lerp(90, 990, r2), lerp(975, 979, r2)] : [lerp(90, 990, rule), lerp(650, 646, rule)])); }
   // margin labels in pencil, written as the voice names them
   const lab = (s, y, t) => handLetter(s, 96, y, 46, { align: 'left', col: NV.graph, reveal: E(t, 0.4), key: 'lab' + s, jit: 0.8 });
   if (!done || rv > 0) { lab('devas', 300, VW('b01_worlds', 'devas')); lab('humans', 712, VW('b01_worlds', 'humans')); lab('asuras', 1036, cu.asuras); }
@@ -78,7 +80,7 @@ function worldsPage(done, rv = 1) {
   const uH = E(VW('b01_worlds', 'humans') - 0.2, 2.0);
   dr([[90, 900], [260, 820], [420, 860], [600, 790], [780, 850], [990, 810]], stag(uH, 0, 4), 'hill1', { w: 4 });
   dr([[90, 950], [300, 930], [520, 945], [760, 925], [990, 940]], stag(uH, 1, 4), 'hill2', { w: 3, second: false });
-  ctx.save(); ctx.setLineDash([16, 12]); gpencil([[200, 960], [380, 905], [520, 900], [700, 880], [900, 905]], { key: 'river', part: stag(uH, 1, 4), w: 2.6, a: 0.7 }); ctx.restore();
+  ctx.save(); ctx.setLineDash([16, 12]); ctx.lineDashOffset = -(B % 14) * 2; gpencil([[200, 960], [380, 905], [520, 900], [700, 880], [900, 905]], { key: 'river', part: stag(uH, 1, 4), w: 2.6, a: 0.7 }); ctx.restore();
   [[330, 868], [470, 872], [650, 846]].forEach(([hx, hy], i) => {
     const P = [[hx - 26, hy], [hx - 26, hy - 34], [hx, hy - 58], [hx + 26, hy - 34], [hx + 26, hy]];
     if (uH > 0.4) gfill(P, NV.paper, { off: [0, 0], key: 'hsf' + i });
@@ -90,12 +92,21 @@ function worldsPage(done, rv = 1) {
   const uA = R(cu.asuras - 0.1, 2.4);
   fortress(540, 1196, 0.55, uA, 'fortA', { wall: 640, towers: [[-560, 110, 80], [-380, 170, 90], [-190, 240, 100], [190, 240, 100], [380, 170, 90], [560, 110, 80]] });
   dr([[90, 1236], [300, 1214], [460, 1222], [540, 1218], [700, 1226], [990, 1210]], stag(uA, 0, 3), 'ridge', { w: 5 });
-  if (uA >= 0.6) { ctx.save(); gclip([[90, 1236], [990, 1210], [990, 1290], [90, 1290]]); ghatch(90, 1210, 990, 1290, { ang: -0.9, gap: 10, col: NV.graph, w: 2, a: 0.35, key: 'ridgeh' }); ctx.restore(); }
+  // the ridge's shadow is hatched in on "powerful", the pencil running along under the ridge
+  const hp = done ? (uA >= 0.6 ? 1 : 0) : E(VW('b01_worlds', 'powerful') - 0.15, 0.9);
+  if (hp > 0) {
+    const hx = lerp(90, 990, hp);
+    ctx.save(); gclip([[90, 1236], [990, 1210], [990, 1290], [90, 1290]]); gclip([[90, 1200], [hx, 1200], [hx, 1300], [90, 1300]]); ghatch(90, 1210, 990, 1290, { ang: -0.9, gap: 10, col: NV.graph, w: 2, a: 0.35, key: 'ridgeh' }); ctx.restore();
+    if (!done && hp < 1) PEN = toScreen(hx, 1262);
+  }
   // the tiny figure on the ridge (Mahishasura), inked when he is named
   const uF = R(cu.named - 0.1, 0.9);
   if (uF > 0) { const P = standSil(G1.fig[0], G1.fig[1], 92); if (uF > 0.5) gfill(P, NV.ink, { off: [0, 0], key: 'figf', a: seg(uF, 0.5, 1) }); dr(P, uF, 'fig', { closed: true, w: 3 }); }
-  // background life: two birds over the hills
-  for (let i = 0; i < 2; i++) doodleBird(860 - 60 * (TT % 9) + i * 50, 720 + i * 26, 1, (B + i) % 2, 'b1bird' + i);
+  // once he is named: three small graphite marks of attention flick out around him (on 2s, pencil)
+  if (!done && uF >= 1) { const k = ev(cu.named + 0.9, 0.5); for (let i = 0; i < 3; i++) { const a = -Math.PI / 2 + (i - 1) * 0.7, r0 = 70, r1 = 70 + 26 * k; if (k > 0) gpencil([[G1.fig[0] + Math.cos(a) * r0, G1.fig[1] - 52 + Math.sin(a) * r0], [G1.fig[0] + Math.cos(a) * r1, G1.fig[1] - 52 + Math.sin(a) * r1]], { key: 'figt' + i, w: 2.2, a: 0.7, passes: 1 }); } }
+  // background life: two birds cross over the hills once the humans' world is down
+  const bt = done ? 4 + (TT % 12) : TT - (VW('b01_worlds', 'humans') + 1.2);
+  if (bt > 0) for (let i = 0; i < 2; i++) doodleBird(1010 - 46 * (bt % 24) + i * 50, 724 + i * 26 - 10 * Math.sin(bt * 0.8 + i), 1, (B + i) % 2, 'b1bird' + i);
   if (!done) { penDraw(0.9); cap(['three worlds'], [0, 'worlds'], cu.worlds - 0.25, cu.worlds + 0.3); }
 }
 SCENES.worlds = () => worldsPage(false);
@@ -106,7 +117,15 @@ BOARD.worlds = [{ t: VL('b01_worlds').t1 - 0.8, title: 'three worlds; the tiny f
 // ---- eras still to draw (storyboard stage)
 // ---- era: he enters (beat 2). The forest in tree outlines, Mahishasura striding in, his name lettered and underlined in red.
 const G1P = { x: 600, y: 1290, H: 125 };
-const G1P_CROWN = () => [G1P.x + 0.16 * G1P.H, G1P.y - 7.27 * G1P.H - 0.3 * G1P.H];
+// the stride: once he is inked he takes small steps on the beat (x advances, a bob mid-step, a slight rock about the feet)
+// until the push-in starts; then he holds, so the crown (the bridge out) sits at the final offset.
+const G1P_STEP = { n: 4, dx: 9, bob: 7 };
+function g1Stride(t) {
+  const a = ERA_T[ERA.power] + 2.6, b = VL('b02_power').t1 - 0.15, k = clamp((t - a) / (b - a)) * G1P_STEP.n;
+  const n = Math.min(Math.floor(k), G1P_STEP.n), f = n >= G1P_STEP.n ? 0 : k - n;
+  return { dx: G1P_STEP.dx * (n + EZ.io(f)), dy: -G1P_STEP.bob * Math.sin(Math.PI * f), rot: 0.012 * Math.sin(Math.PI * f) * (n % 2 ? -1 : 1), f, n, on: t > a && n < G1P_STEP.n };
+}
+const G1P_CROWN = () => [G1P.x + G1P_STEP.n * G1P_STEP.dx + 0.16 * G1P.H, G1P.y - 7.27 * G1P.H - 0.3 * G1P.H];
 // a forest tree: two trunk lines with a fork, a crown of looping outline; far trees stay pencil, near trees are inked
 function forestTree(x, y, h, w, u, key, near) {
   const D = (P, k, kk, o = {}) => (near ? dr(P, stag(u, k, 3), key + kk, { w: 3.6, ...o }) : gpencil(P, { key: key + kk, part: stag(u, k, 3), w: 2.4, a: 0.7 }));
@@ -124,16 +143,30 @@ SCENES.power = function () {
   [[70, 1300, 700, 120, 0.4], [330, 1300, 820, 110, 0.3]].forEach(([x, y, h, w, d], i) => forestTree(x, y, h, w, ev(t0 + d, 1.2), 'fn' + i, true));
   dr([[60, 1296], [300, 1290], [620, 1294], [1000, 1288]], ev(t0, 0.8), 'ground', { w: 4 });
   for (let i = 0; i < 3; i++) gpencil([[300 + i * 170, 1296], [330 + i * 170 + 8 * ((B + i) % 2), 1288]], { key: 'gr' + i, w: 2.2, a: 0.6 });   // grass ticks
-  // he strides in: drawn pencil-first then inked as the line begins
+  // he strides in: drawn pencil-first then inked as the line begins, then steps forward on the beat
+  const st = g1Stride(TT);
+  ctx.save(); ctx.translate(G1P.x + st.dx, G1P.y + st.dy); ctx.rotate(st.rot); ctx.translate(-G1P.x, -G1P.y);
   mahishasura(G1P.x, G1P.y, G1P.H, { pose: 'walk', u: ev(t0 + 0.15, 2.4), key: 'mhP' });
+  ctx.restore();
+  // each footfall kicks a little graphite dust off the back heel; three motion ticks trail him while he moves
+  if (st.on) {
+    const hx = G1P.x + st.dx - 1.3 * G1P.H, d = st.f;
+    for (let i = 0; i < 3; i++) gpencil(arcPts(hx - 20 - i * 26 - 30 * d, G1P.y - 8 - i * 6, 8 + 10 * d, Math.PI, TAU, 6), { key: 'dst' + i + st.n, w: 2, a: 0.55 * (1 - d * 0.6), passes: 1 });
+    for (let i = 0; i < 3; i++) gpencil([[G1P.x + st.dx - 2.1 * G1P.H - i * 8, G1P.y - (2.6 + i * 1.3) * G1P.H], [G1P.x + st.dx - 2.1 * G1P.H - 46 - i * 8, G1P.y - (2.6 + i * 1.3) * G1P.H]], { key: 'mt' + i, w: 2, a: 0.45, passes: 1 });
+  }
   // his name, lettered as it is spoken, the scene's one red: the underline
   const [n0, n1] = handLetter('Mahishasura', 92, 318, 66, { align: 'left', reveal: ev(cu.name2 - 0.1, 0.7), key: 'name2', face: 'marker' });
   underline(n0, n1, 340, { col: NV.red, w: 6, key: 'nameU', part: ev(cu.name2 + 0.7, 0.3) });
+  // background life: two birds wheel over the far trees; a third lifts off the near crown on "Power"
   for (let i = 0; i < 2; i++) doodleBird(820 + 60 * Math.sin(TT * 0.7 + i), 330 + i * 28, 1.1, (B + i) % 2, 'pb' + i);
+  const lift = TT - cu.power; if (TT > t0 + 1.6) doodleBird(336 + (lift > 0 ? 80 * lift : 0), 532 - (lift > 0 ? 110 * lift : 0), 0.9, lift > 0 ? (B % 2) : 0.2, 'pb3');
+  // falling twigs/leaves from the near trees, graphite, on 2s
+  for (let i = 0; i < 3; i++) { const R = RNG('pleaf', i), f = ((TT - t0) * 0.22 + R.f()) % 1, x = R.r(120, 420) + 30 * Math.sin(f * 8 + i), y = 600 + f * 620, a = Math.sin(f * 6 + i);
+    if (TT > t0 + 1.4) gpencil([[x - 9 * Math.cos(a), y - 4 * Math.sin(a)], [x, y - 6], [x + 9 * Math.cos(a), y + 4 * Math.sin(a)], [x, y + 4], [x - 9 * Math.cos(a), y - 4 * Math.sin(a)]], { key: 'pl' + i, w: 2, a: 0.7, passes: 1 }); }
   penDraw(0.9);
   cap(['he wanted power'], [0, 'power'], cu.power - 0.6, cu.power + 0.05);
 };
-CAMS.power = (t) => push(t, VL('b02_power').t1 - 0.1, ERA_T[ERA.tapasya] - 0.3, { z: 2.4, p: G1P_CROWN(), to: [540, 760] });
+CAMS.power = (t) => push(t, Math.min(VL('b02_power').t1 - 0.1, ERA_T[ERA.tapasya] - 1.5), ERA_T[ERA.tapasya] - 0.65, { z: 2.4, p: G1P_CROWN(), to: [540, 760] });
 BRIDGE_IN.power = () => ({ P: standSil(G1P.x + 0.1 * G1P.H, G1P.y, 8.1 * G1P.H), c: NV.graph });
 BRIDGE_OUT.power = () => { const [cx, cy] = G1P_CROWN(); return { P: crownPts(cx, cy + 0.3 * G1P.H, 0.78 * G1P.H, 0.66 * G1P.H), c: NV.graph }; };
 BOARD.power = [{ t: VL('b02_power').t1 - 0.3, title: 'he strides in; his name, red underline', sound: 'pad + pencil scratch on 16ths', next: 'his crown becomes the tree trunk' }];
@@ -158,39 +191,51 @@ SCENES.tapasya = function () {
   // the sun, low in the branches (it carries the next bridge): an ink disc with ray lines
   const [sx, sy, sr] = G1T.sun;
   dr(loopPts(sx, sy, sr, sr, 0.06), ev(t0 + 0.6, 0.6), 'sun3', { w: 4 });
-  rayRing(sx, sy, sr + 16, sr + 50, 12, ev(t0 + 1.0, 1.2), { key: 'sr3', w: 3 });
+  rayRing(sx, sy, sr + 16, sr + 50, 12, ev(t0 + 1.0, 1.2), { key: 'sr3', w: 3, rot: -Math.PI / 2 + 0.05 * (B % 4) });   // the rays creep round on 2s
   bigTree(ev(t0 + 0.05, 1.6), 'tree3');
   dr([[60, 1292], [1020, 1290]], ev(t0, 0.6), 'gr3', { w: 3.6 });
+  for (let i = 0; i < 4; i++) gpencil([[120 + i * 250, 1292], [128 + i * 250 + 6 * ((B + i) % 2), 1276]], { key: 'gt3' + i, part: ev(t0 + 0.5, 0.6), w: 2, a: 0.6 });   // grass ticks, swaying on 2s
   mahishasura(G1T.x, G1T.y, G1T.H, { pose: 'sit', eyes: 'closed', u: ev(cu.forest - 0.3, 2.2), key: 'mh3' });
   // breath: three pencil ticks beside his face, swelling every two beats
   const br = 0.5 + 0.5 * Math.sin(TT * Math.PI / 2);
   if (TT > cu.tapasya - 0.5) for (let i = 0; i < 3; i++) gpencil(arcPts(G1T.x + 120 + i * 18, G1T.y - 3.62 * G1T.H, 26 + i * 16 * br, -0.6, 0.6, 6), { key: 'brt' + i, w: 2.2, a: 0.7 });
-  // falling leaves (seeded paths, stepping on 2s)
-  for (let i = 0; i < 6; i++) { const R = RNG('leaf3', i), x0 = R.r(200, 900), ph = R.f(), f = ((TT - t0) * 0.16 + ph) % 1, x = x0 + 60 * Math.sin(f * 9 + i), y = 560 + f * 700, a = Math.sin(f * 7 + i);
-    gline([[x - 12 * Math.cos(a), y - 6 * Math.sin(a)], [x, y - 8], [x + 12 * Math.cos(a), y + 6 * Math.sin(a)], [x, y + 6], [x - 12 * Math.cos(a), y - 6 * Math.sin(a)]], { w: 2.4, key: 'lv' + i, second: false, amp: 0.6, step: 5 }); }
+  // falling leaves (seeded paths, stepping on 2s), once the canopy is drawn; each one starts at the canopy edge
+  const lt = TT - (t0 + 1.7);
+  for (let i = 0; i < 6; i++) { const R = RNG('leaf3', i), x0 = R.r(200, 900), ph = R.f(), f0 = lt * 0.16 - ph * 0.6, f = ((f0 % 1) + 1) % 1, x = x0 + 60 * Math.sin(f * 9 + i), y = 560 + f * 700, a = Math.sin(f * 7 + i);
+    if (f0 < 0) continue;   // not yet fallen: each leaf's first fall begins at the canopy
+    gline([[x - 18 * Math.cos(a), y - 9 * Math.sin(a)], [x, y - 11], [x + 18 * Math.cos(a), y + 9 * Math.sin(a)], [x, y + 8], [x - 18 * Math.cos(a), y - 9 * Math.sin(a)]], { w: 2.8, col: NV.graph, key: 'lv' + i, second: false, amp: 0.6, step: 5 }); }
+  // the leaves that have landed: a small pile growing at the roots, one leaf every ~1.2 s
+  const nl = clamp(Math.floor(lt / 1.2), 0, 7);
+  for (let i = 0; i < nl; i++) { const R = RNG('pile3', i), x = (i % 2 ? R.r(880, 960) : R.r(110, 200)), y = 1282 - R.r(0, 8), a = R.r(-0.4, 0.4);
+    gpencil([[x - 16 * Math.cos(a), y - 6 * Math.sin(a)], [x, y - 7], [x + 16 * Math.cos(a), y + 6 * Math.sin(a)], [x, y + 3], [x - 16 * Math.cos(a), y - 6 * Math.sin(a)]], { key: 'pile' + i, w: 2.4, a: 0.85, passes: 1 }); }
+  // a small bird on the right branch, hopping along it on the beat
+  if (TT > t0 + 1.8) { const hop = Math.floor((TT - t0) / 1.5) % 3, hx = 830 + hop * 22, hy = 624 - hop * 6 - (((TT - t0) % 1.5) < 0.17 ? 8 : 0); doodleBird(hx, hy, 1.0, 0.15, 'tb3'); }
   penDraw(0.9);
   cap(['a long tapasya'], [0, 'tapasya'], cu.tapasya - 0.7, cu.tapasya + 0.2);
 };
-CAMS.tapasya = (t) => push(t, VL('b03_tapasya').t1 - 0.1, ERA_T[ERA.time] - 0.2, { z: 2.6, p: G1T.sun.slice(0, 2), to: [540, 760] });
+CAMS.tapasya = (t) => push(t, Math.min(VL('b03_tapasya').t1 - 0.1, ERA_T[ERA.time] - 1.3), ERA_T[ERA.time] - 0.45, { z: 2.6, p: G1T.sun.slice(0, 2), to: [540, 760] });
 BRIDGE_IN.tapasya = () => ({ P: spl([[350, 1100], [372, 900], [350, 720], [420, 700], [660, 700], [730, 720], [708, 900], [730, 1100]], true), c: NV.graph });
 BRIDGE_OUT.tapasya = () => ({ P: ellipsePts(G1T.sun[0], G1T.sun[1], G1T.sun[2], G1T.sun[2], 0, 64), c: NV.graph });
 BOARD.tapasya = [{ t: CUES.tapasya + 0.6, title: 'tapasya under the great tree; breath ticks, falling leaves', sound: 'pad, soft leaf ticks', next: 'the sun disc' }];
 // ---- era: time passes (beat 4). Six sketched boxes, two per word: sun, dusk, moon, rain, snow, blossom; the same small figure in each.
-const G1B = [[110, 300], [590, 300], [110, 640], [590, 640], [110, 980], [590, 980]], G1BW = 380, G1BH = 300;
+const G1B = [[120, 300], [580, 300], [120, 640], [580, 640], [120, 980], [580, 980]], G1BW = 355, G1BH = 300;   // right edge 935: inside the safe area
 function seasonBox(i, u, key) {
   const [bx, by] = G1B[i], cx = bx + G1BW / 2, gy = by + G1BH - 50;
-  if (u <= 0) return;
+  if (u <= 0) {   // before box 0 is drawn its sun is already here (the disc carried over from the tapasya sky)
+    if (i === 0) { dr(loopPts(bx + 110, by + 90, 40, 40, 0.06), 1, key + 'sun', { w: 3.4 }); }
+    return;
+  }
   ctx.save(); const P = sketchBox(bx, by, G1BW, G1BH, 6); gfill(P, NV.paper, { off: [0, 0], key: key + 'bf', a: clamp(u * 3) });
   gclip(P);
   const k = clamp((u - 0.3) / 0.7);
-  if (i === 0) { dr(loopPts(bx + 110, by + 90, 40, 40, 0.06), k, key + 'sun', { w: 3.4 }); rayRing(bx + 110, by + 90, 52, 74, 10, k, { key: key + 'sr', w: 2.6 }); }
+  if (i === 0) { dr(loopPts(bx + 110, by + 90, 40, 40, 0.06), 1, key + 'sun', { w: 3.4 }); rayRing(bx + 110, by + 90, 52, 74, 10, k, { key: key + 'sr', w: 2.6, rot: -Math.PI / 2 + 0.06 * (B % 3) }); }
   if (i === 1) { dr(arcPts(cx + 70, gy - 70, 56, Math.PI, TAU, 14), k, key + 'dusk', { w: 3.4 }); if (k >= 1) ghatch(bx, by, bx + G1BW, gy - 70, { ang: 0.05, gap: 9, a: 0.4, key: key + 'dh' }); }
   if (i === 2) { const M = spl([[bx + 300, by + 40], [bx + 270, by + 80], [bx + 285, by + 128], [bx + 330, by + 140], [bx + 300, by + 110], [bx + 296, by + 70]], true); dr(M, k, key + 'moon', { w: 3.2, closed: true }); if (k >= 1) shade(M, key + 'msh', { a: 0.5 }); for (let j = 0; j < 4; j++) doodleStar(bx + 60 + j * 60, by + 50 + (j % 2) * 40, 10 + 3 * ((B + j) % 3 === 0), key + 'st' + j, { part: k }); ghatch(bx, by, bx + G1BW, by + 150, { ang: 0.0, gap: 14, a: 0.25 * k, key: key + 'nh' }); }
   if (i === 3) { for (let j = 0; j < 14; j++) { const x = bx + 20 + j * 27, y0 = by + 20 + ((j * 37 + B * 9) % 60); gpencil([[x, y0], [x - 14, y0 + 44]], { key: key + 'rn' + j, part: k, w: 2.2, a: 0.75 }); } }
   if (i === 4) { for (let j = 0; j < 9; j++) { const R = RNG('snow', j), x = bx + R.r(30, G1BW - 30), y = by + 30 + ((R.r(0, 180) + (TT * 30)) % 180); for (let a = 0; a < 3; a++) gpencil([[x - 9 * Math.cos(a), y - 9 * Math.sin(a * 1.05)], [x + 9 * Math.cos(a), y + 9 * Math.sin(a * 1.05)]], { key: key + 'sn' + j + a, part: k, w: 1.8, a: 0.8, passes: 1 }); } dr([[bx, gy - 4], [cx, gy - 18], [bx + G1BW, gy - 6]], k, key + 'drift', { w: 3, second: false }); }
   if (i === 5) { dr(spl([[bx + 20, by + 70], [bx + 120, by + 100], [bx + 220, by + 90], [bx + 330, by + 60]]), k, key + 'branch', { w: 3.4, second: false }); for (let j = 0; j < 6; j++) { const fx = bx + 50 + j * 50, fy = by + 85 + 12 * Math.sin(j * 1.7); for (let q = 0; q < 5; q++) { const a = q / 5 * TAU; gpencil(loopPts(fx + Math.cos(a) * 9, fy + Math.sin(a) * 9, 6, 6, 0.1), { key: key + 'bl' + j + q, part: k, w: 1.8, a: 0.85, passes: 1 }); } } }
   dr([[bx, gy], [bx + G1BW, gy]], k, key + 'gl', { w: 2.6, second: false });
-  mahishasura(cx, gy, 24, { pose: 'sit', eyes: 'closed', u: k, key: key + 'mh' });
+  mahishasura(cx, gy - (k >= 1 && (B + i) % 6 === 0 ? 1 : 0), 24, { pose: 'sit', eyes: 'closed', u: k, key: key + 'mh' });   // a breath, out of step box to box
   ctx.restore();
   dr(P, u, key + 'box', { w: 3.6 });
 }
@@ -198,7 +243,8 @@ SCENES.time = function () {
   const cu = CUES; PEN = null;
   sketchPage({ grid: 'dots' });
   cu.boxes.forEach((t, i) => seasonBox(i, ev(t - 0.05, 0.45), 'sb' + i));
-  // a tally of passing time in the margin: one tick per box
+  // a tally of passing time under the boxes: one pencil tick per box, struck through on the fifth
+  cu.boxes.forEach((t, i) => { const p = ev(t + 0.3, 0.2); if (p > 0) gpencil(i < 5 ? [[150 + i * 22, 1318], [146 + i * 22, 1290]] : [[136, 1296], [250, 1312]], { key: 'tal' + i, part: p, w: 2.6, a: 0.8 }); });
   penDraw(0.8);
   cap(['years'], [0, 'years'], cu.years - 0.3, cu.years + 0.15);
 };
