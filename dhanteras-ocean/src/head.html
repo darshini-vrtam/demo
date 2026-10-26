@@ -1,0 +1,135 @@
+<title>The Ocean That Gave Us the Gift of Life</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Yatra+One&display=swap">
+<style>
+/* Layout: one painted 16:9-or-portrait stage fills the screen; title on top, prompts and subtitles docked at the bottom. */
+:root{
+  --line:#3B1F14; --cream:#FBF1D9; --saffron:#F28A1E; --turmeric:#F2B71F; --verm:#D6341F; --peacock:#0B6E8A; --deep:#14206B; --indigo:#2A2E78;
+  --bg:#FBF1D9; --fg:#3B1F14; --panel:#FBF1D9; --panel-fg:#3B1F14; --panel-line:#3B1F14; --btn:#FBF1D9; --btn-fg:#3B1F14; --accent:#D6341F; --focus:#D6341F;
+  --font-display:"Yatra One","Kohinoor Devanagari","Palatino Linotype",Georgia,serif;
+  --font-body:"Baloo 2","Trebuchet MS","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#14206B; --fg:#FBF1D9; --panel:#2A2E78; --panel-fg:#FBF1D9; --panel-line:#F2B71F; --btn:#2A2E78; --btn-fg:#FBF1D9; --accent:#F2B71F; --focus:#F2B71F; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#14206B; --fg:#FBF1D9; --panel:#2A2E78; --panel-fg:#FBF1D9; --panel-line:#F2B71F; --btn:#2A2E78; --btn-fg:#FBF1D9; --accent:#F2B71F; --focus:#F2B71F; color-scheme:dark }
+html{height:100%;box-sizing:border-box}
+*,*::before,*::after{box-sizing:inherit}
+body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);overflow:hidden;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:8px}
+#app{position:relative;width:100%;height:100%;overflow:hidden;border-radius:12px;background:var(--bg);-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:pointer}
+[hidden]{display:none!important}
+button{font-family:var(--font-body);color:inherit}
+button:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+/* top: scene title plaque with progress, controls, collection strip */
+#title{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:5;background:var(--panel);color:var(--panel-fg);border:5px double var(--panel-line);border-radius:12px;
+  padding:3px 14px 5px;text-align:center;max-width:min(60%,640px)}
+#titleText{font:400 clamp(13px,1vw + .6vh + 4px,21px)/1.15 var(--font-display);margin:0;text-wrap:balance}
+#prog{display:flex;gap:4px;justify-content:center;margin-top:3px}
+#prog i{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--panel-line);display:block}
+#prog i.done{background:var(--saffron)}#prog i.now{background:var(--verm);transform:scale(1.35)}
+#prog i.gap{margin-left:6px}
+#hud{position:absolute;top:10px;right:10px;display:flex;gap:6px;z-index:6;align-items:center}
+.hb{min-width:44px;height:44px;border-radius:12px;border:4px double var(--panel-line);background:var(--btn);color:var(--btn-fg);display:grid;place-items:center;cursor:pointer;padding:0 6px}
+.hb svg{width:22px;height:22px}
+.hb[aria-pressed="true"]{background:var(--turmeric);color:#3B1F14}
+#bCam{display:flex;gap:4px;padding:0 9px;font:700 12px/1 var(--font-body)}#bCam svg{width:18px;height:18px}#bCam.na{opacity:.55}
+#strip{position:absolute;top:10px;left:10px;z-index:5;display:flex;gap:3px;background:var(--panel);border:4px double var(--panel-line);border-radius:12px;padding:3px 5px}
+#strip canvas{width:30px;height:30px}
+/* bottom dock: cards, instruction plaque, subtitles (never over the painted focal area) */
+#dock{position:absolute;left:0;right:0;bottom:8px;z-index:6;display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 8px;pointer-events:none}
+#dock>*{pointer-events:auto}
+#cap{width:min(96%,1120px);background:var(--panel);color:var(--panel-fg);border:5px double var(--panel-line);border-radius:14px;padding:5px 16px 7px}
+#capWho{display:flex;flex-wrap:wrap;gap:10px;font:800 12px/1 var(--font-body);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+#capWho span{display:inline-flex;align-items:center;gap:6px}
+#capWho i{width:12px;height:12px;border-radius:50%;display:inline-block;border:2px solid #3B1F14}
+#capText{margin:0;font-size:clamp(15px,.95vw + .85vh + 5px,25px);line-height:1.32;font-weight:600;text-wrap:pretty}
+#plaque{width:min(96%,900px);background:var(--panel);color:var(--panel-fg);border:5px double var(--panel-line);border-radius:14px;padding:5px 10px}
+#plaque.flash{animation:pflash .7s ease}
+@keyframes pflash{40%{transform:scale(1.03)}}
+.prow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center}
+.picon{width:clamp(44px,6vh,64px);height:clamp(44px,6vh,64px);flex:none;border-radius:12px}
+button.picon{padding:0;border:4px double var(--panel-line);background:#FBF1D9;cursor:pointer;min-width:64px;min-height:64px}
+button.picon canvas{width:100%;height:100%;display:block}
+button.picon.glow{animation:glow 1.6s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 0 6px #F2B71F,0 0 0 10px #D6341F}}
+button.picon.hit{animation:hit .5s ease}@keyframes hit{50%{transform:scale(1.15)}}
+.ptext{display:flex;flex-direction:column;min-width:0;flex:1 1 180px}
+.ptext b{font:400 clamp(18px,1.2vw + 1vh + 4px,30px)/1.1 var(--font-display);color:var(--accent)}
+.ptext span{font-size:clamp(13px,.7vw + .7vh + 4px,18px);line-height:1.25;font-weight:600}
+.pbtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.pbtn{min-height:48px;padding:6px 16px;border-radius:999px;border:4px double #3B1F14;background:#FBF1D9;color:#3B1F14;font:800 clamp(15px,.6vw + .8vh + 6px,20px)/1 var(--font-body);cursor:pointer}
+.pbtn.main{background:repeating-linear-gradient(135deg,#D6341F 0 10px,#B3122D 10px 20px);color:#FBF1D9}
+.pbtn.small{min-height:44px;font-size:14px;padding:4px 12px;letter-spacing:.06em;text-transform:uppercase}
+.pbtn:disabled{opacity:.45;cursor:default}
+.slots{display:flex;gap:8px}.slots canvas{width:clamp(48px,7vh,72px);height:clamp(48px,7vh,72px);border-radius:12px;border:3px solid transparent}
+.slots canvas.on{border:4px double #3B1F14;background:#F2B71F}
+#tray{display:flex;justify-content:center;align-items:stretch;gap:clamp(8px,2vw,28px);flex-wrap:wrap;width:min(100%,1100px)}
+.card{flex:0 1 300px;min-width:0;width:30%;background:#FBF1D9;color:#3B1F14;border:6px double #3B1F14;border-radius:16px;padding:6px 6px 8px;cursor:pointer;display:flex;flex-direction:column;gap:6px;
+  transition:transform .3s ease,opacity .4s ease,box-shadow .3s ease}
+.card canvas{width:100%;aspect-ratio:3/2;max-width:100%;max-height:19vh;object-fit:contain;display:block;border-radius:10px}
+.card span{font:800 clamp(14px,.8vw + .9vh + 4px,22px)/1.15 var(--font-body);text-align:center;text-wrap:balance}
+.card.reading{transform:translateY(-6px);box-shadow:0 0 0 4px #F2B71F}
+.card.picked{transform:translateY(-8px) scale(1.04);box-shadow:0 0 0 5px #F2B71F,0 0 0 9px #D6341F}
+.card.wobble{animation:wob .8s ease}@keyframes wob{20%{transform:rotate(-3deg)}40%{transform:rotate(3deg)}60%{transform:rotate(-2deg)}80%{transform:rotate(1deg)}}
+.card.pulse{animation:cpulse 1.2s ease-in-out 3}@keyframes cpulse{50%{transform:scale(1.06);box-shadow:0 0 0 6px #F2B71F}}
+.card.back{opacity:.35;transform:translateY(10px)}
+.place{flex-basis:100%;max-width:340px}
+@media (max-width:700px){ #tray{flex-wrap:wrap;gap:6px} .card{flex:1 1 0;width:auto;padding:4px;border-width:4px} .card canvas{max-height:16vh} }
+/* overlays */
+.ov{position:absolute;inset:0;z-index:8;display:grid;place-items:center;padding:16px;pointer-events:none}
+.ov .panel{pointer-events:auto}
+.panel{background:var(--panel);color:var(--panel-fg);border:7px double var(--panel-line);border-radius:20px;padding:16px 22px;max-width:620px;width:100%;text-align:center;display:flex;flex-direction:column;gap:10px}
+.panel h1{font:400 clamp(26px,3vw + 1.4vh,52px)/1.1 var(--font-display);margin:0;text-wrap:balance;color:var(--accent)}
+.panel .eyebrow{font:800 12px/1.2 var(--font-body);letter-spacing:.14em;text-transform:uppercase;margin:0}
+.panel p{margin:0;font-size:16px;line-height:1.4;font-weight:600}
+.big{font:400 clamp(22px,1.6vw + 1vh,32px)/1 var(--font-display);padding:14px 30px;border-radius:999px;border:6px double #3B1F14;cursor:pointer;min-height:64px;color:#FBF1D9;
+  background:repeating-linear-gradient(90deg,#D6341F 0 14px,#F28A1E 14px 18px,#D6341F 18px 32px,#F2B71F 32px 36px)}
+.big.alt{background:#FBF1D9;color:#3B1F14;font-size:clamp(17px,1vw + 1vh,22px)}
+.row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+#start .panel{max-width:min(720px,92%);background:color-mix(in srgb,var(--panel) 90%,transparent)}
+#endIcons{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}#endIcons canvas{width:56px;height:56px}
+#endIcons .lbl{flex-basis:100%;font:800 12px/1 var(--font-body);letter-spacing:.12em;text-transform:uppercase}
+@media (max-width:560px){ #title{max-width:calc(100% - 210px);left:auto;right:auto;transform:none;left:8px;top:58px} #strip{top:58px;left:auto;right:10px;padding:2px 3px} #strip canvas{width:22px;height:22px} .hb{min-width:44px} #camLbl{display:none} }
+@media (prefers-reduced-motion: reduce){ .card,.pbtn{transition:none} .card.pulse,.card.wobble,#plaque.flash,button.picon.glow{animation:none} }
+</style>
+
+<div id="app">
+  <canvas id="cv" aria-label="Story picture: a Madhubani ocean. Tap or drag when a prompt asks for help."></canvas>
+  <div id="title" hidden><p id="titleText"></p><div id="prog" role="img" aria-label="Progress"></div></div>
+  <div id="strip" hidden aria-label="Treasures collected"></div>
+  <div id="hud">
+    <button class="hb" id="bCam" aria-pressed="false" title="Optional: move with the camera. Everything also works by tapping.">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span id="camLbl">Use camera</span></button>
+    <button class="hb" id="bMute" aria-pressed="false" title="Mute" aria-label="Mute sound">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path id="mWave" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/><path id="mX" d="M16 9l5 6M21 9l-5 6" style="display:none"/></svg></button>
+    <button class="hb" id="bReplay" title="Replay this scene" aria-label="Replay this scene">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 3-6.2"/><path d="M4 4v5h5"/></svg></button>
+    <button class="hb" id="bSkip" title="Skip this line" aria-label="Skip this line">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l9 7-9 7z"/><path d="M18 5v14"/></svg></button>
+  </div>
+  <div id="dock">
+    <div id="tray" hidden></div>
+    <div id="plaque" hidden aria-live="polite"></div>
+    <div id="cap" hidden aria-live="polite"><div id="capWho"></div><p id="capText"></p></div>
+  </div>
+  <div class="ov" id="start">
+    <div class="panel">
+      <p class="eyebrow">Dhanteras 2026 · Samudra Manthan · Ages 6–10</p>
+      <h1>The Ocean That Gave Us the Gift of Life</h1>
+      <p>The Storyteller reads aloud. Tap, drag or press Enter whenever a prompt asks for help.</p>
+      <div class="row"><button class="big" id="bBegin">LET'S BEGIN</button><button class="big alt" id="bResume" hidden>Continue</button></div>
+    </div>
+  </div>
+  <div class="ov" id="end" hidden>
+    <div class="panel">
+      <p class="eyebrow">Shubh Dhanteras!</p>
+      <h1>The Greatest Treasures Are Within Us</h1>
+      <div id="endIcons"></div>
+      <div class="row"><button class="big" id="bAgain">Replay the story</button></div>
+    </div>
+  </div>
+</div>

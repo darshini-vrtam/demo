@@ -1,0 +1,1495 @@
+<title>The Ocean That Gave Us the Gift of Life</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Yatra+One&display=swap">
+<style>
+/* Layout: one painted 16:9-or-portrait stage fills the screen; title on top, prompts and subtitles docked at the bottom. */
+:root{
+  --line:#3B1F14; --cream:#FBF1D9; --saffron:#F28A1E; --turmeric:#F2B71F; --verm:#D6341F; --peacock:#0B6E8A; --deep:#14206B; --indigo:#2A2E78;
+  --bg:#FBF1D9; --fg:#3B1F14; --panel:#FBF1D9; --panel-fg:#3B1F14; --panel-line:#3B1F14; --btn:#FBF1D9; --btn-fg:#3B1F14; --accent:#D6341F; --focus:#D6341F;
+  --font-display:"Yatra One","Kohinoor Devanagari","Palatino Linotype",Georgia,serif;
+  --font-body:"Baloo 2","Trebuchet MS","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#14206B; --fg:#FBF1D9; --panel:#2A2E78; --panel-fg:#FBF1D9; --panel-line:#F2B71F; --btn:#2A2E78; --btn-fg:#FBF1D9; --accent:#F2B71F; --focus:#F2B71F; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#14206B; --fg:#FBF1D9; --panel:#2A2E78; --panel-fg:#FBF1D9; --panel-line:#F2B71F; --btn:#2A2E78; --btn-fg:#FBF1D9; --accent:#F2B71F; --focus:#F2B71F; color-scheme:dark }
+html{height:100%;box-sizing:border-box}
+*,*::before,*::after{box-sizing:inherit}
+body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);overflow:hidden;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:8px}
+#app{position:relative;width:100%;height:100%;overflow:hidden;border-radius:12px;background:var(--bg);-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:pointer}
+[hidden]{display:none!important}
+button{font-family:var(--font-body);color:inherit}
+button:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+/* top: scene title plaque with progress, controls, collection strip */
+#title{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:5;background:var(--panel);color:var(--panel-fg);border:5px double var(--panel-line);border-radius:12px;
+  padding:3px 14px 5px;text-align:center;max-width:min(60%,640px)}
+#titleText{font:400 clamp(13px,1vw + .6vh + 4px,21px)/1.15 var(--font-display);margin:0;text-wrap:balance}
+#prog{display:flex;gap:4px;justify-content:center;margin-top:3px}
+#prog i{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--panel-line);display:block}
+#prog i.done{background:var(--saffron)}#prog i.now{background:var(--verm);transform:scale(1.35)}
+#prog i.gap{margin-left:6px}
+#hud{position:absolute;top:10px;right:10px;display:flex;gap:6px;z-index:6;align-items:center}
+.hb{min-width:44px;height:44px;border-radius:12px;border:4px double var(--panel-line);background:var(--btn);color:var(--btn-fg);display:grid;place-items:center;cursor:pointer;padding:0 6px}
+.hb svg{width:22px;height:22px}
+.hb[aria-pressed="true"]{background:var(--turmeric);color:#3B1F14}
+#bCam{display:flex;gap:4px;padding:0 9px;font:700 12px/1 var(--font-body)}#bCam svg{width:18px;height:18px}#bCam.na{opacity:.55}
+#strip{position:absolute;top:10px;left:10px;z-index:5;display:flex;gap:3px;background:var(--panel);border:4px double var(--panel-line);border-radius:12px;padding:3px 5px}
+#strip canvas{width:30px;height:30px}
+/* bottom dock: cards, instruction plaque, subtitles (never over the painted focal area) */
+#dock{position:absolute;left:0;right:0;bottom:8px;z-index:6;display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 8px;pointer-events:none}
+#dock>*{pointer-events:auto}
+#cap{width:min(96%,1120px);background:var(--panel);color:var(--panel-fg);border:5px double var(--panel-line);border-radius:14px;padding:5px 16px 7px}
+#capWho{display:flex;flex-wrap:wrap;gap:10px;font:800 12px/1 var(--font-body);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+#capWho span{display:inline-flex;align-items:center;gap:6px}
+#capWho i{width:12px;height:12px;border-radius:50%;display:inline-block;border:2px solid #3B1F14}
+#capText{margin:0;font-size:clamp(15px,.95vw + .85vh + 5px,25px);line-height:1.32;font-weight:600;text-wrap:pretty}
+#plaque{width:min(96%,900px);background:var(--panel);color:var(--panel-fg);border:5px double var(--panel-line);border-radius:14px;padding:5px 10px}
+#plaque.flash{animation:pflash .7s ease}
+@keyframes pflash{40%{transform:scale(1.03)}}
+.prow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center}
+.picon{width:clamp(44px,6vh,64px);height:clamp(44px,6vh,64px);flex:none;border-radius:12px}
+button.picon{padding:0;border:4px double var(--panel-line);background:#FBF1D9;cursor:pointer;min-width:64px;min-height:64px}
+button.picon canvas{width:100%;height:100%;display:block}
+button.picon.glow{animation:glow 1.6s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 0 6px #F2B71F,0 0 0 10px #D6341F}}
+button.picon.hit{animation:hit .5s ease}@keyframes hit{50%{transform:scale(1.15)}}
+.ptext{display:flex;flex-direction:column;min-width:0;flex:1 1 180px}
+.ptext b{font:400 clamp(18px,1.2vw + 1vh + 4px,30px)/1.1 var(--font-display);color:var(--accent)}
+.ptext span{font-size:clamp(13px,.7vw + .7vh + 4px,18px);line-height:1.25;font-weight:600}
+.pbtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.pbtn{min-height:48px;padding:6px 16px;border-radius:999px;border:4px double #3B1F14;background:#FBF1D9;color:#3B1F14;font:800 clamp(15px,.6vw + .8vh + 6px,20px)/1 var(--font-body);cursor:pointer}
+.pbtn.main{background:repeating-linear-gradient(135deg,#D6341F 0 10px,#B3122D 10px 20px);color:#FBF1D9}
+.pbtn.small{min-height:44px;font-size:14px;padding:4px 12px;letter-spacing:.06em;text-transform:uppercase}
+.pbtn:disabled{opacity:.45;cursor:default}
+.slots{display:flex;gap:8px}.slots canvas{width:clamp(48px,7vh,72px);height:clamp(48px,7vh,72px);border-radius:12px;border:3px solid transparent}
+.slots canvas.on{border:4px double #3B1F14;background:#F2B71F}
+#tray{display:flex;justify-content:center;align-items:stretch;gap:clamp(8px,2vw,28px);flex-wrap:wrap;width:min(100%,1100px)}
+.card{flex:0 1 300px;min-width:0;width:30%;background:#FBF1D9;color:#3B1F14;border:6px double #3B1F14;border-radius:16px;padding:6px 6px 8px;cursor:pointer;display:flex;flex-direction:column;gap:6px;
+  transition:transform .3s ease,opacity .4s ease,box-shadow .3s ease}
+.card canvas{width:100%;aspect-ratio:3/2;max-width:100%;max-height:19vh;object-fit:contain;display:block;border-radius:10px}
+.card span{font:800 clamp(14px,.8vw + .9vh + 4px,22px)/1.15 var(--font-body);text-align:center;text-wrap:balance}
+.card.reading{transform:translateY(-6px);box-shadow:0 0 0 4px #F2B71F}
+.card.picked{transform:translateY(-8px) scale(1.04);box-shadow:0 0 0 5px #F2B71F,0 0 0 9px #D6341F}
+.card.wobble{animation:wob .8s ease}@keyframes wob{20%{transform:rotate(-3deg)}40%{transform:rotate(3deg)}60%{transform:rotate(-2deg)}80%{transform:rotate(1deg)}}
+.card.pulse{animation:cpulse 1.2s ease-in-out 3}@keyframes cpulse{50%{transform:scale(1.06);box-shadow:0 0 0 6px #F2B71F}}
+.card.back{opacity:.35;transform:translateY(10px)}
+.place{flex-basis:100%;max-width:340px}
+@media (max-width:700px){ #tray{flex-wrap:wrap;gap:6px} .card{flex:1 1 0;width:auto;padding:4px;border-width:4px} .card canvas{max-height:16vh} }
+/* overlays */
+.ov{position:absolute;inset:0;z-index:8;display:grid;place-items:center;padding:16px;pointer-events:none}
+.ov .panel{pointer-events:auto}
+.panel{background:var(--panel);color:var(--panel-fg);border:7px double var(--panel-line);border-radius:20px;padding:16px 22px;max-width:620px;width:100%;text-align:center;display:flex;flex-direction:column;gap:10px}
+.panel h1{font:400 clamp(26px,3vw + 1.4vh,52px)/1.1 var(--font-display);margin:0;text-wrap:balance;color:var(--accent)}
+.panel .eyebrow{font:800 12px/1.2 var(--font-body);letter-spacing:.14em;text-transform:uppercase;margin:0}
+.panel p{margin:0;font-size:16px;line-height:1.4;font-weight:600}
+.big{font:400 clamp(22px,1.6vw + 1vh,32px)/1 var(--font-display);padding:14px 30px;border-radius:999px;border:6px double #3B1F14;cursor:pointer;min-height:64px;color:#FBF1D9;
+  background:repeating-linear-gradient(90deg,#D6341F 0 14px,#F28A1E 14px 18px,#D6341F 18px 32px,#F2B71F 32px 36px)}
+.big.alt{background:#FBF1D9;color:#3B1F14;font-size:clamp(17px,1vw + 1vh,22px)}
+.row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+#start .panel{max-width:min(720px,92%);background:color-mix(in srgb,var(--panel) 90%,transparent)}
+#endIcons{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}#endIcons canvas{width:56px;height:56px}
+#endIcons .lbl{flex-basis:100%;font:800 12px/1 var(--font-body);letter-spacing:.12em;text-transform:uppercase}
+@media (max-width:560px){ #title{max-width:calc(100% - 210px);left:auto;right:auto;transform:none;left:8px;top:58px} #strip{top:58px;left:auto;right:10px;padding:2px 3px} #strip canvas{width:22px;height:22px} .hb{min-width:44px} #camLbl{display:none} }
+@media (prefers-reduced-motion: reduce){ .card,.pbtn{transition:none} .card.pulse,.card.wobble,#plaque.flash,button.picon.glow{animation:none} }
+</style>
+
+<div id="app">
+  <canvas id="cv" aria-label="Story picture: a Madhubani ocean. Tap or drag when a prompt asks for help."></canvas>
+  <div id="title" hidden><p id="titleText"></p><div id="prog" role="img" aria-label="Progress"></div></div>
+  <div id="strip" hidden aria-label="Treasures collected"></div>
+  <div id="hud">
+    <button class="hb" id="bCam" aria-pressed="false" title="Optional: move with the camera. Everything also works by tapping.">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span id="camLbl">Use camera</span></button>
+    <button class="hb" id="bMute" aria-pressed="false" title="Mute" aria-label="Mute sound">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path id="mWave" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/><path id="mX" d="M16 9l5 6M21 9l-5 6" style="display:none"/></svg></button>
+    <button class="hb" id="bReplay" title="Replay this scene" aria-label="Replay this scene">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 3-6.2"/><path d="M4 4v5h5"/></svg></button>
+    <button class="hb" id="bSkip" title="Skip this line" aria-label="Skip this line">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l9 7-9 7z"/><path d="M18 5v14"/></svg></button>
+  </div>
+  <div id="dock">
+    <div id="tray" hidden></div>
+    <div id="plaque" hidden aria-live="polite"></div>
+    <div id="cap" hidden aria-live="polite"><div id="capWho"></div><p id="capText"></p></div>
+  </div>
+  <div class="ov" id="start">
+    <div class="panel">
+      <p class="eyebrow">Dhanteras 2026 · Samudra Manthan · Ages 6–10</p>
+      <h1>The Ocean That Gave Us the Gift of Life</h1>
+      <p>The Storyteller reads aloud. Tap, drag or press Enter whenever a prompt asks for help.</p>
+      <div class="row"><button class="big" id="bBegin">LET'S BEGIN</button><button class="big alt" id="bResume" hidden>Continue</button></div>
+    </div>
+  </div>
+  <div class="ov" id="end" hidden>
+    <div class="panel">
+      <p class="eyebrow">Shubh Dhanteras!</p>
+      <h1>The Greatest Treasures Are Within Us</h1>
+      <div id="endIcons"></div>
+      <div class="row"><button class="big" id="bAgain">Replay the story</button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+/* ===== Palette: the only colours the painting uses ===== */
+const C={line:'#3B1F14',cream:'#FBF1D9',white:'#FFFFFF',indigo:'#2A2E78',deep:'#14206B',peacock:'#0B6E8A',turq:'#2BB5B0',pink:'#E86FA0',
+  turmeric:'#F2B71F',gold:'#D9A21B',ochre:'#C98A2B',saffron:'#F28A1E',diya:'#F5821F',verm:'#D6341F',red:'#B3122D',coral:'#F26B5B',
+  leaf:'#3E8E41',emerald:'#1F9D6B',charcoal:'#3A3A44',violet:'#6B4FA0'};
+function ca(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${n>>16},${(n>>8)&255},${n&255},${a})`}
+function mixHex(a,b,t){if(t<=0)return a;if(t>=1)return b;const x=parseInt(a.slice(1),16),y=parseInt(b.slice(1),16);
+  const r=Math.round((x>>16)+((y>>16)-(x>>16))*t),g=Math.round(((x>>8)&255)+(((y>>8)&255)-((x>>8)&255))*t),bl=Math.round((x&255)+((y&255)-(x&255))*t);
+  return '#'+((1<<24)|(r<<16)|(g<<8)|bl).toString(16).slice(1)}
+const TAU=Math.PI*2,clamp=(v,a,b)=>v<a?a:v>b?b:v,lerp=(a,b,t)=>a+(b-a)*t,ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const $=id=>document.getElementById(id);
+
+/* ===== Storage: current scene, finished activities, treasures, choices. Never required. ===== */
+const Store={k:'dhanteras2026.ocean.v1',data:null,
+  fresh(){return{chapter:0,done:[],treasures:[],gifts:[],choices:{}}},
+  load(){this.data=this.fresh();try{const s=localStorage.getItem(this.k);if(s){const d=JSON.parse(s);if(d&&typeof d==='object'){
+    if(Number.isInteger(d.chapter)&&d.chapter>=0&&d.chapter<8)this.data.chapter=d.chapter;
+    ['done','treasures','gifts'].forEach(k=>{if(Array.isArray(d[k]))this.data[k]=d[k].filter(v=>typeof v==='string').slice(0,12)});
+    if(d.choices&&typeof d.choices==='object')this.data.choices=d.choices}}}catch(e){}},
+  save(){try{localStorage.setItem(this.k,JSON.stringify(this.data))}catch(e){}},
+  set(k,v){this.data[k]=v;this.save()},
+  push(k,v){if(!this.data[k].includes(v)){this.data[k].push(v);this.save()}},
+  choice(k,v){if(v!==undefined){this.data.choices[k]=v;this.save()}return this.data.choices[k]},
+  reset(){this.data=this.fresh();this.save()}};
+
+/* ===== Layout: the short screen side is always 1080 logical units ===== */
+const app=$('app'),cv=$('cv'),cx=cv.getContext('2d');
+const L={W:1920,H:1080,U:1,dpr:1,pw:1,ph:1,portrait:false,ver:0};
+function relayout(){const r=app.getBoundingClientRect();L.pw=Math.max(1,r.width);L.ph=Math.max(1,r.height);
+  L.dpr=Math.min(window.devicePixelRatio||1,2);const maxPx=3.6e6;if(L.pw*L.ph*L.dpr*L.dpr>maxPx)L.dpr=Math.sqrt(maxPx/(L.pw*L.ph));
+  L.U=Math.min(L.pw,L.ph)/1080;L.W=L.pw/L.U;L.H=L.ph/L.U;L.portrait=L.H>L.W*1.05;
+  cv.width=Math.round(L.pw*L.dpr);cv.height=Math.round(L.ph*L.dpr);L.ver++;Spr.clear();if(window.UI)UI.relayout()}
+/* safe story band: top 12% for the title, bottom for subtitles and prompts */
+L.top=()=>L.H*.12;
+L.bot=()=>{const capEl=$('cap'),pl=$('plaque');let px=L.ph*.15;try{
+  const r=app.getBoundingClientRect();[capEl,pl].forEach(el=>{if(el&&!el.hidden){const b=el.getBoundingClientRect();if(b.height>0)px=Math.max(px,r.bottom-b.top+8)}})}catch(e){}
+  return L.H-px/L.U};
+
+/* ===== Sprite cache: static painted parts rendered once per layout ===== */
+const Spr={m:new Map(),clear(){this.m.clear()},
+  get(key,w,h,fn){const k=key+'@'+L.ver;let c=this.m.get(k);if(c){this.m.delete(k);this.m.set(k,c);return c}
+    const sc=L.U*L.dpr;c=document.createElement('canvas');c.width=Math.max(1,Math.ceil(w*sc));c.height=Math.max(1,Math.ceil(h*sc));
+    const g=c.getContext('2d');g.setTransform(sc,0,0,sc,0,0);g.lineCap='round';g.lineJoin='round';fn(g,w,h);
+    if(this.m.size>160)this.m.delete(this.m.keys().next().value);this.m.set(k,c);return c},
+  /* draw sprite whose local origin (ox,oy) lands at x,y; s scales */
+  draw(ctx,key,x,y,w,h,ox,oy,fn,s){s=s||1;const c=this.get(key,w,h,fn);ctx.drawImage(c,x-ox*s,y-oy*s,w*s,h*s)}};
+
+/* ===== Time, tweens, timers ===== */
+const T={now:0,sec:0};
+const Ease={lin:t=>t,io:ease,out:t=>1-Math.pow(1-t,3),in:t=>t*t*t,back:t=>{const c1=1.4,c3=c1+1;return 1+c3*Math.pow(t-1,3)+c1*Math.pow(t-1,2)}};
+const Tw={list:[],add(o,props,ms,e){return new Promise(res=>{const fr={};for(const k in props)fr[k]=o[k];
+  const old=this.list.filter(t=>t.o===o&&Object.keys(props).some(k=>k in t.to));old.forEach(t=>t.res());this.list=this.list.filter(t=>!old.includes(t));
+  this.list.push({o,fr,to:props,t0:T.now,ms:Math.max(1,ms),e:Ease[e||'io']||e,res})})},
+  update(){const keep=[];for(const t of this.list){const k=clamp((T.now-t.t0)/t.ms,0,1),v=t.e(k);
+    for(const p in t.to)t.o[p]=t.fr[p]+(t.to[p]-t.fr[p])*v;if(k<1)keep.push(t);else t.res()}this.list=keep},
+  kill(){this.list.forEach(t=>t.res());this.list=[]}};
+const Timers={list:[],add(ms,fn){this.list.push({at:T.now+ms,fn})},update(){const due=this.list.filter(t=>t.at<=T.now);this.list=this.list.filter(t=>t.at>T.now);due.forEach(t=>t.fn())},kill(){this.list=[]}};
+function tw(o,props,ms,e){return Tw.add(o,props,ms,e)}
+const reduceMotion=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}})();
+
+/* ===== Folk-art paint kit: clean double outlines, dense pattern fills, flat colour ===== */
+/* hand-drawn wobble: deterministic jitter so a shape looks the same every frame */
+function wob(pts,amp,seed){const r=rng(seed||7);return pts.map(p=>[p[0]+(r()-.5)*2*amp,p[1]+(r()-.5)*2*amp])}
+/* smooth closed or open path through points (midpoint quadratic curves) */
+function sPath(pts,closed){const p=new Path2D();const n=pts.length;if(n<2)return p;
+  if(!closed){p.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<n-1;i++){const mx=(pts[i][0]+pts[i+1][0])/2,my=(pts[i][1]+pts[i+1][1])/2;p.quadraticCurveTo(pts[i][0],pts[i][1],mx,my)}p.lineTo(pts[n-1][0],pts[n-1][1]);return p}
+  const m=(a,b)=>[(a[0]+b[0])/2,(a[1]+b[1])/2];let s=m(pts[n-1],pts[0]);p.moveTo(s[0],s[1]);
+  for(let i=0;i<n;i++){const a=pts[i],b=pts[(i+1)%n],e=m(a,b);p.quadraticCurveTo(a[0],a[1],e[0],e[1])}p.closePath();return p}
+function polyPath(pts){const p=new Path2D();pts.forEach((q,i)=>i?p.lineTo(q[0],q[1]):p.moveTo(q[0],q[1]));p.closePath();return p}
+function ellPath(x,y,rx,ry,rot){const p=new Path2D();p.ellipse(x,y,Math.max(.1,rx),Math.max(.1,ry),rot||0,0,TAU);return p}
+function ellPts(x,y,rx,ry,n,a0){const o=[];for(let i=0;i<n;i++){const a=(a0||0)+i/n*TAU;o.push([x+Math.cos(a)*rx,y+Math.sin(a)*ry])}return o}
+
+/* outlines: the double line is a thick brown stroke with a cream core */
+function dbl(ctx,path,lw,gap){lw=lw||3;ctx.lineJoin='round';ctx.lineCap='round';ctx.strokeStyle=C.line;ctx.lineWidth=lw*2.7;ctx.stroke(path);ctx.strokeStyle=gap||C.cream;ctx.lineWidth=lw*.95;ctx.stroke(path)}
+function sgl(ctx,path,lw,col){ctx.lineJoin='round';ctx.lineCap='round';ctx.strokeStyle=col||C.line;ctx.lineWidth=lw||3;ctx.stroke(path)}
+function dot(ctx,x,y,r,col){ctx.beginPath();ctx.arc(x,y,Math.max(.1,r),0,TAU);ctx.fillStyle=col;ctx.fill()}
+function line(ctx,pts,col,w){ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.strokeStyle=col;ctx.lineWidth=w;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke()}
+function ring(ctx,x,y,r,col,w){ctx.beginPath();ctx.arc(x,y,Math.max(.1,r),0,TAU);ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke()}
+function boundsOf(pts){let a=1e9,b=1e9,c=-1e9,d=-1e9;for(const p of pts){a=Math.min(a,p[0]);b=Math.min(b,p[1]);c=Math.max(c,p[0]);d=Math.max(d,p[1])}return{x:a,y:b,w:c-a,h:d-b}}
+
+/* ---- pattern fills (drawn inside a clip) ---- */
+const Pat={
+  dots(ctx,bb,gap,r,col){for(let y=bb.y+gap/2,j=0;y<bb.y+bb.h+gap;y+=gap,j++)for(let x=bb.x+(j%2?gap/2:0);x<bb.x+bb.w+gap;x+=gap)dot(ctx,x,y,r,col)},
+  stripes(ctx,bb,gap,w,col,vert){ctx.fillStyle=col;if(vert)for(let x=bb.x;x<bb.x+bb.w;x+=gap)ctx.fillRect(x,bb.y,w,bb.h);else for(let y=bb.y;y<bb.y+bb.h;y+=gap)ctx.fillRect(bb.x,y,bb.w,w)},
+  diag(ctx,bb,gap,w,col){ctx.beginPath();for(let x=bb.x-bb.h;x<bb.x+bb.w;x+=gap){ctx.moveTo(x,bb.y+bb.h);ctx.lineTo(x+bb.h,bb.y)}ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke()},
+  scallops(ctx,bb,sz,col,w){ctx.beginPath();for(let y=bb.y,j=0;y<bb.y+bb.h+sz;y+=sz*.8,j++)for(let x=bb.x-(j%2?sz/2:0);x<bb.x+bb.w+sz;x+=sz){ctx.moveTo(x,y);ctx.arc(x+sz/2,y,sz/2,Math.PI,0,false)}
+    ctx.strokeStyle=col;ctx.lineWidth=w||2;ctx.stroke()},
+  fishscale(ctx,bb,sz,col,w){ctx.beginPath();for(let y=bb.y,j=0;y<bb.y+bb.h+sz;y+=sz*.55,j++)for(let x=bb.x-(j%2?sz/2:0);x<bb.x+bb.w+sz;x+=sz){ctx.moveTo(x+sz,y);ctx.arc(x+sz/2,y,sz/2,0,Math.PI,false)}
+    ctx.strokeStyle=col;ctx.lineWidth=w||2;ctx.stroke()},
+  zig(ctx,bb,sz,col,w,gap){ctx.beginPath();for(let y=bb.y+sz;y<bb.y+bb.h+sz;y+=gap||sz*1.6){ctx.moveTo(bb.x,y);for(let x=bb.x,i=0;x<bb.x+bb.w+sz;x+=sz/2,i++)ctx.lineTo(x,y+(i%2?-sz/2:0))}
+    ctx.strokeStyle=col;ctx.lineWidth=w||2;ctx.stroke()},
+  chevron(ctx,bb,sz,col,w){ctx.beginPath();for(let y=bb.y;y<bb.y+bb.h+sz;y+=sz*.8)for(let x=bb.x;x<bb.x+bb.w+sz;x+=sz){ctx.moveTo(x,y+sz*.4);ctx.lineTo(x+sz/2,y);ctx.lineTo(x+sz,y+sz*.4)}
+    ctx.strokeStyle=col;ctx.lineWidth=w||2;ctx.stroke()},
+  tri(ctx,bb,sz,col){ctx.fillStyle=col;ctx.beginPath();for(let x=bb.x;x<bb.x+bb.w+sz;x+=sz){ctx.moveTo(x,bb.y+bb.h);ctx.lineTo(x+sz/2,bb.y);ctx.lineTo(x+sz,bb.y+bb.h)}ctx.fill()},
+  leaves(ctx,bb,sz,col,stem){for(let y=bb.y+sz,j=0;y<bb.y+bb.h+sz;y+=sz*1.5,j++){line(ctx,[[bb.x,y],[bb.x+bb.w,y]],stem||col,2);
+    for(let x=bb.x+(j%2?sz/2:0);x<bb.x+bb.w+sz;x+=sz){leafShape(ctx,x,y,sz*.45,-.8,col);leafShape(ctx,x+sz/2,y,sz*.45,.8+Math.PI,col)}}}};
+function leafShape(ctx,x,y,s,a,col){ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.beginPath();ctx.moveTo(0,0);ctx.quadraticCurveTo(s*.5,-s*.45,s,0);ctx.quadraticCurveTo(s*.5,s*.45,0,0);ctx.fillStyle=col;ctx.fill();ctx.restore()}
+
+/* fill a path flat, pattern it inside a clip, then outline it */
+function shape(ctx,path,fill,pat,o){o=o||{};if(fill){ctx.fillStyle=fill;ctx.fill(path)}
+  if(pat){ctx.save();ctx.clip(path);pat(ctx);ctx.restore()}
+  if(o.line!=='none'){if(o.line==='single')sgl(ctx,path,o.lw||3);else dbl(ctx,path,o.lw||2.6,o.gap)}}
+
+/* sprite with a quantised scale so patterns stay crisp; box in unit coordinates */
+function sprite(ctx,key,x,y,s,box,fn,flip){const sb=Math.max(.1,Math.round(s*10)/10);const c=Spr.get(key+'|'+sb,box.w*sb,box.h*sb,g=>{g.scale(sb,sb);g.translate(box.ox,box.oy);fn(g)});
+  const k=s/sb;ctx.save();ctx.translate(x,y);if(flip)ctx.scale(-1,1);ctx.drawImage(c,-box.ox*s,-box.oy*s,box.w*s,box.h*s);ctx.restore();void k}
+
+/* ===== Motifs ===== */
+function fishArt(g,body,acc){const pts=wob([[-46,0],[-30,-20],[0,-27],[30,-18],[46,0],[30,18],[0,27],[-30,20]],1.2,hash(body+acc));const p=sPath(pts,true);
+  const tail=sPath([[40,0],[66,-22],[60,0],[66,22]],true);shape(g,tail,acc,c=>Pat.stripes(c,{x:40,y:-24,w:30,h:48},7,2.5,C.cream,true),{lw:2});
+  shape(g,p,body,c=>{Pat.fishscale(c,{x:-10,y:-30,w:52,h:62},12,acc,2);c.fillStyle=acc;c.fillRect(-26,-30,8,60)},{lw:2.2});
+  line(g,[[-14,-25],[-14,25]],C.line,2);dot(g,-30,-4,9,C.cream);ring(g,-30,-4,9,C.line,2.2);dot(g,-29,-4,4,C.line);
+  const fin=sPath([[0,-26],[14,-40],[22,-22]],true);shape(g,fin,acc,null,{line:'single',lw:2})}
+function drawFish(ctx,x,y,s,dir,body,acc,t,ph){const sw=Math.sin(t*5+(ph||0))*.08;ctx.save();ctx.translate(x,y);ctx.rotate(sw*.5);
+  sprite(ctx,'fish'+body+acc,0,0,s,{w:150,h:100,ox:60,oy:50},g=>fishArt(g,body,acc),dir>0);ctx.restore()}
+
+/* lotus flower: open 0 (bud) .. 1 (fully open); petals open one at a time */
+function lotusArt(g,open,pink,acc){const n=7;const petal=(a,len,wd,col)=>{g.save();g.rotate(a);const p=sPath([[0,4],[-wd,-len*.45],[0,-len],[wd,-len*.45]],true);
+    shape(g,p,col,c=>{line(c,[[0,0],[0,-len*.85]],C.cream,2);for(let k=.3;k<.9;k+=.18)dot(c,0,-len*k,2,acc)},{lw:2});g.restore()};
+  const pads=sPath([[-60,8],[-30,0],[0,4],[30,0],[60,8],[30,16],[0,14],[-30,16]],true);shape(g,pads,C.leaf,c=>Pat.leaves(c,{x:-62,y:0,w:124,h:18},14,C.emerald),{lw:2});
+  for(let i=n-1;i>=0;i--){const k=clamp(open*n*1.15-i*.95,0,1);const side=i%2?1:-1,idx=Math.ceil(i/2);const a=side*idx*(.13+k*.37);if(i>2&&k<=0)continue;petal(a,62-idx*6+(1-k)*idx*4,16+k*4+(1-k)*4,i%2?pink:C.coral)}
+  petal(0,66,15,pink)}
+function drawLotus(ctx,x,y,s,open,pink,acc){const q=Math.round(clamp(open,0,1)*8)/8;sprite(ctx,'lotus'+q+(pink||C.pink)+(acc||C.turmeric),x,y,s,{w:150,h:110,ox:75,oy:88},g=>lotusArt(g,q,pink||C.pink,acc||C.turmeric))}
+
+function shellArt(g,col,acc){const p=sPath([[0,10],[-34,-6],[-30,-30],[-14,-42],[0,-46],[14,-42],[30,-30],[34,-6]],true);
+  shape(g,p,col,c=>{for(let i=-3;i<=3;i++)line(c,[[0,8],[i*10,-46]],acc,2.5);Pat.dots(c,{x:-34,y:-46,w:68,h:50},12,2,C.cream)},{lw:2.2});
+  shape(g,sPath([[-10,4],[0,18],[10,4]],true),acc,null,{line:'single',lw:2})}
+function drawShell(ctx,x,y,s,col,acc){sprite(ctx,'shell'+col+acc,x,y,s,{w:90,h:80,ox:45,oy:56},g=>shellArt(g,col||C.cream,acc||C.coral))}
+
+/* PROP_CONCH: cream-and-red patterned spiral shell with a clear opening */
+function conchArt(g){const body=sPath([[-52,6],[-30,-24],[4,-34],[34,-24],[54,-6],[40,10],[10,24],[-24,24]],true);
+  shape(g,body,C.cream,c=>{for(let i=0;i<5;i++)line(c,[[-40+i*18,-30],[-30+i*18,26]],C.red,4);Pat.dots(c,{x:-52,y:-34,w:110,h:60},10,1.8,C.coral)},{lw:2.4});
+  const tip=sPath([[34,-24],[62,-14],[70,-4],[54,-6]],true);shape(g,tip,C.cream,c=>line(c,[[44,-20],[58,-8]],C.red,3),{lw:2});
+  const sp=[];for(let i=0;i<=30;i++){const a=i/30*TAU*1.6,r=4+i*.55;sp.push([-30+Math.cos(a)*r,-2+Math.sin(a)*r*.8])}line(g,sp,C.line,2.2);
+  const lip=sPath([[-20,18],[10,30],[34,14],[10,14]],true);shape(g,lip,C.coral,null,{lw:2})}
+function drawConch(ctx,x,y,s){sprite(ctx,'conch',x,y,s,{w:150,h:90,ox:75,oy:45},conchArt)}
+
+/* PROP_JEWEL: faceted gemstone in a gold setting */
+function jewelArt(g,col){const set=sPath(ellPts(0,0,46,46,16),true);shape(g,set,C.gold,c=>Pat.dots(c,{x:-46,y:-46,w:92,h:92},10,2.4,C.turmeric),{lw:2.2});
+  const gem=polyPath([[0,-36],[30,-12],[22,26],[-22,26],[-30,-12]]);shape(g,gem,col,c=>{c.fillStyle=C.white;c.beginPath();c.moveTo(-12,-14);c.lineTo(0,-30);c.lineTo(6,-14);c.closePath();c.fill();
+    line(c,[[-30,-12],[30,-12]],C.line,1.6);line(c,[[0,-36],[-10,-12],[0,26]],C.line,1.6);line(c,[[0,-36],[10,-12],[0,26]],C.line,1.6)},{lw:2})}
+function drawJewel(ctx,x,y,s,col){sprite(ctx,'jewel'+(col||C.emerald),x,y,s,{w:110,h:110,ox:55,oy:55},g=>jewelArt(g,col||C.emerald))}
+
+/* golden decorative treasure medallion */
+function medalArt(g){for(let i=0;i<10;i++){g.save();g.rotate(i/10*TAU);const p=sPath([[0,-30],[-12,-54],[0,-66],[12,-54]],true);shape(g,p,i%2?C.turmeric:C.saffron,null,{lw:1.8});g.restore()}
+  const d=sPath(ellPts(0,0,34,34,14),true);shape(g,d,C.gold,c=>{ring(c,0,0,22,C.verm,4);Pat.dots(c,{x:-34,y:-34,w:68,h:68},9,2,C.cream)},{lw:2.2});dot(g,0,0,9,C.verm)}
+function drawMedal(ctx,x,y,s){sprite(ctx,'medal',x,y,s,{w:150,h:150,ox:75,oy:75},medalArt)}
+
+/* 8-point patterned star */
+function starArt(g,col){const pts=[];for(let i=0;i<16;i++){const r=i%2?9:22,a=i/16*TAU-Math.PI/2;pts.push([Math.cos(a)*r,Math.sin(a)*r])}shape(g,polyPath(pts),col,null,{lw:1.5});dot(g,0,0,4,C.verm)}
+function drawStar(ctx,x,y,s,col){sprite(ctx,'star'+col,x,y,s,{w:56,h:56,ox:28,oy:28},g=>starArt(g,col))}
+
+/* moon with a gentle sleeping face and dotted rings */
+function moonArt(g){const p=sPath(ellPts(0,0,90,90,20),true);shape(g,p,C.cream,c=>{ring(c,0,0,78,C.turmeric,6);Pat.dots(c,{x:-90,y:-90,w:180,h:180},16,2.2,C.turmeric)},{lw:3});
+  const face=sPath(ellPts(0,6,52,52,14),true);shape(g,face,C.cream,null,{line:'single',lw:2.5});
+  [[-20,-2],[20,-2]].forEach(([x,y])=>{g.beginPath();g.arc(x,y,9,.15*Math.PI,.85*Math.PI);g.strokeStyle=C.line;g.lineWidth=3;g.stroke()});
+  g.beginPath();g.arc(0,20,12,.2*Math.PI,.8*Math.PI);g.strokeStyle=C.verm;g.lineWidth=3.4;g.stroke();dot(g,-30,16,5,C.pink);dot(g,30,16,5,C.pink);dot(g,0,-24,4,C.verm)}
+function drawMoon(ctx,x,y,s){sprite(ctx,'moon',x,y,s,{w:200,h:200,ox:100,oy:100},moonArt)}
+
+/* small geometric cloud */
+function cloudArt(g,col,acc){const p=new Path2D();p.moveTo(-70,20);p.arc(-44,8,26,Math.PI*.9,Math.PI*1.75);p.arc(-6,-6,32,Math.PI*1.1,Math.PI*1.9);p.arc(38,6,26,Math.PI*1.25,Math.PI*2.1);p.lineTo(70,20);p.closePath();
+  shape(g,p,col,c=>{for(const [x,y,r] of [[-44,10,12],[-6,-2,15],[38,8,12]]){const sp=[];for(let i=0;i<=24;i++){const a=i/24*TAU*1.4;sp.push([x+Math.cos(a)*r*i/24,y+Math.sin(a)*r*i/24])}line(c,sp,acc,2.2)}
+    line(c,[[-64,16],[64,16]],acc,2)},{lw:2})}
+function drawCloud(ctx,x,y,s,col,acc){sprite(ctx,'cloud'+col+acc,x,y,s,{w:160,h:90,ox:80,oy:52},g=>cloudArt(g,col||C.cream,acc||C.turq))}
+
+/* small turtle (background life) */
+function turtleArt(g){const sh=sPath([[-30,4],[-24,-16],[0,-24],[24,-16],[30,4]],true);
+  [[-24,8],[24,8]].forEach(([x,y])=>shape(g,ellPath(x,y,10,5,x<0?-.5:.5),C.leaf,null,{line:'single',lw:2}));shape(g,ellPath(38,-2,10,8),C.leaf,null,{line:'single',lw:2});dot(g,41,-4,2.4,C.line);
+  shape(g,sh,C.emerald,c=>{Pat.fishscale(c,{x:-30,y:-24,w:60,h:30},12,C.turmeric,2)},{lw:2})}
+function drawTurtle(ctx,x,y,s,dir){sprite(ctx,'turtle',x,y,s,{w:100,h:56,ox:50,oy:30},turtleArt,dir<0)}
+
+/* patterned folk-art halo: rings of petals and dots, never a soft glow */
+function halo(ctx,x,y,r,cols,t,k){if(k!=null&&k<=0)return;ctx.save();if(k!=null)ctx.globalAlpha*=clamp(k,0,1);ctx.translate(x,y);
+  const [a,b,c]=cols;dot(ctx,0,0,r,a);ring(ctx,0,0,r,C.line,3);const n=Math.max(12,Math.round(r/7));ctx.save();ctx.rotate((t||0)*.08);
+  for(let i=0;i<n;i++){ctx.save();ctx.rotate(i/n*TAU);ctx.beginPath();ctx.moveTo(-r*.09,-r*.72);ctx.quadraticCurveTo(0,-r*1.02,r*.09,-r*.72);ctx.closePath();ctx.fillStyle=b;ctx.fill();ctx.strokeStyle=C.line;ctx.lineWidth=1.6;ctx.stroke();ctx.restore()}ctx.restore();
+  ring(ctx,0,0,r*.66,C.line,2.2);for(let i=0;i<n;i++){const an=i/n*TAU-(t||0)*.05;dot(ctx,Math.cos(an)*r*.58,Math.sin(an)*r*.58,Math.max(1.5,r*.035),c)}ctx.restore()}
+
+/* short patterned flash for feedback: a ring of petals that grows and fades */
+function burst(ctx,x,y,k,r,col){if(k<=0||k>=1)return;ctx.save();ctx.globalAlpha*=1-k;ctx.translate(x,y);const rr=r*(.4+k*.8);
+  for(let i=0;i<12;i++){ctx.save();ctx.rotate(i/12*TAU+k);ctx.beginPath();ctx.ellipse(0,-rr,6,14,0,0,TAU);ctx.fillStyle=i%2?col:C.cream;ctx.fill();ctx.strokeStyle=C.line;ctx.lineWidth=1.6;ctx.stroke();ctx.restore()}
+  ring(ctx,0,0,rr*.7,col,4);ctx.restore()}
+
+/* ===== Diya with a separate gentle flame layer ===== */
+function diyaArt(g,col){const bowl=new Path2D();bowl.moveTo(-50,-4);bowl.quadraticCurveTo(-46,26,0,30);bowl.quadraticCurveTo(46,26,58,-10);bowl.lineTo(40,-6);bowl.quadraticCurveTo(0,4,-50,-4);bowl.closePath();
+  shape(g,bowl,col,c=>{Pat.tri(c,{x:-52,y:4,w:110,h:10},12,C.turmeric);Pat.dots(c,{x:-50,y:14,w:100,h:14},10,2.2,C.cream);line(c,[[-48,2],[50,2]],C.line,1.6)},{lw:2.2});
+  shape(g,ellPath(-2,-4,46,7),C.ochre,c=>Pat.dots(c,{x:-48,y:-10,w:96,h:12},8,1.6,C.turmeric),{line:'single',lw:2});
+  shape(g,sPath([[-30,30],[30,30],[22,40],[-22,40]],true),C.verm,null,{line:'single',lw:2})}
+function flame(ctx,x,y,s,t,lit,seed){if(lit<=0)return;const f=reduceMotion?0:Math.sin(t*6+(seed||0))*.04+Math.sin(t*9.3+(seed||0)*2)*.025;ctx.save();ctx.translate(x,y);ctx.scale(s*lit,s*lit*(1+f));ctx.rotate(f*.6);
+  const o=sPath([[0,-56],[16,-18],[12,0],[0,6],[-12,0],[-16,-18]],true);shape(ctx,o,C.diya,null,{line:'single',lw:2.2});
+  shape(ctx,sPath([[0,-38],[9,-12],[0,2],[-9,-12]],true),C.turmeric,null,{line:'none'});shape(ctx,ellPath(0,-8,4,8),C.white,null,{line:'none'});ctx.restore()}
+function drawDiya(ctx,x,y,s,o){o=o||{};const lit=o.lit||0;if(lit>0&&o.halo!==false)halo(ctx,x+52*s,y-34*s,58*s*lit,[C.turmeric,C.saffron,C.verm],o.t||0,lit*.9);
+  sprite(ctx,'diya'+(o.col||C.verm),x,y,s,{w:130,h:80,ox:60,oy:30},g=>diyaArt(g,o.col||C.verm));
+  line(ctx,[[x+44*s,y-6*s],[x+52*s,y-14*s]],C.line,3*s);flame(ctx,x+52*s,y-12*s,s,o.t||0,lit,o.seed)}
+
+/* ===== The three gift motifs (ICON_HEALTH, ICON_KINDNESS, ICON_GRATITUDE); fill 0..1 rises from below ===== */
+function giftPath(kind){if(kind==='leaf')return sPath([[0,70],[-40,30],[-52,-14],[-30,-56],[0,-78],[30,-56],[52,-14],[40,30]],true);
+  if(kind==='heart'){const p=new Path2D();p.moveTo(0,70);p.bezierCurveTo(-30,44,-74,14,-70,-22);p.bezierCurveTo(-66,-58,-22,-70,0,-38);p.bezierCurveTo(22,-70,66,-58,70,-22);p.bezierCurveTo(74,14,30,44,0,70);p.closePath();return p}
+  const p=new Path2D();p.moveTo(-70,0);p.quadraticCurveTo(-64,50,0,56);p.quadraticCurveTo(64,50,76,-6);p.lineTo(54,-2);p.quadraticCurveTo(0,12,-70,0);p.closePath();return p}
+function giftPattern(c,kind){if(kind==='leaf'){line(c,[[0,70],[0,-70]],C.cream,4);for(let y=-50;y<50;y+=18){line(c,[[0,y+14],[-34,y-6]],C.cream,3);line(c,[[0,y+14],[34,y-6]],C.cream,3)}Pat.dots(c,{x:-52,y:-80,w:104,h:150},14,2.4,C.turmeric)}
+  else if(kind==='heart'){Pat.scallops(c,{x:-74,y:-70,w:148,h:140},18,C.turmeric,2.4);dot(c,0,-6,16,C.turmeric);ring(c,0,-6,26,C.cream,4)}
+  else{Pat.tri(c,{x:-72,y:10,w:150,h:14},16,C.turmeric);Pat.dots(c,{x:-70,y:26,w:140,h:28},12,2.6,C.cream)}}
+function drawGift(ctx,kind,x,y,s,fill,t,hl){const col=kind==='leaf'?C.leaf:kind==='heart'?C.verm:C.saffron;ctx.save();ctx.translate(x,y);ctx.scale(s,s);
+  if(hl>0){const k=.5+.5*Math.sin(t*4);ctx.save();ctx.globalAlpha*=hl;ring(ctx,0,0,96+k*10,C.turmeric,6);ring(ctx,0,0,108+k*10,C.cream,3);ctx.restore()}
+  const p=giftPath(kind);ctx.fillStyle=C.cream;ctx.fill(p);ctx.save();ctx.clip(p);ctx.save();ctx.globalAlpha*=.3;ctx.fillStyle=col;ctx.fill(p);giftPattern(ctx,kind);ctx.restore();
+  if(fill>0){ctx.beginPath();ctx.rect(-90,80-170*fill,180,170*fill);ctx.clip();ctx.fillStyle=col;ctx.fill(p);giftPattern(ctx,kind)}ctx.restore();
+  ctx.setLineDash(fill>=1?[]:[10,8]);dbl(ctx,p,2.6);ctx.setLineDash([]);
+  if(kind==='diya'){line(ctx,[[60,-4],[70,-14]],C.line,3);flame(ctx,70,-12,1.2,t,fill>=1?1:fill*.4,3)}ctx.restore()}
+
+/* ===== Scalloped wave band (ENV_COSMIC_OCEAN building block) ===== */
+function waveBand(ctx,o){const {y,amp,per,ph,fill,lineCol,acc,W,bottom}=o;const x0=-per+((ph%per)+per)%per-per;const p=new Path2D();p.moveTo(x0,bottom);p.lineTo(x0,y);
+  for(let x=x0;x<W+per;x+=per){p.quadraticCurveTo(x+per*.5,y-amp*2,x+per,y)}p.lineTo(W+per*2,bottom);p.closePath();ctx.fillStyle=fill;ctx.fill(p);
+  ctx.save();ctx.clip(p);ctx.beginPath();const rows=o.rows||3;for(let r=1;r<=rows;r++){const yy=y+r*Math.max(14,amp*1.6+10),off=r%2?per/2:0;
+      for(let x=x0-off;x<W+per;x+=per){ctx.moveTo(x,yy);ctx.quadraticCurveTo(x+per*.5,yy-amp*1.6,x+per,yy)}}
+  ctx.strokeStyle=lineCol;ctx.lineWidth=2.4;ctx.stroke();if(acc){for(let x=x0;x<W+per;x+=per)dot(ctx,x+per*.5,y+amp*.2+8,3.2,acc)}ctx.restore();
+  const top=new Path2D();top.moveTo(x0,y);for(let x=x0;x<W+per;x+=per)top.quadraticCurveTo(x+per*.5,y-amp*2,x+per,y);dbl(ctx,top,2.2,o.gap||C.cream)}
+
+/* ===== Screen frame (L00): double line with a patterned band, drawn out from the corners ===== */
+function frameArt(g,W,H,band,acc){const b=24,i=8;g.fillStyle=band;g.beginPath();g.rect(0,0,W,H);g.rect(i+b,i+b,W-2*(i+b),H-2*(i+b));g.fill('evenodd');
+  g.save();g.beginPath();g.rect(0,0,W,H);g.rect(i+b,i+b,W-2*(i+b),H-2*(i+b));g.clip('evenodd');
+  for(let x=0;x<W;x+=26){Pat.tri(g,{x,y:i+3,w:26,h:b-6},26,acc);Pat.tri(g,{x,y:H-i-b+3,w:26,h:b-6},26,acc)}
+  for(let y=i+b;y<H-i-b;y+=26){dot(g,i+b/2,y,4,acc);dot(g,W-i-b/2,y,4,acc)}g.restore();
+  const outer=new Path2D();outer.rect(i,i,W-2*i,H-2*i);dbl(g,outer,2.2);const inner=new Path2D();inner.rect(i+b,i+b,W-2*(i+b),H-2*(i+b));dbl(g,inner,2.2);
+  [[i+b/2,i+b/2],[W-i-b/2,i+b/2],[i+b/2,H-i-b/2],[W-i-b/2,H-i-b/2]].forEach(([x,y])=>{shape(g,ellPath(x,y,20,20),C.pink,c=>{dot(c,x,y,8,C.turmeric)},{lw:2})})}
+function drawFrame(ctx,k,band,acc){const W=L.W,H=L.H;band=band||C.peacock;acc=acc||C.turmeric;if(k<=0)return;
+  const c=Spr.get('frame'+band+acc,W,H,g=>frameArt(g,W,H,band,acc));
+  if(k>=1){ctx.drawImage(c,0,0,W,H);return}ctx.save();ctx.beginPath();const lx=W/2*k,ly=H/2*k,b=40;
+  ctx.rect(0,0,lx,b);ctx.rect(0,0,b,ly);ctx.rect(W-lx,0,lx,b);ctx.rect(W-b,0,b,ly);ctx.rect(0,H-b,lx,b);ctx.rect(0,H-ly,b,ly);ctx.rect(W-lx,H-b,lx,b);ctx.rect(W-b,H-ly,b,ly);
+  ctx.clip();ctx.drawImage(c,0,0,W,H);ctx.restore()}
+
+/* text drawn on canvas (titles, refrains) */
+function ctext(ctx,str,x,y,size,col,o){o=o||{};ctx.save();ctx.font=`${o.weight||400} ${size}px ${o.body?'"Baloo 2","Trebuchet MS",sans-serif':'"Yatra One","Palatino Linotype",Georgia,serif'}`;
+  ctx.textAlign=o.align||'center';ctx.textBaseline='middle';if(o.outline){ctx.lineWidth=o.outline;ctx.strokeStyle=o.ocol||C.line;ctx.lineJoin='round';ctx.strokeText(str,x,y)}ctx.fillStyle=col;ctx.fillText(str,x,y);ctx.restore()}
+function wrapLines(ctx,str,maxW,size,body){ctx.save();ctx.font=`400 ${size}px ${body?'"Baloo 2",sans-serif':'"Yatra One",Georgia,serif'}`;const words=str.split(' '),out=[];let cur='';
+  for(const w of words){const t=cur?cur+' '+w:w;if(ctx.measureText(t).width>maxW&&cur){out.push(cur);cur=w}else cur=t}if(cur)out.push(cur);ctx.restore();return out}
+/* double-bordered cream plaque on canvas (UI_DOUBLE_BORDER) */
+function plaque(ctx,x,y,w,h,fill){const p=new Path2D();p.roundRect?p.roundRect(x,y,w,h,18):p.rect(x,y,w,h);ctx.fillStyle=fill||C.cream;ctx.fill(p);dbl(ctx,p,2.6);
+  const q=new Path2D();q.roundRect?q.roundRect(x+12,y+12,w-24,h-24,10):q.rect(x+12,y+12,w-24,h-24);sgl(ctx,q,2,C.gold)}
+
+/* ===== Character bible: one parameterised figure builder, masters defined once ===== */
+/* Local units: feet at y=0, head centre at y=-272, standing height about 300 (+ crown). Seated figures shift down by 100. */
+const SH={L:[-44,-226],R:[44,-226]},A1=54,A2=50;
+function ik(S,T,bend){let dx=T[0]-S[0],dy=T[1]-S[1],d=Math.hypot(dx,dy)||1;const mx=A1+A2-.5;if(d>mx){dx*=mx/d;dy*=mx/d;d=mx}
+  const base=Math.atan2(dy,dx),ca_=clamp((A1*A1+d*d-A2*A2)/(2*A1*d),-1,1),al=Math.acos(ca_);const e=[S[0]+Math.cos(base+bend*al)*A1,S[1]+Math.sin(base+bend*al)*A1];return{e,h:[S[0]+dx,S[1]+dy]}}
+
+/* ---- static body (sprite): lower garment, torso, ornaments, head shape, crown/hair ---- */
+function bodyArt(g,sp){const sk=sp.skin;const broad=sp.build==='broad'?1.12:sp.build==='portly'?1.25:1;
+  if(sp.seated){const lap=sPath([[-92,-104],[-60,-150],[0,-158],[60,-150],[92,-104],[60,-96],[0,-100],[-60,-96]],true);
+    shape(g,lap,sp.dhoti,c=>{(sp.dhotiPat||Pat.dots)(c,{x:-95,y:-160,w:190,h:66});Pat.tri(c,{x:-95,y:-112,w:190,h:12},14,sp.border||C.gold)},{lw:2.4});
+    [[-50,-104],[50,-104]].forEach(([x,y])=>shape(g,ellPath(x,y,16,8),sk,null,{line:'single',lw:2}))}
+  else{[[-20,-6],[20,-6]].forEach(([x,y])=>shape(g,ellPath(x,y,15,8),sk,c=>dot(c,x,y-4,2.5,C.verm),{line:'single',lw:2}));
+    const dh=sPath(wob([[-36*broad,-152],[-44*broad,-90],[-54*broad,-16],[0,-12],[54*broad,-16],[44*broad,-90],[36*broad,-152]],1,hash(sp.id+'d')),true);
+    shape(g,dh,sp.dhoti,c=>{(sp.dhotiPat||Pat.dots)(c,{x:-60,y:-156,w:120,h:146});c.fillStyle=sp.border||C.gold;c.fillRect(-8,-150,16,138);Pat.dots(c,{x:-8,y:-150,w:16,h:138},10,2,C.cream);
+      Pat.tri(c,{x:-60,y:-30,w:120,h:14},14,sp.border||C.gold)},{lw:2.4})}
+  /* torso */
+  const w=broad;const tor=sPath(wob([[-46*w,-230],[-40*w,-196],[-32*w,-150],[32*w,-150],[40*w,-196],[46*w,-230],[0,-236]],.8,hash(sp.id+'t')),true);
+  if(sp.build==='portly'){const belly=ellPath(0,-176,44,34);shape(g,belly,sk,null,{line:'none'})}
+  shape(g,tor,sp.top||sk,sp.top?c=>Pat.dots(c,{x:-50,y:-236,w:100,h:90},12,2,sp.topAcc||C.gold):null,{lw:2.4});
+  if(sp.build==='portly')dbl(g,ellPath(0,-170,42,30),2);
+  /* scarf across the chest */
+  if(sp.scarf){const sc=polyPath([[-44*w,-228],[-30*w,-232],[34*w,-162],[22*w,-152]]);shape(g,sc,sp.scarf,c=>Pat.stripes(c,{x:-50,y:-236,w:100,h:90},9,3,C.cream),{lw:2})}
+  /* waist sash */
+  const sash=polyPath([[-36*w,-160],[36*w,-160],[38*w,-146],[-38*w,-146]]);shape(g,sash,sp.sash||C.verm,c=>Pat.dots(c,{x:-40,y:-162,w:80,h:18},10,2,C.turmeric),{lw:2});
+  /* neck and head */
+  shape(g,polyPath([[-10,-252],[10,-252],[11,-228],[-11,-228]]),sk,null,{line:'single',lw:2});
+  if(sp.crown==='jata'){const hair=sPath([[-30,-290],[-36,-240],[-40,-200],[-24,-206],[-26,-250]],true);shape(g,hair,C.charcoal,c=>Pat.stripes(c,{x:-42,y:-292,w:20,h:92},7,2,C.ochre,true),{lw:2});
+    const hair2=sPath([[30,-290],[36,-240],[40,-200],[24,-206],[26,-250]],true);shape(g,hair2,C.charcoal,c=>Pat.stripes(c,{x:22,y:-292,w:20,h:92},7,2,C.ochre,true),{lw:2})}
+  if(sp.crown==='asura'){const mane=sPath(ellPts(sp.profile?-6:0,-276,40,38,14),true);shape(g,mane,C.charcoal,c=>Pat.scallops(c,{x:-50,y:-320,w:96,h:84},14,C.violet,2.4),{lw:2})}
+  const head=sp.profile?sPath([[-24,-290],[-6,-302],[14,-298],[22,-284],[23,-276],[31,-268],[23,-264],[25,-256],[19,-250],[8,-243],[-10,-245],[-24,-260]],true):sPath(wob(ellPts(0,-272,25,29,16),.6,hash(sp.id+'h')),true);
+  shape(g,head,sk,null,{lw:2.2});
+  /* ears and earrings */
+  const ex=sp.profile?-12:26;[sp.profile?[ex]:[-ex,ex]].flat().forEach(x=>{shape(g,ellPath(x,-270,5,8),sk,null,{line:'single',lw:1.8});shape(g,ellPath(x,-252,6,6),C.gold,null,{line:'single',lw:1.6})});
+  /* necklace */
+  for(let k=0;k<2;k++){g.beginPath();g.arc(0,-238,18+k*9,.15*Math.PI,.85*Math.PI);g.strokeStyle=sp.neck||C.gold;g.lineWidth=5;g.stroke();g.strokeStyle=C.line;g.lineWidth=1.4;g.stroke()}
+  for(let i=0;i<7;i++){const a=(.18+i*.106)*Math.PI;dot(g,Math.cos(a)*27,-238+Math.sin(a)*27,3,sp.crown==='jata'?C.ochre:C.verm)}
+  if(sp.crown==='jata'){for(let i=0;i<9;i++){const a=(.12+i*.095)*Math.PI;dot(g,Math.cos(a)*40,-236+Math.sin(a)*40,4.4,C.ochre);ring(g,Math.cos(a)*40,-236+Math.sin(a)*40,4.4,C.line,1.4)}}
+  /* armlets painted on the shoulders */
+  crownArt(g,sp)}
+function crownArt(g,sp){const cr=sp.crown;
+  if(cr==='mukut'||cr==='lakshmi'){const tall=cr==='mukut'?72:54;const p=polyPath([[-26,-292],[-30,-300],[-22,-300-tall*.6],[-12,-300-tall*.8],[0,-300-tall],[12,-300-tall*.8],[22,-300-tall*.6],[30,-300],[26,-292]]);
+    shape(g,p,C.gold,c=>{Pat.tri(c,{x:-30,y:-312,w:60,h:12},10,C.verm);Pat.dots(c,{x:-30,y:-300-tall,w:60,h:tall-10},9,2.2,C.turmeric)},{lw:2.2});dot(g,0,-306-tall*.4,6,sp.gem||C.emerald);ring(g,0,-306-tall*.4,6,C.line,1.6);
+    if(cr==='lakshmi'){const hair=sPath([[-27,-288],[-32,-250],[-26,-226],[-20,-250]],true);shape(g,hair,C.charcoal,null,{lw:1.8});const h2=sPath([[27,-288],[32,-250],[26,-226],[20,-250]],true);shape(g,h2,C.charcoal,null,{lw:1.8})}}
+  else if(cr==='deva'){const p=polyPath([[-24,-292],[-26,-318],[-14,-308],[0,-330],[14,-308],[26,-318],[24,-292]]);shape(g,p,C.gold,c=>Pat.dots(c,{x:-26,y:-330,w:52,h:40},8,2,C.verm),{lw:2});
+    if(sp.profile){const hair=sPath([[-24,-290],[-34,-266],[-30,-240],[-20,-250],[-22,-276]],true);shape(g,hair,C.charcoal,null,{lw:1.8})}}
+  else if(cr==='jata'){const bun=sPath([[-22,-292],[-26,-318],[-14,-342],[0,-350],[14,-342],[26,-318],[22,-292]],true);shape(g,bun,C.charcoal,c=>{Pat.zig(c,{x:-28,y:-352,w:56,h:62},10,C.ochre,2,12)},{lw:2});
+    const moon=new Path2D();moon.arc(-22,-330,15,Math.PI*.6,Math.PI*1.9);moon.arc(-16,-334,11,Math.PI*1.9,Math.PI*.6,true);moon.closePath();shape(g,moon,C.white,null,{lw:1.6});
+    dot(g,0,-296,5,C.verm)}
+  else if(cr==='asura'){const band=polyPath([[-34,-296],[34,-296],[32,-284],[-32,-284]]);shape(g,band,C.verm,c=>Pat.dots(c,{x:-34,y:-298,w:68,h:16},9,2.4,C.turmeric),{lw:1.8});
+    [[-24,-300],[0,-306],[24,-300]].forEach(([x,y])=>{shape(g,ellPath(x,y,6,6),C.gold,null,{line:'single',lw:1.6})})}
+  else if(cr==='kubera'){const p=polyPath([[-26,-292],[-28,-326],[0,-344],[28,-326],[26,-292]]);shape(g,p,C.gold,c=>Pat.scallops(c,{x:-30,y:-346,w:60,h:56},10,C.verm,2),{lw:2})}}
+
+/* ---- live face: eyes blink, brows and mouth carry the expression ---- */
+function faceArt(ctx,sp,st){const ex=st.expr||'calm',bl=st.blink>.5,talk=st.talking&&Math.sin(T.sec*14)>0;const look=st.look||0;
+  const eye=(x,y,w,h,prof)=>{if(bl||ex==='closed'){ctx.beginPath();ctx.moveTo(x-w,y);ctx.quadraticCurveTo(x,y+h*.9,x+w,y);ctx.strokeStyle=C.line;ctx.lineWidth=2.6;ctx.stroke();return}
+    const p=new Path2D();p.moveTo(x-w,y);p.quadraticCurveTo(x,y-h*1.6,x+w+(prof?4:0),y);p.quadraticCurveTo(x,y+h*1.3,x-w,y);ctx.fillStyle=C.white;ctx.fill(p);sgl(ctx,p,2.2);
+    const pr=ex==='wonder'?4.4:3.6;dot(ctx,x+(prof?w*.35:0)+look*3,y,pr,C.line);dot(ctx,x+(prof?w*.35:0)+look*3+1,y-1.4,1.1,C.white);
+    ctx.beginPath();ctx.moveTo(x+w,y-1);ctx.lineTo(x+w+6,y-3);ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.stroke()};
+  const brow=(x,y,w,tilt)=>{ctx.beginPath();ctx.moveTo(x-w,y+tilt);ctx.quadraticCurveTo(x,y-6,x+w,y-tilt);ctx.strokeStyle=C.line;ctx.lineWidth=2.6;ctx.stroke()};
+  const bt=ex==='concern'?4:ex==='determined'?-3:0;
+  if(sp.profile){eye(9,-277,9,5,true);brow(9,-288,10,ex==='concern'?-3:ex==='determined'?3:0);
+    line(ctx,[[14,-285],[22,-276]],C.line,2);
+    if(talk||ex==='wonder'){dot(ctx,20,-256,3.6,C.red);ring(ctx,20,-256,3.6,C.line,1.4)}else{ctx.beginPath();if(ex==='smile'||ex==='calm')ctx.arc(17,-259,5,.1*Math.PI,.7*Math.PI);else{ctx.moveTo(14,-256);ctx.lineTo(22,-256)}ctx.strokeStyle=C.red;ctx.lineWidth=3;ctx.stroke()}
+    if(sp.crown==='asura'){ctx.beginPath();ctx.moveTo(12,-262);ctx.quadraticCurveTo(20,-266,28,-258);ctx.strokeStyle=C.charcoal;ctx.lineWidth=3.4;ctx.stroke()}
+    dot(ctx,-2,-262,4,ca(C.coral,.7));return}
+  eye(-11,-276,10,5);eye(11,-276,10,5);brow(-11,-287,11,-bt);brow(11,-287,11,bt);
+  line(ctx,[[0,-280],[-2,-264],[3,-262]],C.line,2);
+  if(sp.tilak!==false){if(sp.crown==='jata'){line(ctx,[[-9,-292],[9,-292]],C.cream,2);line(ctx,[[-9,-295],[9,-295]],C.line,1)}else dot(ctx,0,-293,3.4,C.verm)}
+  if(talk||ex==='wonder'){shape(ctx,ellPath(0,-253,5,ex==='wonder'?5:4),C.red,null,{line:'single',lw:1.6})}
+  else{const p=new Path2D();if(ex==='concern'){p.moveTo(-6,-252);p.quadraticCurveTo(0,-256,6,-252)}else if(ex==='determined'){p.moveTo(-7,-254);p.lineTo(7,-254)}else{p.moveTo(-8,-256);p.quadraticCurveTo(0,-248,8,-256)}sgl(ctx,p,3,C.red)}
+  dot(ctx,-17,-262,4,ca(C.coral,.6));dot(ctx,17,-262,4,ca(C.coral,.6))}
+
+/* ---- arms: thick brown stroke with a skin core reads as a clean double outline ---- */
+function armArt(ctx,sp,S,h,bend,hand,item){const r=ik(S,h,bend);ctx.beginPath();ctx.moveTo(S[0],S[1]);ctx.lineTo(r.e[0],r.e[1]);ctx.lineTo(r.h[0],r.h[1]);
+  ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle=C.line;ctx.lineWidth=21;ctx.stroke();ctx.strokeStyle=sp.skin;ctx.lineWidth=14;ctx.stroke();
+  const band=(a,b,t,col)=>{const x=lerp(a[0],b[0],t),y=lerp(a[1],b[1],t),ang=Math.atan2(b[1]-a[1],b[0]-a[0])+Math.PI/2;line(ctx,[[x+Math.cos(ang)*8,y+Math.sin(ang)*8],[x-Math.cos(ang)*8,y-Math.sin(ang)*8]],col,4)};
+  band(S,r.e,.45,sp.crown==='jata'?C.ochre:C.gold);band(r.e,r.h,.78,C.gold);band(r.e,r.h,.66,sp.crown==='asura'?C.verm:C.red);
+  const hx=r.h[0],hy=r.h[1];
+  if(hand==='open'){const ang=Math.atan2(r.h[1]-r.e[1],r.h[0]-r.e[0]);ctx.save();ctx.translate(hx,hy);ctx.rotate(ang-Math.PI/2);const p=sPath([[-8,-4],[-10,10],[-6,20],[0,22],[6,20],[10,10],[8,-4]],true);shape(ctx,p,sp.skin,c=>dot(c,0,8,3,C.verm),{line:'single',lw:2});
+    for(let i=-1;i<=1;i++)line(ctx,[[i*4,12],[i*4,19]],C.line,1.2);ctx.restore()}
+  else{shape(ctx,ellPath(hx,hy,9,9),sp.skin,null,{line:'single',lw:2})}
+  if(item)PROPS[item]&&PROPS[item](ctx,hx,hy);return r.h}
+const PROPS={
+  conch(ctx,x,y){ctx.save();ctx.translate(x,y-14);ctx.rotate(-.5);drawConch(ctx,0,0,.42);ctx.restore()},
+  discus(ctx,x,y){ctx.save();ctx.translate(x,y-26);ctx.rotate(T.sec*.6);const p=sPath(ellPts(0,0,22,22,12),true);shape(ctx,p,C.turmeric,c=>{for(let i=0;i<8;i++){const a=i/8*TAU;line(c,[[0,0],[Math.cos(a)*22,Math.sin(a)*22]],C.verm,2.2)}},{lw:1.8});dot(ctx,0,0,6,C.verm);ctx.restore()},
+  lotusSmall(ctx,x,y){drawLotus(ctx,x,y-6,.36,1)},
+  trident(ctx,x,y){const t=new Path2D();t.moveTo(x,y+70);t.lineTo(x,y-120);sgl(ctx,t,8,C.line);sgl(ctx,t,4,C.ochre);
+    const h=new Path2D();h.moveTo(x-18,y-150);h.quadraticCurveTo(x-18,y-118,x,y-118);h.quadraticCurveTo(x+18,y-118,x+18,y-150);h.moveTo(x,y-118);h.lineTo(x,y-160);sgl(ctx,h,6,C.line);sgl(ctx,h,2.6,C.cream);
+    shape(ctx,ellPath(x,y-104,8,6),C.verm,null,{line:'single',lw:1.4})},
+  pouch(ctx,x,y){const p=sPath([[-16,-6],[-20,14],[0,24],[20,14],[16,-6],[8,-14],[-8,-14]],true);ctx.save();ctx.translate(x+4,y+8);shape(ctx,p,C.emerald,c=>Pat.dots(c,{x:-20,y:-14,w:40,h:38},8,2.4,C.turmeric),{lw:1.8});ctx.restore()}};
+
+/* ---- the figure: state machine with named poses; hands ease toward pose targets ---- */
+class Fig{constructor(sp,o){this.sp=sp;Object.assign(this,{x:0,y:0,s:1,f:1,lean:0,vis:1,expr:'calm',look:0,blink:0,nb:2+Math.random()*3,talking:false,state:'idle',bob:0,ph:Math.random()*9},o||{});
+    this.hands=(sp.poses[sp.start||'idle']).map(a=>a.h.slice());this.pose(sp.start||'idle',true)}
+  pose(name,snap){const p=this.sp.poses[name];if(!p)return;this.state=name;this.tgt=p;if(snap)this.hands=p.map(a=>a.h.slice());if(p.expr)this.expr=p.expr}
+  update(dt){const k=1-Math.exp(-dt*6);this.tgt.forEach((a,i)=>{this.hands[i][0]+=(a.h[0]-this.hands[i][0])*k;this.hands[i][1]+=(a.h[1]-this.hands[i][1])*k});
+    this.nb-=dt;if(this.nb<0){this.blink=1;if(this.nb<-.14){this.blink=0;this.nb=2.5+Math.random()*3.5}}}
+  /* world position of a local point (for ropes, pots and props) */
+  toWorld(p){const sy=this.sp.seated?100:0;const x=p[0]*this.f,y=p[1]+sy;const c=Math.cos(this.lean*this.f),s=Math.sin(this.lean*this.f);return[this.x+(x*c-y*s)*this.s,this.y+this.bobY()+(x*s+y*c)*this.s]}
+  bobY(){return this.bob?Math.sin(T.sec*1.4+this.ph)*this.bob:0}
+  hand(i){return this.toWorld(this.hands[i])}
+  draw(ctx){if(this.vis<=0)return;const sp=this.sp;ctx.save();ctx.globalAlpha*=clamp(this.vis,0,1);ctx.translate(this.x,this.y+this.bobY());ctx.rotate(this.lean*this.f);ctx.scale(this.s*this.f,this.s);
+    if(sp.seated)ctx.translate(0,100);
+    if(sp.halo)halo(ctx,0,-284,sp.haloR||74,sp.halo,T.sec);
+    const arms=sp.arms;arms.forEach((a,i)=>{if(a.back)armArt(ctx,sp,a.s,this.hands[i],a.bend,this.tgt[i].hand||a.hand,this.tgt[i].item!==undefined?this.tgt[i].item:a.item)});
+    sprite(ctx,'body'+sp.id,0,0,1,{w:240,h:440,ox:120,oy:380},g=>bodyArt(g,sp));
+    if(sp.throat!=null&&this.throat>0){ctx.save();ctx.globalAlpha*=clamp(this.throat,0,1);const b=polyPath([[-14,-249],[14,-249],[15,-230],[-15,-230]]);shape(ctx,b,C.peacock,c=>{c.fillStyle=C.turq;c.fillRect(-15,-244,30,8);Pat.dots(c,{x:-15,y:-250,w:30,h:20},7,1.8,C.cream)},{lw:1.6});ctx.restore()}
+    faceArt(ctx,sp,this);
+    if(this.under)this.under(ctx,this);
+    arms.forEach((a,i)=>{if(!a.back)armArt(ctx,sp,a.s,this.hands[i],a.bend,this.tgt[i].hand||a.hand,this.tgt[i].item!==undefined?this.tgt[i].item:a.item)});
+    if(this.over)this.over(ctx,this);
+    ctx.restore()}}
+const P=(x,y,o)=>Object.assign({h:[x,y]},o||{});
+
+/* CHAR_VISHNU_MASTER: upright, symmetrical, four arms, blue skin, yellow pitambara */
+const SP_VISHNU={id:'vishnu',skin:C.peacock,dhoti:C.turmeric,dhotiPat:(c,b)=>Pat.stripes(c,b,14,4,C.saffron,true),border:C.verm,scarf:C.verm,sash:C.red,crown:'mukut',gem:C.emerald,
+  halo:[C.cream,C.turmeric,C.verm],haloR:80,
+  arms:[{s:[-40,-222],bend:1,back:true,hand:'fist',item:'conch'},{s:[40,-222],bend:-1,back:true,hand:'fist',item:'discus'},{s:SH.L,bend:-1,hand:'fist',item:'lotusSmall'},{s:SH.R,bend:1,hand:'open'}],
+  poses:{guide:[P(-96,-296),P(96,-296),P(-58,-170),P(66,-214,{hand:'open'})],
+    explain:[P(-96,-296),P(96,-296),P(-58,-170),P(86,-196,{hand:'open'})],
+    bless:[P(-96,-300),P(96,-300),P(-40,-176),P(52,-238,{hand:'open'})]},start:'guide'};
+/* CHAR_SHIVA_MASTER: serene, matted hair, crescent moon, rudraksha, trident as a secondary prop */
+const SP_SHIVA={id:'shiva',skin:C.cream,dhoti:C.ochre,dhotiPat:(c,b)=>Pat.zig(c,b,14,C.charcoal,2.4,16),border:C.leaf,top:null,scarf:C.leaf,sash:C.charcoal,crown:'jata',neck:C.ochre,
+  halo:[C.indigo,C.violet,C.cream],haloR:76,throat:true,
+  arms:[{s:SH.L,bend:-1,hand:'fist',item:'trident'},{s:SH.R,bend:1,hand:'open'}],
+  poses:{idle:[P(-64,-150),P(60,-176,{hand:'open'})],raise:[P(-64,-150),P(70,-300,{hand:'open'})],calm:[P(-64,-150),P(46,-226,{hand:'open'})]},start:'idle'};
+/* CHAR_LAKSHMI_MASTER: seated, open palms, red and pink garments */
+const SP_LAKSHMI={id:'lakshmi',seated:true,skin:C.turmeric,dhoti:C.red,dhotiPat:(c,b)=>Pat.scallops(c,b,14,C.pink,2.4),border:C.gold,top:C.pink,topAcc:C.gold,scarf:C.red,sash:C.gold,crown:'lakshmi',gem:C.red,
+  halo:[C.pink,C.turmeric,C.cream],haloR:80,
+  arms:[{s:SH.L,bend:-1,hand:'open'},{s:SH.R,bend:1,hand:'open'}],
+  poses:{idle:[P(-70,-186,{hand:'open'}),P(70,-186,{hand:'open'})],bless:[P(-64,-232,{hand:'open'}),P(64,-232,{hand:'open'})]},start:'idle'};
+/* CHAR_DHANVANTARI_MASTER: two arms (one design, kept everywhere), yellow garments, turquoise-blue scheme, the amrita pot */
+const SP_DHAN={id:'dhan',skin:C.turq,dhoti:C.turmeric,dhotiPat:(c,b)=>Pat.dots(c,b,12,2.6,C.saffron),border:C.red,scarf:C.red,sash:C.peacock,crown:'mukut',gem:C.red,
+  halo:[C.turmeric,C.gold,C.red],haloR:84,
+  arms:[{s:SH.L,bend:-1,hand:'fist'},{s:SH.R,bend:1,hand:'fist'}],
+  poses:{hold:[P(-40,-178),P(40,-178)],bless:[P(-40,-178),P(70,-262,{hand:'open'})]},start:'hold'};
+/* Kubera: optional small devotional figure, final celebration only */
+const SP_KUBERA={id:'kubera',seated:true,build:'portly',skin:C.gold,dhoti:C.emerald,dhotiPat:(c,b)=>Pat.chevron(c,b,14,C.turmeric,2),border:C.turmeric,crown:'kubera',sash:C.verm,
+  halo:[C.emerald,C.turmeric,C.cream],haloR:70,
+  arms:[{s:SH.L,bend:-1,hand:'fist',item:'pouch'},{s:SH.R,bend:1,hand:'open'}],poses:{idle:[P(-56,-170),P(58,-210,{hand:'open'})]},start:'idle'};
+
+/* GROUP_DEVAS and GROUP_ASURAS: profile faces looking toward the mountain; same pulling poses */
+const GROUP_POSES={stand:[P(30,-160),P(46,-166)],reach:[P(72,-196),P(84,-188)],pull:[P(62,-176),P(76,-170)],release:[P(80,-186),P(94,-180)],
+  look:[P(28,-158),P(56,-200,{hand:'open'})],cheer:[P(-34,-322,{hand:'open'}),P(86,-298,{hand:'open'})],fold:[P(14,-210,{hand:'open'}),P(24,-214,{hand:'open'})]};
+function groupSpec(id,o){return Object.assign({id,profile:true,arms:[{s:[-36,-224],bend:1,back:true,hand:'fist'},{s:[40,-224],bend:1,hand:'fist'}],poses:GROUP_POSES,start:'stand'},o)}
+const SP_DEVAS=[groupSpec('deva1',{skin:C.turmeric,dhoti:C.leaf,dhotiPat:(c,b)=>Pat.dots(c,b,11,2.4,C.turmeric),border:C.pink,scarf:C.pink,sash:C.verm,crown:'deva'}),
+  groupSpec('deva2',{skin:C.gold,dhoti:C.pink,dhotiPat:(c,b)=>Pat.stripes(c,b,12,3,C.verm,true),border:C.leaf,scarf:C.leaf,sash:C.turmeric,crown:'deva'}),
+  groupSpec('deva3',{skin:C.turmeric,dhoti:C.emerald,dhotiPat:(c,b)=>Pat.scallops(c,b,14,C.turmeric,2.2),border:C.saffron,scarf:C.saffron,sash:C.pink,crown:'deva'})];
+const SP_ASURAS=[groupSpec('asura1',{build:'broad',skin:C.coral,dhoti:C.charcoal,dhotiPat:(c,b)=>Pat.stripes(c,b,12,4,C.verm,true),border:C.turmeric,scarf:C.turmeric,sash:C.verm,crown:'asura',top:C.violet,topAcc:C.turmeric}),
+  groupSpec('asura2',{build:'broad',skin:C.ochre,dhoti:C.violet,dhotiPat:(c,b)=>Pat.zig(c,b,14,C.turmeric,2.4,14),border:C.coral,scarf:C.coral,sash:C.charcoal,crown:'asura'}),
+  groupSpec('asura3',{build:'broad',skin:C.coral,dhoti:C.indigo,dhotiPat:(c,b)=>Pat.chevron(c,b,14,C.coral,2.4),border:C.verm,scarf:C.verm,sash:C.turmeric,crown:'asura',top:C.charcoal,topAcc:C.coral})];
+
+/* ===== PROP_AMRITA_POT: golden vessel, decorative bands, a clearly visible opening ===== */
+function potArt(g){const body=sPath([[-30,-26],[-46,-4],[-44,22],[-24,40],[24,40],[44,22],[46,-4],[30,-26]],true);
+  shape(g,body,C.gold,c=>{Pat.tri(c,{x:-48,y:-10,w:96,h:12},12,C.red);c.fillStyle=C.turmeric;c.fillRect(-48,4,96,10);Pat.dots(c,{x:-48,y:4,w:96,h:10},9,2,C.red);
+    Pat.scallops(c,{x:-48,y:20,w:96,h:22},12,C.red,2.2)},{lw:2.4});
+  const neck=polyPath([[-22,-42],[22,-42],[30,-26],[-30,-26]]);shape(g,neck,C.gold,c=>Pat.stripes(c,{x:-30,y:-42,w:60,h:16},6,2,C.saffron,true),{lw:2});
+  const rim=ellPath(0,-44,30,9);shape(g,rim,C.turmeric,null,{lw:2.2});shape(g,ellPath(0,-44,20,5),C.deep,c=>{dot(c,-6,-45,2,C.turmeric);dot(c,6,-44,2,C.turmeric);dot(c,0,-43,2,C.white)},{line:'single',lw:1.6})}
+function drawPot(ctx,x,y,s,pulse,t){if(pulse>0){ctx.save();ctx.globalAlpha*=pulse;halo(ctx,x,y,70*s,[C.turmeric,C.gold,C.white],t||0);ctx.restore()}
+  sprite(ctx,'pot',x,y,s,{w:110,h:110,ox:55,oy:58},potArt);
+  if(pulse>0){ctx.save();ctx.globalAlpha*=pulse*.9;ctx.translate(x,y);ctx.scale(s,s);ctx.fillStyle=C.white;ctx.fillRect(-46,4,92,10);Pat.dots(ctx,{x:-46,y:4,w:92,h:10},9,2.4,C.turmeric);ctx.restore()}}
+
+/* ===== CHAR_KURMA_MASTER: broad green-and-gold patterned shell, four flippers, gentle face ===== */
+function kurmaShell(g){const sh=new Path2D();sh.moveTo(-160,0);sh.bezierCurveTo(-150,-118,150,-118,160,0);sh.closePath();
+  shape(g,sh,C.leaf,c=>{for(let r=0;r<4;r++){const y=-92+r*24,n=4+r*2;for(let i=0;i<n;i++){const x=-((n-1)*34)/2+i*34;const hx=polyPath([[x-15,y],[x-8,y-11],[x+8,y-11],[x+15,y],[x+8,y+11],[x-8,y+11]]);c.fillStyle=(i+r)%2?C.emerald:C.gold;c.fill(hx);sgl(c,hx,1.8);dot(c,x,y,3,C.turmeric)}}},{lw:2.6});
+  const rim=new Path2D();rim.moveTo(-170,0);rim.lineTo(170,0);rim.lineTo(160,16);rim.lineTo(-160,16);rim.closePath();shape(g,rim,C.gold,c=>Pat.tri(c,{x:-170,y:2,w:340,h:12},14,C.leaf),{lw:2.2})}
+function drawKurma(ctx,x,y,s,t,o){o=o||{};ctx.save();ctx.translate(x,y);ctx.scale(s,s);const pad=reduceMotion?0:Math.sin(t*1.6)*.12;
+  const flip=(fx,fy,a,back)=>{ctx.save();ctx.translate(fx,fy);ctx.rotate(a);const p=sPath([[0,-8],[46,-4],[70,14],[40,18],[0,12]],true);shape(ctx,p,back?C.emerald:C.leaf,c=>Pat.dots(c,{x:0,y:-10,w:72,h:30},10,2,C.turmeric),{lw:2});ctx.restore()};
+  flip(-120,8,Math.PI+.35+pad,true);flip(120,8,-.35-pad,true);
+  if(!o.front){const head=sPath([[-150,-18],[-180,-36],[-202,-22],[-202,-2],[-180,10],[-150,10]],true);shape(ctx,head,C.leaf,c=>Pat.dots(c,{x:-204,y:-38,w:56,h:50},10,2,C.turmeric),{lw:2.2});
+    if(o.blink>.5){ctx.beginPath();ctx.moveTo(-190,-20);ctx.quadraticCurveTo(-184,-14,-178,-20);ctx.strokeStyle=C.line;ctx.lineWidth=2.6;ctx.stroke()}
+    else{shape(ctx,ellPath(-184,-20,8,7),C.white,null,{line:'single',lw:2});dot(ctx,-186,-20,3.6,C.line)}
+    ctx.beginPath();ctx.arc(-194,-6,7,.1*Math.PI,.7*Math.PI);ctx.strokeStyle=C.red;ctx.lineWidth=2.8;ctx.stroke()}
+  sprite(ctx,'kurma',0,0,1,{w:360,h:150,ox:180,oy:122},kurmaShell);
+  /* portrait: Kurma looks out at the viewer from beneath the front of his shell */
+  if(o.front){const hd=sPath(ellPts(0,30,34,28,14),true);shape(ctx,hd,C.leaf,c=>Pat.dots(c,{x:-36,y:2,w:72,h:58},10,2,C.turmeric),{lw:2.2});
+    [-13,13].forEach(x=>{if(o.blink>.5){ctx.beginPath();ctx.moveTo(x-6,24);ctx.quadraticCurveTo(x,30,x+6,24);ctx.strokeStyle=C.line;ctx.lineWidth=2.6;ctx.stroke()}else{shape(ctx,ellPath(x,24,7,7),C.white,null,{line:'single',lw:2});dot(ctx,x,25,3.4,C.line)}});
+    ctx.beginPath();ctx.arc(0,36,9,.15*Math.PI,.85*Math.PI);ctx.strokeStyle=C.red;ctx.lineWidth=2.8;ctx.stroke()}
+  flip(-110,14,Math.PI-.3-pad);flip(110,14,.3+pad);ctx.restore()}
+
+/* ===== PROP_MANDARA: tall, symmetrical, banded patterns; rot shifts the bands so it turns ===== */
+const MANDARA_PTS=[[-.5,0],[-.47,-.12],[-.42,-.28],[-.36,-.44],[-.3,-.6],[-.22,-.76],[-.14,-.9],[-.06,-.98],[0,-1],[.06,-.98],[.14,-.9],[.22,-.76],[.3,-.6],[.36,-.44],[.42,-.28],[.47,-.12],[.5,0]];
+function mandaraPath(x,y,w,h){return sPath(wob(MANDARA_PTS.map(p=>[x+p[0]*w,y+p[1]*h]),1.4,31),true)}
+function drawMandara(ctx,x,y,w,h,rot,o){o=o||{};const p=mandaraPath(x,y,w,h);
+  if(o.outline){ctx.save();ctx.globalAlpha*=o.outline;ctx.setLineDash([18,12]);ctx.lineDashOffset=-T.sec*20;sgl(ctx,p,7,C.turmeric);ctx.setLineDash([]);ctx.restore();if(!o.solid)return}
+  ctx.fillStyle=C.ochre;ctx.fill(p);ctx.save();ctx.clip(p);const ph=((rot||0)%1+1)%1;
+  const bands=[[.86,1.02,'trees'],[.7,.86,'scal'],[.56,.7,'trees'],[.44,.56,'dots'],[.3,.44,'trees'],[.18,.3,'zig'],[0,.18,'trees']];
+  for(const [a,b,kind] of bands){const y0=y-h*b,y1=y-h*a,bh=y1-y0;const per=kind==='trees'?54:36;const off=-ph*per*2;
+    if(kind==='trees'){ctx.fillStyle=C.turmeric;ctx.fillRect(x-w,y0,w*2,bh);for(let xx=x-w+off;xx<x+w+per;xx+=per){const t=polyPath([[xx,y1-4],[xx+per*.5,y0+4],[xx+per,y1-4]]);ctx.fillStyle=(Math.round((xx-off)/per)%2)?C.leaf:C.emerald;ctx.fill(t);sgl(ctx,t,1.8);
+      line(ctx,[[xx+per*.5,y0+12],[xx+per*.5,y1-6]],C.cream,1.6);for(let k=.35;k<.9;k+=.22)line(ctx,[[xx+per*.5,y0+bh*k],[xx+per*(.5-k*.3),y0+bh*k+8]],C.cream,1.4)}}
+    else if(kind==='scal'){ctx.fillStyle=C.ochre;ctx.fillRect(x-w,y0,w*2,bh);Pat.scallops(ctx,{x:x-w+off,y:y0+8,w:w*2+per,h:bh},per*.5,C.cream,2.2)}
+    else if(kind==='dots'){ctx.fillStyle=C.saffron;ctx.fillRect(x-w,y0,w*2,bh);Pat.dots(ctx,{x:x-w+off,y:y0,w:w*2+per,h:bh},per*.4,3,C.cream)}
+    else{ctx.fillStyle=C.ochre;ctx.fillRect(x-w,y0,w*2,bh);Pat.zig(ctx,{x:x-w+off,y:y0+4,w:w*2+per,h:bh},per*.5,C.verm,3,bh*.45)}
+    line(ctx,[[x-w,y0],[x+w,y0]],C.line,2.4)}
+  ctx.restore();dbl(ctx,p,3)}
+
+/* ===== CHAR_VASUKI_MASTER: segmented serpent along a spine; friendly face, no fangs ===== */
+function drawVasukiPart(ctx,pts,wd,o){if(pts.length<2)return;o=o||{};const path=new Path2D();pts.forEach((p,i)=>i?path.lineTo(p[0],p[1]):path.moveTo(p[0],p[1]));
+  ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle=C.line;ctx.lineWidth=wd+8;ctx.stroke(path);ctx.strokeStyle=C.turmeric;ctx.lineWidth=wd;ctx.stroke(path);
+  /* scale bands every few units: red band then black diamond, measured along the full spine so they travel with the body */
+  let acc=o.d0||0;for(let i=1;i<pts.length;i++){const a=pts[i-1],b=pts[i],seg=Math.hypot(b[0]-a[0],b[1]-a[1]);if(seg<.01)continue;const nx=-(b[1]-a[1])/seg,ny=(b[0]-a[0])/seg;
+    let d=Math.ceil(acc/16)*16-acc;while(d<seg){const k=(acc+d)/16;const x=a[0]+(b[0]-a[0])*d/seg,y=a[1]+(b[1]-a[1])*d/seg;
+      if(Math.round(k)%3===0){line(ctx,[[x+nx*wd*.5,y+ny*wd*.5],[x-nx*wd*.5,y-ny*wd*.5]],C.red,7)}
+      else if(Math.round(k)%3===1){const dx=(b[0]-a[0])/seg,dy=(b[1]-a[1])/seg;const q=polyPath([[x+dx*6,y+dy*6],[x+nx*wd*.26,y+ny*wd*.26],[x-dx*6,y-dy*6],[x-nx*wd*.26,y-ny*wd*.26]]);ctx.fillStyle=C.charcoal;ctx.fill(q)}
+      d+=16}acc+=seg}
+  return acc}
+function vasukiHead(ctx,x,y,ang,s,blink){ctx.save();ctx.translate(x,y);ctx.rotate(ang);ctx.scale(s,s);
+  const hood=sPath([[-6,-30],[22,-34],[44,-22],[56,0],[44,22],[22,34],[-6,30],[-14,0]],true);shape(ctx,hood,C.red,c=>{Pat.dots(c,{x:-16,y:-36,w:74,h:72},11,2.6,C.turmeric);ring(c,18,0,14,C.turmeric,4)},{lw:2.4});
+  const hd=sPath([[20,-16],[52,-18],[74,-8],[80,4],[70,14],[50,16],[24,14]],true);shape(ctx,hd,C.turmeric,c=>{Pat.dots(c,{x:20,y:-20,w:62,h:36},9,2,C.red)},{lw:2.2});
+  if(blink>.5){ctx.beginPath();ctx.moveTo(50,-8);ctx.quadraticCurveTo(57,-3,64,-8);ctx.strokeStyle=C.line;ctx.lineWidth=2.6;ctx.stroke()}
+  else{shape(ctx,ellPath(57,-6,8,6),C.white,null,{line:'single',lw:2});dot(ctx,59,-6,3.4,C.line)}
+  ctx.beginPath();ctx.arc(66,6,8,.05*Math.PI,.55*Math.PI);ctx.strokeStyle=C.verm;ctx.lineWidth=2.8;ctx.stroke();
+  shape(ctx,ellPath(30,-24,6,6),C.emerald,null,{line:'single',lw:1.6});ctx.restore()}
+function vasukiTail(ctx,pts){if(pts.length<2)return;for(let i=1;i<pts.length;i++){const w=4+i/(pts.length-1)*24;line(ctx,[pts[i-1],pts[i]],C.line,w+8)}
+  for(let i=1;i<pts.length;i++){const w=4+i/(pts.length-1)*24;line(ctx,[pts[i-1],pts[i]],i%3===0?C.red:C.turmeric,w)}}
+
+/* ===== Halahala (FX_HALAHALA): layered abstract indigo-violet cloud puffs with spiral lines, never a creature ===== */
+function halaArt(g,seed){const r=rng(seed);const puffs=[];for(let i=0;i<9;i++)puffs.push([(r()-.5)*220,(r()-.5)*90,40+r()*40]);
+  [[C.indigo,1.12],[C.violet,1],[C.charcoal,.7]].forEach(([col,k],li)=>{puffs.forEach(([x,y,rr],i)=>{if(li===2&&i%2)return;const p=ellPath(x,y-li*6,rr*k,rr*k*.8);g.fillStyle=col;g.fill(p);g.strokeStyle=C.line;g.lineWidth=2;g.stroke(p)})});
+  puffs.forEach(([x,y,rr],i)=>{const sp=[];for(let j=0;j<=26;j++){const a=j/26*TAU*1.5,q=rr*.5*j/26;sp.push([x+Math.cos(a)*q,y+Math.sin(a)*q])}line(g,sp,i%2?C.violet:C.cream,2.2);
+    for(let k=0;k<6;k++){const a=k/6*TAU;dot(g,x+Math.cos(a)*rr*.75,y+Math.sin(a)*rr*.6,2.2,C.violet)}})}
+function drawHala(ctx,x,y,s,seed,rot){ctx.save();ctx.translate(x,y);ctx.rotate(rot||0);sprite(ctx,'hala'+seed,0,0,s,{w:420,h:260,ox:210,oy:130},g=>halaArt(g,seed));ctx.restore()}
+/* dark patterned cloud for Game 4 (softer: violet with cream curls) */
+function darkCloudArt(g){const p=new Path2D();p.moveTo(-150,40);p.arc(-100,10,52,Math.PI*.85,Math.PI*1.7);p.arc(-20,-14,66,Math.PI*1.1,Math.PI*1.9);p.arc(78,4,58,Math.PI*1.25,Math.PI*2.05);p.lineTo(150,40);p.closePath();
+  shape(g,p,C.violet,c=>{Pat.scallops(c,{x:-160,y:-80,w:320,h:130},26,C.indigo,3);for(const [x,y,r] of [[-96,12,22],[-20,-8,28],[78,10,22]]){const sp=[];for(let i=0;i<=28;i++){const a=i/28*TAU*1.5;sp.push([x+Math.cos(a)*r*i/28,y+Math.sin(a)*r*i/28])}line(c,sp,C.cream,3)}
+    line(c,[[-146,36],[146,36]],C.charcoal,6)},{lw:3})}
+function drawDarkCloud(ctx,x,y,s){sprite(ctx,'dcloud',x,y,s,{w:340,h:180,ox:170,oy:110},darkCloudArt)}
+
+/* ===== Sound: everything synthesised with Web Audio, behind one master gain that mute silences ===== */
+const AU={ctx:null,master:null,sfxG:null,muted:false,noiseBuf:null,
+  init(){if(this.ctx)return;try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;this.ctx=new AC();
+    this.master=this.ctx.createGain();this.master.gain.value=this.muted?0:1;this.master.connect(this.ctx.destination);
+    this.sfxG=this.ctx.createGain();this.sfxG.gain.value=.6;this.sfxG.connect(this.master);
+    const len=this.ctx.sampleRate*2,b=this.ctx.createBuffer(1,len,this.ctx.sampleRate),d=b.getChannelData(0);for(let i=0;i<len;i++)d[i]=Math.random()*2-1;this.noiseBuf=b;Music.init()}catch(e){this.ctx=null}},
+  resume(){try{this.ctx&&this.ctx.state==='suspended'&&this.ctx.resume()}catch(e){}},
+  setMute(m){this.muted=m;if(this.master)this.master.gain.setTargetAtTime(m?0:1,this.ctx.currentTime,.05)},
+  t(){return this.ctx.currentTime},
+  osc(type,f,t0,dur,g,f2,dest){const c=this.ctx,o=c.createOscillator(),e=c.createGain();o.type=type;o.frequency.setValueAtTime(f,t0);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t0+dur);
+    e.gain.setValueAtTime(.0001,t0);e.gain.exponentialRampToValueAtTime(g,t0+Math.min(.04,dur*.2));e.gain.exponentialRampToValueAtTime(.0001,t0+dur);o.connect(e);e.connect(dest||this.sfxG);o.start(t0);o.stop(t0+dur+.05);return o},
+  noise(t0,dur,g,type,f,q,f2){const c=this.ctx,s=c.createBufferSource(),fl=c.createBiquadFilter(),e=c.createGain();s.buffer=this.noiseBuf;s.loop=true;fl.type=type||'bandpass';
+    fl.frequency.setValueAtTime(f||1000,t0);if(f2)fl.frequency.exponentialRampToValueAtTime(f2,t0+dur);fl.Q.value=q||1;e.gain.setValueAtTime(.0001,t0);e.gain.exponentialRampToValueAtTime(g,t0+Math.min(.3,dur*.3));
+    e.gain.exponentialRampToValueAtTime(.0001,t0+dur);s.connect(fl);fl.connect(e);e.connect(this.sfxG);s.start(t0);s.stop(t0+dur+.05)},
+  bell(f,t0,g,dur){this.osc('sine',f,t0,dur||1.8,g||.12);this.osc('sine',f*2.76,t0,(dur||1.8)*.5,(g||.12)*.3)},
+  sfx(name,arg){if(!this.ctx||this.muted)return;const t=this.t();try{switch(name){
+    case'water':this.noise(t,2.4,.18,'lowpass',500,.7,900);this.noise(t+.6,2,.1,'bandpass',1200,.8,600);break;
+    case'bell':this.bell(arg||1046,t,.12);break;
+    case'bells':[1046,1318,1568,2093].forEach((f,i)=>this.bell(f,t+i*.22,.09,2.2));break;
+    case'descend':[587,523,440,349].forEach((f,i)=>this.osc('triangle',f,t+i*.32,.6,.12));break;
+    case'drum':this.osc('sine',arg||110,t,.32,.42,48);this.noise(t,.08,.12,'lowpass',400,.7);break;
+    case'glow':this.bell(1568,t,.08,1.2);break;
+    case'chime':[784,988,1175,1568].forEach((f,i)=>this.bell(f,t+i*.08,.09,1.4));break;
+    case'celebrate':[523,659,784,1046,1318].forEach((f,i)=>this.bell(f,t+i*.1,.08,1.6));break;
+    case'conch':{const c=this.ctx,o=c.createOscillator(),o2=c.createOscillator(),fl=c.createBiquadFilter(),e=c.createGain();o.type='sawtooth';o2.type='triangle';o.frequency.setValueAtTime(196,t);o2.frequency.setValueAtTime(392,t);
+      o.frequency.linearRampToValueAtTime(220,t+.5);o.frequency.linearRampToValueAtTime(218,t+2.2);fl.type='lowpass';fl.frequency.setValueAtTime(500,t);fl.frequency.linearRampToValueAtTime(1300,t+.8);fl.frequency.linearRampToValueAtTime(700,t+2.4);
+      e.gain.setValueAtTime(.0001,t);e.gain.exponentialRampToValueAtTime(.12,t+.5);e.gain.setValueAtTime(.12,t+1.8);e.gain.exponentialRampToValueAtTime(.0001,t+2.6);o.connect(fl);o2.connect(fl);fl.connect(e);e.connect(this.sfxG);
+      o.start(t);o2.start(t);o.stop(t+2.7);o2.stop(t+2.7);break}
+    case'tap':this.osc('triangle',660,t,.12,.14);break;
+    case'soft':this.osc('sine',392,t,.35,.1,330);break;
+    case'pop':this.osc('sine',520,t,.18,.16,980);this.bell(1760,t+.08,.05,.8);break;
+    case'rise':this.osc('sine',300,t,1.2,.08,620);this.noise(t,1.2,.06,'bandpass',800,1.2,1800);break;
+    case'breeze':this.noise(t,1.8,.2,'bandpass',500,.8,1400);this.noise(t+.3,1.4,.1,'bandpass',1200,1.4,600);break;
+    case'lamp':this.noise(t,.35,.12,'bandpass',600,1.2,2200);this.bell(1318,t+.2,.07,1.2);break}}catch(e){}}};
+
+/* soft ambient music: a low drone and sparse pentatonic notes; swells at moments of relief */
+const Music={nodes:null,level:.4,next:0,scale:[293.66,329.63,369.99,440,493.88,587.33],
+  init(){const c=AU.ctx;const g=c.createGain();g.gain.value=0;g.connect(AU.master);const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=600;lp.connect(g);
+    [146.83,220,293.66].forEach((f,i)=>{const o=c.createOscillator();o.type=i===2?'sine':'triangle';o.frequency.value=f;const og=c.createGain();og.gain.value=i===2?.012:.035;o.connect(og);og.connect(lp)
+      ;const lfo=c.createOscillator(),lg=c.createGain();lfo.frequency.value=.07+i*.03;lg.gain.value=.012;lfo.connect(lg);lg.connect(og.gain);lfo.start();o.start()});
+    const pl=c.createGain();pl.gain.value=1;pl.connect(g);this.nodes={g,lp,pl};this.set(.4,3)},
+  set(v,sec){this.level=v;if(this.nodes)this.nodes.g.gain.setTargetAtTime(v*.55,AU.t(),(sec||2)/3)},
+  swell(){this.set(1,1.5);clearTimeout(this.sw);this.sw=setTimeout(()=>this.set(.45,4),8000)},
+  mood(m){if(!this.nodes)return;const map={night:[293.66,329.63,369.99,440,493.88,587.33],dark:[220,246.94,261.63,329.63,349.23],bright:[392,440,493.88,587.33,659.25,783.99]};
+    this.scale=map[m]||map.night;this.nodes.lp.frequency.setTargetAtTime(m==='dark'?360:m==='bright'?900:600,AU.t(),1.5)},
+  tick(){if(!this.nodes||AU.muted||this.level<.05)return;const c=AU.ctx,t=c.currentTime;if(t<this.next)return;
+    const f=this.scale[Math.floor(Math.random()*this.scale.length)]*(Math.random()<.3?.5:1);const o=c.createOscillator(),e=c.createGain();o.type='triangle';o.frequency.value=f;
+    e.gain.setValueAtTime(.0001,t);e.gain.exponentialRampToValueAtTime(.04*this.level+.008,t+.03);e.gain.exponentialRampToValueAtTime(.0001,t+1.8);o.connect(e);e.connect(this.nodes.pl);o.start(t);o.stop(t+1.9);
+    this.next=t+(this.level>.8?.55:1.5)+Math.random()*1.6}};
+
+/* ===== Speech: Storyteller, Devas, Asuras (and the few other speakers) each get their own voice or pitch ===== */
+const VOICE={story:{name:'Storyteller',col:C.saffron,pitch:1.02,rate:.9},devas:{name:'Devas',col:C.leaf,pitch:1.35,rate:1},asuras:{name:'Asuras',col:C.verm,pitch:.62,rate:.92},
+  both:{name:'Devas & Asuras',col:C.violet,pitch:.95,rate:.95},vishnu:{name:'Lord Vishnu',col:C.peacock,pitch:.8,rate:.86},all:{name:'Everyone',col:C.gold,pitch:1.1,rate:.9}};
+const Speech={ok:false,voices:[],pick:{},cur:null,
+  init(){try{if(!('speechSynthesis' in window)||!window.SpeechSynthesisUtterance)return;this.ok=true;const load=()=>{try{this.voices=speechSynthesis.getVoices()||[]}catch(e){this.voices=[]}this.assign()};load();
+    if(speechSynthesis.addEventListener)speechSynthesis.addEventListener('voiceschanged',load);else speechSynthesis.onvoiceschanged=load}catch(e){this.ok=false}},
+  assign(){const en=this.voices.filter(v=>/^en/i.test(v.lang));if(!en.length){this.pick={};return}
+    const score=v=>(/en[-_]IN/i.test(v.lang)?4:0)+(/en[-_]GB/i.test(v.lang)?1:0)+(v.localService?1:0);const by=en.slice().sort((a,b)=>score(b)-score(a));
+    const fem=by.filter(v=>/female|woman|veena|heera|neerja|kalpana|samantha|karen|moira|tessa|zira|susan|serena|fiona|aria|jenny|sonia|libby|google uk english female/i.test(v.name));
+    const male=by.filter(v=>/male|man\b|rishi|ravi|prabhat|daniel|david|george|alex|guy|ryan|thomas|fred|mark|james|google uk english male/i.test(v.name)&&!/female/i.test(v.name));
+    const f0=fem[0]||by[0],f1=fem[1]||by[1]||f0,m0=male[0]||by[by.length>2?2:0]||f0,m1=male[1]||m0;
+    this.pick={story:f0,devas:f1,asuras:m0,both:m1,vishnu:m0,all:f0}},
+  available(){return this.ok&&this.voices.length>0},
+  speak(who,text){return new Promise(res=>{if(!this.available()||AU.muted){res(false);return}let done=false;const fin=()=>{if(!done){done=true;clearTimeout(to);res(true)}};let to;
+    try{const V=VOICE[who]||VOICE.story;const u=new SpeechSynthesisUtterance(text.replace(/[‘’]/g,"'").replace(/[“”]/g,''));u.pitch=V.pitch;u.rate=V.rate;
+      const v=this.pick[who];if(v)u.voice=v;u.lang=v?v.lang:'en-IN';u.onend=fin;u.onerror=fin;this.cur=fin;speechSynthesis.speak(u);to=setTimeout(fin,Math.max(4000,text.length*95/V.rate+3000))}catch(e){fin()}})},
+  stop(){try{if(this.ok)speechSynthesis.cancel()}catch(e){}if(this.cur){const f=this.cur;this.cur=null;f()}}};
+
+/* ===== Director: plays shots in order, pauses for every activity, never stalls ===== */
+const ABORT={abort:true};
+const D={token:0,speed:1,fast:false,qa:null,scene:null,q:Promise.resolve(),skipFn:null,act:null,lastInput:0,trans:null,chapter:0,shot:'00',
+  guard(tok){if(tok!==this.token)throw ABORT},
+  wait(ms){const tok=this.token;return new Promise((res,rej)=>Timers.add(this.fast?Math.min(ms,8):ms,()=>tok===this.token?res():rej(ABORT)))},
+  tw(o,p,ms,e){const tok=this.token;return tw(o,p,this.fast?5:ms,e).then(()=>this.guard(tok))},
+  setScene(s,how,ms){if(how!=='cut'&&this.scene){const snap=document.createElement('canvas');snap.width=cv.width;snap.height=cv.height;snap.getContext('2d').drawImage(cv,0,0);
+      this.trans={snap,t0:T.now,ms:this.fast?10:(ms||900),how:how||'fade'}}this.scene=s;if(s.enter)s.enter()},
+  title(text){UI.title(text)},
+  /* captions: verbatim text paged by sentence; each page is spoken by its own voice */
+  pages(segs,who){const lim=L.portrait?130:150;const out=[];const add=(v,t)=>{const parts=t.match(/[^.!?…]+[.!?…]+['"’”]*\s*|[^.!?…]+$/g)||[t];let cur='';
+      for(const p of parts){if((cur+p).length>lim&&cur){out.push({v,t:cur.trim()});cur=''}cur+=p}if(cur.trim())out.push({v,t:cur.trim()})};
+    (Array.isArray(segs)?segs:[segs]).forEach(s=>Array.isArray(s)?add(s[0],s[1]):add(who,s));
+    const pg=[];out.forEach(c=>{const last=pg[pg.length-1];if(last&&(last.text.length+c.t.length)<lim&&!(c.v!==last.parts[0].v&&last.text.length>60))last.parts.push(c),last.text+=' '+c.t;else pg.push({parts:[c],text:c.t})});return pg},
+  say(who,segs,o){o=o||{};const tok=this.token;const run=async()=>{this.guard(tok);let skipped=false;
+      for(const pg of this.pages(segs,who)){if(skipped)break;UI.cap(pg.parts[0].v,pg.text,pg.parts.map(p=>p.v));
+        for(const part of pg.parts){if(skipped)break;const sp=this.speakers(part.v);sp.forEach(a=>a.talking=true);
+          const skipP=new Promise(r=>{this.skipFn=()=>{skipped=true;Speech.stop();r()}});let p;
+          if(this.fast)p=new Promise(r=>setTimeout(r,15));
+          else if(Speech.available()&&!AU.muted)p=Promise.all([Speech.speak(part.v,part.t),this.wait(400)]);
+          else p=this.wait(Math.max(1800,part.t.length*62));
+          await Promise.race([p,skipP]);this.skipFn=null;sp.forEach(a=>a.talking=false);this.guard(tok)}
+        if(!skipped)await this.wait(o.after==null?240:o.after)}
+      if(!o.keep)UI.cap(null)};
+    const p=this.q.then(run,run);this.q=p.catch(()=>{});return p},
+  speakers(v){const W=typeof World!=='undefined'?World:null;if(!W||!W.devas)return[];if(v==='devas')return W.devas;if(v==='asuras')return W.asuras;if(v==='both'||v==='all')return W.devas.concat(W.asuras);if(v==='vishnu')return[W.vishnu];return[]},
+  skip(){if(this.skipFn){this.skipFn();return}if(this.act&&this.act.assist){this.act.assist();this.lastInput=performance.now()}},
+  /* activity contract: start() sets up and resolves on completion; hint() after idle; assist() moves it forward */
+  async activity(spec){const tok=this.token;this.act=spec;this.lastInput=performance.now();let stage=0,done=false;const p=spec.start().then(()=>{done=true});
+    if(this.qa&&this.qa.stop==='act'&&this.qa.at===this.qa.cur){await new Promise(r=>setTimeout(r,300));this.fast=false;this.speed=1;this.qa.paused=true;if(this.qa.cap)UI.cap(this.qa.capWho||'story',this.qa.cap);await new Promise(()=>{})}
+    try{while(!done){await new Promise(r=>setTimeout(r,this.fast?10:250));this.guard(tok);
+      if(this.fast){spec.assist&&spec.assist();continue}
+      const idle=(performance.now()-this.lastInput)/1000,hintAt=spec.idle||15;
+      if(stage===0&&idle>hintAt){stage=1;this.lastInput=performance.now();spec.hint&&spec.hint()}
+      else if(stage===1&&idle>(spec.assistAfter||8)){stage=0;this.lastInput=performance.now();spec.assist&&spec.assist()}}
+      await p}finally{this.act=null;UI.plaque(null)}},
+  /* step that waits for a tap/gesture or a timeout; returns 'child' or 'auto' */
+  waitStep(ms,check){const tok=this.token;return new Promise(res=>{let t0=T.now;const iv=setInterval(()=>{if(tok!==this.token){clearInterval(iv);res('abort');return}
+      if(this.fast||check()){clearInterval(iv);res(this.fast?'auto':'child')}else if(T.now-t0>ms){clearInterval(iv);res('auto')}},this.fast?5:60)})}};
+
+/* ===== UI layer (L07): title plaque, progress, captions, instruction plaque, cards, collection strip ===== */
+const UI={
+  relayout(){},
+  title(t){const el=$('title');if(!t){el.hidden=true;return}$('titleText').textContent=t;el.hidden=false},
+  progress(shot){const i=SHOT_IDS.indexOf(shot);document.querySelectorAll('#prog i').forEach((e,j)=>{e.className=j<i?'done':j===i?'now':''});$('prog').setAttribute('aria-label',`Shot ${i+1} of ${SHOT_IDS.length}`)},
+  cap(who,text,list){const el=$('cap');if(!who){el.hidden=true;return}const names=[...new Set(list||[who])];
+    $('capWho').innerHTML='';names.forEach(n=>{const V=VOICE[n]||VOICE.story;const s=document.createElement('span');s.innerHTML='<i></i>';s.querySelector('i').style.background=V.col;s.append(V.name);$('capWho').append(s)});
+    $('capText').textContent=text;el.hidden=false},
+  /* small instruction plaque above the subtitles: icon, cue, action, buttons */
+  plaque(o){const el=$('plaque');if(!o){el.hidden=true;el.innerHTML='';return}el.innerHTML='';
+    const row=document.createElement('div');row.className='prow';
+    if(o.icon){const c=document.createElement('canvas');c.width=c.height=96;const g=c.getContext('2d');g.scale(96/120,96/120);g.translate(60,60);try{o.icon(g)}catch(e){}
+      if(o.onIcon){const b=document.createElement('button');b.type='button';b.className='picon glow';b.setAttribute('aria-label','Tap the glowing wave');b.append(c);b.addEventListener('click',ev=>{ev.stopPropagation();D.lastInput=performance.now();AU.resume();AU.sfx('tap');b.classList.remove('hit');void b.offsetWidth;b.classList.add('hit');o.onIcon()});row.append(b)}
+      else{c.className='picon';row.append(c)}}
+    if(o.slots){const sl=document.createElement('div');sl.className='slots';o.slots.forEach(t=>{const c=document.createElement('canvas');c.width=c.height=80;c.className=t.on?'on':'';c.title=t.label;c.setAttribute('role','img');c.setAttribute('aria-label',t.label+(t.on?', found':', not found yet'));
+      const g=c.getContext('2d');g.scale(80/120,80/120);g.translate(60,60);if(!t.on){g.globalAlpha=.3}try{drawIcon(g,t.k,.8)}catch(e){}if(!t.on){g.globalAlpha=1;g.setLineDash([8,7]);ring(g,0,0,50,C.line,3)}sl.append(c)});row.append(sl)}
+    const tx=document.createElement('div');tx.className='ptext';if(o.cue){const b=document.createElement('b');b.textContent=o.cue;tx.append(b)}if(o.sub){const s=document.createElement('span');s.textContent=o.sub;tx.append(s)}row.append(tx);
+    const bt=document.createElement('div');bt.className='pbtns';(o.buttons||[]).forEach(b=>{const e=document.createElement('button');e.type='button';e.className='pbtn'+(b.main?' main':'')+(b.small?' small':'');e.textContent=b.label;
+      if(b.id)e.id=b.id;e.addEventListener('click',ev=>{ev.stopPropagation();D.lastInput=performance.now();AU.resume();b.on()});bt.append(e)});if(o.buttons&&o.buttons.length)row.append(bt);
+    el.append(row);el.hidden=false;if(o.flash){el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash')}},
+  strip(){const el=$('strip');const d=Store.data;const items=['lotus','jewel','conch','leaf','heart','diya'];const have=new Set([...d.treasures,...d.gifts]);
+    if(!have.size&&!this.stripOn){el.hidden=true;return}el.hidden=false;el.innerHTML='';
+    const order=[...d.treasures,...['lotus','jewel','conch'].filter(k=>!d.treasures.includes(k)),'leaf','heart','diya'];
+    order.forEach(k=>{const c=document.createElement('canvas');c.width=c.height=64;c.title=k;c.className=have.has(k)?'on':'';const g=c.getContext('2d');g.scale(64/120,64/120);g.translate(60,60);
+      try{if(!have.has(k))g.globalAlpha=.35;drawIcon(g,k,.66)}catch(e){}el.append(c)});void items}};
+/* small icons for plaques and the strip, drawn in a 120x120 box centred at 0,0 */
+function drawIcon(g,k,s){s=s||1;T.sec=T.sec||0;
+  if(k==='lotus')drawLotus(g,0,26*s,s*.9,1);else if(k==='jewel')drawJewel(g,0,0,s*.9);else if(k==='conch')drawConch(g,0,0,s*.7);
+  else if(k==='leaf'||k==='heart'||k==='diya')drawGift(g,k,0,0,s*.6,1,0,0);
+  else if(k==='wave'){g.save();g.scale(s,s);for(let i=0;i<3;i++){const y=-20+i*22;const p=new Path2D();p.moveTo(-50,y);for(let x=-50;x<50;x+=25)p.quadraticCurveTo(x+12.5,y-16,x+25,y);dbl(g,p,2.6,i%2?C.turq:C.cream)}g.restore()}
+  else if(k==='rope'){g.save();g.scale(s,s);drawVasukiPart(g,[[-50,10],[-20,-10],[10,10],[44,-6]],18);g.restore()}
+  else if(k==='breeze'){g.save();g.scale(s,s);for(let i=0;i<3;i++){const y=-24+i*24;const sp=[[-50,y]];for(let x=-40;x<=30;x+=10)sp.push([x,y+Math.sin(x/12)*6]);line(g,sp,C.line,8);line(g,sp,C.cream,4);g.beginPath();g.arc(36,y-8,9,Math.PI*.5,Math.PI*2.1);g.strokeStyle=C.line;g.lineWidth=4;g.stroke()}g.restore()}
+  else if(k==='hint'){g.save();g.scale(s,s);drawStar(g,0,0,1.6,C.turmeric);g.restore()}}
+
+/* ===== Picture choice cards (Game 2): large, equal, read aloud; never a wrong label ===== */
+const Cards={els:[],sel:null,
+  show(list,onPick,onPlace){const tray=$('tray');tray.innerHTML='';this.sel=null;this.els=list.map(c=>{const b=document.createElement('button');b.type='button';b.className='card';b.setAttribute('aria-label',c.label);b.dataset.k=c.key;
+      const cnv=document.createElement('canvas');const sp=document.createElement('span');sp.textContent=c.label;b.append(cnv,sp);tray.append(b);
+      b.addEventListener('click',()=>{D.lastInput=performance.now();AU.resume();AU.sfx('tap');this.select(c.key);onPick(c.key)});return{b,cnv,c}});
+    const place=document.createElement('button');place.type='button';place.className='pbtn main place';place.id='bPlace';place.textContent='Place the support';place.disabled=true;
+    place.addEventListener('click',()=>{D.lastInput=performance.now();if(this.sel)onPlace(this.sel)});tray.append(place);tray.hidden=false;
+    requestAnimationFrame(()=>this.paint())},
+  paint(){this.els.forEach(({cnv,c})=>{const r=cnv.getBoundingClientRect(),dp=Math.min(2,devicePixelRatio||1);cnv.width=Math.max(10,r.width*dp);cnv.height=Math.max(10,r.height*dp);
+    const g=cnv.getContext('2d');const s=cnv.width/300;g.setTransform(s,0,0,s,0,0);g.fillStyle=C.peacock;g.fillRect(0,0,300,200);
+    g.save();for(let i=0;i<2;i++){const y=150+i*24;const p=new Path2D();p.moveTo(0,y);for(let x=0;x<300;x+=40)p.quadraticCurveTo(x+20,y-14,x+40,y);p.lineTo(300,200);p.lineTo(0,200);p.closePath();g.fillStyle=i?C.deep:C.turq;g.fill(p);dbl(g,p,2)}g.restore();
+    try{c.draw(g)}catch(e){}})},
+  select(k){this.sel=k;this.els.forEach(e=>e.b.classList.toggle('picked',e.c.key===k));const p=$('bPlace');if(p)p.disabled=false},
+  wobble(k){const e=this.els.find(e=>e.c.key===k);if(!e)return;e.b.classList.remove('wobble','picked');void e.b.offsetWidth;e.b.classList.add('wobble');this.sel=null;const p=$('bPlace');if(p)p.disabled=true},
+  pulse(k){const e=this.els.find(e=>e.c.key===k);if(!e)return;e.b.classList.remove('pulse');void e.b.offsetWidth;e.b.classList.add('pulse')},
+  reading(k){this.els.forEach(e=>e.b.classList.toggle('reading',e.c.key===k))},
+  async fly(k,tx,ty){const e=this.els.find(e=>e.c.key===k);this.els.forEach(o=>{if(o!==e)o.b.classList.add('back')});const p=$('bPlace');if(p)p.style.visibility='hidden';
+    if(e){const r=e.b.getBoundingClientRect();e.b.style.transition='transform 1.2s ease, opacity 1.2s ease';e.b.style.transform=`translate(${tx-(r.left+r.width/2)}px,${ty-(r.top+r.height/2)}px) scale(1.12)`;e.b.style.opacity='0'}
+    await D.wait(1200)},
+  hide(){const tray=$('tray');tray.hidden=true;tray.innerHTML='';this.els=[]}};
+
+/* ===== Input: tap/drag is the base layer; the optional camera only adds to it ===== */
+const Input={drag:null,
+  toLogical(x,y){const r=cv.getBoundingClientRect();return{x:(x-r.left)/L.U,y:(y-r.top)/L.U}},
+  down(p){D.lastInput=performance.now();AU.resume();this.drag={x0:p.x,y0:p.y,x:p.x,y:p.y,path:[p]};const s=D.scene;if(s&&s.down)s.down(p)},
+  move(p){if(this.drag){this.drag.x=p.x;this.drag.y=p.y;this.drag.path.push(p);if(this.drag.path.length>120)this.drag.path.shift()}const s=D.scene;if(s&&s.move)s.move(p,this.drag)},
+  up(p){const s=D.scene;if(s&&s.up)s.up(p,this.drag);this.drag=null}};
+cv.addEventListener('pointerdown',e=>{try{cv.setPointerCapture(e.pointerId)}catch(_){}Input.down(Input.toLogical(e.clientX,e.clientY));e.preventDefault()});
+cv.addEventListener('pointermove',e=>{if(e.buttons||e.pointerType==='touch')Input.move(Input.toLogical(e.clientX,e.clientY))});
+cv.addEventListener('pointerup',e=>Input.up(Input.toLogical(e.clientX,e.clientY)));
+cv.addEventListener('pointercancel',e=>Input.up(Input.toLogical(e.clientX,e.clientY)));
+window.addEventListener('keydown',e=>{D.lastInput=performance.now();const s=D.scene;if(e.target&&e.target.tagName==='BUTTON'&&(e.key===' '||e.key==='Enter'))return;
+  if(s&&s.key&&s.key(e.key)){e.preventDefault();return}if(e.key==='m'||e.key==='M')$('bMute').click()});
+const near=(p,x,y,r)=>p&&Math.hypot(p.x-x,p.y-y)<=r;
+
+/* ===== Optional camera: off by default, asked for only after the "Use camera" toggle.
+   Library-free motion sensing (frame differencing on a tiny video frame) feeds the same events as taps. ===== */
+const Cam={state:'off',video:null,g:null,prev:null,motion:0,left:0,right:0,top:0,cxm:.5,busy:false,
+  async toggle(){const b=$('bCam');if(this.state==='on'){this.stop();return}if(this.busy)return;this.busy=true;
+    try{if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw 0;
+      const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:160,height:120},audio:false});
+      const v=document.createElement('video');v.muted=true;v.playsInline=true;v.srcObject=stream;await v.play();this.video=v;
+      const c=document.createElement('canvas');c.width=64;c.height=48;this.g=c.getContext('2d',{willReadFrequently:true});this.state='on';b.setAttribute('aria-pressed','true');$('camLbl').textContent='Camera on';this.loop()}
+    catch(e){this.fail()}finally{this.busy=false}},
+  fail(){this.stop();this.state='off';const b=$('bCam');b.setAttribute('aria-pressed','false');b.classList.add('na');$('camLbl').textContent='Use camera';b.title='Camera is not available here. Tapping works for everything.'},
+  stop(){try{this.video&&this.video.srcObject&&this.video.srcObject.getTracks().forEach(t=>t.stop())}catch(e){}this.video=null;this.prev=null;this.motion=0;if(this.state==='on')this.state='off';
+    $('bCam').setAttribute('aria-pressed','false');$('camLbl').textContent='Use camera'},
+  loop(){if(this.state!=='on'||!this.video)return;try{const g=this.g;g.save();g.translate(64,0);g.scale(-1,1);g.drawImage(this.video,0,0,64,48);g.restore();
+      const d=g.getImageData(0,0,64,48).data;if(this.prev){let m=0,l=0,r=0,tp=0,sx=0;for(let i=0;i<d.length;i+=4){const df=Math.abs(d[i]-this.prev[i])+Math.abs(d[i+1]-this.prev[i+1]);if(df>60){const px=(i/4)%64,py=Math.floor(i/256);m++;sx+=px;if(px<26)l++;else if(px>38)r++;if(py<16)tp++}}
+        const n=64*48;const k=.35;this.motion=lerp(this.motion,m/n,k);this.left=lerp(this.left,l/n,k);this.right=lerp(this.right,r/n,k);this.top=lerp(this.top,tp/n,k);this.cxm=m?sx/m/64:.5}
+      this.prev=new Uint8ClampedArray(d)}catch(e){this.fail();return}setTimeout(()=>this.loop(),90)},
+  /* simple reads used by activities; false when the camera is off */
+  moving(th){return this.state==='on'&&this.motion>(th||.04)},
+  still(){return this.state==='on'&&this.motion<.006},
+  side(){if(this.state!=='on'||this.motion<.03)return 0;return this.left>this.right*1.6?-1:this.right>this.left*1.6?1:0},
+  raised(){return this.state==='on'&&this.top>.03}};
+
+/* ===== ENV_COSMIC_OCEAN: one persistent world so every shot keeps continuity ===== */
+const MOODS={
+  night:{moon:1,sky:C.indigo,sky2:C.deep,mot:C.turmeric,stars:1,clouds:0,bands:[[C.peacock,C.turq,C.turmeric],[C.indigo,C.peacock,C.pink],[C.turq,C.cream,C.pink],[C.deep,C.peacock,C.turmeric]],frame:[C.peacock,C.turmeric]},
+  hidden:{moon:1,sky:C.deep,sky2:C.indigo,mot:C.gold,stars:1,clouds:0,bands:[[C.peacock,C.turq,C.gold],[C.deep,C.peacock,C.gold],[C.peacock,C.turq,C.gold],[C.deep,C.indigo,C.gold]],frame:[C.deep,C.gold]},
+  bright:{moon:1,sky:C.indigo,sky2:C.peacock,mot:C.turmeric,stars:1,clouds:0,bands:[[C.turq,C.cream,C.turmeric],[C.peacock,C.turq,C.pink],[C.turq,C.cream,C.turmeric],[C.peacock,C.turq,C.turmeric]],frame:[C.peacock,C.turmeric]},
+  day:{moon:0,sky:C.cream,sky2:C.turq,mot:C.cream,stars:0,clouds:1,bands:[[C.peacock,C.turq,C.turmeric],[C.deep,C.peacock,C.turmeric],[C.peacock,C.turq,C.coral],[C.deep,C.peacock,C.turmeric]],frame:[C.ochre,C.cream]},
+  churn:{moon:1,sky:C.deep,sky2:C.indigo,mot:C.turmeric,stars:1,clouds:0,bands:[[C.peacock,C.turq,C.turmeric],[C.deep,C.verm,C.turmeric],[C.peacock,C.leaf,C.turmeric],[C.deep,C.turq,C.verm]],frame:[C.verm,C.turmeric]},
+  dark:{moon:0,sky:C.charcoal,sky2:C.indigo,mot:C.violet,stars:0,clouds:0,bands:[[C.indigo,C.violet,C.charcoal],[C.charcoal,C.violet,C.indigo],[C.indigo,C.violet,C.cream],[C.charcoal,C.indigo,C.violet]],frame:[C.charcoal,C.violet]},
+  treasure:{moon:0,sky:C.saffron,sky2:C.coral,mot:C.cream,stars:0,clouds:1,bands:[[C.turq,C.cream,C.coral],[C.emerald,C.turq,C.saffron],[C.turq,C.cream,C.coral],[C.peacock,C.emerald,C.saffron]],frame:[C.emerald,C.saffron]},
+  gold:{moon:0,sky:C.cream,sky2:C.turmeric,mot:C.red,stars:0,clouds:1,bands:[[C.turq,C.white,C.gold],[C.peacock,C.turq,C.red],[C.turq,C.white,C.gold],[C.deep,C.turq,C.gold]],frame:[C.red,C.gold]},
+  festive:{moon:0,sky:C.turmeric,sky2:C.saffron,mot:C.verm,stars:0,clouds:1,bands:[[C.turq,C.cream,C.diya],[C.leaf,C.turmeric,C.verm],[C.turq,C.cream,C.diya],[C.emerald,C.leaf,C.turmeric]],frame:[C.verm,C.turmeric]}};
+const World={id:'world',mA:'night',mB:'night',mk:1,
+  make(){const W=this;W.devas=SP_DEVAS.map(sp=>new Fig(sp,{f:1}));W.asuras=SP_ASURAS.map(sp=>new Fig(sp,{f:-1}));
+    W.vishnu=new Fig(SP_VISHNU,{vis:0});W.shiva=new Fig(SP_SHIVA,{vis:0,throat:0});W.lakshmi=new Fig(SP_LAKSHMI,{vis:0,bob:3});W.dhan=new Fig(SP_DHAN,{vis:0});
+    W.dhan.over=(ctx,f)=>{const p=W.potLocal;drawPot(ctx,p[0],p[1],1.05,W.potPulse,T.sec)};W.potLocal=[0,-190];
+    const r=rng(5);W.fish=Array.from({length:9},(_,i)=>({u:r(),band:1+(i%3),ph:r()*9,sp:.25+r()*.25,rg:.04+r()*.05,s:.55+r()*.4,col:[[C.coral,C.turmeric],[C.turmeric,C.verm],[C.pink,C.peacock],[C.saffron,C.indigo]][i%4]}));
+    W.lotus=Array.from({length:6},(_,i)=>({u:[.06,.22,.36,.64,.79,.94][i],band:i%2?2:1,ph:r()*9,s:.5+r()*.35}));
+    W.stars=Array.from({length:34},()=>({u:r(),v:r(),s:.4+r()*.5,ph:r()*9}));W.cloudsP=Array.from({length:5},(_,i)=>({u:[.12,.32,.55,.74,.9][i],v:.25+r()*.35,s:.6+r()*.4}));
+    W.peeks=[{u:.2},{u:.47},{u:.71},{u:.88}];W.lights=[];W.prev=[];W.bursts=[];this.reset()},
+  reset(){Object.assign(this,{amp:1,spd:1,bob:1,part:0,pan:0,frameK:1,starsK:1,moonK:1,bandK:[1,1,1,1],
+    mt:{vis:0,y:0,rot:0,outline:0,solid:1},kurma:{vis:0,y:0},vs:{vis:0,wrap:0,pull:0,d0:0,sway:0,rest:0},gIn:0,gOut:0,gVis:0,pull:0,lean:0,
+    ripple:0,swirl:0,swirlA:0,peekK:0,glint:-1,fishEdge:0,fishLook:0,lotusOpen:1,hala:0,halaC:0,halaRise:0,halaX:0,halaY:0,storm:0,
+    bud:{vis:0,open:0},shellK:0,conch:{y:1,vis:0},jewel:{y:1,vis:0},medal:{y:1,vis:0},lbud:{vis:0,open:0,y:1},floral:0,goldC:0,dhanRise:0,potPulse:0,
+    gifts:{leaf:0,heart:0,diya:0},giftVis:0,giftHL:{leaf:0,heart:0,diya:0},festive:0,giftPos:null,refrain:0,petals:0,stormK:0,lifeK:1,arrows:null,waveOut:[],beingsK:0,autoChurn:0,shivaX:1,shivaZoom:0,vsFlow:0,storm:0,extra:null,giftScale:null,g4:null});
+    this.lights=[];this.prev=[];this.bursts=[];this.vishnu.vis=0;this.shiva.vis=0;this.shiva.throat=0;this.lakshmi.vis=0;this.dhan.vis=0;
+    [...this.devas,...this.asuras].forEach(f=>{f.pose('stand',true);f.expr='calm';f.lean=0})},
+  mood(m,ms){const cur=this.mB;if(this.mk<1){this.mA=this.curMix()}else this.mA=cur;this.mB=m;this.mk=0;if(this.tween)this.tween.stop=true;
+    const o={k:0};this.tween=o;if(D.fast||!ms){this.mk=1;this.mA=m;return Promise.resolve()}return tw(o,{k:1},ms||1600).then(()=>{if(this.tween===o)this.mk=1});},
+  curMix(){return this.mB},
+  col(path){const a=MOODS[this.mA],b=MOODS[this.mB],k=this.tween&&this.mk<1?this.tween.k:1;const get=(m)=>path.reduce((o,p)=>o[p],m);const va=get(a),vb=get(b);
+    return typeof va==='number'?lerp(va,vb,k):mixHex(va,vb,k)},
+  /* anchors, recomposed for landscape and portrait */
+  lay(){const W=L.W,H=L.H,P=L.portrait;const cx=W/2;const o={cx,W,H,P};
+    if(!P){o.hz=H*.4;o.mb=H*.66;o.mw=Math.min(W*.23,450);o.mh=H*.43;o.feet=H*.8;o.gs=1;o.gap=[155,270,385];o.moon=[W*.12,H*.24]}
+    else{o.hz=H*.27;o.mb=H*.53;o.mw=W*.44;o.mh=Math.min(H*.3,W*.62);o.feet=o.mb+Math.min(H*.12,300);o.gs=.8;o.gap=[0,0,0];o.moon=[W*.8,H*.15]}
+    o.ks=o.mw*(o.P?1.02:1.15)/340;o.kfront=o.P;o.rim=o.mb+88*o.ks;o.bands=[o.hz,lerp(o.hz,o.mb,.55),o.mb-14,o.feet-6];
+    o.shiva={x:P?cx+170:cx+o.mw*.66,y:P?o.feet+190:o.feet+44,s:(P?1.05:1.18)*(1+this.shivaZoom*.22)};
+    o.dhan={x:cx,y:P?o.mb+150:o.mb+150,s:P?1.35:1.4};
+    o.lak={x:cx,y:P?o.mb+40:o.mb+30,s:P?.95:.95};
+    o.vishnu={x:P?cx-W*.27:cx-o.mw*1.0,y:P?o.hz+40:o.hz+10,s:P?.62:.7};
+    o.gifts=P?{leaf:[W*.17,o.mb-330],heart:[W*.83,o.mb-330],diya:[cx,o.mb+150-1.35*480]}:{leaf:[cx-o.mw*.9,o.hz+30],heart:[cx+o.mw*.9,o.hz+30],diya:[cx,Math.max(L.top()+70,o.mb+150-1.4*470)]};
+    return o},
+  /* place group members: devas left facing right, asuras right facing left */
+  placeGroups(o){const step=(1-this.gIn)*(o.W*.45),out=this.gOut*(o.P?70:170);
+    const px=o.P?[o.W*.3,o.W*.19,o.W*.08]:null;
+    this.devas.forEach((f,i)=>{f.x=(o.P?px[i]:o.cx-o.mw*.5-o.gap[i]*o.gs)-step-out;f.y=o.feet+(i%2?-12:6)*o.gs;f.s=o.gs*(i===1?.97:1);f.vis=this.gVis});
+    this.asuras.forEach((f,i)=>{f.x=(o.P?o.W-px[i]:o.cx+o.mw*.5+o.gap[i]*o.gs)+step+out;f.y=o.feet+(i%2?-12:6)*o.gs;f.s=o.gs*(i===1?.97:1);f.vis=this.gVis});
+    const pl=this.pull;this.devas.forEach(f=>f.lean=this.lean*(-.05-Math.max(0,-pl)*.13));this.asuras.forEach(f=>f.lean=this.lean*(-.05-Math.max(0,pl)*.13))},
+  /* Vasuki's spine: tail through the devas' hands, a zigzag coil round Mandara, out through the asuras' hands to the head */
+  spine(o){const mtY=o.mb+this.mt.y,hw=y=>{const t=clamp((mtY-y)/o.mh,0,1);for(let i=0;i<8;i++){const a=MANDARA_PTS[i],b=MANDARA_PTS[i+1];if(-b[1]>=t){const k=(t+a[1])/((-b[1])-(-a[1])||1);return o.mw*Math.abs(lerp(a[0],b[0],clamp(k,0,1)))}}return 0};
+    const sx=this.pull*14,P=o.P;const rs=ease(clamp(this.vs.rest,0,1)),rest=h=>[h[0],lerp(h[1],o.feet-(P?20:26),rs)];const dH=this.devas.map(f=>rest(f.hand(1))).reverse(),aH=this.asuras.map(f=>rest(f.hand(1)));
+    /* three crossings: front (left to right), back (hidden), front; each bows like a rope wrapped round a cone */
+    const dy=o.mh*.075,y0=mtY-o.mh*.05,sag=o.mh*.045,pts=[],flag=[];const add=(p,b)=>{pts.push(p);flag.push(b)};
+    const tail0=[dH[0][0]-(P?40:70),dH[0][1]+(P?6:10)];add(tail0,false);dH.forEach(h=>add(h,false));
+    for(let c=0;c<3;c++){const yA=y0-c*dy,yB=y0-(c+1)*dy,back=c===1;for(let k=0;k<=10;k++){const t=k/10,y=lerp(yA,yB,t)+(back?-1:1)*sag*Math.sin(Math.PI*t);const r=hw(y)+(o.P?10:14);
+      const x=o.cx+sx+(back?Math.cos(Math.PI*t):-Math.cos(Math.PI*t))*r;add([x,y],back&&k>0)}}
+    aH.forEach(h=>add(h,false));const ah=aH[aH.length-1];const head=[ah[0]+(P?34:70),ah[1]-(P?40:30)];add(head,false);
+    /* uncoiled: a wide curve lying on the water in front of the mountain */
+    const n=pts.length;const un=pts.map((_,i)=>{const t=i/(n-1);return[lerp(o.cx-o.mw*1.9,o.cx+o.mw*1.9,t),o.mb+30+Math.sin(t*Math.PI)*40+Math.sin(t*Math.PI*3)*24]});
+    const w=ease(clamp(this.vs.wrap,0,1));const out=pts.map((p,i)=>[lerp(un[i][0],p[0],w),lerp(un[i][1],p[1],w)]);
+    return{pts:out,flag:flag.map(f=>f&&w>.55),headAng:Math.atan2(head[1]-ah[1],head[0]-ah[0])}},
+  /* fine resample a polyline for smooth drawing */
+  resample(pts,step){const out=[pts[0]];for(let i=1;i<pts.length;i++){const a=pts[i-1],b=pts[i],d=Math.hypot(b[0]-a[0],b[1]-a[1]),n=Math.max(1,Math.ceil(d/step));for(let k=1;k<=n;k++)out.push([lerp(a[0],b[0],k/n),lerp(a[1],b[1],k/n)])}return out},
+  smooth(pts){let p=pts;for(let it=0;it<2;it++){const q=[p[0]];for(let i=0;i<p.length-1;i++){const a=p[i],b=p[i+1];q.push([a[0]*.75+b[0]*.25,a[1]*.75+b[1]*.25],[a[0]*.25+b[0]*.75,a[1]*.25+b[1]*.75])}q.push(p[p.length-1]);p=q}return p},
+  drawVasuki(ctx,o,layer){if(this.vs.vis<=0)return;const S=this.spine(o);ctx.save();ctx.globalAlpha*=clamp(this.vs.vis,0,1);const wd=o.P?20:26;
+    const pts=S.pts,fl=S.flag;/* tail: first span, tapered */
+    if(layer==='front')vasukiTail(ctx,this.resample([pts[0],pts[1]],8));
+    /* group the rest into runs that share a layer, so the body has no seams */
+    let d=this.vs.d0+Math.hypot(pts[1][0]-pts[0][0],pts[1][1]-pts[0][1]);let run=[pts[1]],runBack=fl[2];
+    const flush=()=>{if(run.length>1){const sm=this.resample(this.smooth(run),7);if((layer==='back')===runBack)drawVasukiPart(ctx,sm,wd,{d0:d});let len=0;for(let k=1;k<sm.length;k++)len+=Math.hypot(sm[k][0]-sm[k-1][0],sm[k][1]-sm[k-1][1]);d+=len}};
+    for(let i=2;i<pts.length;i++){if(fl[i]!==runBack){const last=run[run.length-1];flush();run=[last];runBack=fl[i]}run.push(pts[i])}flush();
+    if(layer==='front'){const h=pts[pts.length-1];vasukiHead(ctx,h[0],h[1],S.headAng+Math.sin(T.sec*1.3)*.06,o.P?.62:.8,this.vsBlink)}ctx.restore()},
+  /* ---------- drawing, in the named layers L00..L07 (L07 is the HTML interface) ---------- */
+  draw(ctx){const o=this.lay();this.placeGroups(o);const t=T.sec,W=o.W,H=o.H;
+    /* L01 background: sky, patterned horizon, moon, stars or clouds */
+    ctx.fillStyle=this.col(['sky']);ctx.fillRect(-10,-10,W+20,o.hz+20);
+    const s2=this.col(['sky2']);const sb=new Path2D();const y2=o.hz*.62;sb.moveTo(-10,o.hz+5);sb.lineTo(-10,y2);for(let x=-10;x<W+80;x+=80)sb.quadraticCurveTo(x+40,y2-26,x+80,y2);sb.lineTo(W+80,o.hz+5);sb.closePath();
+    ctx.fillStyle=s2;ctx.fill(sb);ctx.save();ctx.clip(sb);Pat.dots(ctx,{x:0,y:y2-20,w:W,h:o.hz-y2+20},34,2.4,this.col(['mot']));ctx.restore();sgl(ctx,sb,2.4);
+    const pan=this.pan;const stK=this.col(['stars'])*this.starsK;if(stK>0){ctx.save();ctx.globalAlpha*=stK;for(const s of this.stars){const x=((s.u*W+pan*40)%W+W)%W,y=o.H*.13+s.v*(o.hz*.62-o.H*.13);if(Math.hypot(x-o.moon[0],y-o.moon[1])<130)continue;
+      drawStar(ctx,x,y,s.s*(1+Math.sin(t*1.5+s.ph)*.08),s.ph>4.5?C.cream:C.turmeric)}ctx.restore()}
+    const clK=this.col(['clouds']);if(clK>0){ctx.save();ctx.globalAlpha*=clK;for(const c of this.cloudsP){const x=((c.u*W+t*6+pan*30)%(W+200)+W+200)%(W+200)-100;drawCloud(ctx,x,o.H*.14+c.v*(o.hz*.5-o.H*.14),c.s*(o.P?.8:1),C.cream,C.turq)}ctx.restore()}
+    const mk_=this.moonK*this.col(['moon']);if(mk_>0){ctx.save();ctx.globalAlpha*=mk_;drawMoon(ctx,o.moon[0]+pan*20,o.moon[1],o.P?.85:1);ctx.restore()}
+    const hzs=new Path2D();hzs.rect(-10,o.hz-16,W+20,16);ctx.fillStyle=this.col(['sky2']);ctx.fill(hzs);ctx.save();ctx.clip(hzs);Pat.tri(ctx,{x:0,y:o.hz-14,w:W,h:12},20,this.col(['mot']));ctx.restore();
+    if(this.prev.length)this.drawPreview(ctx,o,'sky');
+    if(this.stormK>0){ctx.save();ctx.globalAlpha*=this.stormK;for(let i=0;i<5;i++){const x=(i+.5)/5*o.W+Math.sin(t*.5+i)*30;drawCloud(ctx,x,o.hz*.45+(i%2)*50,o.P?.9:1.2,C.violet,C.cream)}ctx.restore()}
+    /* L02 environment: ocean bands, mountain, Kurma */
+    ctx.fillStyle=this.col(['bands',3,0]);ctx.fillRect(-10,o.hz,W+20,H-o.hz+10);
+    this.band(ctx,o,0);
+    if(this.goldC>0)this.goldCircle(ctx,o);
+    this.band(ctx,o,1);
+    if(this.mt.vis>0&&this.mt.solid){this.drawVasuki(ctx,o,'back');ctx.save();ctx.globalAlpha*=this.mt.vis;drawMandara(ctx,o.cx,o.mb+this.mt.y,o.mw,o.mh,this.mt.rot);ctx.restore()}
+    this.drawPeeks(ctx,o);this.drawRising(ctx,o);
+    if(this.mt.outline>0)drawMandara(ctx,o.cx,o.mb+this.mt.y,o.mw,o.mh,0,{outline:this.mt.outline});
+    this.band(ctx,o,2);
+    if(this.kurma.vis>0){ctx.save();ctx.globalAlpha*=this.kurma.vis;drawKurma(ctx,o.cx,o.rim+this.kurma.y,o.ks,t,{blink:this.kBlink,front:o.kfront});
+      /* water lines over Kurma: he stays visible beneath the surface */
+      ctx.globalAlpha*=.75;for(let r=0;r<3;r++){const y=o.mb+16+r*34*o.ks+this.kurma.y,per=60;const p=new Path2D();for(let x=o.cx-190*o.ks;x<o.cx+190*o.ks;x+=per){p.moveTo(x,y);p.quadraticCurveTo(x+per/2,y-10,x+per,y)}sgl(ctx,p,3,this.col(['bands',2,1]))}ctx.restore()}
+    this.drawRipples(ctx,o);
+    this.band(ctx,o,3);
+    this.drawLights(ctx,o);
+    this.drawFishLotus(ctx,o);
+    if(this.mt.vis>0&&this.mt.solid)this.drawVasuki(ctx,o,'front');
+    /* L03 main characters: Lakshmi and Dhanvantari rise from behind the front waterline */
+    if(this.lbud.vis>0||this.dhan.vis>0){ctx.save();ctx.beginPath();ctx.rect(-10,-10,W+20,o.bands[3]+12);ctx.clip();
+      if(this.lbud.vis>0)this.drawLakshmiLotus(ctx,o);
+      if(this.dhan.vis>0){const d=o.dhan;this.dhan.x=d.x;this.dhan.s=d.s;this.dhan.y=d.y+(1-ease(clamp(this.dhanRise,0,1)))*(H-d.y+d.s*380);this.dhan.draw(ctx)}ctx.restore()}
+    /* L04 supporting characters */
+    [...this.devas,...this.asuras].forEach(f=>{if(f.vis>0)f.draw(ctx)});
+    if(this.vishnu.vis>0){const v=o.vishnu;this.vishnu.x=v.x;this.vishnu.y=v.y+Math.sin(t*1.1)*4;this.vishnu.s=v.s;ctx.save();halo(ctx,v.x,v.y-150*v.s,150*v.s,[C.cream,C.turmeric,C.peacock],t,this.vishnu.vis*.9);ctx.restore();this.vishnu.draw(ctx)}
+    if(this.shiva.vis>0){const s=o.shiva;this.shiva.x=s.x+this.shivaX*(o.W*.4);this.shiva.y=s.y;this.shiva.s=s.s;this.shiva.draw(ctx)}
+    /* L05 interactive elements and L06 effects */
+    if(this.hala>0)this.drawHala(ctx,o);
+    if(this.arrows)this.drawArrows(ctx,o);
+    if(this.waveOut&&this.waveOut.length)this.drawWaveOut(ctx,o);
+    if(this.beingsK>0)this.drawBeings(ctx,o);
+    if(this.giftVis>0)this.drawGifts(ctx,o);
+    FX.draw(ctx);
+    if(this.prev.length)this.drawPreview(ctx,o,'front');
+    if(this.festive>0)this.drawFestive(ctx,o);
+    for(const b of this.bursts){burst(ctx,b.x,b.y,(T.now-b.t0)/900,b.r,b.col)}this.bursts=this.bursts.filter(b=>T.now-b.t0<900);
+    if(this.extra)this.extra(ctx,o);
+    /* L00 frame */
+    drawFrame(ctx,this.frameK,this.col(['frame',0]),this.col(['frame',1]))},
+  band(ctx,o,i){const bt=o.bands[i],a=[8,12,15,18][i]*this.amp*(1+this.storm*.8),per=[64,88,112,136][i]*(o.P?.8:1),sp=[14,-18,22,-26][i]*this.spd;
+    const bob=Math.sin(T.sec*(.8+i*.2)+i)*[2,3,4,5][i]*this.bob*(1+this.storm)+(1-ease(clamp(this.bandK[i],0,1)))*(o.H-bt+60);const part=this.part*o.W*.2*(i+1)/4;const c=['bands',i];
+    const args={y:bt+bob,amp:a,per,ph:T.sec*sp+this.pan*30*(i+1),fill:this.col([...c,0]),lineCol:this.col([...c,1]),acc:this.col([...c,2]),W:o.W+20,bottom:o.H+20,rows:i===3?Math.min(16,Math.ceil((o.H-bt)/(a*1.6+10))):3};
+    if(part<=1){ctx.save();ctx.translate(-10,0);waveBand(ctx,args);ctx.restore();return}
+    ctx.save();ctx.beginPath();ctx.rect(-10,0,o.cx+10,o.H+20);ctx.clip();ctx.translate(-part-10,0);waveBand(ctx,args);ctx.restore();
+    ctx.save();ctx.beginPath();ctx.rect(o.cx,0,o.W,o.H+20);ctx.clip();ctx.translate(part-10,0);waveBand(ctx,args);ctx.restore();
+  },
+  goldCircle(ctx,o){const k=this.goldC;const y=o.P?o.mb+90:o.mb+80;ctx.save();ctx.globalAlpha*=clamp(k,0,1);halo(ctx,o.cx,y,(o.P?150:170)*clamp(k,0,1.2),[C.turmeric,C.gold,C.white],T.sec);ctx.restore()},
+  drawPeeks(ctx,o){if(this.peekK<=0)return;const y=o.bands[1]+(o.bands[2]-o.bands[1])*.55;ctx.save();ctx.globalAlpha*=this.peekK;this.peeks.forEach((p,i)=>{const x=p.u*o.W,b=Math.sin(T.sec*1.2+i)*6;
+      if(i%2)drawMedal(ctx,x,y+b+22,.4);else drawJewel(ctx,x,y+b+22,.36,i===0?C.emerald:C.coral)});ctx.restore();
+    if(this.glint>=0){const p=this.peeks[1];const k=this.glint;burst(ctx,p.u*o.W,y+22,k,70,C.turmeric)}},
+  drawRising(ctx,o){const base=o.bands[2]+30;const tr=[[this.conch,o.cx-o.mw*(o.P?.95:1.15),(g,x,y)=>drawConch(g,x,y,o.P?.85:1.05)],[this.jewel,o.cx+o.mw*(o.P?.95:1.15),(g,x,y)=>drawJewel(g,x,y,o.P?.85:1,C.emerald)],
+      [this.medal,o.cx,(g,x,y)=>drawMedal(g,x,y,o.P?.8:.95)]];
+    for(const [st,x,fn] of tr){if(st.vis<=0)continue;const top=st===this.medal?o.mb-o.mh*.62:o.hz+(o.P?40:20);const y=lerp(top,base+80,clamp(st.y,0,1))+Math.sin(T.sec*1.4)*5;
+      ctx.save();ctx.globalAlpha*=st.vis;if(st.y<.2)halo(ctx,x,y,60,[C.turmeric,C.saffron,C.coral],T.sec,.7);fn(ctx,x,y);ctx.restore()}},
+  drawLakshmiLotus(ctx,o){const l=o.lak,b=this.lbud;const y=l.y+clamp(b.y,0,1)*(o.P?260:220);ctx.save();ctx.globalAlpha*=b.vis;
+    if(this.floral>0){for(let i=0;i<12;i++){const a=i/12*TAU+T.sec*.05,r=(o.P?230:250)*this.floral;drawLotus(ctx,l.x+Math.cos(a)*r*1.3,y-140+Math.sin(a)*r*.6,.38,1,i%2?C.pink:C.coral)}}
+    /* the lotus seat: petals open one at a time, Lakshmi appears on top */
+    if(this.lakshmi.vis>0){this.lakshmi.x=l.x;this.lakshmi.y=y-36*l.s;this.lakshmi.s=l.s;this.lakshmi.draw(ctx)}
+    ctx.save();ctx.translate(l.x,y+30);drawLotus(ctx,0,0,(o.P?2.3:2.6)*l.s,b.open,C.pink,C.turmeric);ctx.restore();ctx.restore()},
+  drawRipples(ctx,o){if(this.ripple<=0&&this.swirlA<=0)return;const y=o.mb+10;ctx.save();
+    if(this.ripple>0){ctx.globalAlpha*=clamp(this.ripple,0,1);for(let i=0;i<3;i++){const k=((T.sec*.35+i/3)%1);const rx=o.mw*(.55+k*.9),ry=rx*.18;ctx.save();ctx.globalAlpha*=1-k;ctx.setLineDash([16,10]);
+      ctx.beginPath();ctx.ellipse(o.cx,y,rx,ry,0,0,TAU);ctx.strokeStyle=C.cream;ctx.lineWidth=5;ctx.stroke();ctx.setLineDash([]);ctx.restore()}}
+    ctx.restore();
+    if(this.swirlA>0){ctx.save();ctx.globalAlpha*=this.swirlA;ctx.translate(o.cx,o.bands[3]-40);ctx.scale(1,.24);for(let arm=0;arm<6;arm++){const a0=arm/6*TAU+this.swirl;for(let j=0;j<9;j++){const a=a0+j*.22,r=o.mw*.62+j*o.mw*.12;
+      dot(ctx,Math.cos(a)*r,Math.sin(a)*r,9-j*.4,j%2?C.turmeric:C.cream)}}ctx.restore()}},
+  drawLights(ctx,o){for(const l of this.lights){const k=clamp((T.now-l.t0)/500,0,1);const y=o.bands[l.b]+6+Math.sin(T.sec*2+l.x)*3;ctx.save();ctx.globalAlpha*=k*(l.a==null?1:l.a);drawStar(ctx,l.u*o.W,y,.55+.1*Math.sin(T.sec*3+l.u*9),C.turmeric);ctx.restore()}},
+  addLight(u,b){this.lights.push({u,b:b==null?3:b,t0:T.now,x:Math.random()*9});AU.sfx('pop')},
+  drawFishLotus(ctx,o){const t=T.sec;if(this.lifeK<=0)return;ctx.save();ctx.globalAlpha*=clamp(this.lifeK,0,1);
+    for(const f of this.fish){const by=o.bands[f.band],nb=o.bands[f.band+1]||o.H;let hx=f.u*o.W;const edge=f.u<.5?o.W*.06:o.W*.94;hx=lerp(hx,edge,this.fishEdge);
+      const sw=Math.sin(t*f.sp*2+f.ph);const x=hx+sw*o.W*f.rg*(1-this.fishEdge*.7),y=lerp(by,nb,.45)+Math.cos(t*f.sp*2+f.ph)*10;
+      let dir=Math.cos(t*f.sp*2+f.ph)>0?1:-1;if(this.fishLook>0){dir=x<o.W*.47?1:-1}
+      if(Math.abs(x-o.cx)<o.mw*.6&&this.mt.vis>0&&f.band<2)continue;drawFish(ctx,x,y,f.s*(o.P?.8:1),dir,f.col[0],f.col[1],t,f.ph)}
+    for(const l of this.lotus){const x=l.u*o.W;if(Math.abs(x-o.cx)<o.mw*.7&&(this.mt.vis>0||this.dhan.vis>0||this.lbud.vis>0))continue;const y=o.bands[l.band]+4+Math.sin(t*1.2+l.ph)*5*this.bob;
+      drawLotus(ctx,x,y,l.s*(o.P?.8:1),this.lotusOpen,C.pink,C.turmeric)}ctx.restore()},
+  drawHala(ctx,o){const k=this.hala;const sh=o.shiva;const sx=sh.x+this.shivaX*(o.W*.4);const tgt=[sx,sh.y-246*sh.s];const c=ease(clamp(this.halaC,0,1));const rise=ease(clamp(this.halaRise,0,1));
+    const bx=o.cx,by=o.mb-rise*(o.P?180:150);ctx.save();ctx.globalAlpha*=clamp(k,0,1);
+    const parts=[[0,0,.85,1],[-o.mw*.45,40,.6,2],[o.mw*.45,30,.62,3],[-o.mw*.2,-80,.55,4],[o.mw*.22,-100,.5,5]];
+    for(const [dx,dy,s,seed] of parts){const x=lerp(bx+dx,tgt[0],c),y=lerp(by+dy,tgt[1],c),sc=lerp(s*(o.P?.8:1)*(.6+rise*.4),.08,c);drawHala(ctx,x,y,sc,seed,Math.sin(T.sec*.4+seed)*.06)}
+    if(c>.7){const kk=(c-.7)/.3;ctx.globalAlpha*=kk;const p=sPath(ellPts(tgt[0],tgt[1],22,16,10),true);shape(ctx,p,C.indigo,cc=>Pat.dots(cc,{x:tgt[0]-24,y:tgt[1]-18,w:48,h:36},8,2,C.violet),{lw:1.6})}ctx.restore()},
+  drawGifts(ctx,o){const G=o.gifts;ctx.save();ctx.globalAlpha*=this.giftVis;for(const k of ['leaf','heart','diya']){const p=this.giftPos&&this.giftPos[k]||G[k];drawGift(ctx,k,p[0],p[1],(o.P?.95:.9)*(this.giftScale&&this.giftScale[k]||1),this.gifts[k],T.sec,this.giftHL[k])}ctx.restore()},
+  drawPreview(ctx,o,layer){for(const p of this.prev){const x=p.u*o.W;const y=lerp(o.bands[3]+40,o.hz+(o.P?120:70),ease(clamp(p.k,0,1)));if(layer==='sky'&&p.k<.98)continue;if(layer==='front'&&p.k>=.98)continue;
+    ctx.save();halo(ctx,x,y,44,[C.turmeric,C.saffron,C.cream],T.sec,.8);if(p.kind==='conch')drawConch(ctx,x,y,.5);else if(p.kind==='jewel')drawJewel(ctx,x,y,.55,C.coral);else drawLotus(ctx,x,y+20,.55,1);ctx.restore()}},
+  drawFestive(ctx,o){ctx.save();ctx.globalAlpha*=this.festive;const n=o.P?5:9;for(let i=0;i<n;i++){const x=(i+.5)/n*o.W;const y=o.bands[3]+40+((i%2)*40)+Math.sin(T.sec*1.4+i)*4;if(Math.abs(x-o.cx)<o.mw*.5)continue;drawDiya(ctx,x,y,o.P?.55:.6,{lit:1,t:T.sec,seed:i,halo:false})}
+    /* marigold bunting along the top edge only */
+    const y0=46;const p=new Path2D();p.moveTo(40,y0);for(let x=40;x<o.W-40;x+=120)p.quadraticCurveTo(x+60,y0+30,x+120,y0);sgl(ctx,p,3);for(let x=40;x<o.W-40;x+=24){const yy=y0+Math.sin(((x-40)%120)/120*Math.PI)*22;dot(ctx,x,yy,8,(x/24)%2<1?C.diya:C.turmeric);ring(ctx,x,yy,8,C.line,1.6)}
+    ctx.restore()},
+  drawArrows(ctx,o){const dir=this.arrows,y=o.feet-(o.P?190:230)*o.gs;const k=(T.sec*1.4)%1;for(let i=0;i<4;i++){const x=(dir<0?o.cx-o.mw*.62-i*o.gap[0]*.55*o.gs:o.cx+o.mw*.62+i*o.gap[0]*.55*o.gs)+dir*k*24;
+      ctx.save();ctx.globalAlpha*=.4+.6*(1-Math.abs(k-.5));ctx.translate(x,y);ctx.scale(dir,1);const p=polyPath([[-16,-16],[6,0],[-16,16],[-8,0]]);shape(ctx,p,C.turmeric,null,{lw:1.8});ctx.restore()}},
+  drawWaveOut(ctx,o){this.waveOut=this.waveOut.filter(w=>T.now-w.t0<1600);for(const w of this.waveOut){const k=(T.now-w.t0)/1600;ctx.save();ctx.globalAlpha*=1-k;
+      for(let j=0;j<3;j++){const x=o.cx+w.side*(o.mw*.5+k*o.W*.32+j*46),y=o.bands[2]+30+j*36;ctx.beginPath();ctx.arc(x,y,40,w.side<0?Math.PI*.6:-Math.PI*.4,w.side<0?Math.PI*1.4:Math.PI*.4);ctx.strokeStyle=C.cream;ctx.lineWidth=6;ctx.stroke();ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.stroke()}ctx.restore()}},
+  /* "wonderful beings": abstract golden decorative shapes only, no named beings */
+  drawBeings(ctx,o){ctx.save();ctx.globalAlpha*=this.beingsK;const n=4;for(let i=0;i<n;i++){const x=o.cx+(i<2?-1:1)*o.mw*(.42+(i%2)*.32),y=o.mb-o.mh*(.25+(i%2)*.2)-this.beingsK*30+Math.sin(T.sec+i)*8;
+      ctx.save();ctx.translate(x,y);ctx.rotate(Math.sin(T.sec*.6+i)*.2);const p=sPath([[0,-40],[14,-12],[40,-4],[16,10],[22,40],[0,22],[-22,40],[-16,10],[-40,-4],[-14,-12]],true);shape(ctx,p,C.gold,c=>{Pat.dots(c,{x:-40,y:-40,w:80,h:80},10,2.2,C.turmeric);dot(c,0,4,7,C.saffron)},{lw:2});ctx.restore()}ctx.restore()},
+  down(p){this.tapH&&this.tapH(p)},move(p,d){this.moveH&&this.moveH(p,d)},up(p,d){this.dragH&&this.dragH(p,d)},
+  key(k){if((k==='Enter'||k===' ')&&this.tapH){this.tapH({x:L.W/2+1,y:L.H/2,key:true});return true}if(k==='ArrowLeft'&&this.tapH){this.tapH({x:10,y:L.H/2,key:true});return true}if(k==='ArrowRight'&&this.tapH){this.tapH({x:L.W-10,y:L.H/2,key:true});return true}return false},
+  update(dt){if(this.autoChurn>0){this.pull=Math.sin(T.sec*1.7)*this.autoChurn;this.lean=Math.max(this.lean,this.autoChurn>0?1:0);this.mt.rot+=dt*.12*this.autoChurn;this.vs.d0+=Math.cos(T.sec*1.7)*dt*40*this.autoChurn}
+    [...this.devas,...this.asuras,this.vishnu,this.shiva,this.lakshmi,this.dhan].forEach(f=>f.update(dt));this.swirl+=dt*this.swirlA*1.4;
+    this.vs.d0+=dt*(this.vsFlow||0);this.kb=(this.kb||3)-dt;if(this.kb<0){this.kBlink=1;if(this.kb<-.16){this.kBlink=0;this.kb=3+Math.random()*3}}
+    this.vb=(this.vb||4)-dt;if(this.vb<0){this.vsBlink=1;if(this.vb<-.16){this.vsBlink=0;this.vb=3.5+Math.random()*3}}},
+  /* hit tests in logical coordinates */
+  sideOf(p){return p.x<L.W/2?-1:1},
+  burstAt(x,y,col,r){this.bursts.push({x,y,col:col||C.turmeric,r:r||90,t0:T.now})}};
+World.shivaX=1;
+
+/* ===== Shot 12: one richly detailed Madhubani ocean picture with three hidden treasures ===== */
+const Hunt={id:'hunt',found:{},order:[],hint:null,nudge:null,flash:{},onFind:null,
+  targets:{lotus:{u:.17,v:.66,label:'A lotus flower'},jewel:{u:.79,v:.34,label:'A sparkling jewel'},conch:{u:.56,v:.8,label:'A conch shell'}},
+  reset(){this.found={};this.order=[];this.hint=null;this.nudge=null;this.flash={}},
+  rect(){const top=L.top()+6,bot=L.H*(L.portrait?.71:.77);return{x:40,y:top,w:L.W-80,h:Math.max(200,bot-top)}},
+  pos(k){const r=this.rect(),t=this.targets[k];return[r.x+t.u*r.w,r.y+t.v*r.h]},
+  hitR(){return Math.max(70,40/L.U)},
+  art(g,r){/* sky strip, then five wave bands filled with life */
+    g.fillStyle=C.deep;g.fillRect(r.x,r.y,r.w,r.h);const sky=r.h*.16;g.fillStyle=C.indigo;g.fillRect(r.x,r.y,r.w,sky);
+    const rr=rng(77);for(let i=0;i<14;i++)drawStar(g,r.x+rr()*r.w,r.y+12+rr()*(sky-24),.45,i%3?C.turmeric:C.cream);
+    const cols=[[C.peacock,C.turq,C.turmeric],[C.deep,C.peacock,C.pink],[C.turq,C.cream,C.coral],[C.peacock,C.turq,C.turmeric],[C.deep,C.peacock,C.cream]];
+    for(let i=0;i<5;i++){const y=r.y+sky+i*(r.h-sky)/5;g.save();g.beginPath();g.rect(r.x,r.y,r.w,r.h);g.clip();g.translate(r.x,0);
+      waveBand(g,{y:y+10,amp:10+i*2,per:70+i*12,ph:i*31,fill:cols[i][0],lineCol:cols[i][1],acc:cols[i][2],W:r.w,bottom:r.y+r.h,rows:3});g.restore()}
+    /* decoys: fish, turtles, leaves, scallop shells, round flowers, plain dots (never a lotus, jewel or conch) */
+    const tg=Object.keys(this.targets).map(k=>this.posIn(k,r));const free=(x,y,d)=>tg.every(p=>Math.hypot(p[0]-x,p[1]-y)>d);
+    const R=rng(4242);g.save();g.beginPath();g.rect(r.x,r.y,r.w,r.h);g.clip();
+    for(let i=0;i<70;i++){const x=r.x+30+R()*(r.w-60),y=r.y+sky+20+R()*(r.h-sky-40);if(!free(x,y,120))continue;const k=i%6;
+      if(k===0||k===3)drawFish(g,x,y,.5+R()*.35,R()<.5?1:-1,[C.coral,C.turmeric,C.saffron,C.pink][i%4],[C.turmeric,C.verm,C.indigo,C.peacock][i%4],0,i);
+      else if(k===1)drawTurtle(g,x,y,.8,R()<.5?1:-1);
+      else if(k===2){shape(g,sPath([[x-40,y],[x-10,y-14],[x+30,y-4],[x+40,y+6],[x,y+14]],true),C.leaf,c=>Pat.leaves(c,{x:x-42,y:y-16,w:84,h:32},14,C.emerald),{lw:2})}
+      else if(k===4)drawShell(g,x,y,.6,C.cream,C.ochre);
+      else{const p=sPath(ellPts(x,y,16,16,10),true);for(let j=0;j<8;j++){const a=j/8*TAU;shape(g,ellPath(x+Math.cos(a)*16,y+Math.sin(a)*16,9,9),j%2?C.turmeric:C.saffron,null,{line:'single',lw:1.4})}shape(g,p,C.verm,c=>dot(c,x,y,5,C.turmeric),{lw:1.6})}}
+    g.restore();
+    /* the three hidden treasures, clearly drawn on top so patterns never hide them */
+    const [lx,ly]=this.posIn('lotus',r),[jx,jy]=this.posIn('jewel',r),[kx,ky]=this.posIn('conch',r);
+    drawLotus(g,lx,ly+26,.62,1);drawJewel(g,jx,jy,.55,C.violet);drawConch(g,kx,ky,.58);
+    const fr=new Path2D();fr.rect(r.x,r.y,r.w,r.h);dbl(g,fr,3)},
+  posIn(k,r){const t=this.targets[k];return[r.x+t.u*r.w,r.y+t.v*r.h]},
+  draw(ctx){const r=this.rect();ctx.fillStyle=C.deep;ctx.fillRect(0,0,L.W,L.H);
+    Spr.draw(ctx,'huntArt'+Math.round(r.w)+'x'+Math.round(r.h),0,0,L.W,L.H,0,0,g=>this.art(g,r));
+    for(const k in this.targets){const [x,y]=this.pos(k);
+      if(k==='jewel'&&!this.found.jewel){const tw_=.5+.5*Math.sin(T.sec*3);ctx.save();ctx.globalAlpha*=.6+tw_*.4;drawStar(ctx,x+26,y-26,.35+tw_*.15,C.white);ctx.restore()}
+      if(this.found[k]){halo(ctx,x,y,58,[C.turmeric,C.saffron,C.cream],T.sec,.55);if(k==='lotus')drawLotus(ctx,x,y+26,.62,1);else if(k==='jewel')drawJewel(ctx,x,y,.55,C.violet);else drawConch(ctx,x,y,.58);ring(ctx,x,y,62,C.turmeric,6);ring(ctx,x,y,70,C.line,2)}
+      if(this.flash[k])burst(ctx,x,y,(T.now-this.flash[k])/900,110,C.turmeric)}
+    if(this.hint){const [x,y]=this.pos(this.hint);const k=.5+.5*Math.sin(T.sec*4);ring(ctx,x,y,this.hitR()*(1+k*.15),C.turmeric,7);ring(ctx,x,y,this.hitR()*(1.12+k*.15),C.cream,3)}
+    if(this.nudge&&T.now-this.nudge.t0<1400){const [x,y]=this.pos(this.nudge.k);const k=(T.now-this.nudge.t0)/1400;ctx.save();ctx.globalAlpha*=1-k;ring(ctx,x,y,this.hitR()*(1.6-k*.5),C.cream,5);ring(ctx,x,y,this.hitR()*(1.75-k*.5),C.turmeric,3);ctx.restore()}
+    drawFrame(ctx,1,C.peacock,C.turmeric)},
+  down(p){for(const k in this.targets){if(this.found[k])continue;const [x,y]=this.pos(k);if(Math.hypot(p.x-x,p.y-y)<=this.hitR()){this.find(k);return}}
+    const left=Object.keys(this.targets).filter(k=>!this.found[k]);if(!left.length)return;
+    left.sort((a,b)=>{const pa=this.pos(a),pb=this.pos(b);return Math.hypot(p.x-pa[0],p.y-pa[1])-Math.hypot(p.x-pb[0],p.y-pb[1])});this.nudge={k:left[0],t0:T.now}},
+  key(k){if(k==='Enter'||k===' '){const left=Object.keys(this.targets).filter(t=>!this.found[t]);if(left.length){this.find(left[0]);return true}}return false},
+  find(k){if(this.found[k])return;this.found[k]=true;this.order.push(k);this.flash[k]=T.now;if(this.hint===k)this.hint=null;AU.sfx('chime');Store.push('treasures',k);this.onFind&&this.onFind(k)},
+  next(){return Object.keys(this.targets).find(k=>!this.found[k])}};
+
+/* ===== Shot 15: from the cosmic ocean to our homes ===== */
+const Celebration={id:'celebrate',lamps:[],floorK:0,houseK:0,edgeK:0,blessK:0,tableauK:0,moonK:1,onLit:null,
+  reset(){this.floorK=0;this.houseK=0;this.edgeK=0;this.blessK=0;this.tableauK=0;this.lamps=[];this.firstK=0;
+    this.lak=new Fig(SP_LAKSHMI);this.dhan=new Fig(SP_DHAN);this.kub=new Fig(SP_KUBERA);this.dhan.over=(ctx)=>drawPot(ctx,0,-190,1.05,0,T.sec)},
+  lay(){const W=L.W,H=L.H,P=L.portrait,cx=W/2;const o={W,H,P,cx};
+    if(!P){o.roof=H*.36;o.hb=H*.64;o.hw=Math.min(W*.4,780);o.floor=H*.64;o.rows=[[H*.69,.42,9],[H*.765,.56,7]];o.moon=[W*.1,H*.24];o.bless=[cx,L.top()+H*.115]}
+    else{o.roof=H*.31;o.hb=H*.55;o.hw=W*.84;o.floor=H*.55;o.rows=[[H*.6,.45,5],[H*.665,.55,4],[H*.735,.66,3]];o.moon=[W*.16,H*.155];o.bless=[cx,L.top()+H*.08]}
+    o.first=[cx,o.rows[o.rows.length-1][0]];return o},
+  build(){const o=this.lay();const out=[];o.rows.forEach(([y,s,n],ri)=>{const span=o.W*(o.P?.86:.84);for(let i=0;i<n;i++){const x=o.cx-span/2+(i+.5)*span/n;out.push({x,y,s,lit:0,row:ri})}});
+    const f=o.first;let best=0;out.forEach((l,i)=>{if(Math.hypot(l.x-f[0],l.y-f[1])<Math.hypot(out[best].x-f[0],out[best].y-f[1]))best=i});out[best].first=true;out[best].x=f[0];out[best].s*=1.25;
+    this.lamps=out.sort((a,b)=>Math.hypot(a.x-f[0],a.y-f[1])-Math.hypot(b.x-f[0],b.y-f[1]));this._v=L.ver},
+  draw(ctx){const o=this.lay();if(this._v!==L.ver&&this.lamps.length){const lit=this.lamps.map(l=>l.lit);this.build();this.lamps.forEach((l,i)=>l.lit=lit[i]||0)}const t=T.sec;
+    /* L01 night sky: full moon, patterned stars */
+    ctx.fillStyle=C.deep;ctx.fillRect(0,0,o.W,o.H);Spr.draw(ctx,'celSky',0,0,o.W,o.H,0,0,g=>{const r=rng(9);for(let i=0;i<40;i++){const x=r()*o.W,y=L.top()*.6+r()*(o.floor-L.top()*.6-40);if(Math.abs(x-o.cx)<o.hw*.56&&y>o.roof-30)continue;drawStar(g,x,y,.35+r()*.4,i%3?C.turmeric:C.cream)}});
+    drawMoon(ctx,o.moon[0],o.moon[1],o.P?.8:.9);
+    /* L02 floor: the ocean's wave bands turn into curved festive floor patterns */
+    const fk=ease(clamp(this.floorK,0,1));ctx.save();ctx.globalAlpha*=1-fk;for(let i=0;i<3;i++)waveBand(ctx,{y:o.floor+i*(o.H-o.floor)/3,amp:12,per:110,ph:t*20*(i%2?-1:1),fill:[C.peacock,C.deep,C.turq][i],lineCol:C.turq,acc:C.turmeric,W:o.W+20,bottom:o.H+20});ctx.restore();
+    ctx.save();ctx.globalAlpha*=fk;ctx.fillStyle=C.verm;ctx.fillRect(0,o.floor,o.W,o.H-o.floor);ctx.beginPath();ctx.rect(0,o.floor,o.W,o.H-o.floor);ctx.clip();
+    for(let r=0;r<9;r++){const rad=60+r*70;ctx.beginPath();ctx.ellipse(o.cx,o.H+20,rad*1.8,rad,0,Math.PI,TAU);ctx.strokeStyle=r%2?C.cream:C.turmeric;ctx.lineWidth=r%3===0?8:4;ctx.stroke();
+      for(let a=0;a<24;a++){const an=Math.PI+a/24*Math.PI;dot(ctx,o.cx+Math.cos(an)*rad*1.8,o.H+20+Math.sin(an)*rad,r%2?3.4:2.4,r%2?C.saffron:C.cream)}}
+    ctx.restore();line(ctx,[[0,o.floor],[o.W,o.floor]],C.line,3);
+    /* L02 home with an open doorway */
+    if(this.houseK>0){ctx.save();ctx.globalAlpha*=clamp(this.houseK,0,1);this.house(ctx,o);ctx.restore()}
+    /* L03 devotional tableau in the doorway: Dhanvantari, Lakshmi, Kubera, each with their own iconography */
+    if(this.tableauK>0){ctx.save();ctx.globalAlpha*=this.tableauK;const d=this.door(o);const s=d.h/430;
+      this.dhan.x=d.x-d.w*.3;this.dhan.y=d.y+d.h-6;this.dhan.s=s*1.05;this.lak.x=d.x;this.lak.y=d.y+d.h-28*s;this.lak.s=s*1.05;this.kub.x=d.x+d.w*.3;this.kub.y=d.y+d.h-8;this.kub.s=s;
+      drawLotus(ctx,d.x,d.y+d.h-4,s*1.9,1);this.dhan.draw(ctx);this.lak.draw(ctx);this.kub.draw(ctx);ctx.restore()}
+    /* L05 foreground: brass vessel, gold and silver motifs, lotus, rows of diyas */
+    const fx=o.P?o.W*.12:o.cx-o.hw*.62,fy=o.floor+(o.P?30:22);this.vessel(ctx,fx,fy,o.P?.8:.9);
+    [[fx+70,fy+30,C.gold],[fx+96,fy+38,C.white],[fx+122,fy+28,C.gold]].forEach(([x,y,c])=>{shape(ctx,ellPath(x,y,14,9),c,cc=>ring(cc,x,y,6,C.ochre,2),{line:'single',lw:2})});
+    const gx=o.P?o.W*.86:o.cx+o.hw*.62;[[gx-30,fy+26,C.white],[gx,fy+34,C.gold],[gx+30,fy+24,C.white]].forEach(([x,y,c])=>{shape(ctx,polyPath([[x,y-14],[x+12,y],[x,y+12],[x-12,y]]),c,null,{line:'single',lw:2});dot(ctx,x,y,3,C.verm)});
+    for(const l of this.lamps){if(!l.first&&this.firstK<1)continue;const s=l.s*(l.first?clamp(this.firstK,0,1):1);if(s<=.01)continue;drawDiya(ctx,l.x-8*s,l.y,s,{lit:l.lit,t,seed:l.x})}
+    /* lotus and floral patterns fill the edges */
+    if(this.edgeK>0){ctx.save();ctx.globalAlpha*=this.edgeK;const n=o.P?4:6;for(let i=0;i<n;i++){const y=L.top()+40+i*(o.floor-L.top()-60)/(n-1);drawLotus(ctx,58,y+20,.42,1,i%2?C.pink:C.coral);drawLotus(ctx,o.W-58,y+20,.42,1,i%2?C.coral:C.pink)}
+      for(let x=120;x<o.W-120;x+=o.P?140:180){leafShape(ctx,x,L.H-60,26,-.4,C.leaf);leafShape(ctx,x+40,L.H-60,26,Math.PI+.4,C.leaf);dot(ctx,x+20,L.H-62,8,C.diya)}ctx.restore()}
+    /* final blessing above the lamps */
+    if(this.blessK>0){ctx.save();ctx.globalAlpha*=clamp(this.blessK,0,1);const b=o.bless;const w=Math.min(o.W-120,o.P?940:1000);const big=o.P?50:52;const ln=wrapLines(ctx,'The Greatest Treasures Are Within Us',w-90,big);const h=70+ln.length*big*1.12+44+56;plaque(ctx,b[0]-w/2,b[1]-h/2,w,h,C.cream);
+      let y=b[1]-h/2+38+big*.56;ln.forEach(s=>{ctext(ctx,s,b[0],y,big,C.red);y+=big*1.12});y+=6;
+      ctext(ctx,'Health · Kindness · Gratitude · Light',b[0],y,o.P?32:34,C.leaf,{body:true,weight:700});y+=50;ctext(ctx,'Shubh Dhanteras!',b[0],y,o.P?42:44,C.verm);ctx.restore()}
+    drawFrame(ctx,1,C.verm,C.turmeric)},
+  door(o){const w=o.hw*(o.P?.42:.36),h=(o.hb-o.roof)*.6;return{x:o.cx-w/2+w/2,w,h,y:o.hb-h,l:o.cx-w/2}},
+  house(ctx,o){const top=o.roof,hb=o.hb,hw=o.hw,cx=o.cx;const wallTop=top+(hb-top)*.24;
+    const wall=polyPath([[cx-hw*.46,wallTop],[cx+hw*.46,wallTop],[cx+hw*.46,hb],[cx-hw*.46,hb]]);shape(ctx,wall,C.cream,c=>{c.fillStyle=C.saffron;c.fillRect(cx-hw*.46,wallTop,hw*.92,22);Pat.dots(c,{x:cx-hw*.46,y:wallTop,w:hw*.92,h:22},14,3,C.verm);
+      Pat.tri(c,{x:cx-hw*.46,y:hb-24,w:hw*.92,h:20},22,C.verm);for(const s of [-1,1]){const x=cx+s*hw*.32;const win=polyPath([[x-38,wallTop+60],[x+38,wallTop+60],[x+38,wallTop+140],[x-38,wallTop+140]]);shape(c,win,C.indigo,cc=>{dot(cc,x,wallTop+100,14,C.turmeric);Pat.stripes(cc,{x:x-38,y:wallTop+60,w:76,h:80},19,4,C.ochre,true)},{lw:2})}},{lw:3});
+    const roof=polyPath([[cx-hw*.54,wallTop+4],[cx-hw*.3,top],[cx+hw*.3,top],[cx+hw*.54,wallTop+4]]);shape(ctx,roof,C.red,c=>{Pat.scallops(c,{x:cx-hw*.55,y:top,w:hw*1.1,h:wallTop-top},26,C.saffron,3)},{lw:3});
+    const d=this.door(o);const door=new Path2D();door.moveTo(d.l,hb);door.lineTo(d.l,d.y+d.w*.3);door.quadraticCurveTo(cx,d.y-d.w*.2,d.l+d.w,d.y+d.w*.3);door.lineTo(d.l+d.w,hb);door.closePath();
+    shape(ctx,door,C.turmeric,c=>{Pat.dots(c,{x:d.l,y:d.y-40,w:d.w,h:d.h+40},26,3,C.saffron)},{lw:3});
+    /* toran: mango leaves and marigolds over the door */
+    const ty=d.y-d.w*.1;line(ctx,[[d.l-30,ty],[d.l+d.w+30,ty]],C.line,3);for(let x=d.l-24;x<=d.l+d.w+24;x+=22){const lp=sPath([[x-8,ty],[x,ty+30],[x+8,ty]],true);shape(ctx,lp,C.leaf,null,{line:'single',lw:1.6});dot(ctx,x+11,ty+4,6,C.diya);ring(ctx,x+11,ty+4,6,C.line,1.4)}},
+  vessel(ctx,x,y,s){ctx.save();ctx.translate(x,y);ctx.scale(s,s);const b=sPath([[-34,-40],[-50,-14],[-46,14],[-24,30],[24,30],[46,14],[50,-14],[34,-40]],true);shape(ctx,b,C.ochre,c=>{Pat.zig(c,{x:-52,y:-20,w:104,h:20},12,C.turmeric,3,20);Pat.dots(c,{x:-52,y:4,w:104,h:26},10,2.4,C.cream)},{lw:2.4});
+    shape(ctx,ellPath(0,-42,30,8),C.gold,null,{lw:2});for(let i=-2;i<=2;i++)leafShape(ctx,i*10,-46,30,-Math.PI/2+i*.35,C.leaf);ctx.restore()},
+  down(p){for(const l of this.lamps){if(l.lit>=1||(!l.first&&this.firstK<1))continue;if(Math.hypot(p.x-l.x-40*l.s,p.y-l.y+20)<Math.max(70,36/L.U)){this.light(l);return}}},
+  light(l){if(l.lit>0)return;l.lit=.01;AU.sfx('lamp');tw(l,{lit:1},500,'out');this.onLit&&this.onLit(l)},
+  key(k){if(k==='Enter'||k===' '){const l=this.lamps.find(l=>!l.lit);if(l){this.light(l);return true}}return false}};
+
+/* ===== Script: narration and dialogue, verbatim from the story document (storyboard bridging lines marked SB) ===== */
+const TXT={
+  open:'Little explorers, are you ready for an adventure? Today, we’re travelling to an ocean so enormous that it stretches beyond the farthest star!', /* SB Shot 00 */
+  s1:['Little explorers, close your eyes for a moment. Imagine an ocean so enormous that it stretches beyond the farthest star!',
+    'Its waves sparkle under the moon. Tiny fish swim through the water. Lotus flowers float like little boats.',
+    'But this is no ordinary ocean.',
+    'Deep inside it lie wonderful treasures — treasures that no one has ever seen.',
+    'Long, long ago, the devas and asuras wished to obtain amrita, the divine nectar associated with immortality.',
+    'But there was a problem. The ocean was too vast, and the treasures were hidden too deep.',
+    'They needed a plan. They needed a mountain. They needed a giant serpent. And most importantly… they needed helpers!'],
+  invite:'Oh! I can see some little explorers joining us. Are your hands ready? We’re going to wake up the ocean!',
+  g1cues:['Tiny waves!','Big waves!','Ocean storm!','Ocean asleep!'],
+  g1narr:'Tiny waves… big waves… a great big storm… and now… silence!',
+  g1trans:'Look! Your waves have awakened the ocean. Something enormous is rising from its depths. It’s Mount Mandara!',
+  s2a:'The devas and asuras gathered around Mount Mandara.',
+  s2quote:'‘This mountain will be our churning stick!’',s2declared:'they declared.',
+  s2b:'But how could they turn a mountain?',
+  s2c:'Then mighty Vasuki, the great serpent, came forward. His long body could wrap around the mountain like a living rope.',
+  s2d:'The devas and asuras took hold of opposite ends.',
+  s2sink:['But wait! The mountain began to sink!','The churning machine was not ready. The mountain needed something strong beneath it.'],
+  g2cue:'Can you help us build the strongest churning machine in the whole universe?',
+  g2hint:'The mountain needs a strong, steady base beneath the water. Which helper has a broad shell?', /* SB retry hint */
+  g2kurma:'Lord Vishnu took the form of a mighty tortoise called Kurma. He supported Mount Mandara, holding it steady beneath the ocean.', /* SB Shot 05 */
+  g2trans:['Now the mountain is steady. Vasuki is wrapped around it. The devas and asuras are ready.','Little explorers, hold your imaginary ropes.','The greatest churning the universe has ever seen is about to begin!'],
+  s3:['The devas pulled one side. The asuras pulled the other.','Pull! Release! Pull! Release!','Vasuki swayed from side to side. Mount Mandara began to turn. The ocean bubbled, shimmered, and sparkled.',
+    'The fish danced between the waves. The lotus flowers bobbed up and down.','And then — pop!','A tiny golden light appeared on the surface.','Then another.','Then another!'],
+  s3devas:'‘The treasures are awakening!’',s3cried:'cried the devas.',s3asuras:'‘Keep churning!’',s3called:'called the asuras.',
+  s3end:'But the ocean was enormous. It needed all the energy the little explorers could give.',
+  g3cue:'Little explorers, hold your imaginary ropes! Can you help the devas and asuras churn the ocean?', /* SB Shot 07 */
+  g3cues:['Pull to the left!','Pull to the right!','Churn, churn, churn!','Treasure rising!'],
+  g3trans:['Your teamwork has awakened the treasures! But the first thing to rise from the ocean is not gold, not silver, and not jewels.','The next moment will test the courage of everyone gathered there…'],
+  s4a:['Suddenly, the ocean grew dark.','A strange, dangerous poison called Halahala began to spread through the water. Its fumes rose into the sky. Everyone stepped back.'],
+  s4oh:'‘Oh no!’',s4cried:'cried the devas.',s4what:'‘What will happen to the world?’',
+  s4shiva:['The great Lord Shiva came forward.','Seeing the danger, he took the poison and held it in his throat, protecting all creation.','His throat turned blue, and he became known as Neelakantha — the blue-throated one.','The world was safe, but the churning had only just begun.'],
+  s4moral:'Little explorers, sometimes protecting others means being brave, caring, and willing to help when things get difficult.',
+  g4cue:'Little explorers, let’s help the ocean shine again! Can you send a gentle breeze to move the clouds away?', /* SB Shot 10 */
+  g4refrain:'Courage and kindness light the way!',
+  g4trans:['Look at the ocean now! The darkness has passed. The waves are sparkling again.','The churning continues, and one by one, the wonderful treasures of the ocean begin to appear.'],
+  s5:['First, beautiful treasures appeared from the ocean.','Jewels sparkled like stars.','Wonderful beings emerged, and the devas watched in amazement.',
+    'Then Goddess Lakshmi appeared, radiant and beautiful, seated upon a lotus.','She represents prosperity, abundance, and auspiciousness.',
+    'The ocean was giving the world many gifts.','But there was still one very special treasure to come.','A treasure more precious than all the gold and jewels.',
+    'A gift that could help living beings understand the importance of health and healing.','Who could it be?'],
+  g5cue:'Little treasure hunters, the ocean is full of wonderful things! Can you help me find three special treasures hidden in this picture?',
+  g5trans:['Just as the children finish finding the treasures, a brilliant golden light begins to shine from the middle of the ocean.','The waves part.','A divine figure slowly rises, carrying something wonderful in his hands…'],
+  s6a:['Look, little explorers!','From the shining ocean emerged Lord Dhanvantari, the divine healer. In his hands was a pot containing amrita, the divine nectar associated with immortality.','The devas looked on with wonder.'],
+  s6b:['Lord Dhanvantari reminded the world of the precious gift of health and healing.','The ocean had given many treasures, but this arrival carried a lesson for every family: health is a treasure to care for, life is precious, and well-being deserves gratitude.','And that is one of the reasons we remember Lord Dhanvantari on Dhanteras.'],
+  fgcue:'Lord Dhanvantari has brought us a very special lesson. Let’s collect three invisible treasures that every child can carry home!',
+  fg:{leaf:'Stretch your arms up high and take a gentle breath. Let’s promise to care for our bodies!',heart:'Place your hands over your heart and think of one person you can help.',diya:'Cup your hands as though holding a little lamp. Think of one thing you are thankful for.'},
+  close:['And so, little explorers, the story of the cosmic ocean teaches us to cherish the treasures that truly matter.',
+    'On Dhanteras, families pray for health, welcome prosperity, worship Lord Dhanvantari, Goddess Lakshmi, and Lord Kubera, and light lamps as a symbol of hope and auspiciousness.',
+    'In many Hindu households, a special lamp is also lit in the evening in honour of Yama, associated with protection from untimely death. This tradition is known as Yama Deepam.',
+    'People may buy gold, silver, or new utensils as a symbol of good fortune.',
+    'But remember, little explorers: a treasure does not have to sparkle to be precious. A healthy body, a caring family, a kind heart, and a light shared with others are treasures too.',
+    'This Dhanteras, may your home be filled with health, happiness, kindness, and light!']};
+/* added by request: one-line "Previously…" recaps for resumed sessions, and light callbacks to the child's choices */
+const RECAP=['','Previously… we opened the storybook and entered the magical ocean.','Previously… the little explorers woke up the ocean, and Mount Mandara rose from the waves.',
+  'Previously… Lord Vishnu became Kurma the tortoise and held Mount Mandara steady.','Previously… the devas and asuras churned the ocean, and tiny golden lights appeared.',
+  'Previously… Lord Shiva protected the world, and the dark clouds moved away.','Previously… treasures rose from the ocean, and Goddess Lakshmi appeared on her lotus.',
+  'Previously… Lord Dhanvantari rose from the ocean with the pot of amrita.'];
+const CARD_LABEL={mountain:'Another mountain',serpent:'Another serpent',tortoise:'A giant tortoise'};
+const TREASURE_NAME={lotus:'the lotus',jewel:'the jewel',conch:'the conch'};
+const CHAPTERS=[{t:'Opening · The Storybook Opens',shot:0},{t:'Scene 1 · A Secret Is Sleeping Beneath the Ocean',shot:1},{t:'Scene 2 · Building the Great Churning Machine',shot:3},
+  {t:'Scene 3 · The Ocean Begins to Churn',shot:6},{t:'Scene 4 · The Dark Cloud Over the Ocean',shot:8},{t:'Scene 5 · The Treasures of the Cosmic Ocean',shot:11},
+  {t:'Scene 6 · The Arrival of Lord Dhanvantari',shot:13},{t:'Celebration · Lighting the First Lamp',shot:15}];
+const SHOT_IDS=['00','01','02','03','04','05','06','07','08','09','10','11','12','13','14','15'];
+
+const say=(t,o)=>D.say('story',t,o);
+function chapter(n){D.chapter=n;if(n>0)Store.set('chapter',n);D.title(CHAPTERS[n].t)}
+function inWorld(){if(D.scene!==World)D.setScene(World,'fade',900)}
+
+/* World presets: the state at the start of each chapter, used by resume and "replay this scene" */
+function preset(ch){const W=World;W.reset();W.extra=null;W.shivaX=1;W.autoChurn=0;W.lean=0;W.pull=0;W.stormK=0;W.lifeK=1;W.arrows=null;W.waveOut=[];W.beingsK=0;W.g4=null;W.giftPos=null;W.giftScale=null;
+  W.bandK=[1,1,1,1];W.mood(['night','hidden','day','churn','dark','treasure','gold','festive'][ch]);
+  if(ch>=2){W.mt.vis=1;W.mt.solid=1;W.mt.y=ch===2?o_mh()*.5:0;W.gIn=ch===2?0:1;W.gVis=ch===2?0:1;W.vs.vis=ch===2?0:1;W.vs.wrap=ch===2?0:1}
+  if(ch>=3){W.kurma.vis=1;W.lean=1;[...W.devas,...W.asuras].forEach(f=>f.pose('pull',true));W.ripple=.4}
+  if(ch===4)W.lights=[.3,.45,.62,.8].map((u,i)=>({u,b:3,t0:-9e9,x:i}));
+  if(ch===5){W.lean=0;W.ripple=0}
+  if(ch>=6){W.vs.rest=1;W.lean=0;W.ripple=0;[...W.devas,...W.asuras].forEach(f=>{f.pose('fold',true);f.expr='wonder'})}}
+function o_mh(){return World.lay().mh}
+
+/* small overlay: petals that drift across the screen (lotus to waves, Lakshmi to the treasure hunt) */
+const FX={petals:[],add(x,y,n,spread,col){for(let i=0;i<n;i++){const a=(i/n)*TAU;this.petals.push({x,y,vx:Math.cos(a)*spread*(.6+Math.random()*.6),vy:Math.sin(a)*spread*.25-40,r:Math.random()*TAU,t0:T.now,col:col||(i%2?C.pink:C.coral)})}},
+  draw(ctx){this.petals=this.petals.filter(p=>T.now-p.t0<2600);for(const p of this.petals){const k=(T.now-p.t0)/2600,e=ease(k);ctx.save();ctx.globalAlpha*=1-k*k;ctx.translate(p.x+p.vx*e,p.y+p.vy*e+Math.sin(k*6+p.r)*20);ctx.rotate(p.r+k*3);
+    const q=sPath([[0,10],[-12,-6],[0,-28],[12,-6]],true);shape(ctx,q,p.col,c=>line(c,[[0,6],[0,-20]],C.cream,2),{lw:1.8});ctx.restore()}}};
+
+/* ---------------- OPENING ---------------- */
+async function shot00(){chapter(0);UI.progress('00');const W=World;preset(0);inWorld();W.frameK=0;W.moonK=0;W.starsK=0;W.bandK=[0,0,0,0];W.lifeK=0;W.pan=0;
+  W.bud={vis:1,open:0};W.shellK=1;W.extra=openingExtra;
+  tw(W,{pan:1},40000,'lin');
+  await D.tw(W,{frameK:1},1600,'out');tw(W,{moonK:1},1100);await D.tw(W,{starsK:1},1100);
+  for(let i=0;i<4;i++){tw(W.bandK,{[i]:1},900,'out');await D.wait(i===0?120:420)}
+  await D.tw(W,{lifeK:1},900);
+  /* the start overlay holds here until LET'S BEGIN (which also unlocks audio) */
+  await Start.wait();
+  UI.cap('story',TXT.open);await say(TXT.open);
+  AU.sfx('water');for(let i=1;i<=8;i++){W.bud.open=i/8;AU.sfx('bell',700+i*60);await D.wait(260)}
+  /* the opened petals become the first ocean waves */
+  const o=W.lay(),b=budPos(o);FX.add(b[0],b[1]-60,14,o.W*.9,C.pink);await D.wait(500);W.bud.vis=0;W.shellK=0;W.extra=null;await D.wait(900)}
+function budPos(o){return o.P?[o.W*.16,L.H*.8]:[o.W*.1,L.H*.76]}
+function openingExtra(ctx,o){const W=World;if(W.bud.vis>0){const b=budPos(o);drawLotus(ctx,b[0],b[1],o.P?1.5:1.8,W.bud.open,C.pink,C.turmeric)}
+  if(W.shellK>0){drawShell(ctx,o.P?o.W*.86:o.W*.91,o.P?L.H*.8:L.H*.78,o.P?1.4:1.7,C.cream,C.coral)}}
+
+/* ---------------- SCENE 1 ---------------- */
+async function shot01(){chapter(1);UI.progress('01');const W=World;inWorld();W.mood('hidden',2200);AU.sfx('water');tw(W,{peekK:1},2500);
+  await say(TXT.s1.slice(0,3));
+  const p=say(TXT.s1[3]);await D.wait(900);W.glint=0;AU.sfx('glow');tw(W,{fishLook:1},800);await D.tw(W,{glint:1},900);W.glint=-1;
+  /* a passing wave hides the treasure again */
+  tw(W,{amp:1.7},700);await D.tw(W,{peekK:.15},900);tw(W,{amp:1},900);await p;tw(W,{fishLook:0},1200);
+  await say(TXT.s1.slice(4));
+  W.mood('bright',1800);Music.mood('bright');await say(TXT.invite);Store.push('done','shot01')}
+
+async function shot02(){UI.progress('02');const W=World;let skipAll=false;
+  const hit={v:false};W.tapH=()=>{hit.v=true};
+  const cues=[{k:'tiny',sub:'Wiggle your fingers',cam:()=>Cam.moving(.02),fx:async()=>{AU.sfx('water');tw(W,{amp:.6,spd:1.8,bob:1.6},700);W.bursts.push({x:L.W*.3,y:W.lay().bands[2],r:70,col:C.cream,t0:T.now})}},
+    {k:'big',sub:'Swing your arms from side to side',cam:()=>Cam.moving(.05),fx:async()=>{AU.sfx('water');tw(W,{amp:1.9,spd:1.4,bob:2},900)}},
+    {k:'storm',sub:'Clap gently above your head',cam:()=>Cam.raised(),fx:async()=>{AU.sfx('water');AU.sfx('drum',90);tw(W,{amp:2.3,storm:1,stormK:1,spd:1.8},1100)}},
+    {k:'asleep',sub:'Freeze!',cam:()=>Cam.still(),fx:async()=>{AU.sfx('soft');tw(W,{amp:.25,spd:.15,bob:.15,storm:0,stormK:0},1600)}}];
+  await D.activity({idle:30,start:async()=>{for(let i=0;i<4;i++){if(skipAll)break;const c=cues[i];hit.v=false;
+        UI.plaque({icon:g=>drawIcon(g,'wave'),onIcon:()=>{hit.v=true},cue:TXT.g1cues[i],sub:c.sub+' — or tap the glowing wave.',buttons:[{label:'Continue',small:true,on:()=>{skipAll=true;hit.v=true}}],flash:true});
+        await say(TXT.g1cues[i],{after:60});
+        await D.waitStep(6000,()=>hit.v||c.cam());await c.fx();W.fishLook=0;await D.wait(1300)}},
+    assist:()=>{hit.v=true}});
+  W.tapH=null;UI.plaque(null);
+  if(!skipAll)await say(TXT.g1narr);
+  /* success: a golden outline beneath the water, then the wave layers part to reveal Mount Mandara */
+  W.mt.vis=1;W.mt.solid=0;W.mt.y=0;AU.sfx('glow');await D.tw(W.mt,{outline:1},1400);AU.sfx('rise');await D.tw(W,{part:1},1600);
+  Store.push('done','game1');
+  W.mt.solid=1;W.mt.y=o_mh()*1.05;const p=say(TXT.g1trans);tw(W.mt,{y:o_mh()*.5},5000,'out');tw(W.mt,{outline:0},2500);await D.wait(800);tw(W,{part:0,amp:1,spd:1,bob:1},2000);await p}
+
+/* ---------------- SCENE 2 ---------------- */
+async function shot03(){chapter(2);UI.progress('03');const W=World;inWorld();if(W.mt.vis<1){preset(2)}W.mt.solid=1;W.mt.vis=1;W.mood('day',2000);Music.mood('night');
+  AU.sfx('rise');tw(W.mt,{y:0},3200,'out');await D.wait(1200);W.gVis=1;tw(W,{gIn:1},2600,'out');
+  await say(TXT.s2a);
+  await D.say('both',[['both',TXT.s2quote],['story',TXT.s2declared]]);
+  await say(TXT.s2b);
+  W.vs.vis=0;W.vs.wrap=0;const p=say(TXT.s2c);await D.tw(W.vs,{vis:1},800);AU.sfx('water');await D.tw(W.vs,{wrap:1},6500,'io');await p;
+  [...W.devas,...W.asuras].forEach(f=>f.pose('reach'));await D.wait(500);
+  const q=say(TXT.s2d);await D.wait(900);[...W.devas,...W.asuras].forEach(f=>f.pose('pull'));await q}
+async function shot04(){UI.progress('04');const W=World;
+  const p=say(TXT.s2sink[0]);await D.wait(500);AU.sfx('descend');[...W.devas,...W.asuras].forEach(f=>{f.expr='concern'});W.lean=-.6;
+  tw(W,{ripple:1},800);await D.tw(W.mt,{y:o_mh()*.13},2600,'io');await p;await D.wait(1300);
+  await say(TXT.s2sink[1])}
+async function shot05(){UI.progress('05');const W=World;let tries=0,first=null,done=false,t0=performance.now();
+  const cards=[{key:'mountain',label:CARD_LABEL.mountain,draw:g=>drawMandara(g,150,170,150,140,0)},{key:'serpent',label:CARD_LABEL.serpent,draw:g=>{drawVasukiPart(g,W.resample([[20,150],[80,100],[150,140],[220,90]],6),22);vasukiHead(g,222,88,-.5,.7,0)}},
+    {key:'tortoise',label:CARD_LABEL.tortoise,draw:g=>drawKurma(g,170,150,.62,0)}];
+  W.vishnu.vis=0;W.vishnu.pose('guide',true);
+  await say(TXT.g2cue);
+  Cards.show(cards,()=>{},k=>place(k));await D.tw(D,{inset:1},700);tw(W.vishnu,{vis:1},1200);AU.sfx('bells');
+  for(const c of cards){if(done||Cards.sel)break;Cards.reading(c.key);await say(c.label,{after:120})}Cards.reading(null);
+  /* allow a second tap on the selected card to place it too */
+  let resolveDone;const finished=new Promise(r=>resolveDone=r);
+  async function place(k){if(done)return;if(!first){first=k;Store.choice('game2First',k)}
+    if(k==='tortoise'){done=true;resolveDone();return}
+    tries++;Cards.wobble(k);AU.sfx('soft');W.vishnu.pose('explain');await D.say('vishnu',TXT.g2hint).catch(()=>{});W.vishnu.pose('guide');
+    /* after two tries the tortoise card pulses and the story helps */
+    if(tries>=2&&!done){Cards.pulse('tortoise');await D.wait(2600).catch(()=>{});if(!done){Cards.select('tortoise');await D.wait(700).catch(()=>{});place('tortoise')}}}
+  $('tray').onclick=(e=>{const b=e.target.closest('.card');if(b&&b.classList.contains('picked')&&b.dataset.tap==='1')place(b.dataset.k);if(b){document.querySelectorAll('.card').forEach(x=>x.dataset.tap='0');b.dataset.tap='1'}});
+  await D.activity({idle:15,start:()=>finished,hint:()=>{Cards.pulse('tortoise')},assist:()=>{Cards.select('tortoise');setTimeout(()=>place('tortoise'),600)},assistAfter:6});
+  void t0;
+  /* success: the tortoise card travels to the mountain; Vishnu becomes Kurma; the mountain settles onto the shell */
+  Store.push('done','game2');Store.choice('supportPlaced',true);Cards.select('tortoise');AU.sfx('chime');
+  const o=W.lay();const ins=insetRect();const r=app.getBoundingClientRect();const tx=r.left+(ins.x+o.cx*ins.s)*L.U,ty=r.top+(ins.y+o.rim*ins.s)*L.U;
+  await Cards.fly('tortoise',tx,ty);Cards.hide();tw(D,{inset:0},700);
+  const p=say(TXT.g2kurma);W.vishnu.pose('bless');await D.wait(600);
+  W.burstAt(o.vishnu.x,o.vishnu.y-150*o.vishnu.s,C.turmeric,120);await D.tw(W.vishnu,{vis:0},1200);
+  W.kurma.y=o.ks*160;W.kurma.vis=0;AU.sfx('rise');tw(W.kurma,{vis:1},900);await D.tw(W.kurma,{y:0},2200,'out');
+  tw(W.mt,{y:0},1800,'out');tw(W,{ripple:0,amp:.8},2000);[...W.devas,...W.asuras].forEach(f=>f.expr='smile');W.lean=0;await p;
+  await say(TXT.g2trans);W.amp=1}
+
+/* ---------------- SCENE 3 ---------------- */
+async function churnTo(v,ms){const W=World;W.lean=1;W.arrows=v<0?-1:v>0?1:null;AU.sfx('drum',v<0?110:130);await D.tw(W,{pull:v},ms||700,'io')}
+async function shot06(){chapter(3);UI.progress('06');const W=World;inWorld();W.mood('churn',1800);Music.mood('night');
+  const first=Store.choice('game2First');
+  if(first&&first!=='tortoise')await say(`First you tried ${CARD_LABEL[first].toLowerCase()}, and then you found the giant tortoise. Kurma is holding steady, just like you helped.`);
+  else await say('Kurma is holding steady, just like you helped.');
+  let p=say(TXT.s3[0]);await churnTo(-1,1100);await D.wait(500);await churnTo(1,1300);await p;
+  p=say(TXT.s3[1]);for(let i=0;i<2;i++){await churnTo(-1,600);await churnTo(1,600)}await p;
+  W.arrows=null;W.autoChurn=1;p=say(TXT.s3[2]);tw(W,{ripple:1,swirlA:.8},1600);await p;
+  p=say(TXT.s3[3]);tw(W,{bob:2.2},800);await p;tw(W,{bob:1.2},800);
+  await say(TXT.s3[4]);W.addLight(.38);W.burstAt(L.W*.38,W.lay().bands[3],C.turmeric,60);
+  await say(TXT.s3[5]);W.addLight(.6);await say(TXT.s3[6]);W.addLight(.78);await say(TXT.s3[7]);
+  await D.say('devas',[['devas',TXT.s3devas],['story',TXT.s3cried]]);
+  await D.say('asuras',[['asuras',TXT.s3asuras],['story',TXT.s3called]]);
+  await say(TXT.s3end)}
+
+async function shot07(){UI.progress('07');const W=World;let skipAll=false;const hit={v:null};
+  W.autoChurn=0;tw(W,{pull:0},500);W.lean=1;
+  W.tapH=p=>{hit.v={tap:p}};W.dragH=(p,d)=>{if(!d)return;const dx=d.x-d.x0;hit.v={drag:dx,path:d.path}};
+  await say(TXT.g3cue);
+  const prevKinds=['conch','jewel','lotus'];
+  const ok=(i,v)=>{if(!v)return false;if(v.btn||(v.tap&&v.tap.key))return true;const o=W.lay();
+    if(i===0)return(v.drag!=null&&v.drag<-40)||(v.tap&&v.tap.x<o.cx);
+    if(i===1)return(v.drag!=null&&v.drag>40)||(v.tap&&v.tap.x>=o.cx);
+    if(i===2){if(v.path&&v.path.length>8){let a=0;for(let k=1;k<v.path.length;k++){const a0=Math.atan2(v.path[k-1].y-o.mb,v.path[k-1].x-o.cx),a1=Math.atan2(v.path[k].y-o.mb,v.path[k].x-o.cx);let d=a1-a0;if(d>Math.PI)d-=TAU;if(d<-Math.PI)d+=TAU;a+=d}return Math.abs(a)>3.5}return!!v.tap}
+    return!!v.tap};
+  const cams=[()=>Cam.side()===-1,()=>Cam.side()===1,()=>Cam.moving(.05),()=>Cam.raised()];
+  const subs=['Lean gently to the left, or drag Vasuki to the left','Lean gently to the right, or drag Vasuki to the right','Circle your hands, or draw a circle around the mountain','Lift both hands and cheer “Hooray!”'];
+  const icons=[g=>{drawIcon(g,'rope');line(g,[[-30,-40],[-50,-40]],C.line,6);line(g,[[-50,-40],[-40,-48]],C.line,6);line(g,[[-50,-40],[-40,-32]],C.line,6)},g=>{drawIcon(g,'rope');line(g,[[30,-40],[50,-40]],C.line,6);line(g,[[50,-40],[40,-48]],C.line,6);line(g,[[50,-40],[40,-32]],C.line,6)},
+    g=>{for(let i=0;i<20;i++){const a=i/20*TAU*1.6,r=8+i*2;dot(g,Math.cos(a)*r,Math.sin(a)*r,5,i%2?C.turmeric:C.peacock)}},g=>drawMedal(g,0,0,.6)];
+  const btnLabels=['Pull left','Pull right','Churn!','Hooray!'];
+  const fx=[async()=>{await churnTo(-1,700);W.waveOut.push({side:-1,t0:T.now})},async()=>{await churnTo(1,700);W.waveOut.push({side:1,t0:T.now})},
+    async()=>{W.arrows=null;AU.sfx('water');tw(W,{swirlA:1,ripple:1},400);tw(W.mt,{rot:W.mt.rot+1},1800,'io');W.vsFlow=60;await D.wait(1800);W.vsFlow=0;tw(W,{swirlA:.3},800)},
+    null];
+  await D.activity({idle:40,start:async()=>{for(let round=0;round<3&&!skipAll;round++){for(let i=0;i<4&&!skipAll;i++){hit.v=null;
+        const show=()=>UI.plaque({icon:icons[i],cue:TXT.g3cues[i],sub:subs[i],buttons:[{label:btnLabels[i],main:true,on:()=>{hit.v={btn:1}}},{label:'Continue',small:true,on:()=>{skipAll=true;hit.v={btn:1}}}],flash:true});
+        show();await say(TXT.g3cues[i],{after:60});
+        let r=await D.waitStep(7000,()=>ok(i,hit.v)||cams[i]());
+        if(r==='auto'&&!skipAll){/* gentle repeat: the characters pull again and the cue is spoken once more */
+          if(i<2)await churnTo(i===0?-1:1,600);await say(TXT.g3cues[i],{after:60});hit.v=null;await D.waitStep(7000,()=>ok(i,hit.v)||cams[i]())}
+        if(i<3)await fx[i]();else{const kind=prevKinds[round];AU.sfx('glow');[...W.devas,...W.asuras].forEach(f=>f.pose('cheer'));const it={u:[.3,.7,.5][round],k:0,kind};W.prev.push(it);await D.tw(it,{k:1},1600,'out');
+          [...W.devas,...W.asuras].forEach(f=>f.pose('pull'))}
+        await D.wait(250)}}},assist:()=>{hit.v={btn:1}}});
+  W.tapH=W.dragH=null;UI.plaque(null);W.arrows=null;Store.push('done','game3');W.autoChurn=1;Music.swell();AU.sfx('celebrate');
+  await say(TXT.g3trans)}
+
+/* ---------------- SCENE 4 ---------------- */
+async function shot08(){chapter(4);UI.progress('08');const W=World;inWorld();
+  W.autoChurn=0;tw(W,{pull:0,swirlA:0,ripple:0},1200);W.arrows=null;Music.mood('dark');Music.set(.25,2);
+  let p=say(TXT.s4a[0]);W.mood('dark',3200);tw(W,{lotusOpen:0},2600);await p;
+  [...W.devas,...W.asuras].forEach(f=>{f.pose('release');f.expr='concern'});
+  p=say(TXT.s4a[1]);W.hala=0;W.halaRise=0;W.halaC=0;tw(W,{hala:1},1500);tw(W,{halaRise:1},4500,'out');tw(W,{fishEdge:1},3000);
+  W.prev.forEach(it=>tw(it,{k:0},1500));W.lights.forEach(l=>{l.a=1;tw(l,{a:0},1500)});await D.wait(2200);
+  W.lean=0;[...W.devas,...W.asuras].forEach(f=>f.pose('look'));tw(W.vs,{rest:1},1200);tw(W,{gOut:1},1500);await p;W.prev=[];W.lights=[];
+  await D.say('devas',[['devas',TXT.s4oh],['story',TXT.s4cried],['devas',TXT.s4what]]);
+  /* Lord Shiva enters from the right, calm and composed */
+  W.shiva.vis=1;W.shiva.pose('idle',true);W.shiva.expr='calm';W.shivaX=1;await D.tw(W,{shivaX:0},2600,'out')}
+async function shot09(){UI.progress('09');const W=World;tw(W,{shivaZoom:1},2200,'io');
+  await say(TXT.s4shiva[0]);
+  const p=say(TXT.s4shiva[1]);W.shiva.pose('raise');await D.wait(900);await D.tw(W,{halaC:1},3600,'io');W.shiva.expr='closed';await p;
+  const q=say(TXT.s4shiva[2]);await D.wait(600);AU.sfx('bell',784);tw(W.shiva,{throat:1},1500);await D.wait(900);await D.tw(W,{hala:0},1400);W.shiva.expr='calm';W.shiva.pose('calm');await q;
+  /* turquoise patterns return gradually; three clouds still hang over the water */
+  W.mood('hidden',3000);Music.mood('night');Music.set(.4,3);tw(W,{fishEdge:.4},2500);[...W.devas,...W.asuras].forEach(f=>{f.pose('fold');f.expr='calm'});
+  await say(TXT.s4shiva[3]);await say(TXT.s4moral)}
+async function shot10(){UI.progress('10');const W=World;const o0=W.lay();
+  const G={clouds:[0,1,2].map(i=>({i,dx:0,gone:false,k:1})),reveal:[0,0,0]};W.g4=G;W.extra=g4Draw;
+  G.clouds.forEach(c=>{c.k=0;tw(c,{k:1},900)});void o0;
+  await say(TXT.g4cue);
+  let resolveAll;const all=new Promise(r=>resolveAll=r);let busy=false,lastCam=0;
+  const send=async(c,dir)=>{if(!c||c.gone||busy)return;busy=true;c.gone=true;AU.sfx('breeze');const o=W.lay();await tw(c,{dx:(dir||1)*o.W*.6,k:0},1600,'io');
+    AU.sfx(c.i===2?'chime':'glow');await tw(G.reveal,{[c.i]:1},700,'out');busy=false;if(G.clouds.every(x=>x.gone))resolveAll()};
+  const next=()=>G.clouds.find(c=>!c.gone);
+  W.tapH=p=>{const c=g4Hit(p);if(c)G.drag={c,x0:p.x,dx0:c.dx}};
+  W.moveH=(p)=>{if(G.drag&&!G.drag.c.gone){G.drag.c.dx=G.drag.dx0+(p.x-G.drag.x0)}};
+  W.dragH=(p,d)=>{const g=G.drag;G.drag=null;if(!g||g.c.gone)return;const dx=p.x-g.x0;if(Math.abs(dx)>30)send(g.c,Math.sign(dx));else send(g.c,g.c.i===0?-1:1)};
+  const camIv=setInterval(()=>{if(Cam.moving(.05)&&performance.now()-lastCam>3000){lastCam=performance.now();const c=next();if(c)send(c,c.i===0?-1:1)}},200);
+  UI.plaque({icon:g=>drawIcon(g,'breeze'),cue:'Send a gentle breeze',sub:'Wave your hands, swipe a cloud, or tap SEND A BREEZE.',buttons:[{label:'SEND A BREEZE',main:true,on:()=>{const c=next();if(c)send(c,c.i===0?-1:1)}},{label:'Continue',small:true,on:()=>{G.clouds.forEach(c=>{if(!c.gone){c.gone=true;tw(c,{dx:L.W*.6,k:0},900);tw(G.reveal,{[c.i]:1},700)}});setTimeout(resolveAll,1000)}}]});
+  try{await D.activity({idle:15,start:()=>all,hint:()=>{const c=next();if(c){send(c,c.i===0?-1:1)}},assistAfter:15,assist:()=>{const c=next();if(c)send(c,c.i===0?-1:1)}})}finally{clearInterval(camIv);W.tapH=W.moveH=W.dragH=null}
+  /* after the third cloud: the lotus reopen and the ocean returns to bright turquoise */
+  Store.push('done','game4');W.mood('bright',2000);tw(W,{lotusOpen:1,fishEdge:0},2200);Music.swell();AU.sfx('celebrate');
+  tw(W,{refrain:1},700);await D.say('all',TXT.g4refrain);await D.wait(600);tw(W,{refrain:0},700);
+  tw(W,{shivaX:1.3},3000,'io');tw(W,{shivaZoom:0},2000);const p=say(TXT.g4trans);await D.wait(1500);[...W.devas,...W.asuras].forEach(f=>f.pose('pull'));W.lean=1;tw(W.vs,{rest:0},1200);tw(W,{gOut:0},1500);W.autoChurn=.6;await p;
+  W.shiva.vis=0;G.clouds=[];W.extra=null}
+function g4Pos(o,i){const y=o.P?o.hz-120:o.hz-90;return[o.cx+(i-1)*o.mw*(o.P?.62:.78),y+(i===1?-50:0)]}
+function g4Hit(p){const W=World,o=W.lay(),G=W.g4;if(!G)return null;for(let i=2;i>=0;i--){const c=G.clouds[i];if(!c||c.gone)continue;const [x,y]=g4Pos(o,i);if(Math.abs(p.x-x-c.dx)<170&&Math.abs(p.y-y)<110)return c}return null}
+function g4Draw(ctx,o){const W=World,G=W.g4;if(!G)return;
+  for(let i=0;i<3;i++){const k=G.reveal[i];if(k<=0)continue;const [x,y]=g4Pos(o,i);ctx.save();ctx.globalAlpha*=k;
+    if(i===0)drawStar(ctx,x,y,2.4,C.turmeric);else if(i===1)drawLotus(ctx,x,y+40,1.1,1);else{const p=sPath(ellPts(x,y,120,60,14),true);shape(ctx,p,C.turq,c=>{drawCloud(c,x-30,y+10,.6,C.cream,C.turq);drawStar(c,x+60,y-14,.6,C.cream)},{lw:2.4})}ctx.restore()}
+  const order=[1,0,2];for(const i of order){const c=G.clouds[i];if(!c||c.k<=0)continue;const [x,y]=g4Pos(o,i);ctx.save();ctx.globalAlpha*=c.k;drawDarkCloud(ctx,x+c.dx+Math.sin(T.sec*.7+i)*6,y,o.P?.8:1);ctx.restore()}
+  if(W.refrain>0){ctx.save();ctx.globalAlpha*=W.refrain;const w=Math.min(o.W-100,900),h=120,y=L.top()+20;plaque(ctx,o.cx-w/2,y,w,h);const sz=o.P?40:46;const ln=wrapLines(ctx,TXT.g4refrain,w-60,sz);ln.forEach((s,j)=>ctext(ctx,s,o.cx,y+h/2+(j-(ln.length-1)/2)*sz*1.1,sz,C.red));ctx.restore()}}
+
+/* ---------------- SCENE 5 ---------------- */
+async function shot11(){chapter(5);UI.progress('11');const W=World;inWorld();W.mood('treasure',2200);Music.mood('bright');W.autoChurn=.5;W.lean=1;
+  W.conch={y:1,vis:1};W.jewel={y:1,vis:1};W.medal={y:1,vis:0};
+  let p=say(TXT.s5[0]);AU.sfx('rise');await D.tw(W.conch,{y:0},2200,'out');AU.sfx('rise');await D.tw(W.jewel,{y:0},2200,'out');await p;
+  p=say(TXT.s5[1]);AU.sfx('glow');const o=W.lay();W.burstAt(o.cx+o.mw*(o.P?.62:.78),o.bands[2]-70,C.emerald,90);await p;
+  p=say(TXT.s5[2]);W.medal.vis=1;AU.sfx('rise');tw(W,{beingsK:1},2400);await D.tw(W.medal,{y:0},2400,'out');W.devas.forEach(f=>f.expr='wonder');await p;
+  /* the water parts around a large lotus bud; it opens to reveal Goddess Lakshmi */
+  W.autoChurn=0;tw(W,{pull:0},800);W.lean=0;tw(W.vs,{rest:1},1400);tw(W.medal,{vis:0},1200);tw(W,{beingsK:0},1500);
+  p=say(TXT.s5[3]);W.lbud={vis:1,open:0,y:1};tw(W,{part:.55},1500);AU.sfx('water');await D.tw(W.lbud,{y:0},2000,'out');
+  W.lakshmi.vis=0;tw(W.lakshmi,{vis:1},2400);for(let i=1;i<=8;i++){W.lbud.open=i/8;AU.sfx('bell',600+i*70);await D.wait(240)}
+  [...W.devas,...W.asuras].forEach(f=>{f.pose('fold');f.expr='wonder'});await p;
+  p=say(TXT.s5[4]);W.lakshmi.pose('bless');tw(W,{floral:1},2400);Music.swell();await p;tw(W,{part:0},1500);
+  await say(TXT.s5.slice(5));
+  /* Lakshmi's lotus petals drift across the screen and become shapes in the treasure hunt */
+  FX.add(o.lak.x,o.lak.y-120,16,o.W*.8);await D.wait(1400)}
+
+async function shot12(){UI.progress('12');Hunt.reset();Store.set('treasures',[]);D.setScene(Hunt,'fade',900);UI.stripOn=true;UI.strip();
+  const counter=()=>{const n=Hunt.order.length;huntPlaque(`${n} of 3 treasures found`)};
+  const huntPlaque=(cue)=>UI.plaque({slots:['lotus','jewel','conch'].map(k=>({k,on:!!Hunt.found[k],label:Hunt.targets[k].label})),cue,
+    buttons:[{label:'Need a hint?',on:()=>{Hunt.hint=Hunt.next()}},{label:'Continue',small:true,on:()=>{['lotus','jewel','conch'].forEach(k=>Hunt.find(k))}}]});
+  counter();
+  let resolve;const all=new Promise(r=>resolve=r);Hunt.onFind=()=>{counter();UI.strip();if(Hunt.order.length===3)resolve()};
+  await say(TXT.g5cue);
+  await D.activity({idle:15,start:()=>all,hint:()=>{Hunt.hint=Hunt.next()},assistAfter:8,assist:()=>{const k=Hunt.next();if(k)Hunt.find(k)}});
+  Store.push('done','game5');AU.sfx('celebrate');await D.wait(1200);UI.plaque(null);
+  /* transition narration over the golden light rising in the ocean */
+  const W=World;preset(6);W.lakshmi.vis=0;W.lbud.vis=0;W.dhan.vis=0;W.spd=.35;W.amp=.7;D.setScene(W,'fade',1200);D.title(CHAPTERS[5].t);
+  await say(TXT.g5trans[0]);AU.sfx('glow');tw(W,{goldC:.6},1800);await say(TXT.g5trans[1]);tw(W,{part:.4},1600);await say(TXT.g5trans[2])}
+
+/* ---------------- SCENE 6 ---------------- */
+async function shot13(){chapter(6);UI.progress('13');const W=World;inWorld();if(W.goldC<=0){W.spd=.35;W.amp=.7}W.mood('gold',1600);
+  /* golden circle, waves open symmetrically, Dhanvantari rises slowly with the pot */
+  AU.sfx('glow');await D.tw(W,{goldC:1},1400);await D.tw(W,{part:1.15},1800);
+  AU.sfx('conch');W.dhan.vis=1;W.dhan.pose('hold',true);W.dhan.expr='calm';W.dhanRise=0;const rise=D.tw(W,{dhanRise:1},6500,'io');
+  await say(TXT.s6a[0]);await rise;AU.sfx('bells');Music.swell();
+  const p=say(TXT.s6a[1]);for(let i=0;i<3;i++){await D.tw(W,{potPulse:1},700);await D.tw(W,{potPulse:0},900)}await p;
+  [...W.devas,...W.asuras].forEach(f=>{f.expr='wonder'});AU.sfx('celebrate');await say(TXT.s6a[2]);tw(W,{goldC:.6},1500);
+  /* the golden motifs around the pot separate into a leaf, a heart and a diya */
+  const o=W.lay(),pot=W.dhan.toWorld(W.potLocal);W.giftPos={leaf:pot.slice(),heart:pot.slice(),diya:pot.slice()};W.giftScale={leaf:.3,heart:.3,diya:.3};W.giftVis=1;AU.sfx('rise');
+  await Promise.all(['leaf','heart','diya'].map(k=>D.tw(W.giftPos[k],{0:o.gifts[k][0],1:o.gifts[k][1]},1800,'out')).concat(['leaf','heart','diya'].map(k=>D.tw(W.giftScale,{[k]:1},1800,'out'))));
+  W.giftPos=null;W.giftScale=null}
+async function shot14(){UI.progress('14');const W=World;W.giftVis=1;UI.stripOn=true;UI.strip();
+  await say(TXT.s6b);await say(TXT.fgcue);
+  const order=['leaf','heart','diya'],cams={leaf:()=>Cam.raised(),heart:()=>false,diya:()=>false};
+  const name={leaf:'Health',heart:'Kindness',diya:'Gratitude'};
+  for(const k of order){let filled=false,resolve;const done=new Promise(r=>resolve=r);
+    const fill=async()=>{if(filled)return;filled=true;W.giftHL[k]=0;AU.sfx('chime');const o=W.lay();W.burstAt(o.gifts[k][0],o.gifts[k][1],C.turmeric,120);await D.tw(W.gifts,{[k]:1},1200,'out');Store.push('gifts',k);UI.strip();resolve()};
+    W.tapH=p=>{const o=W.lay(),g=o.gifts[k];if(Math.hypot(p.x-g[0],p.y-g[1])<Math.max(110,40/L.U))fill()};
+    UI.plaque({icon:g=>drawGift(g,k,0,0,.5,1,T.sec,0),cue:name[k],sub:TXT.fg[k],buttons:[{label:'Tap the '+k,main:true,on:fill}],flash:true});
+    W.giftHL[k]=1;const camIv=setInterval(()=>{if(cams[k]())fill()},300);
+    await say(TXT.fg[k]);
+    try{await D.activity({idle:15,start:()=>done,hint:()=>{W.giftHL[k]=1;AU.sfx('glow')},assistAfter:3,assist:fill})}finally{clearInterval(camIv)}
+    if(k==='leaf')W.dhan.pose('bless');await D.wait(500)}
+  W.tapH=null;UI.plaque(null);Store.push('done','final');
+  /* healthComplete, kindnessComplete and gratitudeComplete: the whole ocean becomes festive and bright */
+  W.mood('festive',2200);tw(W,{festive:1,goldC:0,part:.4},2200);Music.swell();AU.sfx('celebrate');W.dhan.pose('bless');[...W.devas,...W.asuras].forEach(f=>{f.pose('cheer');f.expr='smile'});await D.wait(3200);
+  /* the completed diya expands into the first lamp */
+  const o=W.lay();W.giftScale={diya:1};AU.sfx('lamp');await D.tw(W.giftScale,{diya:1.9},1500,'io');await D.wait(300)}
+
+/* ---------------- CELEBRATION ---------------- */
+async function shot15(){chapter(7);UI.progress('15');const S=Celebration;S.reset();S.build();D.setScene(S,'fade',1400);UI.strip();
+  let autoAt=null;S.onLit=()=>{D.lastInput=performance.now()};
+  AU.sfx('water');await D.tw(S,{floorK:1},2200);tw(S,{houseK:1},1400);await D.tw(S,{firstK:1},1200,'back');
+  const first=S.lamps[0];await D.wait(500);S.light(first);
+  UI.plaque({icon:g=>drawDiya(g,-10,20,.8,{lit:1,t:T.sec,halo:false}),cue:'Light the lamps',sub:'Tap each diya to share the light.',buttons:[{label:'Light them all',small:true,on:()=>{autoAt=0}}]});
+  /* the light spreads one lamp at a time: the child may tap, the rest light themselves after about 15 seconds */
+  const startT=performance.now();let stopSpread=false;
+  (async()=>{try{await D.wait(15000);if(autoAt==null)autoAt=0}catch(e){}})();
+  const spread=(async()=>{const tok=D.token;while(!stopSpread&&tok===D.token){const l=S.lamps.find(x=>!x.lit);if(!l)break;if(autoAt!=null||performance.now()-D.lastInput>15000&&performance.now()-startT>15000){S.light(l);await D.wait(700).catch(()=>{});}else await new Promise(r=>setTimeout(r,200))}})();
+  tw(S,{tableauK:1},2000);tw(S,{edgeK:1},3000);
+  await say(TXT.close.slice(0,5));
+  autoAt=0;await spread;stopSpread=true;UI.plaque(null);
+  const p=say(TXT.close[5]);await D.wait(1200);AU.sfx('celebrate');Music.swell();await D.tw(S,{blessK:1},1400);await p;
+  Store.push('done','celebration');
+  /* hold the final frame 5-7 seconds */
+  await D.wait(6000);
+  if(!(D.qa&&D.qa.noEnd))End.show()}
+
+const SHOTS=[shot00,shot01,shot02,shot03,shot04,shot05,shot06,shot07,shot08,shot09,shot10,shot11,shot12,shot13,shot14,shot15];
+
+/* ===== Main loop, start and end screens, controls ===== */
+D.inset=0;
+/* while picture cards are up, the painting shrinks into the space above them so no face is covered */
+function insetRect(){if(D.inset<=.001)return{x:0,y:0,s:1};const tray=$('tray');let px=L.ph*.42;try{if(!tray.hidden){const r=tray.getBoundingClientRect(),a=app.getBoundingClientRect();px=a.bottom-r.top+12}}catch(e){}
+  const st=clamp((L.ph-px-8)/L.ph,.3,1);const s=lerp(1,st,D.inset);return{x:(L.W-L.W*s)/2,y:lerp(0,6/L.U,D.inset),s}}
+Input.toLogical=function(x,y){const r=cv.getBoundingClientRect();const lx=(x-r.left)/L.U,ly=(y-r.top)/L.U;const ins=insetRect();return{x:(lx-ins.x)/ins.s,y:(ly-ins.y)/ins.s}};
+
+let lastT=performance.now();
+function frame(now){const dt=Math.min(.05,(now-lastT)/1000);lastT=now;T.sec+=dt;T.now+=dt*1000*D.speed;Tw.update();Timers.update();if(AU.ctx)Music.tick();
+  const s=D.scene;cx.setTransform(1,0,0,1,0,0);cx.fillStyle=getComputedStyle(app).backgroundColor||C.cream;cx.fillRect(0,0,cv.width,cv.height);
+  World.update(dt);if(s===Celebration&&s.dhan)[s.dhan,s.lak,s.kub].forEach(f=>f.update(dt));
+  if(s){const k=L.U*L.dpr,ins=insetRect();cx.setTransform(k*ins.s,0,0,k*ins.s,k*ins.x,k*ins.y);cx.lineCap='round';cx.lineJoin='round';
+    if(ins.s<1){cx.save();cx.beginPath();cx.rect(0,0,L.W,L.H);cx.clip()}
+    try{s.draw(cx);if(s!==World)FX.draw(cx)}catch(e){console.error(e)}
+    if(ins.s<1)cx.restore();
+    if(ins.s<1){const p=new Path2D();p.rect(-4,-4,L.W+8,L.H+8);dbl(cx,p,3/ins.s)}}
+  const tr=D.trans;if(tr){const k=clamp((T.now-tr.t0)/tr.ms,0,1);cx.setTransform(1,0,0,1,0,0);cx.globalAlpha=1-ease(k);cx.drawImage(tr.snap,0,0);cx.globalAlpha=1;if(k>=1)D.trans=null}
+  requestAnimationFrame(frame)}
+
+/* start overlay: LET'S BEGIN unlocks audio and speech in the same tap */
+const Start={res:null,wait(){if(D.fast||D.qa)return Promise.resolve();UI.cap('story',TXT.open);$('start').hidden=false;return new Promise(r=>this.res=r)},
+  unlock(){AU.init();AU.resume();Speech.init();try{if(Speech.ok){const u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u)}}catch(e){}}};
+$('bBegin').addEventListener('click',()=>{Start.unlock();$('start').hidden=true;Store.reset();UI.stripOn=false;UI.strip();if(Start.res){const r=Start.res;Start.res=null;r()}else play(0,true)});
+$('bResume').addEventListener('click',()=>{Start.unlock();$('start').hidden=true;resume(SAVED_CH)});
+
+async function resume(ch){D.resumed=true;await play(CHAPTERS[ch].shot,true,RECAP[ch])}
+/* play from a shot index; chapter starts reset the world so replays and resumes look right */
+async function play(from,skipStart,recap){const tok=++D.token;Tw.kill();Timers.kill();Speech.stop();D.q=Promise.resolve();D.act=null;D.skipFn=null;D.inset=0;
+  $('end').hidden=true;Cards.hide();UI.plaque(null);UI.cap(null);FX.petals=[];Hunt.onFind=null;
+  if(!skipStart)$('start').hidden=true;
+  const ch=CHAPTERS.reduce((a,c,i)=>c.shot<=from?i:a,0);
+  if(ch>=1&&from===CHAPTERS[ch].shot){preset(ch);D.setScene(World,'fade',700)}
+  UI.stripOn=Store.data.treasures.length>0||Store.data.gifts.length>0;UI.strip();
+  try{if(recap){D.title(CHAPTERS[ch].t);UI.progress(SHOT_IDS[from]);await D.wait(600);await say(recap)}
+    for(let i=from;i<SHOTS.length;i++){D.shot=SHOT_IDS[i];if(D.qa)D.qa.cur=i;await SHOTS[i]();D.guard(tok);
+      if(D.qa&&D.qa.stop==='end'&&D.qa.at===i){D.qa.paused=true;D.fast=false;D.speed=1;if(D.qa.cap)UI.cap(D.qa.capWho||'story',D.qa.cap);await new Promise(()=>{})}}}
+  catch(e){if(e!==ABORT)console.error(e)}}
+
+const End={show(){const el=$('endIcons');el.innerHTML='';const d=Store.data;const add=(k)=>{const c=document.createElement('canvas');c.width=c.height=112;const g=c.getContext('2d');g.scale(112/120,112/120);g.translate(60,60);drawIcon(g,k,.8);c.title=k;el.append(c)};
+    const l1=document.createElement('span');l1.className='lbl';l1.textContent='Treasures you found';el.append(l1);(d.treasures.length?d.treasures:['lotus','jewel','conch']).forEach(add);
+    const l2=document.createElement('span');l2.className='lbl';l2.textContent='Gifts you carry home';el.append(l2);['leaf','heart','diya'].forEach(add);
+    $('end').hidden=false;UI.cap(null);
+    const t=d.treasures.length===3?`You found ${TREASURE_NAME[d.treasures[0]]} first, then ${TREASURE_NAME[d.treasures[1]]}, then ${TREASURE_NAME[d.treasures[2]]}. And you collected three gifts: health, kindness and gratitude.`:null;
+    if(t)say(t).catch(()=>{})}};
+$('bAgain').addEventListener('click',()=>{Start.unlock();Store.reset();UI.stripOn=false;UI.strip();play(1,false,null)});
+$('bMute').addEventListener('click',()=>{const m=!AU.muted;AU.setMute(m);if(m)Speech.stop();$('bMute').setAttribute('aria-pressed',String(m));$('mWave').style.display=m?'none':'';$('mX').style.display=m?'':'none'});
+$('bSkip').addEventListener('click',()=>D.skip());
+$('bReplay').addEventListener('click',()=>{if(!$('start').hidden&&D.chapter===0)return;Start.unlock();const ch=D.chapter;if(ch===0){play(0,false);return}play(CHAPTERS[ch].shot,false,null)});
+$('bCam').addEventListener('click',()=>Cam.toggle());
+
+/* boot */
+(function(){const p=$('prog');SHOT_IDS.forEach((id,i)=>{const e=document.createElement('i');if(CHAPTERS.some(c=>c.shot===i)&&i>0)e.classList.add('gap');p.append(e)})})();
+const _prog=UI.progress;UI.progress=function(s){_prog.call(UI,s);const i=SHOT_IDS.indexOf(s);document.querySelectorAll('#prog i').forEach((e,j)=>{const g=e.classList.contains('gap');e.className=(j<i?'done':j===i?'now':'')+(g?' gap':'')})};
+Store.load();relayout();window.addEventListener('resize',()=>relayout());if(window.ResizeObserver)new ResizeObserver(()=>relayout()).observe(app);
+World.make();D.scene=World;const SAVED_CH=Store.data.done.length?Store.data.chapter:0;
+if(Store.data.chapter>0&&Store.data.done.length){const b=$('bResume');b.hidden=false;b.textContent='Continue: '+CHAPTERS[Store.data.chapter].t.split(' · ')[0]}
+Speech.init();requestAnimationFrame(frame);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>Spr.clear());
+/* QA hook (#qa): window.__qa.go(shotIndex,'end'|'act',{cap,portrait}) fast-forwards from that chapter's start */
+if(/qa/.test(location.hash)){window.__qa={go(at,stop,o){o=o||{};D.fast=stop!=='run';D.speed=stop==='run'?(o.speed||8):40;D.qa=Object.assign({at,stop:stop||'end',paused:false,cur:null},o);$('start').hidden=true;
+    const ch=CHAPTERS.reduce((a,c,i)=>c.shot<=at?i:a,0);if(o.treasures)Store.data.treasures=o.treasures;play(CHAPTERS[ch].shot,true);return true},paused:()=>D.qa&&D.qa.paused}}
+else play(0,true);
+
+</script>
