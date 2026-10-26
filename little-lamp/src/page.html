@@ -1,0 +1,58 @@
+<title>The Little Lamp That Could Not Go Out</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap">
+<style>
+/* Layout: one full-bleed painted canvas (the mud wall) with a small chip row of controls in the top corner. */
+:root {
+  --wall-white: #f4ead2;
+  --mud-ochre: #d9a566;
+  --charcoal: #1f1712;
+  --marigold: #f08a24;
+  --terracotta: #b5532e;
+  --turmeric: #f2b41c;
+  --pithora-red: #c8321e;
+  --leaf-green: #3f8a3a;
+  --turquoise: #2fa3a0;
+  --indigo: #22408f;
+  --pink: #e2587f;
+  --lamp-glow: #ffd75e;
+  --page-bg: #2a1d15;
+  --chip-bg: #f4ead2;
+  --chip-fg: #1f1712;
+  --chip-ring: #c8321e;
+  --font-story: "Baloo 2", "Baloo", "Nunito", "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --page-bg: #120c08; --chip-bg: #2a1d15; --chip-fg: #f4ead2; --chip-ring: #f2b41c; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --page-bg: #120c08; --chip-bg: #2a1d15; --chip-fg: #f4ead2; --chip-ring: #f2b41c; color-scheme: dark; }
+html, body { height: 100%; }
+body { margin: 0; overflow: hidden; background: var(--page-bg); color: var(--chip-fg); font-family: var(--font-story); position: relative; }
+#wall { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+#hud { position: absolute; top: max(10px, env(safe-area-inset-top, 0px)); right: max(10px, env(safe-area-inset-right, 0px)); display: flex; gap: 10px; z-index: 5; }
+#hud[hidden], #start[hidden] { display: none !important; }
+.chip { width: 54px; height: 54px; border-radius: 50%; border: 4px solid var(--chip-fg); background: var(--chip-bg); color: var(--chip-fg); display: grid; place-items: center; cursor: pointer; padding: 0; box-shadow: 0 0 0 3px var(--chip-ring); }
+.chip svg { width: 28px; height: 28px; }
+.chip:focus-visible, .big:focus-visible { outline: 4px dashed var(--turmeric); outline-offset: 4px; }
+.chip[aria-pressed="true"] { background: var(--turmeric); color: #1f1712; }
+.chip.off { opacity: .45; }
+#start { position: absolute; left: 0; right: 0; bottom: max(26px, calc(env(safe-area-inset-bottom, 0px) + 18px)); display: flex; justify-content: center; flex-wrap: wrap; gap: 14px; z-index: 6; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.big { font: 800 clamp(22px, 3.2vmin, 34px)/1 var(--font-story); color: #1f1712; background: #f4ead2; border: 5px solid #1f1712; border-radius: 999px; padding: 14px 34px 10px; cursor: pointer; box-shadow: 0 0 0 5px #c8321e, 0 8px 0 5px #1f1712; }
+.big.alt { background: #f2b41c; }
+.big:active { transform: translateY(3px); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+<canvas id="wall" aria-label="The Little Lamp That Could Not Go Out, an interactive painted story" role="img"></canvas>
+<div id="hud" hidden>
+  <button class="chip" id="bMute" aria-label="Mute sound" aria-pressed="false" title="Mute (M)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path id="mWave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path id="mX" d="M16 9l6 6M22 9l-6 6" style="display:none"/></svg></button>
+  <button class="chip" id="bSkip" aria-label="Skip to the next scene" title="Skip (→)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 5l9 7-9 7zM13 5l7 7-7 7z"/><rect x="20" y="5" width="2.6" height="14" rx="1"/></svg></button>
+  <button class="chip off" id="bCam" aria-label="Use camera for hand and face play (optional)" aria-pressed="false" title="Camera play (optional)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12M11 11V4a1.5 1.5 0 0 1 3 0v8M14 11V5.5a1.5 1.5 0 0 1 3 0V13M17 9.5a1.5 1.5 0 0 1 3 0V15a7 7 0 0 1-7 7h-1a7 7 0 0 1-5.6-2.8L3.2 15.6a1.6 1.6 0 0 1 2.5-2L8 15.5"/></svg></button>
+</div>
+<div id="start">
+  <button class="big" id="bBegin">Begin the story</button>
+</div>
+<div id="sr" class="sr" aria-live="polite"></div>
+<script>
+/*__JS__*/
+</script>
