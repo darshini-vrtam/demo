@@ -1,0 +1,154 @@
+<title>Dhanteras: The Ocean That Gave Us the Gift of Life</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="An interactive, narrated Madhubani-inspired story of Samudra Manthan and Lord Dhanvantari for children aged 6 to 10.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Yatra+One&display=swap">
+<style>
+/* Layout: one painted 16:9 (or 9:16 on phones) folk-art panel fills the screen; captions, prompts and controls float over its ocean and sky margins. */
+:root{
+  --indigo:#24345C; --ocean:#367F9C; --turq:#64B9B0; --ivory:#FFF1D0; --gold:#D9A441;
+  --verm:#C74735; --terra:#B96845; --leaf:#568653; --pink:#E889A3; --ink:#252020;
+  --bg:#F3DFB4; --fg:#252020; --panel:#FFF1D0; --panel-fg:#252020; --line:#252020; --focus:#C74735;
+  --font-display:"Yatra One","Kohinoor Devanagari","Palatino Linotype",Georgia,serif;
+  --font-body:"Baloo 2","Trebuchet MS","Segoe UI",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#1A2440; --fg:#FFF1D0; --focus:#D9A441; color-scheme:dark } }
+:root[data-theme="dark"]{ --bg:#1A2440; --fg:#FFF1D0; --focus:#D9A441; color-scheme:dark }
+html{height:100%;box-sizing:border-box}
+*,*::before,*::after{box-sizing:inherit}
+body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);overflow:hidden;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:8px}
+#app{position:relative;width:100%;height:100%;overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+#stage{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:manipulation;overflow:hidden}
+#stage [data-hit]{cursor:pointer}
+#stage [data-hit]:focus{outline:none}
+#stage [data-hit]:focus-visible .focusring{stroke:var(--focus);stroke-width:6;stroke-dasharray:10 8;opacity:1}
+.focusring{fill:none;opacity:0}
+[hidden]{display:none!important}
+button{font-family:var(--font-body)}
+button:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+
+/* HUD: progress lotuses on the left, sound and skip controls on the right */
+#hud{position:absolute;top:8px;left:0;right:0;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;z-index:6;pointer-events:none}
+#hud > *{pointer-events:auto}
+#prog{display:flex;align-items:center;gap:8px;background:var(--panel);color:var(--panel-fg);border:3px double var(--line);border-radius:999px;padding:5px 12px 5px 8px;min-width:0}
+#prog ol{display:flex;gap:3px;margin:0;padding:0;list-style:none}
+#prog li{width:16px;height:16px}
+#prog li svg{width:16px;height:16px;display:block}
+#prog li .p{fill:var(--ivory);stroke:var(--ink);stroke-width:1.6}
+#prog li.done .p{fill:var(--gold)}
+#prog li.now .p{fill:var(--verm)}
+#progName{font:600 13px/1.1 var(--font-body);letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ctl{display:flex;gap:6px;flex-shrink:0}
+.hb{min-width:46px;height:46px;border-radius:23px;border:3px double var(--ink);background:var(--ivory);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;gap:4px;
+  cursor:pointer;padding:0 10px;font:700 13px/1 var(--font-body);letter-spacing:.03em}
+.hb svg{width:22px;height:22px;flex-shrink:0}
+.hb[aria-pressed="true"]{background:var(--gold)}
+.hb:hover{background:#FBE3AE}
+.hb[aria-pressed="true"]:hover{background:#E5B65A}
+
+/* Instruction scroll: the activity prompt, framed like a painted cartouche */
+#instr{position:absolute;top:64px;left:0;right:0;margin-inline:auto;width:fit-content;z-index:5;max-width:min(640px,calc(100% - 24px));
+  background:var(--ivory);color:var(--ink);border:3px solid var(--ink);border-radius:18px;padding:8px 14px;
+  box-shadow:0 0 0 5px var(--gold),0 0 0 8px var(--ink);display:flex;align-items:center;gap:10px;margin-top:6px}
+#instr svg{width:34px;height:34px;flex-shrink:0}
+#instr .tx{min-width:0}
+#instrText{font:400 clamp(17px,2.3vw,24px)/1.2 var(--font-display);margin:0;text-wrap:balance}
+#instrHint{font:600 14px/1.2 var(--font-body);color:var(--verm);margin:2px 0 0}
+#bGo{margin-left:4px;flex-shrink:0;height:42px;border-radius:21px;border:3px double var(--ink);background:var(--gold);color:var(--ink);font:700 15px/1 var(--font-body);padding:0 14px;cursor:pointer}
+#instr.pop{animation:pop .5s ease}
+@keyframes pop{0%{transform:scale(.85);opacity:0}100%{transform:scale(1);opacity:1}}
+
+/* Caption: verbatim narration, current sentence underlined in gold */
+#cap{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);z-index:5;width:min(920px,100%);
+  background:rgba(255,241,208,.96);color:var(--ink);border:3px double var(--ink);border-radius:14px;padding:8px 16px 10px}
+#capText{margin:0;font:500 clamp(16px,1.9vw,21px)/1.38 var(--font-body);text-wrap:pretty}
+#capText .cur{background:linear-gradient(transparent 70%,rgba(217,164,65,.55) 70%)}
+#capText .spent{opacity:.62}
+#cap.cue #capText{font-family:var(--font-display);font-weight:400;color:var(--verm)}
+
+/* Veil: soft ivory lotus fade between scenes */
+#veil{position:absolute;inset:0;z-index:4;background:var(--ivory);opacity:0;pointer-events:none;display:grid;place-items:center;transition:opacity .45s ease}
+#veil.on{opacity:1}
+#veil svg{width:120px;height:120px;animation:spin 6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Start and end cards */
+.card{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:7;width:min(560px,calc(100% - 44px));max-height:calc(100% - 44px);overflow:auto;text-align:center;
+  background:var(--ivory);color:var(--ink);border:4px solid var(--ink);border-radius:22px;padding:22px 20px 20px;
+  box-shadow:0 0 0 7px var(--verm),0 0 0 11px var(--ink),0 0 0 17px var(--gold),0 0 0 20px var(--ink)}
+.card h1{font:400 clamp(30px,6vw,54px)/1 var(--font-display);margin:0;color:var(--verm);text-wrap:balance}
+.card h2{font:400 clamp(17px,2.8vw,24px)/1.2 var(--font-display);margin:6px 0 12px;color:var(--indigo);text-wrap:balance}
+.card p{margin:0 auto 14px;max-width:44ch;font:500 16px/1.4 var(--font-body)}
+.card .row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.big{min-height:54px;border-radius:27px;border:3px double var(--ink);background:var(--gold);color:var(--ink);font:700 19px/1 var(--font-body);padding:0 24px;cursor:pointer}
+.big.alt{background:var(--ivory)}
+.big:hover{filter:brightness(1.05)}
+.card small{display:block;margin-top:12px;font:500 13px/1.35 var(--font-body);opacity:.8}
+#endBar{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:6;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;width:min(560px,100%)}
+
+@media (max-width:620px){
+  .hb .lbl{display:none}
+  .hb{min-width:44px;height:44px;padding:0 8px}
+  #progName{display:none}
+  #instr{top:58px}
+  #capText{font-size:16px;line-height:1.33}
+}
+@media (max-height:460px){
+  #instr{top:56px;padding:5px 10px}
+  #instrText{font-size:17px}
+  #capText{font-size:15px;line-height:1.3}
+  #cap{padding:5px 12px 6px}
+  .card{transform:translate(-50%,-50%) scale(.82)}
+}
+@media (prefers-reduced-motion: reduce){ #veil svg{animation:none} #instr.pop{animation:none} #veil{transition:none} }
+</style>
+
+<div id="app">
+  <svg id="stage" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Illustrated story scene"></svg>
+
+  <div id="hud">
+    <div id="prog" aria-label="Story progress">
+      <ol id="progDots"></ol><span id="progName">Ocean of Wonders</span>
+    </div>
+    <div id="ctl">
+      <button class="hb" id="bMute" aria-pressed="false" aria-label="Mute sound" title="Mute sound">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path id="mWave" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/><path id="mX" d="M16 9l5 6M21 9l-5 6" style="display:none"/></svg>
+      </button>
+      <button class="hb" id="bMusic" aria-pressed="true" aria-label="Music and sound effects on" title="Music and sound effects">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.6" fill="currentColor"/><circle cx="17.5" cy="16" r="2.6" fill="currentColor"/></svg>
+      </button>
+      <button class="hb" id="bSkip" aria-label="Skip this narration line" title="Skip this line">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 5l9 7-9 7z"/><rect x="16" y="5" width="3" height="14" rx="1"/></svg><span class="lbl">Skip</span>
+      </button>
+      <button class="hb" id="bNext" aria-label="Go to the next scene" title="Next scene">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5l8 7-8 7zM12 5l8 7-8 7z"/></svg><span class="lbl">Next</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="instr" hidden role="status" aria-live="polite">
+    <svg viewBox="-20 -20 40 40" aria-hidden="true"><g stroke="#252020" stroke-width="1.6"><path d="M0 8C-6 2-6-8 0-15C6-8 6 2 0 8Z" fill="#E889A3"/><path d="M0 8C-10 6-15-2-15-8C-8-7-3-3 0 8Z" fill="#E889A3"/><path d="M0 8C10 6 15-2 15-8C8-7 3-3 0 8Z" fill="#E889A3"/><path d="M-14 10H14" stroke-width="2.4"/></g></svg>
+    <div class="tx"><p id="instrText"></p><p id="instrHint" hidden></p></div>
+    <button id="bGo" hidden>Continue</button>
+  </div>
+
+  <div id="cap" hidden aria-live="polite"><p id="capText"></p></div>
+
+  <div id="veil" aria-hidden="true"><svg viewBox="-60 -60 120 120"><g id="veilArt"></g></svg></div>
+
+  <div class="card" id="startCard">
+    <h1>Dhanteras</h1>
+    <h2>The Ocean That Gave Us the Gift of Life</h2>
+    <p>Become an Ocean Explorer! Listen to the story and help it along by tapping the glowing things.</p>
+    <div class="row"><button class="big" id="bBegin">Begin the Story</button></div>
+    <button class="big alt" id="bResume" hidden style="margin-top:10px">Continue from Scene 2</button>
+    <small>Turn the sound on to hear the narrator. Every word is also shown on screen.</small>
+  </div>
+
+  <div id="endBar" hidden>
+    <button class="big" id="bReplay">Replay Story</button>
+    <button class="big alt" id="bExplore">Explore Again</button>
+  </div>
+</div>
