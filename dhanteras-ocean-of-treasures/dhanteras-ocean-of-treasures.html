@@ -1,0 +1,1481 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Ocean of Treasures</title>
+<meta name="description" content="Book 2 of the festival storybook series: an interactive, narrated, Madhubani-inspired telling of Samudra Manthan, Lord Shiva and Lord Dhanvantari for children aged 6 to 12.">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Noto+Sans+Devanagari:wght@500;600;700&display=swap">
+<style>
+/* Layout: header (title, 10-diya progress, controls) / painted stage / lower narration-and-activity panel. */
+:root{
+  --ink:#1A1020;--cream:#F6ECD2;--pale:#F7F5EE;--gold:#E6B422;--agold:#C9A24A;--dgold:#8F6B1E;--saffron:#F28C28;--verm:#D9381E;
+  --indigo:#2B2D6E;--deep:#1B3A6B;--teal:#167C80;--turq:#1FA3A8;--plum:#5B2A5E;--leaf:#3E8E41;--pink:#E8789A;--coral:#F26B5B;
+  --bg:#F6ECD2;--fg:#1A1020;--panel:#F7F5EE;--line:#1A1020;--soft:#5B2A5E;--btn:#F6ECD2;--btn-fg:#1A1020;--btn-on:#E6B422;--accent:#D9381E;--focus:#2B2D6E;--ok:#3E8E41;
+  --font-d:"Baloo 2","Trebuchet MS","Segoe UI",system-ui,sans-serif;
+  --font-dev:"Noto Sans Devanagari","Kohinoor Devanagari","Nirmala UI","Mangal","Devanagari Sangam MN",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1A1020;--fg:#F6ECD2;--panel:#2B2D6E;--line:#E6B422;--soft:#F7F5EE;--btn:#1B3A6B;--btn-fg:#F6ECD2;--btn-on:#8F6B1E;--accent:#F28C28;--focus:#E6B422;--ok:#E6B422;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1A1020;--fg:#F6ECD2;--panel:#2B2D6E;--line:#E6B422;--soft:#F7F5EE;--btn:#1B3A6B;--btn-fg:#F6ECD2;--btn-on:#8F6B1E;--accent:#F28C28;--focus:#E6B422;--ok:#E6B422;color-scheme:dark}
+html{height:100%;box-sizing:border-box;-webkit-text-size-adjust:100%}
+*,*::before,*::after{box-sizing:inherit}
+body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-d);overflow:hidden}
+button{font:inherit;color:inherit}
+[hidden]{display:none!important}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+#app{position:relative;height:100%;height:100dvh;display:grid;grid-template-rows:auto minmax(0,1fr) auto;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+
+/* ---- header ---- */
+#top{display:flex;align-items:center;gap:10px;padding:6px 12px;border-bottom:3px double var(--line);background:var(--panel);min-width:0}
+#ttl{min-width:0;flex:1 1 auto;line-height:1.05}
+#ttl small{display:block;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+#ttl h1{margin:0;font-size:clamp(1rem,2.2vw,1.35rem);font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#prog{display:flex;gap:3px;margin:0;padding:0;list-style:none;flex:0 0 auto}
+#prog li{width:22px;height:26px}
+#prog svg{width:100%;height:100%;display:block}
+#prog .fl{opacity:0;transition:opacity .4s}
+#prog li.lit .fl{opacity:1}
+#prog li.now svg{transform:translateY(-2px)}
+#prog li.now .cup{stroke-width:3}
+#ctl{display:flex;gap:4px;flex:0 0 auto}
+.ib{width:44px;height:44px;border-radius:12px;border:2px solid var(--line);background:var(--btn);color:var(--btn-fg);display:grid;place-items:center;cursor:pointer;padding:0}
+.ib svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.ib[aria-pressed="true"]{background:var(--btn-on)}
+.ib:disabled{opacity:.35;cursor:default}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+/* ---- stage ---- */
+#stage{position:relative;min-height:0;overflow:hidden;background:#1B3A6B}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#cv.hot{cursor:pointer}
+#remember{display:inline-flex;align-items:center;gap:6px;margin:0 0 4px;background:#F7F5EE;color:#1A1020;border:2px solid #1A1020;border-radius:999px;padding:2px 12px 2px 6px;
+  font-size:.78rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 0 0 3px #E6B422}
+#remember::before{content:"";width:22px;height:22px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Cpath d='M13 2c4 4 5 8 0 13C8 10 9 6 13 2z' fill='%23F28C28' stroke='%231A1020' stroke-width='1.6'/%3E%3Cpath d='M3 16c5-2 8 0 10 6M23 16c-5-2-8 0-10 6' fill='none' stroke='%231A1020' stroke-width='1.6'/%3E%3Cpath d='M4 22h18' stroke='%231A1020' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat}
+#ovl{position:absolute;inset:0;pointer-events:none}
+#ovl > *{pointer-events:auto}
+#endTitle{position:absolute;left:50%;top:5%;transform:translateX(-50%);text-align:center;color:#1A1020;background:#F6ECD2;border:3px double #1A1020;border-radius:16px;padding:4px 18px;
+  font-weight:800;font-size:clamp(1.05rem,2.8vw,1.8rem);line-height:1.1;white-space:nowrap;box-shadow:0 0 0 4px #E6B422}
+#endTitle small{display:block;font-size:.5em;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#5B2A5E}
+#cursor{position:absolute;width:38px;height:38px;margin:-19px 0 0 -19px;border-radius:50%;border:4px solid #E6B422;box-shadow:0 0 0 3px #1A1020;pointer-events:none;z-index:40;transition:transform .1s}
+#cursor.pinch{transform:scale(.6);background:#F28C28}
+#camBox{position:absolute;right:10px;bottom:10px;width:120px;border:3px double #1A1020;border-radius:10px;overflow:hidden;background:#1A1020;z-index:5}
+#camBox video{display:block;width:100%;transform:scaleX(-1)}
+
+/* ---- prayer text (screen 9) sits on the left of the art in landscape, in the panel in portrait ---- */
+#prayer{color:#1A1020;background:rgba(247,245,238,.94);border:3px double #1A1020;border-radius:16px;padding:10px 14px;overflow:auto}
+#ovl #prayer{position:absolute;left:3%;top:4%;max-height:72%;width:46%}
+#prayer h2{margin:0;font-family:var(--font-dev);font-size:1.25rem;font-weight:700}
+#prayer .dev{font-family:var(--font-dev);font-size:clamp(1.05rem,2vw,1.35rem);line-height:1.7;font-weight:600;margin:.3em 0}
+#prayer .iast{font-family:Georgia,"Times New Roman","Noto Serif",serif;font-style:italic;font-size:1.05rem;line-height:1.45;margin:.2em 0 .5em}
+#prayer .lbl{font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#5B2A5E;margin-top:.4em}
+#prayer .meaning{line-height:1.4;margin:.2em 0}
+#prayer .note{font-size:.82rem;line-height:1.35;color:#5B2A5E;margin:.4em 0 0}
+#prayer details{margin-top:.4em}
+#prayer summary{cursor:pointer;font-weight:700}
+#prayer .cues{display:flex;flex-wrap:wrap;gap:4px 10px;margin:.3em 0;padding:0;list-style:none}
+#prayer .cues li.on{text-decoration:underline 3px #F28C28;font-weight:800}
+
+/* ---- panel ---- */
+#panel{display:grid;grid-template-columns:auto minmax(0,1.25fr) minmax(0,1fr) auto;gap:10px;align-items:stretch;padding:8px 10px;
+  border-top:3px double var(--line);background:var(--panel);max-height:42vh;max-height:42dvh}
+#panel.wide{grid-template-columns:auto minmax(0,.9fr) minmax(0,1.6fr) auto}
+.nav{width:54px;align-self:center;height:54px;border-radius:50%;border:3px solid var(--line);background:var(--btn);color:var(--btn-fg);cursor:pointer;display:grid;place-items:center;padding:0}
+.nav svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.nav:disabled{opacity:.3;cursor:default}
+#bNext:not(:disabled){background:var(--btn-on)}
+#capBox{overflow:auto;min-height:0}
+#cap{margin:0;font-size:clamp(1rem,1.9vw,1.22rem);line-height:1.45;font-weight:500}
+#cap span.on{font-weight:700;text-decoration:underline 3px var(--accent);text-underline-offset:4px}
+#cap.off{display:none}
+#actBox{overflow:auto;min-height:0;display:flex;flex-direction:column;gap:6px}
+#actHead{margin:0;font-weight:800;font-size:1.02rem;line-height:1.2}
+#actHead:empty{display:none}
+#prompt{margin:0;font-weight:600;line-height:1.3}
+#prompt:empty{display:none}
+#prompt.pulse,#status.pulse{animation:pp 1.2s ease-in-out 2}
+@keyframes pp{50%{transform:scale(1.04);text-decoration:underline 3px var(--accent)}}
+#status{margin:0;font-weight:700;font-size:.95rem}
+#status:empty{display:none}
+#act{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start}
+#act:empty{display:none}
+.ab{min-height:48px;min-width:48px;padding:6px 14px;border-radius:14px;border:2px solid var(--line);background:var(--btn);color:var(--btn-fg);font-weight:700;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;line-height:1.15;text-align:left}
+.ab.main{background:var(--btn-on)}
+.ab .ic{width:36px;height:36px;flex:0 0 auto}
+.ab .tick{display:none;font-weight:800}
+.ab.done{border-style:double;border-width:4px}
+.ab.done .tick{display:inline}
+.ab.pulse{animation:bp 1s ease-in-out 3}
+@keyframes bp{50%{transform:scale(1.07);box-shadow:0 0 0 4px var(--accent)}}
+@media (prefers-reduced-motion: reduce){.ab.pulse,#prompt.pulse,#status.pulse{animation:none;box-shadow:0 0 0 4px var(--accent)}}
+.ab small{display:block;font-weight:500;font-size:.82em}
+.ab.sm{min-height:44px;padding:3px 10px;font-size:.88rem}
+.ab.sm .ic{width:28px;height:28px}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;align-items:center}
+.ab[aria-pressed="true"]{background:var(--btn-on);border-style:double;border-width:4px}
+.panelNote{margin:0;font-size:.85rem;line-height:1.3;color:var(--soft)}
+.reveal{border:3px double var(--line);border-radius:12px;padding:6px 10px;background:var(--bg);line-height:1.35}
+.reveal b{display:block}
+.reveal details{margin-top:4px;font-size:.92rem}
+.reveal summary{cursor:pointer;font-weight:700}
+/* matching (screen 7) */
+.match{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;width:100%}
+.slot{display:flex;align-items:center;gap:6px;border:2px dashed var(--line);border-radius:12px;padding:2px 6px;min-height:46px;background:var(--bg);color:var(--fg);cursor:pointer;text-align:left}
+.slot .ic{width:34px;height:34px;flex:0 0 auto}
+.slot .st{font-size:.82rem;line-height:1.15}
+.slot.sel{box-shadow:0 0 0 3px var(--accent)}
+.slot.ok{border:4px double var(--ok);cursor:default}
+.slot.ok .st::before{content:"🔒 ";}
+.cards{display:flex;flex-wrap:wrap;gap:6px}
+.card{min-height:44px;padding:3px 10px;font-size:.9rem;border-radius:10px;border:2px solid var(--line);background:var(--btn);color:var(--btn-fg);cursor:grab;font-weight:600;text-align:left;touch-action:none}
+.card.sel{background:var(--btn-on);border-style:double;border-width:4px}
+.card.used{opacity:.45}
+/* reflection */
+textarea{width:100%;min-height:52px;font:inherit;border-radius:10px;border:2px solid var(--line);padding:6px;background:var(--pale);color:#1A1020}
+.pad{border:2px solid var(--line);border-radius:10px;background:#F7F5EE;touch-action:none;max-width:100%}
+
+/* ---- overlays ---- */
+.cover{position:absolute;inset:0;z-index:30;display:grid;place-items:center;background:rgba(26,16,32,.55);padding:16px}
+.sheet{background:#F6ECD2;color:#1A1020;border:6px double #1A1020;border-radius:22px;padding:20px 26px;max-width:min(620px,94vw);text-align:center;box-shadow:0 0 0 6px #E6B422;max-height:92%;overflow:auto}
+.sheet h2{margin:.1em 0;font-size:clamp(1.5rem,4.5vw,2.4rem);line-height:1.05}
+.sheet .kick{font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:.8rem;color:#5B2A5E}
+.sheet p{line-height:1.4}
+.sheet .big{min-height:56px;padding:8px 26px;border-radius:16px;border:3px solid #1A1020;background:#E6B422;color:#1A1020;font-weight:800;font-size:1.15rem;cursor:pointer;margin:6px}
+.sheet .alt{background:#F7F5EE}
+.sheet svg.orn{width:min(280px,70%);height:auto;display:block;margin:0 auto}
+#older .sheet{text-align:left}
+#older .dev{font-family:var(--font-dev);font-size:1.15rem;line-height:1.75;font-weight:600;white-space:pre-line}
+#toast{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);background:#F7F5EE;color:#1A1020;border:2px solid #1A1020;border-radius:12px;padding:6px 12px;z-index:35;font-weight:600}
+
+/* ---- portrait: art above, panel below, stacked ---- */
+@media (max-aspect-ratio: 5/4){
+  #top{flex-wrap:wrap;gap:6px}
+  #ttl{flex-basis:calc(100% - 110px)}
+  #prog{order:3;flex-basis:100%;justify-content:center}
+  #ctl{order:2;flex-wrap:wrap;justify-content:flex-end;max-width:100%}
+  #panel,#panel.wide{grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto auto;max-height:46vh;max-height:46dvh;overflow:auto}
+  #bPrev{grid-column:1;grid-row:1}#capBox{grid-column:2;grid-row:1}#bNext{grid-column:3;grid-row:1}
+  #actBox{grid-column:1 / -1;grid-row:2}
+}
+@media (max-width:560px){ .ib{width:40px;height:40px} #prog li{width:18px;height:22px} .nav{width:46px;height:46px} }
+@media (max-height:480px) and (min-aspect-ratio: 5/4){ #top{padding:3px 10px} .ib{width:38px;height:38px} #panel{max-height:46vh} #cap{font-size:.98rem} }
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <div id="ttl"><small id="tScr">Book 2 · Dhanteras</small><h1 id="tName">The Ocean of Treasures</h1></div>
+    <ol id="prog" aria-label="Story progress"></ol>
+    <div id="ctl" role="toolbar" aria-label="Story controls">
+      <button class="ib" id="bPlay" type="button" aria-label="Pause narration" aria-pressed="false" title="Pause / play narration"><svg viewBox="0 0 24 24"><path id="gPlay" d="M8 5v14M16 5v14"/></svg></button>
+      <button class="ib" id="bReplay" type="button" aria-label="Replay this screen" title="Replay this screen"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 3-6.2"/><path d="M4 4v5h5"/></svg></button>
+      <button class="ib" id="bHelp" type="button" aria-label="Repeat the instructions" title="Repeat the instructions"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7"/><path d="M12 17h0"/></svg></button>
+      <button class="ib" id="bSubs" type="button" aria-label="Subtitles" aria-pressed="true" title="Subtitles on / off"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 11h4M13 11h4M7 15h8"/></svg></button>
+      <button class="ib" id="bMute" type="button" aria-label="Mute all sound" aria-pressed="false" title="Mute / unmute"><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path id="gWave" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/><path id="gX" d="M16 9l5 6M21 9l-5 6" style="display:none"/></svg></button>
+      <button class="ib" id="bSkip" type="button" aria-label="Skip ahead" title="Skip this line, or help with the activity"><svg viewBox="0 0 24 24"><path d="M5 5l8 7-8 7z"/><path d="M15 5v14"/></svg></button>
+      <button class="ib" id="bCam" type="button" aria-label="Hand mode: use the camera to pinch" aria-pressed="false" title="Hand mode (optional camera pinch)"><svg viewBox="0 0 24 24"><path d="M7 12V6.5a1.5 1.5 0 0 1 3 0V11M10 10V4.5a1.5 1.5 0 0 1 3 0V11M13 10V5.5a1.5 1.5 0 0 1 3 0V12M16 11v-2.5a1.5 1.5 0 0 1 3 0V14a7 7 0 0 1-7 7h-1a6 6 0 0 1-5-3l-2.5-4a1.5 1.5 0 0 1 2.5-1.7L7 14"/></svg></button>
+    </div>
+  </header>
+  <main id="stage">
+    <canvas id="cv" role="img" aria-label="Story illustration"></canvas>
+    <div id="ovl"></div>
+    <div id="camBox" hidden><video id="camVid" playsinline muted></video></div>
+    <div id="cursor" hidden></div>
+  </main>
+  <section id="panel" aria-label="Story text and activity">
+    <button class="nav" id="bPrev" type="button" aria-label="Previous screen"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div id="capBox"><p id="remember" hidden>Remember</p><p id="cap" aria-live="polite"></p></div>
+    <div id="actBox" aria-live="polite"><p id="actHead"></p><p id="prompt"></p><p id="status"></p><div id="act"></div></div>
+    <button class="nav" id="bNext" type="button" aria-label="Next screen" disabled><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+  </section>
+
+  <div id="start" class="cover">
+    <div class="sheet">
+      <svg class="orn" viewBox="0 0 280 90" aria-hidden="true"><g fill="none" stroke="#1A1020" stroke-width="2.4"><path d="M10 70h260" /><path d="M10 76h260"/></g>
+        <path d="M140 10c14 14 16 32 0 50c-16-18-14-36 0-50z" fill="#E8789A" stroke="#1A1020" stroke-width="2.4"/><path d="M140 60c-10-22-34-30-52-24c8 18 30 28 52 24zM140 60c10-22 34-30 52-24c-8 18-30 28-52 24z" fill="#F26B5B" stroke="#1A1020" stroke-width="2.4"/>
+        <g fill="#E6B422" stroke="#1A1020" stroke-width="1.6"><circle cx="40" cy="58" r="6"/><circle cx="240" cy="58" r="6"/><circle cx="70" cy="62" r="4"/><circle cx="210" cy="62" r="4"/></g></svg>
+      <div class="kick">Book 2 · Dhanteras</div>
+      <h2>The Ocean of Treasures</h2>
+      <p>Samudra Manthan, Lord Shiva and Lord Dhanvantari. A story to listen to, tap and explore. Sound on is best.</p>
+      <button class="big" id="bBegin" type="button">Begin the story</button>
+    </div>
+  </div>
+  <div id="card" class="cover" hidden aria-live="polite"><div class="sheet"><div class="kick" id="cardKick"></div><h2 id="cardTitle"></h2><p id="cardSub"></p></div></div>
+  <div id="older" class="cover" hidden role="dialog" aria-modal="true" aria-labelledby="olderH">
+    <div class="sheet">
+      <div class="kick">For older readers and facilitators</div>
+      <h2 id="olderH" style="font-size:1.4rem">Dhanvantari dhyāna śloka</h2>
+      <p class="dev" lang="sa" id="olderDev"></p>
+      <p><b>Meaning in simple English.</b> <span id="olderMean"></span></p>
+      <p style="font-size:.9rem;color:#5B2A5E">Textual note: the Dhanvantari dhyāna verse is transmitted with textual variations, including differences in the description of the hands and garments. The commonly recited Dhanvantari prayer on the main screen is a mantra, not a metrical śloka. Both texts need review by a qualified Sanskrit reviewer before publication.</p>
+      <button class="big" id="bOlderClose" type="button">Close</button>
+    </div>
+  </div>
+  <div id="toast" hidden role="status"></div>
+</div>
+
+<script>
+'use strict';
+/* ===== Palette tokens: the only colours the artwork uses ===== */
+const C={ink:'#1A1020',indigo:'#2B2D6E',deep:'#1B3A6B',turq:'#1FA3A8',teal:'#167C80',sblue:'#3C6FB5',agold:'#C9A24A',gold:'#E6B422',
+  cream:'#F6ECD2',pale:'#F7F5EE',saffron:'#F28C28',verm:'#D9381E',coral:'#F26B5B',pink:'#E8789A',leaf:'#3E8E41',plum:'#5B2A5E',
+  violet:'#7B4FB0',grey:'#6E6A73',maroon:'#7A2432',rust:'#B5532A',dgold:'#8F6B1E'};
+function ca(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${n>>16},${(n>>8)&255},${n&255},${a})`}
+const TAU=Math.PI*2,clamp=(v,a,b)=>v<a?a:v>b?b:v,lerp=(a,b,t)=>a+(b-a)*t;
+const Ease={lin:t=>t,io:t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2,out:t=>1-Math.pow(1-t,3),in:t=>t*t*t,back:t=>{const c=1.5;return 1+(c+1)*Math.pow(t-1,3)+c*Math.pow(t-1,2)}};
+function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+function rng(seed){let a=seed>>>0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const $=id=>document.getElementById(id);
+const reduceMotion=(()=>{try{return matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){return false}})();
+
+/* ===== Storage: only the child's choices and reflections. Never required. ===== */
+const Store={k:'festivalBooks.book2.oceanOfTreasures.v1',data:null,
+  fresh(){return{treasure:null,reflect8:null,reflect10:null}},
+  load(){this.data=this.fresh();try{const s=localStorage.getItem(this.k);if(!s)return;const d=JSON.parse(s);if(!d||typeof d!=='object')return;
+    if(['health','friendship','knowledge','kindness'].includes(d.treasure))this.data.treasure=d.treasure;
+    ['reflect8','reflect10'].forEach(k=>{const r=d[k];if(r&&typeof r==='object')this.data[k]={text:typeof r.text==='string'?r.text.slice(0,300):'',pic:typeof r.pic==='string'?r.pic.slice(0,24):''}})}catch(e){}},
+  save(){try{localStorage.setItem(this.k,JSON.stringify(this.data))}catch(e){}},
+  set(k,v){this.data[k]=v;this.save()}};
+
+/* ===== Layout: a fixed design box (landscape 1600x900 or portrait 900x1150) fitted into the stage; backgrounds bleed to the edges ===== */
+const stage=$('stage'),cv=$('cv'),cx=cv.getContext('2d');
+const L={pw:1,ph:1,dpr:1,portrait:false,DW:1600,DH:900,s:1,ox:0,oy:0,PX:1,ver:0,B:{x:0,y:0,w:1600,h:900}};
+function relayout(){const r=stage.getBoundingClientRect();L.pw=Math.max(1,r.width);L.ph=Math.max(1,r.height);
+  L.dpr=Math.min(window.devicePixelRatio||1,2);const maxPx=4e6;if(L.pw*L.ph*L.dpr*L.dpr>maxPx)L.dpr=Math.sqrt(maxPx/(L.pw*L.ph));
+  /* orientation follows the viewport (same rule as the CSS), never the stage, so panel content can't flip it back and forth */
+  try{L.portrait=matchMedia('(max-aspect-ratio: 5/4)').matches}catch(e){L.portrait=innerWidth/innerHeight<1.25}
+  if(L.portrait){L.DW=900;L.DH=1150;L.s=Math.min(L.pw/900,L.ph/1060)}else{L.DW=1600;L.DH=900;L.s=Math.min(L.pw/1600,L.ph/810)}
+  L.ox=(L.pw-L.DW*L.s)/2;L.oy=(L.ph-L.DH*L.s)/2;L.PX=L.s*L.dpr;
+  L.B={x:-L.ox/L.s,y:-L.oy/L.s,w:L.pw/L.s,h:L.ph/L.s};
+  cv.width=Math.round(L.pw*L.dpr);cv.height=Math.round(L.ph*L.dpr);L.ver++;Spr.clear();
+  if(window.UI&&UI.relayout)UI.relayout()}
+function toDesign(clientX,clientY){const r=cv.getBoundingClientRect();return{x:((clientX-r.left)-L.ox)/L.s,y:((clientY-r.top)-L.oy)/L.s}}
+function toClient(x,y){const r=stage.getBoundingClientRect();return{x:x*L.s+L.ox,y:y*L.s+L.oy,r}}
+
+/* ===== Sprite cache: heavy patterned figures are painted once per layout and resolution ===== */
+const Spr={m:new Map(),clear(){this.m.clear()},
+  /* draw a cached sprite whose local origin (ox,oy) lands at (x,y), scaled by sc */
+  draw(g,key,x,y,w,h,ox,oy,sc,fn){const res=Math.max(.25,Math.round(L.PX*sc*(g.__zoom||1)*4)/4);const k=key+'@'+res+'#'+L.ver;let c=this.m.get(k);
+    if(!c){c=document.createElement('canvas');c.width=Math.max(1,Math.ceil(w*res));c.height=Math.max(1,Math.ceil(h*res));const q=c.getContext('2d');
+      q.setTransform(res,0,0,res,ox*res,oy*res);q.lineCap='round';q.lineJoin='round';fn(q);if(this.m.size>220)this.m.delete(this.m.keys().next().value);this.m.set(k,c)}
+    g.drawImage(c,x-ox*sc,y-oy*sc,w*sc,h*sc)}};
+
+/* ===== Clock, tweens and timers on one clock (the director can run it fast for QA) ===== */
+const T={now:0,sec:0};
+const Tw={list:[],add(o,props,ms,e){return new Promise(res=>{const fr={};for(const k in props)fr[k]=o[k];
+    this.list=this.list.filter(t=>{if(t.o===o&&Object.keys(props).some(k=>k in t.to)){t.res();return false}return true});
+    this.list.push({o,fr,to:props,t0:T.now,ms:Math.max(1,ms),e:Ease[e||'io']||e,res})})},
+  update(){const keep=[];for(const t of this.list){const k=clamp((T.now-t.t0)/t.ms,0,1),v=t.e(k);for(const p in t.to)t.o[p]=t.fr[p]+(t.to[p]-t.fr[p])*v;if(k<1)keep.push(t);else t.res()}this.list=keep},
+  kill(){this.list.forEach(t=>t.res());this.list=[]}};
+function tw(o,props,ms,e){return Tw.add(o,props,ms,e)}
+const Timers={list:[],add(ms,fn){this.list.push({at:T.now+ms,fn})},update(){const due=this.list.filter(t=>t.at<=T.now);this.list=this.list.filter(t=>t.at>T.now);due.forEach(t=>t.fn())},kill(){this.list=[]}};
+
+/* ===== Paths ===== */
+function sp(pts,closed){const p=new Path2D(),n=pts.length;if(n<2)return p;
+  if(!closed){p.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<n-1;i++){const a=pts[i],b=pts[i+1];p.quadraticCurveTo(a[0],a[1],(a[0]+b[0])/2,(a[1]+b[1])/2)}p.lineTo(pts[n-1][0],pts[n-1][1]);return p}
+  const l=pts[n-1],f=pts[0];p.moveTo((l[0]+f[0])/2,(l[1]+f[1])/2);for(let i=0;i<n;i++){const a=pts[i],b=pts[(i+1)%n];p.quadraticCurveTo(a[0],a[1],(a[0]+b[0])/2,(a[1]+b[1])/2)}p.closePath();return p}
+function pl(pts,closed){const p=new Path2D();p.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)p.lineTo(pts[i][0],pts[i][1]);if(closed)p.closePath();return p}
+function ell(x,y,rx,ry,rot){const p=new Path2D();p.ellipse(x,y,rx,ry==null?rx:ry,rot||0,0,TAU);return p}
+function rrect(x,y,w,h,r){const p=new Path2D();p.moveTo(x+r,y);p.arcTo(x+w,y,x+w,y+h,r);p.arcTo(x+w,y+h,x,y+h,r);p.arcTo(x,y+h,x,y,r);p.arcTo(x,y,x+w,y,r);p.closePath();return p}
+/* pointed oval (petal / leaf) from a base point along an angle */
+function petal(x,y,len,wid,ang){const p=new Path2D(),c=Math.cos(ang),s=Math.sin(ang),nx=-s,ny=c,tx=x+c*len,ty=y+s*len,mx=x+c*len*.5,my=y+s*len*.5;
+  p.moveTo(x,y);p.quadraticCurveTo(mx+nx*wid,my+ny*wid,tx,ty);p.quadraticCurveTo(mx-nx*wid,my-ny*wid,x,y);p.closePath();return p}
+function bb(x,y,w,h){return{x,y,w,h}}
+
+/* ===== Outlines: Madhubani double line = thick ink stroke with a light gap stroked down its middle ===== */
+function outline(g,p,w,mode,gap){if(mode==='none')return;g.strokeStyle=C.ink;
+  if(mode==='single'){g.lineWidth=w;g.stroke(p);return}
+  g.lineWidth=w*2.3;g.stroke(p);g.strokeStyle=gap||C.cream;g.lineWidth=w*.95;g.stroke(p)}
+function shape(g,p,fill,pat,o){o=o||{};if(fill){g.fillStyle=fill;g.fill(p)}if(pat){g.save();g.clip(p);pat(g);g.restore()}outline(g,p,o.lw||2.6,o.line||'dbl',o.gap)}
+function line(g,pts,col,lw,smooth){g.strokeStyle=col;g.lineWidth=lw;g.stroke(smooth?sp(pts):pl(pts))}
+function dot(g,x,y,r,col){g.fillStyle=col;g.beginPath();g.arc(x,y,r,0,TAU);g.fill()}
+function ring(g,x,y,r,col,lw,ry){if(!(r>0))return;g.strokeStyle=col;g.lineWidth=lw;g.beginPath();g.ellipse(x,y,r,Math.max(.1,ry==null?r:ry),0,0,TAU);g.stroke()}
+
+/* ===== Pattern fills (drawn inside a clip) ===== */
+const Pat={
+  dots(g,b,col,st,r){st=st||12;r=r||1.8;g.fillStyle=col;g.beginPath();let row=0;for(let y=b.y+st/2;y<b.y+b.h+st;y+=st,row++)for(let x=b.x+(row%2?st/2:0);x<b.x+b.w+st;x+=st){g.moveTo(x+r,y);g.arc(x,y,r,0,TAU)}g.fill()},
+  hatch(g,b,col,st,lw,dir){st=st||8;g.strokeStyle=col;g.lineWidth=lw||1.2;g.beginPath();for(let k=-b.h;k<b.w+b.h;k+=st){if(dir===-1){g.moveTo(b.x+k+b.h,b.y);g.lineTo(b.x+k,b.y+b.h)}else{g.moveTo(b.x+k,b.y);g.lineTo(b.x+k+b.h,b.y+b.h)}}g.stroke()},
+  hlines(g,b,col,st,lw){st=st||8;g.strokeStyle=col;g.lineWidth=lw||1.2;g.beginPath();for(let y=b.y+st/2;y<b.y+b.h;y+=st){g.moveTo(b.x,y);g.lineTo(b.x+b.w,y)}g.stroke()},
+  vlines(g,b,col,st,lw){st=st||8;g.strokeStyle=col;g.lineWidth=lw||1.2;g.beginPath();for(let x=b.x+st/2;x<b.x+b.w;x+=st){g.moveTo(x,b.y);g.lineTo(x,b.y+b.h)}g.stroke()},
+  scales(g,b,col,r,lw){r=r||10;g.strokeStyle=col;g.lineWidth=lw||1.4;g.beginPath();let row=0;for(let y=b.y;y<b.y+b.h+r;y+=r*.85,row++)for(let x=b.x+(row%2?r:0)-r;x<b.x+b.w+r*2;x+=r*2){g.moveTo(x+r,y);g.arc(x,y,r,0,Math.PI)}g.stroke()},
+  diamonds(g,b,col,st,fill){st=st||18;g.beginPath();let row=0;for(let y=b.y;y<b.y+b.h+st;y+=st*.7,row++)for(let x=b.x+(row%2?st/2:0);x<b.x+b.w+st;x+=st){const h=st*.32;g.moveTo(x,y-h);g.lineTo(x+h*.8,y);g.lineTo(x,y+h);g.lineTo(x-h*.8,y);g.closePath()}
+    if(fill){g.fillStyle=col;g.fill()}else{g.strokeStyle=col;g.lineWidth=1.3;g.stroke()}},
+  petals(g,b,col,st){st=st||24;g.fillStyle=col;let row=0;for(let y=b.y;y<b.y+b.h+st;y+=st*.8,row++)for(let x=b.x+(row%2?st/2:0);x<b.x+b.w+st;x+=st)g.fill(petal(x-st*.3,y,st*.6,st*.16,row%2?.5:-.5))},
+  waves(g,b,col,st,lw){st=st||18;g.strokeStyle=col;g.lineWidth=lw||1.6;g.beginPath();let row=0;for(let y=b.y+st*.6;y<b.y+b.h+st;y+=st*.62,row++){const o=row%2?st/2:0;g.moveTo(b.x-st+o,y);for(let x=b.x-st+o;x<b.x+b.w+st;x+=st)g.quadraticCurveTo(x+st/2,y-st*.55,x+st,y)}g.stroke()},
+  tri(g,b,col,st,down){st=st||14;g.fillStyle=col;g.beginPath();for(let x=b.x;x<b.x+b.w;x+=st){if(down){g.moveTo(x,b.y);g.lineTo(x+st/2,b.y+b.h);g.lineTo(x+st,b.y)}else{g.moveTo(x,b.y+b.h);g.lineTo(x+st/2,b.y);g.lineTo(x+st,b.y+b.h)}g.closePath()}g.fill()},
+  flowers(g,b,col,st,mid){st=st||28;let row=0;for(let y=b.y+st/2;y<b.y+b.h+st;y+=st*.8,row++)for(let x=b.x+(row%2?st/2:0);x<b.x+b.w+st;x+=st){g.fillStyle=col;g.beginPath();for(let k=0;k<5;k++){const a=k*TAU/5;g.moveTo(x+Math.cos(a)*st*.17+st*.09,y+Math.sin(a)*st*.17);g.arc(x+Math.cos(a)*st*.17,y+Math.sin(a)*st*.17,st*.09,0,TAU)}g.fill();dot(g,x,y,st*.07,mid||C.ink)}},
+  checks(g,b,col,st){st=st||16;g.fillStyle=col;let row=0;for(let y=b.y;y<b.y+b.h;y+=st,row++)for(let x=b.x+(row%2?st:0);x<b.x+b.w;x+=st*2)g.fillRect(x,y,st,st)},
+  chevron(g,b,col,st,lw){st=st||16;g.strokeStyle=col;g.lineWidth=lw||1.5;g.beginPath();for(let y=b.y;y<b.y+b.h+st;y+=st*.6){g.moveTo(b.x,y);for(let x=b.x;x<b.x+b.w+st;x+=st){g.lineTo(x+st/2,y-st*.3);g.lineTo(x+st,y)}}g.stroke()},
+  hex(g,b,col,r,lw){r=r||16;g.strokeStyle=col;g.lineWidth=lw||1.6;g.beginPath();const h=r*Math.sqrt(3);let row=0;for(let y=b.y;y<b.y+b.h+h;y+=h/2,row++)for(let x=b.x+(row%2?r*1.5:0);x<b.x+b.w+r*3;x+=r*3){for(let k=0;k<=6;k++){const a=k*TAU/6;const px=x+Math.cos(a)*r,py=y+Math.sin(a)*r;k?g.lineTo(px,py):g.moveTo(px,py)}}g.stroke()}};
+
+/* ===== Motifs ===== */
+/* side-view lotus: petals fan upward from the base point (x,y); open 0..1 */
+function lotus(g,x,y,r,o){o=o||{};const col=o.col||C.pink,col2=o.col2||C.coral,open=o.open==null?1:o.open,lw=o.lw||Math.max(1.2,r*.035);
+  const spread=lerp(.18,1,open);const back=[-1,-.5,0,.5,1],front=[-.62,0,.62];
+  back.forEach(k=>{const a=-Math.PI/2+k*1.25*spread;shape(g,petal(x,y,r,r*.3,a),col,gg=>{gg.strokeStyle=C.ink;gg.lineWidth=lw*.6;gg.beginPath();gg.moveTo(x,y);gg.lineTo(x+Math.cos(a)*r*.8,y+Math.sin(a)*r*.8);gg.stroke()},{lw})});
+  front.forEach(k=>{const a=-Math.PI/2+k*1.1*spread;shape(g,petal(x,y,r*.74,r*.26,a),col2,gg=>Pat.dots(gg,bb(x-r,y-r,r*2,r),C.cream,r*.18,r*.035),{lw})});
+  shape(g,ell(x,y+r*.06,r*.5,r*.14),C.leaf,null,{lw,line:'single'})}
+/* top-view flower used in borders, rangoli and mandalas */
+function flowerTop(g,x,y,r,col,col2,n){n=n||8;for(let k=0;k<n;k++){const a=k*TAU/n;shape(g,petal(x,y,r,r*.34,a),col,null,{lw:Math.max(1,r*.06),line:'single'})}
+  shape(g,ell(x,y,r*.32),col2||C.gold,null,{lw:Math.max(1,r*.06),line:'single'})}
+function fish(g,x,y,s,col,dir,t){g.save();g.translate(x,y);g.scale(s*(dir<0?-1:1),s);const w=Math.sin((t||0)*6)*.12;
+  const body=sp([[-30,0],[-8,-14],[18,-10],[30,0],[18,10],[-8,14]],true);
+  shape(g,pl([[-26,0],[-44,-14+w*20],[-40,0],[-44,14+w*20]],true),C.gold,null,{lw:1.4,line:'single'});
+  shape(g,body,col,gg=>{Pat.scales(gg,bb(-30,-14,52,28),C.ink,4.5,.9)},{lw:1.6});
+  shape(g,ell(18,-3,4.5),C.cream,gg=>dot(gg,19,-3,2,C.ink),{lw:1,line:'single'});
+  g.strokeStyle=C.ink;g.lineWidth=1.2;g.beginPath();g.moveTo(8,-12);g.lineTo(8,12);g.stroke();g.restore()}
+function star(g,x,y,r,col,pts){pts=pts||4;const p=new Path2D();for(let k=0;k<pts*2;k++){const a=k*Math.PI/pts-Math.PI/2,rr=k%2?r*.38:r;k?p.lineTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr):p.moveTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr)}p.closePath();
+  g.fillStyle=col;g.fill(p);g.strokeStyle=C.ink;g.lineWidth=Math.max(.8,r*.12);g.stroke(p)}
+/* ornamental cloud: scalloped top, flat base, spiral curls */
+function cloud(g,x,y,s,col,lineCol){g.save();g.translate(x,y);g.scale(s,s);const p=new Path2D();p.moveTo(-90,10);
+  p.arc(-62,0,28,Math.PI*.9,Math.PI*1.75);p.arc(-18,-16,34,Math.PI*1.1,Math.PI*1.9);p.arc(30,-8,30,Math.PI*1.15,Math.PI*1.95);p.arc(66,2,24,Math.PI*1.2,Math.PI*2.1);p.lineTo(90,10);p.closePath();
+  shape(g,p,col||C.cream,null,{lw:2.2});g.strokeStyle=lineCol||C.ink;g.lineWidth=1.6;
+  [[-62,2,10],[-18,-12,13],[30,-6,11]].forEach(([a,b,r])=>{g.beginPath();for(let k=0;k<26;k++){const t=k/25,ang=t*TAU*1.6,rr=r*t;k?g.lineTo(a+Math.cos(ang)*rr,b+Math.sin(ang)*rr):g.moveTo(a,b)}g.stroke()});
+  g.beginPath();g.moveTo(-80,6);g.lineTo(80,6);g.stroke();g.restore()}
+/* flat concentric rings (never blurred) */
+function rings(g,x,y,r0,n,step,col,lw,alpha,ry){g.save();for(let k=0;k<n;k++){g.globalAlpha=(alpha==null?1:alpha)*(1-k/(n+1));ring(g,x,y,r0+k*step,col,lw,ry==null?null:(ry*(r0+k*step)/r0))}g.restore()}
+/* petal rays */
+function rays(g,x,y,r0,r1,n,col,rot,alpha){g.save();g.globalAlpha=alpha==null?1:alpha;for(let k=0;k<n;k++){const a=(rot||0)+k*TAU/n;shape(g,petal(x+Math.cos(a)*r0,y+Math.sin(a)*r0,r1-r0,(r1-r0)*.14,a),col,null,{lw:1.4,line:'single'})}g.restore()}
+/* mandala: concentric bands of petals, dots and triangles; p = reveal progress 0..1 */
+function mandala(g,x,y,r,o){o=o||{};const p=o.p==null?1:o.p,rot=o.rot||0,sy=o.sy||1,cols=o.cols||[C.gold,C.coral,C.cream,C.turq];g.save();g.translate(x,y);g.scale(1,sy);g.rotate(rot);
+  const bands=[1,.82,.64,.46,.28];bands.forEach((f,i)=>{const k=clamp(p*bands.length-(bands.length-1-i),0,1);if(k<=0)return;const rr=r*f*Ease.out(k),n=8+i*0;
+    if(i%2===0){const m=Math.round(12+f*16);for(let j=0;j<m;j++){const a=j*TAU/m;shape(g,petal(Math.cos(a)*rr*.72,Math.sin(a)*rr*.72,rr*.28,rr*.07,a),cols[i%cols.length],null,{lw:1.4/sy,line:'single'})}}
+    else{g.fillStyle=cols[i%cols.length];g.beginPath();const m=Math.round(10+f*24);for(let j=0;j<m;j++){const a=j*TAU/m;g.moveTo(Math.cos(a)*rr*.86,Math.sin(a)*rr*.86);g.arc(Math.cos(a)*rr*.86,Math.sin(a)*rr*.86,Math.max(2,rr*.035),0,TAU)}g.fill()}
+    ring(g,0,0,rr,C.ink,2/sy);ring(g,0,0,rr*.94,C.ink,1/sy);void n});
+  if(p>.8)flowerTop(g,0,0,r*.14,C.pink,C.gold,8);g.restore()}
+/* stylised teardrop flame: outer saffron, inner gold, double outline; gentle sway */
+function flame(g,x,y,s,t){const sw=reduceMotion?0:Math.sin((t||0)*5.3)*2.2*s,h=26*s;
+  const out=new Path2D();out.moveTo(x,y);out.quadraticCurveTo(x-11*s,y-h*.45,x+sw,y-h);out.quadraticCurveTo(x+11*s,y-h*.45,x,y);out.closePath();
+  shape(g,out,C.saffron,null,{lw:1.3*s,gap:C.gold});const inn=new Path2D();inn.moveTo(x,y-2*s);inn.quadraticCurveTo(x-5*s,y-h*.4,x+sw*.6,y-h*.7);inn.quadraticCurveTo(x+5*s,y-h*.4,x,y-2*s);g.fillStyle=C.gold;g.fill(inn)}
+/* PROP-02 diya: one brass lamp design */
+function diya(g,x,y,s,t,lit,glow){g.save();g.translate(x,y);g.scale(s,s);
+  if(lit&&glow)rings(g,22,-34,18,4,10,C.gold,3,glow);
+  const bowl=new Path2D();bowl.moveTo(-34,-10);bowl.quadraticCurveTo(-30,8,0,9);bowl.quadraticCurveTo(26,8,34,-6);bowl.lineTo(44,-14);bowl.quadraticCurveTo(30,-12,24,-10);bowl.closePath();
+  shape(g,bowl,C.agold,gg=>{Pat.tri(gg,bb(-36,-4,70,8),C.dgold,8,true);Pat.dots(gg,bb(-36,0,70,10),C.cream,7,1.4)},{lw:1.8});
+  shape(g,ell(0,-10,34,5),C.dgold,null,{lw:1.4,line:'single'});
+  shape(g,pl([[-14,9],[14,9],[10,15],[-10,15]],true),C.agold,null,{lw:1.4,line:'single'});
+  if(lit)flame(g,38,-15,1,t);g.restore()}
+/* PROP-01 the golden amrita vessel (kalasha): base at (x,y), about 130 tall at s=1 */
+function kalasha(g,x,y,s,t,glow){g.save();g.translate(x,y);g.scale(s,s);
+  if(glow){rings(g,0,-62,62,4,13,C.gold,3,glow);rays(g,0,-62,70,98,16,C.gold,(t||0)*.1,glow*.8)}
+  shape(g,pl([[-20,0],[20,0],[15,-14],[-15,-14]],true),C.agold,gg=>Pat.vlines(gg,bb(-20,-14,40,14),C.dgold,5,1.2),{lw:1.8});
+  const belly=sp([[-14,-12],[-44,-30],[-50,-58],[-36,-86],[-18,-94],[18,-94],[36,-86],[50,-58],[44,-30],[14,-12]],true);
+  shape(g,belly,C.gold,gg=>{gg.fillStyle=C.agold;gg.fillRect(-52,-64,104,14);Pat.diamonds(gg,bb(-52,-62,104,10),C.verm,13,true);
+    Pat.dots(gg,bb(-52,-48,104,14),C.dgold,8,1.6);for(let k=-3;k<=3;k++)gg.fill(petal(k*13,-20,26,6,-Math.PI/2));
+    gg.fillStyle=C.coral;for(let k=-3;k<=3;k++)gg.fill(petal(k*13,-20,18,4,-Math.PI/2));gg.strokeStyle=C.dgold;gg.lineWidth=1.4;gg.beginPath();gg.moveTo(-50,-74);gg.lineTo(50,-74);gg.stroke()},{lw:2});
+  shape(g,pl([[-16,-92],[16,-92],[14,-104],[-14,-104]],true),C.agold,gg=>Pat.hlines(gg,bb(-16,-104,32,12),C.dgold,4,1.2),{lw:1.8});
+  shape(g,ell(0,-106,28,7),C.gold,null,{lw:1.8});shape(g,ell(0,-107,20,4),C.cream,null,{lw:1.2,line:'single'});
+  const tt=t||0;for(let k=0;k<3;k++){const ph=(tt*.35+k/3)%1,yy=-112-ph*44,xx=(k-1)*15+Math.sin(tt*1.5+k)*4;g.globalAlpha=1-ph*.6;flowerTop(g,xx,yy,5.5-ph*1.5,C.gold,C.cream,6);g.globalAlpha=1}
+  g.restore()}
+/* repeated rows of the cosmic ocean (ENV-01); rows scroll gently */
+function sea(g,y0,y1,o){const B=L.B,x0=B.x-30,x1=B.x+B.w+30,row=o.row||46,cols=o.cols,t=o.t||0,len=o.len||88,lc=o.line||C.pale;
+  g.fillStyle=cols[0];g.fillRect(x0,y0+8,x1-x0,y1-y0);let i=0;
+  for(let y=y0;y<y1;y+=row,i++){const c=cols[i%cols.length],sp_=(o.spd==null?12:o.spd)*(i%2?1:-1),off=((t*sp_)%len+len)%len-len;
+    const crest=new Path2D();crest.moveTo(x0+off,y+10);for(let x=x0+off;x<x1+len;x+=len)crest.quadraticCurveTo(x+len/2,y-12,x+len,y+10);
+    const body=new Path2D(crest);body.lineTo(x1+len,y1+4);body.lineTo(x0+off,y1+4);body.closePath();g.fillStyle=c;g.fill(body);
+    g.strokeStyle=lc;g.lineWidth=2.4;g.stroke(crest);g.save();g.translate(0,7);g.lineWidth=1.2;g.stroke(crest);g.restore();
+    if(o.dots!==false){g.fillStyle=lc;g.beginPath();for(let x=x0+off+len/2;x<x1+len;x+=len){g.moveTo(x+2.2,y+20);g.arc(x,y+20,2.2,0,TAU)}g.fill()}}
+  (o.circles||[]).forEach(([cx_,cy_,r])=>{rings(g,cx_,cy_,r,3,r*.45,lc,1.6,.85,r*.42)})}
+/* sky (ENV-02): flat ground, tiny stars and dots, deterministic */
+function skyField(g,col,o){o=o||{};const B=L.B;g.fillStyle=col;g.fillRect(B.x-2,B.y-2,B.w+4,B.h+4);const r=rng(o.seed||7);const n=Math.round(B.w*B.h/(o.density||9000));
+  for(let k=0;k<n;k++){const x=B.x+r()*B.w,y=B.y+r()*(o.maxY?Math.min(B.h,o.maxY-B.y):B.h),tw=r();if(tw<.18)star(g,x,y,5+r()*4,o.star||C.gold,4);else dot(g,x,y,1.4+r()*1.6,o.dot||C.cream)}}
+/* peacock motif */
+function peacock(g,x,y,s,dir,col){g.save();g.translate(x,y);g.scale(s*(dir<0?-1:1),s);col=col||C.deep;
+  for(let k=0;k<5;k++){const a=Math.PI*.95+k*.13;shape(g,petal(-14,-6,70,10,a),C.leaf,gg=>{},{lw:1.2,line:'single'});const ex=-14+Math.cos(a)*62,ey=-6+Math.sin(a)*62;shape(g,ell(ex,ey,7,5,a),C.turq,gg=>dot(gg,ex,ey,2.5,C.deep),{lw:1,line:'single'})}
+  shape(g,sp([[-24,0],[-10,-16],[12,-14],[22,0],[8,10],[-14,10]],true),col,gg=>Pat.scales(gg,bb(-24,-16,48,26),C.turq,4,1),{lw:1.6});
+  shape(g,sp([[10,-12],[16,-30],[22,-44],[30,-46],[28,-38],[20,-28],[18,-10]],true),col,null,{lw:1.4});
+  dot(g,27,-43,1.6,C.cream);[[24,-48],[27,-52],[30,-50]].forEach(([a,b])=>{line(g,[[25,-46],[a,b]],C.ink,1);dot(g,a,b,1.6,C.gold)});
+  line(g,[[30,-44],[36,-42]],C.saffron,2.2);line(g,[[2,10],[0,22]],C.ink,1.6);line(g,[[10,10],[12,22]],C.ink,1.6);g.restore()}
+/* hanging mango-leaf toran across (x0..x1) at y */
+function toran(g,x0,x1,y,s){s=s||1;shape(g,pl([[x0,y-3],[x1,y-3],[x1,y+3],[x0,y+3]],true),C.dgold,null,{lw:1.4,line:'single'});
+  for(let x=x0+12*s;x<x1-6;x+=22*s){shape(g,petal(x,y+2,30*s,7*s,Math.PI/2+Math.sin(x)*.12),C.leaf,gg=>{},{lw:1.3,line:'single'});line(g,[[x,y+4],[x,y+26*s]],C.ink,.8)}}
+/* sagging marigold garland */
+function garland(g,x0,y0,x1,y1,sag,s){s=s||1;const n=Math.max(6,Math.round(Math.hypot(x1-x0,y1-y0)/(13*s)));for(let k=0;k<=n;k++){const t=k/n,x=lerp(x0,x1,t),y=lerp(y0,y1,t)+Math.sin(t*Math.PI)*sag;
+  shape(g,ell(x,y,7.5*s),k%3===2?C.gold:C.saffron,gg=>Pat.dots(gg,bb(x-8*s,y-8*s,16*s,16*s),C.verm,4*s,1*s),{lw:1.1,line:'single'})}}
+/* rangoli: top-view mandala in festival colours */
+function rangoli(g,x,y,r,sy,p){mandala(g,x,y,r,{sy:sy||.42,p:p==null?1:p,cols:[C.saffron,C.verm,C.gold,C.pink,C.leaf]})}
+
+/* ===== Small icons (also rendered into buttons): drawn centred, radius about 50 ===== */
+function drawIcon(g,k,s){g.save();g.scale(s||1,s||1);g.lineCap='round';g.lineJoin='round';
+  switch(k){
+    case'leaf':shape(g,petal(-30,30,84,22,-Math.PI/4),C.leaf,gg=>{gg.strokeStyle=C.cream;gg.lineWidth=2;gg.beginPath();gg.moveTo(-30,30);gg.lineTo(28,-28);for(let j=0;j<4;j++){const t=.2+j*.18;gg.moveTo(-30+58*t,30-58*t);gg.lineTo(-30+58*t-14,30-58*t-6);gg.moveTo(-30+58*t,30-58*t);gg.lineTo(-30+58*t+6,30-58*t+14)}gg.stroke()},{lw:2.2});line(g,[[-30,30],[-42,42]],C.ink,3);break;
+    case'pot':shape(g,sp([[-16,-34],[-34,-10],[-36,16],[-20,36],[20,36],[36,16],[34,-10],[16,-34]],true),C.rust,gg=>{Pat.tri(gg,bb(-40,-6,80,12),C.cream,10,true);Pat.dots(gg,bb(-40,10,80,22),C.agold,9,1.8)},{lw:2.2});
+      shape(g,ell(0,-36,20,6),C.rust,null,{lw:2});shape(g,ell(0,-37,13,3.5),C.turq,null,{lw:1.2,line:'single'});[[-6,-50],[6,-56]].forEach(([a,b])=>shape(g,ell(a,b,3.5,5),C.turq,null,{lw:1,line:'single'}));break;
+    case'bowl':[[-16,-14,C.leaf],[0,-20,C.coral],[16,-14,C.gold],[-6,-8,C.cream],[9,-6,C.saffron]].forEach(([a,b,c])=>shape(g,ell(a,b,11),c,null,{lw:1.6,line:'single'}));
+      shape(g,sp([[-44,-6],[-34,20],[0,30],[34,20],[44,-6]],false),C.agold,gg=>Pat.diamonds(gg,bb(-44,-6,88,36),C.dgold,12,true),{lw:2.2});shape(g,ell(0,-6,44,7),C.agold,null,{lw:1.6,line:'single'});break;
+    case'hands':{const hand=dir=>{const p=sp([[0,36],[dir*4,-30],[dir*10,-44],[dir*20,-36],[dir*26,-4],[dir*30,30],[dir*18,40]],true);shape(g,p,C.agold,gg=>{gg.strokeStyle=C.ink;gg.lineWidth=1.2;gg.beginPath();for(let j=0;j<3;j++){gg.moveTo(dir*(8+j*5),-34+j*4);gg.lineTo(dir*(12+j*5),-12+j*3)}gg.stroke()},{lw:2})};
+      hand(-1);hand(1);shape(g,rrect(-34,30,68,14,5),C.verm,gg=>Pat.dots(gg,bb(-34,30,68,14),C.gold,7,1.5),{lw:1.8});break}
+    case'heart':{const p=new Path2D();p.moveTo(0,36);p.bezierCurveTo(-56,-4,-30,-48,0,-18);p.bezierCurveTo(30,-48,56,-4,0,36);p.closePath();shape(g,p,C.verm,gg=>Pat.dots(gg,bb(-50,-46,100,84),C.pink,10,2),{lw:2.2});break}
+    case'book':{const pg=dir=>{const p=sp([[0,-26],[dir*20,-34],[dir*44,-30],[dir*44,26],[dir*20,22],[0,30]],true);shape(g,p,C.cream,gg=>Pat.hlines(gg,bb(dir>0?6:-40,-24,34,46),C.grey,7,1.2),{lw:2})};
+      shape(g,pl([[-48,30],[0,36],[48,30],[48,36],[0,42],[-48,36]],true),C.verm,null,{lw:1.6,line:'single'});pg(-1);pg(1);break}
+    case'friends':{const kid=(x,col,sc)=>{shape(g,pl([[x-14,40],[x-11,4],[x+11,4],[x+14,40]],true),col,gg=>Pat.dots(gg,bb(x-16,0,32,42),C.cream,7,1.4),{lw:1.8});shape(g,ell(x,-12,12,14),C.agold,null,{lw:1.8});shape(g,ell(x,-20,12,7),C.ink,null,{line:'none'});void sc};
+      kid(-20,C.saffron);kid(20,C.pink);line(g,[[-9,14],[0,4],[9,14]],C.ink,7);line(g,[[-9,14],[0,4],[9,14]],C.agold,4);line(g,[[-31,10],[-38,-8]],C.ink,7);line(g,[[-31,10],[-38,-8]],C.agold,4);line(g,[[31,10],[38,-8]],C.ink,7);line(g,[[31,10],[38,-8]],C.agold,4);break}
+    case'plant':shape(g,pl([[-24,10],[24,10],[18,40],[-18,40]],true),C.rust,gg=>Pat.tri(gg,bb(-26,12,52,10),C.cream,9,true),{lw:2});line(g,[[0,10],[0,-34]],C.leaf,4);
+      [[-1,-8],[1,-18],[-1,-28],[1,-38]].forEach(([d,y])=>shape(g,petal(0,y+8,26,7,d<0?-Math.PI*.8:-Math.PI*.2),C.leaf,null,{lw:1.4,line:'single'}));break;
+    case'water':shape(g,pl([[-20,-30],[20,-30],[14,36],[-14,36]],true),C.pale,gg=>{gg.fillStyle=C.turq;gg.fillRect(-24,-6,48,44);Pat.waves(gg,bb(-24,-8,48,44),C.pale,10,1.4)},{lw:2});
+      shape(g,petal(28,-30,20,7,Math.PI/2),C.turq,null,{lw:1.4,line:'single'});break;
+    case'read':drawIcon(g,'book',.62);g.translate(0,-38);shape(g,ell(-26,0,10,12),C.agold,null,{lw:1.6});shape(g,ell(26,4,8,10),C.agold,null,{lw:1.6});break;
+    case'help':drawIcon(g,'hands',.8);break;
+    case'lamp':diya(g,-6,26,1.25,0,true,0);break;
+    case'lotus':lotus(g,0,30,56,{col:C.pink,col2:C.coral});break;
+    case'health':drawIcon(g,'leaf',.95);break;
+    case'friendship':drawIcon(g,'friends',1);break;
+    case'knowledge':drawIcon(g,'book',1);break;
+    case'kindness':drawIcon(g,'hands',.95);break;
+    case'share':kalasha(g,0,44,.66,0,0);break;
+    case'elephant':airavata(g,-14,46,.34);break;
+    case'horse':celestialHorse(g,-20,50,.34,0);break;
+    case'tree':kalpavriksha(g,0,50,.32,1,0);break;
+    case'w-living':case'w-water':case'w-celestial':worldMedal(g,0,0,46,k.slice(2),false,0);break}
+  g.restore()}
+function iconCanvas(k,px){const c=document.createElement('canvas');px=px||72;const r=Math.min(2,window.devicePixelRatio||1);c.width=c.height=Math.round(px*r);c.className='ic';c.setAttribute('aria-hidden','true');
+  const g=c.getContext('2d');g.scale(px*r/120,px*r/120);g.translate(60,60);try{drawIcon(g,k,1)}catch(e){}return c}
+
+/* ===== Madhubani border frame around the whole stage (never over the interactive art) ===== */
+function frame(g,cols){const B=L.B,w=clamp(Math.min(L.pw,L.ph)*.022,8,18)/L.s,x=B.x,y=B.y,W=B.w,H=B.h;cols=cols||[C.verm,C.gold];
+  const band=new Path2D();band.rect(x,y,W,H);band.rect(x+w,y+w,W-2*w,H-2*w);g.save();g.fillStyle=cols[0];g.fill(band,'evenodd');g.clip(band,'evenodd');
+  const st=w*1.4;g.fillStyle=cols[1];g.beginPath();for(let k=x;k<x+W;k+=st){g.moveTo(k,y+w);g.lineTo(k+st/2,y+w*.25);g.lineTo(k+st,y+w);g.moveTo(k,y+H-w);g.lineTo(k+st/2,y+H-w*.25);g.lineTo(k+st,y+H-w)}
+  for(let k=y;k<y+H;k+=st){g.moveTo(x+w,k);g.lineTo(x+w*.25,k+st/2);g.lineTo(x+w,k+st);g.moveTo(x+W-w,k);g.lineTo(x+W-w*.25,k+st/2);g.lineTo(x+W-w,k+st)}g.fill();g.restore();
+  g.strokeStyle=C.ink;g.lineWidth=w*.16;g.strokeRect(x+w*.08,y+w*.08,W-w*.16,H-w*.16);g.strokeRect(x+w,y+w,W-2*w,H-2*w);g.lineWidth=w*.08;g.strokeRect(x+w*1.25,y+w*1.25,W-2.5*w,H-2.5*w);
+  [[x+w,y+w],[x+W-w,y+w],[x+w,y+H-w],[x+W-w,y+H-w]].forEach(([a,b])=>flowerTop(g,a,b,w*1.15,C.pink,C.gold,8))}
+
+/* ===== Character bible: one parameterised figure, every design defined once and never varied =====
+   Local units: feet at y=0, head centre at (0,-262), standing height about 300 plus crown. Seated figures lift the
+   upper body by DY (waist at -60). Sprites are cached per character + pose + mood. */
+const DYS=90;
+const lowPats={
+  dots:c=>(g,b)=>Pat.dots(g,b,c,12,2),flowers:c=>(g,b)=>Pat.flowers(g,b,c,26,C.ink),diamonds:c=>(g,b)=>Pat.diamonds(g,b,c,16,true),
+  chevron:c=>(g,b)=>Pat.chevron(g,b,c,16,1.6),scales:c=>(g,b)=>Pat.scales(g,b,c,8,1.3),hatch:c=>(g,b)=>Pat.hatch(g,b,c,9,1.4),
+  tiger:()=>(g,b)=>{g.strokeStyle=C.ink;g.lineWidth=3.2;g.beginPath();const r=rng(5);for(let y=b.y;y<b.y+b.h;y+=14)for(let x=b.x+(r()*10);x<b.x+b.w;x+=26){g.moveTo(x,y);g.quadraticCurveTo(x+6,y+5,x+3,y+11)}g.stroke()}};
+const SPEC={
+  vishnu:{skin:C.sblue,sex:'m',seated:true,low:C.gold,lowPat:lowPats.dots(C.verm),border:C.verm,thread:true,stole:C.verm,hair:'kirita',neck2:true},
+  shiva:{skin:C.sblue,sex:'m',seated:true,low:C.saffron,lowPat:lowPats.tiger(),border:C.dgold,hair:'jata',beads:true},
+  parvati:{skin:C.agold,sex:'f',seated:true,low:C.verm,lowPat:lowPats.flowers(C.gold),top:C.gold,border:C.gold,hair:'bun',look:-1},
+  lakshmi:{skin:C.agold,sex:'f',seated:true,low:C.coral,lowPat:lowPats.diamonds(C.gold),top:C.verm,border:C.gold,hair:'lakshmi',neck2:true},
+  dhanv:{skin:C.sblue,sex:'m',low:C.gold,lowPat:lowPats.flowers(C.verm),border:C.verm,thread:true,stole:C.turq,hair:'kirita',neck2:true},
+  deva0:{skin:C.agold,sex:'m',low:C.deep,lowPat:lowPats.dots(C.cream),border:C.gold,stole:C.cream,stolePat:lowPats.dots(C.gold),hair:'mukut'},
+  deva1:{skin:C.rust,sex:'m',low:C.leaf,lowPat:lowPats.chevron(C.cream),border:C.gold,stole:C.gold,stolePat:lowPats.dots(C.verm),hair:'mukut'},
+  deva2:{skin:C.agold,sex:'m',low:C.cream,lowPat:lowPats.diamonds(C.sblue),border:C.gold,stole:C.sblue,stolePat:lowPats.dots(C.cream),hair:'mukut'},
+  asura0:{skin:C.rust,sex:'m',low:C.maroon,lowPat:lowPats.diamonds(C.dgold),border:C.dgold,stole:C.dgold,stolePat:lowPats.hatch(C.maroon),hair:'asura',tache:true},
+  asura1:{skin:C.agold,sex:'m',low:C.rust,lowPat:lowPats.scales(C.dgold),border:C.leaf,stole:C.leaf,stolePat:lowPats.dots(C.dgold),hair:'asura'},
+  asura2:{skin:C.rust,sex:'m',low:C.dgold,lowPat:lowPats.chevron(C.maroon),border:C.maroon,stole:C.maroon,stolePat:lowPats.dots(C.dgold),hair:'asura',tache:true},
+  mom:{skin:C.agold,sex:'f',low:C.verm,lowPat:lowPats.flowers(C.gold),top:C.gold,border:C.gold,hair:'fhair'},
+  gran:{skin:C.rust,sex:'f',low:C.cream,lowPat:lowPats.dots(C.leaf),top:C.leaf,border:C.leaf,hair:'grey'},
+  boy:{skin:C.rust,sex:'k',low:C.saffron,lowPat:lowPats.dots(C.verm),border:C.verm,top:C.saffron,hair:'kidm'},
+  girl:{skin:C.agold,sex:'g',low:C.pink,lowPat:lowPats.flowers(C.cream),border:C.verm,top:C.pink,hair:'kidf'}};
+
+/* ---- arms ---- */
+function arm(g,S,E,H,skin,o){o=o||{};const p=new Path2D();p.moveTo(S[0],S[1]);p.lineTo(E[0],E[1]);p.lineTo(H[0],H[1]);
+  g.strokeStyle=C.ink;g.lineWidth=19;g.stroke(p);g.strokeStyle=skin;g.lineWidth=13;g.stroke(p);
+  const band=(A,B,t,len,col)=>{const x=lerp(A[0],B[0],t),y=lerp(A[1],B[1],t),dx=B[0]-A[0],dy=B[1]-A[1],d=Math.hypot(dx,dy)||1,nx=-dy/d*len/2,ny=dx/d*len/2;g.strokeStyle=C.ink;g.lineWidth=5.5;g.beginPath();g.moveTo(x-nx,y-ny);g.lineTo(x+nx,y+ny);g.stroke();g.strokeStyle=col;g.lineWidth=3;g.stroke()};
+  band(S,E,.32,15,C.gold);band(E,H,.72,14,C.gold);band(E,H,.82,14,o.bangle||C.verm);
+  shape(g,ell(H[0],H[1],9.5,9),skin,null,{lw:1.8,line:'single'});
+  if(o.hand==='open'){g.strokeStyle=C.ink;g.lineWidth=1.1;g.beginPath();for(let k=-1;k<=1;k++){g.moveTo(H[0]+k*3.5,H[1]-7);g.lineTo(H[0]+k*3.5,H[1]-1)}g.stroke();dot(g,H[0],H[1]+2,1.6,C.verm)}}
+/* held items, drawn at the hand */
+function item(g,k,x,y,s){g.save();g.translate(x,y);g.scale(s||1,s||1);switch(k){
+  case'conch':{const p=sp([[-6,14],[-16,0],[-12,-16],[0,-26],[12,-18],[16,-2],[8,12]],true);shape(g,p,C.pale,gg=>{gg.strokeStyle=C.ink;gg.lineWidth=1.2;gg.beginPath();for(let k=0;k<24;k++){const t=k/23,a=t*TAU*1.5,r=11*(1-t);k?gg.lineTo(Math.cos(a)*r,-6+Math.sin(a)*r):gg.moveTo(11,-6)}gg.stroke()},{lw:1.6});
+    shape(g,pl([[-6,14],[8,12],[2,22]],true),C.coral,null,{lw:1.2,line:'single'});break}
+  case'chakra':{g.translate(0,-28);for(let j=0;j<12;j++){const a=j*TAU/12;shape(g,petal(Math.cos(a)*17,Math.sin(a)*17,9,3,a),C.saffron,null,{lw:1,line:'single'})}
+    shape(g,ell(0,0,17),C.gold,gg=>{gg.strokeStyle=C.ink;gg.lineWidth=1.4;gg.beginPath();for(let j=0;j<8;j++){const a=j*TAU/8;gg.moveTo(0,0);gg.lineTo(Math.cos(a)*16,Math.sin(a)*16)}gg.stroke()},{lw:1.6});shape(g,ell(0,0,6),C.verm,null,{lw:1.2,line:'single'});break}
+  case'gada':shape(g,pl([[-3.5,8],[3.5,8],[3.5,92],[-3.5,92]],true),C.dgold,null,{lw:1.4,line:'single'});shape(g,ell(0,-4,15,17),C.gold,gg=>{Pat.hlines(gg,bb(-16,-22,32,36),C.dgold,7,2);Pat.dots(gg,bb(-16,-22,32,36),C.verm,8,1.4)},{lw:1.8});
+    shape(g,ell(0,-24,5),C.gold,null,{lw:1.2,line:'single'});break;
+  case'lotus':lotus(g,0,-4,26,{col:C.pink,col2:C.coral});break;
+  case'leech':{const p=sp([[-4,6],[-12,-6],[-6,-20],[6,-28],[12,-22],[4,-14],[0,-2],[6,8]],true);shape(g,p,C.teal,gg=>Pat.hlines(gg,bb(-14,-30,28,40),C.cream,5,1),{lw:1.4});break}
+  case'flower':flowerTop(g,0,-6,10,C.pink,C.gold,6);break;
+  case'diya':diya(g,0,0,.62,0,true,0);break;
+  case'bowl':g.translate(0,-2);drawIcon(g,'bowl',.42);break;
+  case'pot':g.translate(0,-8);drawIcon(g,'pot',.4);break;
+  case'garland':break}
+  g.restore()}
+
+/* ---- face: almond eyes, arched brows, nose line; mood changes brows and mouth only ---- */
+function face(g,sp_,mood,dy){const hy=-262+dy,look=(sp_.look||0)*2.6;
+  const eyes=[-1,1];eyes.forEach(s=>{const ex=s*11,ey=hy-2;const p=new Path2D();p.moveTo(ex-10,ey);p.quadraticCurveTo(ex,ey-7.5,ex+10,ey);p.quadraticCurveTo(ex,ey+5.5,ex-10,ey);p.closePath();
+    shape(g,p,C.pale,null,{lw:1.6,line:'single'});dot(g,ex+look,ey-.5,3.4,C.ink);dot(g,ex+look+1,ey-1.5,1,C.pale);
+    g.strokeStyle=C.ink;g.lineWidth=1.2;g.beginPath();g.moveTo(ex+s*10,ey);g.lineTo(ex+s*13,ey-2);g.stroke();
+    let bi=-11,bo=-10,bc=-15;if(mood==='worried'||mood==='concern'){bi=-15;bo=-9;bc=-14}else if(mood==='curious'){bi=s<0?-14:-11;bo=s<0?-12:-11;bc=s<0?-17:-15}else if(mood==='determined'){bi=-9;bo=-12;bc=-13}else if(mood==='wonder'){bi=-14;bo=-13;bc=-18}else if(mood==='compassion'){bi=-13;bo=-10;bc=-15}
+    g.lineWidth=2.2;g.beginPath();g.moveTo(ex-s*9,ey+bi);g.quadraticCurveTo(ex,ey+bc,ex+s*10,ey+bo);g.stroke()});
+  g.strokeStyle=C.ink;g.lineWidth=1.6;g.beginPath();g.moveTo(-1,hy-8);g.quadraticCurveTo(2,hy+5,3,hy+9);g.quadraticCurveTo(0,hy+12,-3,hy+10);g.stroke();
+  const my=hy+18;g.strokeStyle=C.verm;g.lineWidth=3;g.beginPath();
+  if(mood==='wonder'){g.fillStyle=C.verm;g.ellipse(0,my,3.6,4.4,0,0,TAU);g.fill()}
+  else if(mood==='worried'||mood==='concern'){g.moveTo(-6,my+1.5);g.quadraticCurveTo(0,my-1.5,6,my+1.5);g.stroke()}
+  else if(mood==='curious'||mood==='determined'){g.moveTo(-5,my);g.lineTo(5,my);g.stroke()}
+  else{const k=mood==='happy'||mood==='hope'?4.5:3;g.moveTo(-7,my-1);g.quadraticCurveTo(0,my+k,7,my-1);g.stroke()}
+  if(sp_.tache){g.strokeStyle=C.ink;g.lineWidth=2.6;g.beginPath();g.moveTo(-1,my-5);g.quadraticCurveTo(-8,my-7,-13,my-2);g.moveTo(1,my-5);g.quadraticCurveTo(8,my-7,13,my-2);g.stroke()}
+  if(sp_.hair==='jata'){g.strokeStyle=C.pale;g.lineWidth=2;g.beginPath();for(let k=0;k<3;k++){g.moveTo(-14,hy-22+k*3.5);g.lineTo(14,hy-22+k*3.5)}g.stroke();shape(g,ell(0,hy-19,1.8,4.5),C.verm,null,{lw:.8,line:'single'})}
+  else if(sp_.sex==='f'||sp_.sex==='g'||sp_.hair==='kirita'||sp_.hair==='lakshmi')dot(g,0,hy-15,2.6,C.verm);
+  else{g.strokeStyle=C.verm;g.lineWidth=2.4;g.beginPath();g.moveTo(0,hy-21);g.lineTo(0,hy-13);g.stroke()}}
+
+/* ---- hair and crowns ---- */
+function hairCap(g,hy,col){shape(g,sp([[-25,hy+4],[-27,hy-20],[-15,hy-31],[15,hy-31],[27,hy-20],[25,hy+4],[18,hy-14],[0,hy-20],[-18,hy-14]],true),col||C.ink,gg=>{gg.strokeStyle=C.grey;gg.lineWidth=1;gg.beginPath();for(let k=-3;k<=3;k++){gg.moveTo(k*6,hy-28);gg.quadraticCurveTo(k*8,hy-18,k*9.5,hy-8)}gg.stroke()},{lw:1.4,line:'single'})}
+function crown(g,kind,hy,sc){sc=sc||1;g.save();g.translate(0,hy-28);g.scale(sc,sc);
+  if(kind==='kirita'){shape(g,pl([[-24,0],[-18,-54],[-8,-74],[0,-84],[8,-74],[18,-54],[24,0]],true),C.gold,gg=>{Pat.tri(gg,bb(-26,-14,52,12),C.verm,8);Pat.diamonds(gg,bb(-26,-56,52,40),C.verm,13,true);Pat.dots(gg,bb(-26,-86,52,30),C.dgold,7,1.4)},{lw:1.8});
+    [-1,1].forEach(s=>shape(g,petal(s*22,-6,26,8,-Math.PI/2+s*.9),C.gold,gg=>Pat.dots(gg,bb(-60,-40,120,40),C.verm,6,1.2),{lw:1.4}));
+    shape(g,ell(0,-88,6,7),C.verm,null,{lw:1.4,line:'single'});shape(g,rrect(-27,-6,54,10,4),C.gold,gg=>Pat.dots(gg,bb(-27,-6,54,10),C.verm,6,1.6),{lw:1.6})}
+  else if(kind==='mukut'){[[0,40,11],[-15,30,9],[15,30,9]].forEach(([x,l,w])=>shape(g,petal(x,-2,l,w,-Math.PI/2+x*.022),C.gold,gg=>Pat.dots(gg,bb(-30,-44,60,44),C.verm,7,1.4),{lw:1.5}));
+    shape(g,rrect(-26,-6,52,10,4),C.gold,gg=>Pat.tri(gg,bb(-26,-6,52,10),C.verm,7),{lw:1.6});shape(g,ell(0,-12,4),C.verm,null,{lw:1,line:'single'})}
+  else if(kind==='asura'){/* a wrapped turban crown with a jewelled plume: distinct from the devas' three-point crown, never horn-like */
+    shape(g,petal(4,-34,40,9,-Math.PI/2+.42),C.saffron,gg=>Pat.hlines(gg,bb(-10,-80,60,50),C.dgold,5,1.2),{lw:1.4});
+    shape(g,sp([[-27,0],[-31,-18],[-24,-34],[-8,-40],[10,-40],[25,-34],[31,-18],[27,0]],true),C.dgold,gg=>{gg.strokeStyle=C.maroon;gg.lineWidth=3;gg.beginPath();for(let k=0;k<4;k++){gg.moveTo(-32,-6-k*9);gg.quadraticCurveTo(0,-16-k*9,32,-2-k*9)}gg.stroke();Pat.dots(gg,bb(-32,-42,64,42),C.cream,9,1.3)},{lw:1.7});
+    shape(g,rrect(-27,-6,54,10,3),C.maroon,gg=>Pat.dots(gg,bb(-27,-6,54,10),C.gold,6,1.4),{lw:1.6});shape(g,ell(4,-30,6,7),C.maroon,gg=>dot(gg,4,-30,2.4,C.gold),{lw:1.3,line:'single'})}
+  g.restore()}
+function hairTop(g,sp_,dy){const hy=-262+dy,h=sp_.hair;
+  if(h==='kirita'||h==='mukut'||h==='asura'){hairCap(g,hy);crown(g,h,hy)}
+  else if(h==='lakshmi'){hairCap(g,hy);crown(g,'kirita',hy+2,.82)}
+  else if(h==='jata'){hairCap(g,hy);
+    shape(g,sp([[-22,hy-26],[-30,hy-64],[-20,hy-98],[0,hy-110],[20,hy-98],[30,hy-64],[22,hy-26]],true),C.ink,gg=>{gg.strokeStyle=C.grey;gg.lineWidth=1.4;gg.beginPath();for(let k=-3;k<=3;k++){gg.moveTo(k*7,hy-28);for(let j=1;j<=6;j++)gg.lineTo(k*7+(j%2?3:-3),hy-28-j*13)}gg.stroke()},{lw:1.6,line:'single'});
+    g.fillStyle=C.rust;g.beginPath();for(let k=-3;k<=3;k++){g.moveTo(k*8+3.5,hy-36);g.arc(k*8,hy-36,3.5,0,TAU)}g.fill();
+    const m=new Path2D();m.arc(-22,hy-72,15,Math.PI*.5,Math.PI*1.5);m.arc(-17,hy-72,11,Math.PI*1.5,Math.PI*.5,true);m.closePath();shape(g,m,C.pale,null,{lw:1.4,line:'single'});
+    const gp=[[4,hy-106],[14,hy-128],[34,hy-142],[56,hy-140],[70,hy-126]];g.strokeStyle=C.ink;g.lineWidth=11;g.stroke(sp(gp));g.strokeStyle=C.turq;g.lineWidth=7;g.stroke(sp(gp));g.strokeStyle=C.pale;g.lineWidth=2;g.stroke(sp(gp));
+    [[74,hy-118],[78,hy-110],[70,hy-112]].forEach(([a,b])=>dot(g,a,b,2.2,C.turq))}
+  else if(h==='bun'){hairCap(g,hy);shape(g,ell(0,hy-38,17,13),C.ink,gg=>Pat.dots(gg,bb(-18,-52+hy,36,28),C.cream,7,1.4),{lw:1.4,line:'single'});
+    shape(g,rrect(-25,hy-31,50,8,3),C.gold,gg=>Pat.dots(gg,bb(-25,hy-31,50,8),C.verm,6,1.4),{lw:1.3});shape(g,petal(0,hy-29,16,6,-Math.PI/2),C.gold,null,{lw:1.2})}
+  else if(h==='fhair'||h==='grey'){const col=h==='grey'?C.grey:C.ink;hairCap(g,hy,col);shape(g,ell(18,hy-28,14,12),col,null,{lw:1.4,line:'single'});g.fillStyle=C.cream;g.beginPath();for(let k=0;k<6;k++){const a=k*TAU/6;g.moveTo(18+Math.cos(a)*15+2,hy-28+Math.sin(a)*13);g.arc(18+Math.cos(a)*15,hy-28+Math.sin(a)*13,2,0,TAU)}g.fill();
+    if(h==='fhair'){g.strokeStyle=C.verm;g.lineWidth=2;g.beginPath();g.moveTo(0,hy-30);g.lineTo(0,hy-21);g.stroke()}
+    else{g.strokeStyle=C.ink;g.lineWidth=1.6;ring(g,-11,hy-2,10,C.ink,1.6,8);ring(g,11,hy-2,10,C.ink,1.6,8);g.beginPath();g.moveTo(-1,hy-3);g.lineTo(1,hy-3);g.stroke()}}
+  else if(h==='kidm'){hairCap(g,hy);shape(g,sp([[-25,hy-12],[-20,hy-30],[0,hy-34],[20,hy-30],[25,hy-12],[10,hy-20],[-6,hy-18]],true),C.ink,null,{lw:1.2,line:'single'})}
+  else if(h==='kidf'){hairCap(g,hy);[-1,1].forEach(s=>{shape(g,sp([[s*24,hy-10],[s*34,hy+10],[s*32,hy+36],[s*26,hy+40],[s*26,hy+12]],true),C.ink,gg=>Pat.chevron(gg,bb(-40,hy-10,80,52),C.grey,7,1),{lw:1.2,line:'single'});shape(g,petal(s*30,hy+38,12,5,Math.PI/2+s*.5),C.pink,null,{lw:1,line:'single'})})}}
+
+/* ---- standard poses for devas, asuras and the family (hand targets, item, extra) ---- */
+const POSES={
+  stand:[{s:[-42,-214],e:[-50,-166],h:[-46,-124]},{s:[42,-214],e:[50,-166],h:[46,-124]}],
+  fold:[{s:[-42,-214],e:[-46,-166],h:[-7,-186]},{s:[42,-214],e:[46,-166],h:[7,-186]}],
+  pull:[{s:[-42,-214],e:[-8,-176],h:[50,-182]},{s:[42,-214],e:[72,-196],h:[92,-184]}],
+  pause:[{s:[-42,-214],e:[-54,-170],h:[-26,-160],hand:'open'},{s:[42,-214],e:[56,-170],h:[30,-160],hand:'open'}],
+  loosen:[{s:[-42,-214],e:[-14,-170],h:[40,-150]},{s:[42,-214],e:[62,-172],h:[74,-146]}],
+  back:[{s:[-42,-214],e:[-10,-200],h:[46,-236],hand:'open'},{s:[42,-214],e:[70,-206],h:[84,-238],hand:'open'}],
+  wonder:[{s:[-42,-214],e:[-74,-246],h:[-70,-292],hand:'open'},{s:[42,-214],e:[74,-246],h:[70,-292],hand:'open'}],
+  lamp:[{s:[-42,-214],e:[-44,-168],h:[-12,-156]},{s:[42,-214],e:[50,-168],h:[24,-152],item:'diya'}],
+  flower:[{s:[-42,-214],e:[-82,-198],h:[-120,-204],item:'flower'},{s:[42,-214],e:[54,-170],h:[26,-152],item:'bowl'}],
+  garland:[{s:[-42,-214],e:[-66,-256],h:[-56,-300]},{s:[42,-214],e:[66,-256],h:[56,-300]}],
+  hold:[{s:[-42,-214],e:[-44,-168],h:[-14,-156]},{s:[42,-214],e:[44,-168],h:[14,-156],item:'bowl'}],
+  wave:[{s:[-42,-214],e:[-76,-250],h:[-72,-302],hand:'open'},{s:[42,-214],e:[50,-166],h:[46,-124]}],
+  water:[{s:[-42,-214],e:[-46,-166],h:[-40,-124]},{s:[42,-214],e:[70,-184],h:[86,-170],item:'pot'}]};
+/* divine figures: four arms with fixed attributes (seated poses add DY at draw time) */
+const GODARMS={
+  vishnu:[{s:[-38,-212],e:[-86,-238],h:[-96,-288],item:'chakra',back:true},{s:[38,-212],e:[86,-238],h:[96,-288],item:'conch',back:true},
+    {s:[-44,-212],e:[-76,-172],h:[-108,-182],item:'lotus',hand:'open'},{s:[44,-212],e:[72,-172],h:[96,-158],item:'gada'}],
+  shiva:[{s:[-44,-212],e:[-82,-168],h:[-90,-216],hand:'open'},{s:[44,-212],e:[70,-166],h:[84,-128]}],
+  parvati:[{s:[-42,-212],e:[-58,-170],h:[-30,-196],hand:'open'},{s:[42,-212],e:[58,-170],h:[44,-146],item:'lotus'}],
+  lakshmi:[{s:[-38,-212],e:[-84,-236],h:[-94,-282],item:'lotus',back:true},{s:[38,-212],e:[84,-236],h:[94,-282],item:'lotus',back:true},
+    {s:[-44,-212],e:[-74,-172],h:[-72,-212],hand:'open'},{s:[44,-212],e:[70,-170],h:[86,-144],hand:'open'}],
+  dhanv:[{s:[-38,-212],e:[-88,-240],h:[-96,-292],item:'chakra',back:true},{s:[38,-212],e:[88,-240],h:[96,-292],item:'conch',back:true},
+    {s:[-44,-210],e:[-70,-162],h:[-78,-118],item:'leech'},{s:[44,-210],e:[64,-168],h:[40,-142]}]};
+
+/* ---- the figure ---- */
+function drawPerson(g,key,pose,mood){const sp_=SPEC[key],sk=sp_.skin,dy=sp_.seated?DYS:0,fem=sp_.sex==='f'||sp_.sex==='g',kid=sp_.sex==='k'||sp_.sex==='g';
+  const arms=(GODARMS[key]||POSES[pose]||POSES.stand).map(a=>({...a,s:[a.s[0],a.s[1]+dy],e:[a.e[0],a.e[1]+dy],h:[a.h[0],a.h[1]+dy]}));
+  const hy=-262+dy;
+  /* long hair and locks behind the body */
+  if(sp_.hair==='jata'){g.strokeStyle=C.ink;g.lineWidth=7;[-1,1].forEach(s=>{for(let k=0;k<3;k++){g.beginPath();g.moveTo(s*(22+k*3),hy-6);g.bezierCurveTo(s*(40+k*6),hy+20,s*(36+k*8),hy+52,s*(54+k*7),hy+78);g.stroke()}})}
+  if(sp_.hair==='lakshmi'||sp_.hair==='bun')shape(g,sp([[-26,hy],[-34,hy+50],[-30,hy+86],[30,hy+86],[34,hy+50],[26,hy]],true),C.ink,null,{lw:1.4,line:'single'});
+  arms.filter(a=>a.back).forEach(a=>{arm(g,a.s,a.e,a.h,sk,a);if(a.item)item(g,a.item,a.h[0],a.h[1])});
+  /* lower body */
+  if(sp_.seated){const lap=sp([[-34,-62],[-72,-50],[-106,-18],[-98,4],[-40,8],[0,2],[40,8],[98,4],[106,-18],[72,-50],[34,-62]],true);
+    shape(g,lap,sp_.low,gg=>{sp_.lowPat(gg,bb(-110,-66,220,76));Pat.tri(gg,bb(-110,-6,220,12),sp_.border,12)},{lw:2.4});
+    [-1,1].forEach(s=>{shape(g,ell(s*36,-30,13,7,s*.35),sk,null,{lw:1.6,line:'single'});dot(g,s*40,-31,2.2,C.verm)})}
+  else{[-1,1].forEach(s=>{shape(g,ell(s*18,-6,15,7),sk,null,{lw:1.8,line:'single'});g.fillStyle=C.gold;for(let k=-2;k<=2;k++)dot(g,s*18+k*4,-12,1.6,C.gold)});
+    const wb=fem?56:46;const low=sp([[-32,-152],[-38,-100],[-wb,-14],[-22,-10],[0,-14],[22,-10],[wb,-14],[38,-100],[32,-152]],true);
+    shape(g,low,sp_.low,gg=>{sp_.lowPat(gg,bb(-60,-156,120,146));if(!fem){gg.fillStyle=sp_.border;gg.fillRect(-7,-150,14,136);Pat.dots(gg,bb(-7,-150,14,136),C.cream,9,1.6)}
+      else{gg.strokeStyle=C.ink;gg.lineWidth=1.2;gg.beginPath();for(let k=-2;k<=2;k++){gg.moveTo(k*8,-120);gg.lineTo(k*12,-16)}gg.stroke()}
+      gg.fillStyle=sp_.border;gg.fillRect(-60,-30,120,18);Pat.tri(gg,bb(-60,-30,120,8),C.cream,9,true)},{lw:2.4})}
+  /* torso and garments */
+  const T0=(x,y)=>[x,y+dy];const tor=sp([T0(-44,-222),T0(-48,-200),T0(-38,-172),T0(-32,-150),T0(32,-150),T0(38,-172),T0(48,-200),T0(44,-222),T0(0,-228)],true);
+  if(fem){shape(g,tor,sk,gg=>{gg.fillStyle=sp_.top;gg.fillRect(-50,-232+dy,100,(kid?70:46));Pat.dots(gg,bb(-50,-232+dy,100,46),C.cream,9,1.4)},{lw:2.2});
+    if(!kid){const pal=sp([T0(-44,-224),T0(-20,-226),T0(40,-166),T0(36,-148),T0(16,-148),T0(-46,-200)],true);shape(g,pal,sp_.low,gg=>{sp_.lowPat(gg,bb(-50,-230+dy,100,84));gg.strokeStyle=sp_.border;gg.lineWidth=6;gg.beginPath();gg.moveTo(-20,-226+dy);gg.lineTo(40,-166+dy);gg.stroke()},{lw:1.8})}}
+  else{shape(g,tor,kid?sp_.top:sk,gg=>{if(kid){Pat.dots(gg,bb(-50,-232+dy,100,84),C.verm,10,1.6);gg.fillStyle=C.gold;gg.fillRect(-4,-226+dy,8,30)}
+      else{gg.strokeStyle=C.ink;gg.lineWidth=1.3;gg.beginPath();gg.arc(-15,-196+dy,10,.2,Math.PI-.2);gg.moveTo(25,-196+dy);gg.arc(15,-196+dy,10,.2,Math.PI-.2);gg.stroke();dot(gg,0,-160+dy,1.8,C.ink)}},{lw:2.2});
+    if(sp_.thread){g.strokeStyle=C.cream;g.lineWidth=2.4;g.beginPath();g.moveTo(-34,-220+dy);g.quadraticCurveTo(-4,-186+dy,30,-152+dy);g.stroke()}
+    if(sp_.stole&&!kid){if(sp_.hair==='kirita'){[-1,1].forEach(s=>shape(g,sp([[s*44,-214+dy],[s*62,-196+dy],[s*70,-140+dy],[s*80,-110+dy],[s*58,-128+dy],[s*50,-176+dy]],true),sp_.stole,gg=>Pat.dots(gg,bb(-90,-220+dy,180,120),C.gold,8,1.5),{lw:1.6}))}
+      else shape(g,sp([T0(-46,-222),T0(-26,-228),T0(38,-158),T0(30,-146),T0(-50,-200)],true),sp_.stole,gg=>sp_.stolePat(gg,bb(-56,-232+dy,112,92)),{lw:1.8})}
+    shape(g,pl([T0(-34,-156),T0(34,-156),T0(34,-148),T0(-34,-148)],true),sp_.border,gg=>Pat.dots(gg,bb(-34,-156+dy,68,8),C.cream,6,1.4),{lw:1.4,line:'single'})}
+  /* neck, ornaments, head */
+  shape(g,pl([T0(-9,-240),T0(9,-240),T0(9,-218),T0(-9,-218)],true),sk,null,{lw:1.6,line:'single'});
+  if(sp_.beads){g.fillStyle=C.rust;g.strokeStyle=C.ink;g.lineWidth=1;for(let r=0;r<2;r++){const R=26+r*12;for(let k=0;k<=12;k++){const a=Math.PI*(.12+k*.76/12);const x=Math.cos(a)*R,y=-224+dy+Math.sin(a)*R*.9;g.beginPath();g.arc(x,y,3.6,0,TAU);g.fill();g.stroke()}}}
+  else{g.strokeStyle=C.ink;g.lineWidth=5.5;g.beginPath();g.arc(0,-224+dy,20,.18*Math.PI,.82*Math.PI);g.stroke();g.strokeStyle=C.gold;g.lineWidth=3.2;g.stroke();
+    for(let k=0;k<=6;k++){const a=Math.PI*(.2+k*.1);dot(g,Math.cos(a)*20,-224+dy+Math.sin(a)*20+4,2.4,k===3?C.verm:C.gold)}
+    if(sp_.neck2){g.strokeStyle=C.ink;g.lineWidth=5;g.beginPath();g.arc(0,-232+dy,40,.25*Math.PI,.75*Math.PI);g.stroke();g.strokeStyle=C.gold;g.lineWidth=3;g.stroke();shape(g,ell(0,-232+dy+40,6,7),C.verm,null,{lw:1.2,line:'single'})}}
+  [-1,1].forEach(s=>{shape(g,ell(s*24,hy,5,8),sk,null,{lw:1.4,line:'single'});shape(g,ell(s*25,hy+14,4.5),C.gold,null,{lw:1.2,line:'single'})});
+  shape(g,ell(0,hy,24,29),sk,null,{lw:2.2});
+  face(g,sp_,mood,dy);hairTop(g,sp_,dy);
+  /* Dhanvantari's vessel sits in front of the chest, under the supporting hand */
+  if(key==='dhanv')kalasha(g,0,-112,.72,0,0);
+  arms.filter(a=>!a.back).forEach(a=>{arm(g,a.s,a.e,a.h,sk,a);if(a.item)item(g,a.item,a.h[0],a.h[1]+(a.item==='gada'?0:0))});
+  if(!GODARMS[key]&&pose==='fold'){shape(g,petal(0,-158,42,9,-Math.PI/2),sk,gg=>{gg.strokeStyle=C.ink;gg.lineWidth=1;gg.beginPath();gg.moveTo(0,-162);gg.lineTo(0,-196);gg.stroke()},{lw:1.6,line:'single'})}
+  if(pose==='garland')garland(g,-56,-302,56,-302,22,.7)}
+/* draw a cached figure: feet (or seat) at (x,y), scale s, flip for mirrored groups */
+function person(g,key,pose,mood,x,y,s,flip,rot){mood=mood||'serene';const k=key+'|'+pose+'|'+mood+'|'+(flip?1:0);
+  if(rot){g.save();g.translate(x,y);g.rotate(rot);x=0;y=0}
+  Spr.draw(g,k,x,y,380,500,190,450,s,q=>{if(flip)q.scale(-1,1);drawPerson(q,key,pose,mood)});
+  if(rot)g.restore()}
+/* positions of features in world coordinates (for glows and hotspots) */
+function headPos(key,x,y,s){const dy=SPEC[key].seated?DYS:0;return[x,y+(-262+dy)*s]}
+function throatPos(x,y,s){return[x,y+(-232+DYS)*s]}
+
+/* ===== Shesha (Vishnu's serpent couch) ===== */
+function shesha(g,x,y,s){g.save();g.translate(x,y);g.scale(s,s);
+  const hoodC=[0,-302];g.strokeStyle=C.ink;g.lineWidth=40;g.beginPath();g.moveTo(70,-60);g.bezierCurveTo(130,-140,100,-250,20,-290);g.stroke();g.strokeStyle=C.teal;g.lineWidth=32;g.stroke();g.strokeStyle=C.cream;g.lineWidth=10;g.stroke();
+  [-1.05,-.55,0,.55,1.05].forEach((k,i)=>{const a=-Math.PI/2+k*1.1;const bx=hoodC[0]+Math.cos(a)*30,by=hoodC[1]+Math.sin(a)*30;
+    shape(g,petal(bx,by,88,30,a),C.teal,gg=>{Pat.scales(gg,bb(-160,-460,320,260),C.cream,7,1.2)},{lw:2.2});
+    const ex=bx+Math.cos(a)*62,ey=by+Math.sin(a)*62;shape(g,ell(ex,ey,13,9,a),C.gold,null,{lw:1.2,line:'single'});
+    const nx=-Math.sin(a),ny=Math.cos(a);[-1,1].forEach(q=>{dot(g,ex+Math.cos(a)*14+nx*q*7,ey+Math.sin(a)*14+ny*q*7,2.4,C.ink)});void i});
+  [[0,-14,160,36],[0,-52,140,32],[0,-88,118,28]].forEach(([a,b,rx,ry])=>{const p=ell(a,b,rx,ry);shape(g,p,C.teal,gg=>{Pat.scales(gg,bb(-rx,b-ry,rx*2,ry*2),C.pale,8,1.2);gg.strokeStyle=C.cream;gg.lineWidth=9;gg.beginPath();gg.ellipse(a,b+4,rx-6,ry-6,0,.1*Math.PI,.9*Math.PI);gg.stroke();
+      Pat.dots(gg,bb(-rx,b+ry-12,rx*2,10),C.gold,10,1.8)},{lw:2.2})});
+  g.restore()}
+/* ===== Kurma (Vishnu's tortoise form) ===== */
+function kurma(g,x,y,s,t){g.save();g.translate(x,y+Math.sin((t||0)*1.4)*3);g.scale(s,s);
+  [[-160,22,-.35],[150,24,.35]].forEach(([a,b,r])=>shape(g,ell(a,b,52,18,r),C.leaf,gg=>Pat.dots(gg,bb(a-56,b-20,112,40),C.cream,9,1.6),{lw:2}));
+  shape(g,pl([[218,0],[250,14],[214,16]],true),C.leaf,null,{lw:1.6});
+  g.strokeStyle=C.ink;g.lineWidth=36;g.beginPath();g.moveTo(-196,0);g.quadraticCurveTo(-232,-6,-246,-24);g.stroke();g.strokeStyle=C.leaf;g.lineWidth=28;g.stroke();
+  shape(g,ell(-262,-30,34,25,-.15),C.leaf,gg=>Pat.dots(gg,bb(-300,-60,80,60),C.cream,9,1.6),{lw:2});
+  const ep=new Path2D();ep.moveTo(-282,-38);ep.quadraticCurveTo(-274,-46,-266,-38);ep.quadraticCurveTo(-274,-32,-282,-38);shape(g,ep,C.pale,gg=>dot(gg,-275,-38,2.6,C.ink),{lw:1.2,line:'single'});
+  g.strokeStyle=C.ink;g.lineWidth=2;g.beginPath();g.moveTo(-292,-20);g.quadraticCurveTo(-284,-14,-276,-18);g.stroke();
+  const dome=new Path2D();dome.moveTo(-224,6);dome.ellipse(0,6,224,96,0,Math.PI,TAU);dome.closePath();
+  shape(g,dome,C.teal,gg=>{Pat.hex(gg,bb(-226,-96,452,104),C.agold,22,3);Pat.dots(gg,bb(-226,-96,452,104),C.cream,22,2)},{lw:2.6});
+  shape(g,sp([[-230,6],[-150,-8],[0,-12],[150,-8],[230,6],[150,20],[0,24],[-150,20]],true),C.agold,gg=>Pat.tri(gg,bb(-232,-12,464,36),C.dgold,14),{lw:2});
+  g.restore()}
+/* ===== Mount Mandara (ENV-03): same silhouette and bands everywhere; rot turns the motifs round the mountain ===== */
+const MANDARA_PTS=[[-150,0],[-130,-120],[-112,-250],[-88,-380],[-54,-470],[0,-520],[54,-470],[88,-380],[112,-250],[130,-120],[150,0]];
+function mandaraHW(y){const P=MANDARA_PTS;for(let i=0;i<5;i++){const a=P[i],b=P[i+1];if(y<=a[1]&&y>=b[1]){const k=(y-a[1])/(b[1]-a[1]);return-lerp(a[0],b[0],k)}}return 0}
+function mandara(g,x,y,s,rot){g.save();g.translate(x,y);g.scale(s,s);const sil=sp(MANDARA_PTS.concat([[0,6]]),true);
+  const bands=[[0,-86,C.leaf,'leaf'],[-86,-172,C.agold,'diamond'],[-172,-258,C.teal,'flower'],[-258,-344,C.gold,'lines'],[-344,-430,C.leaf,'tri'],[-430,-520,C.rust,'dot']];
+  g.fillStyle=C.leaf;g.fill(sil);g.save();g.clip(sil);
+  bands.forEach(([y0,y1,col,m])=>{g.fillStyle=col;g.fillRect(-160,y1,320,y0-y1);const yc=(y0+y1)/2,R=mandaraHW(yc)*.95,N=14;
+    for(let j=0;j<N;j++){const th=j*TAU/N+(rot||0),c=Math.cos(th);if(c<.08)continue;const mx=R*Math.sin(th);g.save();g.translate(mx,yc);g.scale(c,1);
+      if(m==='leaf'){shape(g,petal(0,24,46,11,-Math.PI/2),C.agold,null,{lw:1.4,line:'single'})}
+      else if(m==='diamond'){shape(g,pl([[0,-28],[13,0],[0,28],[-13,0]],true),C.verm,gg=>dot(gg,0,0,3,C.cream),{lw:1.4,line:'single'})}
+      else if(m==='flower')flowerTop(g,0,0,15,C.pink,C.gold,6);
+      else if(m==='lines'){g.strokeStyle=C.ink;g.lineWidth=2;g.beginPath();for(let k=-1;k<=1;k++){g.moveTo(k*6,-30);g.lineTo(k*6,30)}g.stroke()}
+      else if(m==='tri')shape(g,pl([[-14,26],[0,-26],[14,26]],true),C.cream,null,{lw:1.4,line:'single'});
+      else dot(g,0,0,6,C.gold);
+      g.restore()}
+    g.strokeStyle=C.ink;g.lineWidth=4.4;g.beginPath();g.moveTo(-160,y1);g.lineTo(160,y1);g.stroke();g.strokeStyle=C.cream;g.lineWidth=1.8;g.stroke()});
+  g.restore();outline(g,sil,2.8);lotus(g,0,-512,34,{col:C.pink,col2:C.coral});g.restore()}
+/* ===== Vasuki (ENV-04): continuous patterned serpent; phase slides the pattern along the body as the rope moves ===== */
+function serpentBody(g,path,w,phase){g.save();g.lineCap='round';g.strokeStyle=C.ink;g.lineWidth=w+11;g.stroke(path);g.strokeStyle=C.cream;g.lineWidth=w+5;g.stroke(path);g.strokeStyle=C.ink;g.lineWidth=w+1.5;g.stroke(path);
+  g.strokeStyle=C.teal;g.lineWidth=w;g.stroke(path);g.lineCap='butt';g.setLineDash([w*.7,w*1.3]);g.lineDashOffset=-phase;g.strokeStyle=C.verm;g.lineWidth=w;g.stroke(path);
+  g.setLineDash([w*.25,w*1.75]);g.lineDashOffset=-phase-w*.85;g.strokeStyle=C.gold;g.stroke(path);g.lineCap='round';g.setLineDash([.1,w*.5]);g.lineDashOffset=-phase;g.strokeStyle=C.cream;g.lineWidth=w*.22;g.stroke(path);g.setLineDash([]);g.restore()}
+function serpentHead(g,x,y,ang,s,mood){g.save();g.translate(x,y);g.rotate(ang);g.scale(s,s);
+  shape(g,sp([[-10,-18],[22,-40],[58,-36],[72,-12],[72,12],[58,36],[22,40],[-10,18]],true),C.teal,gg=>{Pat.scales(gg,bb(-12,-42,90,84),C.cream,7,1.2)},{lw:2.2});
+  [[30,-14],[30,14]].forEach(([a,b])=>shape(g,ell(a,b,9,7),C.gold,gg=>dot(gg,a,b,3,C.ink),{lw:1.2,line:'single'}));
+  shape(g,sp([[56,-14],[90,-12],[100,0],[90,12],[56,14]],true),C.teal,null,{lw:2});
+  [-1,1].forEach(q=>{const p=new Path2D();p.moveTo(76,q*8-3);p.quadraticCurveTo(82,q*8-8,88,q*8-3);p.quadraticCurveTo(82,q*8+2,76,q*8-3);shape(g,p,C.pale,gg=>dot(gg,83,q*8-3,2,C.ink),{lw:1,line:'single'})});
+  g.strokeStyle=C.ink;g.lineWidth=1.6;g.beginPath();g.moveTo(96,-4);g.quadraticCurveTo(100,0,96,4);g.stroke();void mood;g.restore()}
+function serpentTail(g,x,y,ang,w){shape(g,petal(x,y,w*2.2,w*.5,ang),C.teal,gg=>{},{lw:1.6})}
+
+/* ===== The treasures ===== */
+function airavata(g,x,y,s){g.save();g.translate(x,y);g.scale(s,s);
+  [[-70,-62],[-36,-60],[34,-62],[64,-64]].forEach(([a,b],i)=>shape(g,rrect(a-14,b,28,62,8),i%2?C.pale:C.cream,gg=>dot(gg,a,-4,3,C.agold),{lw:1.8}));
+  shape(g,sp([[-96,-70],[-86,-136],[-10,-156],[64,-140],[96,-96],[84,-56],[-84,-52]],true),C.pale,gg=>Pat.dots(gg,bb(-100,-160,200,110),C.grey,14,1.3),{lw:2.4});
+  shape(g,sp([[-60,-146],[36,-152],[48,-92],[-58,-86]],true),C.verm,gg=>{Pat.flowers(gg,bb(-62,-154,112,70),C.gold,24,C.ink);gg.fillStyle=C.gold;gg.fillRect(-62,-98,112,10);Pat.tri(gg,bb(-62,-90,112,8),C.gold,10,true)},{lw:1.8});
+  line(g,[[-94,-100],[-112,-60]],C.ink,4);
+  g.strokeStyle=C.ink;g.lineWidth=28;g.beginPath();g.moveTo(130,-110);g.bezierCurveTo(156,-70,150,-30,168,-12);g.stroke();g.strokeStyle=C.pale;g.lineWidth=21;g.stroke();
+  g.strokeStyle=C.grey;g.lineWidth=1.4;g.beginPath();for(let k=0;k<6;k++){const yy=-86+k*13;g.moveTo(138+k*3,yy);g.lineTo(156+k*2,yy-3)}g.stroke();
+  shape(g,ell(112,-124,50,46),C.pale,gg=>Pat.dots(gg,bb(60,-170,104,92),C.grey,14,1.3),{lw:2.2});
+  shape(g,sp([[86,-150],[52,-160],[40,-118],[56,-86],[86,-94]],true),C.pink,gg=>Pat.waves(gg,bb(36,-164,56,82),C.cream,10,1.3),{lw:1.8});
+  shape(g,sp([[136,-96],[160,-92],[176,-80],[164,-82],[138,-86]],true),C.cream,null,{lw:1.4});
+  const ep=new Path2D();ep.moveTo(116,-130);ep.quadraticCurveTo(126,-138,136,-130);ep.quadraticCurveTo(126,-124,116,-130);shape(g,ep,C.cream,gg=>dot(gg,127,-130,3,C.ink),{lw:1.2,line:'single'});
+  shape(g,pl([[96,-166],[124,-176],[146,-150],[120,-150]],true),C.gold,gg=>Pat.dots(gg,bb(94,-178,54,30),C.verm,6,1.4),{lw:1.4});
+  g.restore()}
+function celestialHorse(g,x,y,s,t){g.save();g.translate(x,y);g.scale(s,s);const tt=t||0;
+  g.strokeStyle=C.pale;g.lineWidth=3;for(let k=0;k<3;k++){g.beginPath();g.arc(-120,-90,40+k*16,Math.PI*.6,Math.PI*1.1);g.stroke()}
+  for(let k=0;k<5;k++)shape(g,petal(-82,-96,52+k*6,9,Math.PI*.78+k*.1+Math.sin(tt*2+k)*.04),k%2?C.gold:C.saffron,null,{lw:1.4});
+  [[-58,-62,-62,0],[-30,-62,-26,0]].forEach(([a,b,c,d])=>{g.strokeStyle=C.ink;g.lineWidth=17;g.beginPath();g.moveTo(a,b);g.lineTo(c,d);g.stroke();g.strokeStyle=C.pale;g.lineWidth=11;g.stroke();shape(g,ell(c,d-2,8,5),C.dgold,null,{lw:1.2,line:'single'})});
+  [[40,-74,74,-74,82,-46],[58,-74,94,-88,110,-66]].forEach(([a,b,c,d,e,f])=>{g.strokeStyle=C.ink;g.lineWidth=17;g.beginPath();g.moveTo(a,b);g.lineTo(c,d);g.lineTo(e,f);g.stroke();g.strokeStyle=C.pale;g.lineWidth=11;g.stroke();shape(g,ell(e,f,7,5),C.dgold,null,{lw:1.2,line:'single'})});
+  shape(g,sp([[-84,-84],[-64,-126],[20,-128],[72,-110],[80,-72],[40,-58],[-64,-58]],true),C.pale,gg=>Pat.dots(gg,bb(-90,-130,180,76),C.cream,12,1.4),{lw:2.4});
+  shape(g,sp([[-40,-128],[30,-130],[34,-96],[-38,-94]],true),C.verm,gg=>{Pat.diamonds(gg,bb(-42,-132,80,40),C.gold,12,true)},{lw:1.6});
+  shape(g,sp([[44,-112],[64,-150],[90,-188],[108,-176],[92,-140],[74,-100]],true),C.pale,null,{lw:2.2});
+  shape(g,sp([[86,-196],[104,-210],[146,-182],[150,-166],[134,-160],[96,-164]],true),C.pale,null,{lw:2.2});
+  shape(g,petal(98,-200,24,7,-Math.PI*.62),C.pale,null,{lw:1.4});
+  const ep=new Path2D();ep.moveTo(110,-190);ep.quadraticCurveTo(118,-196,126,-190);ep.quadraticCurveTo(118,-185,110,-190);shape(g,ep,C.cream,gg=>dot(gg,118,-190,2.6,C.ink),{lw:1.1,line:'single'});
+  line(g,[[100,-200],[134,-172],[110,-166]],C.gold,2.4);
+  for(let k=0;k<6;k++){const tt2=k/5;const bx=lerp(54,92,tt2),by=lerp(-120,-196,tt2);shape(g,petal(bx,by,30,8,Math.PI*1.02-k*.06),k%2?C.gold:C.saffron,null,{lw:1.2})}
+  g.restore()}
+function kalpavriksha(g,x,y,s,grow,t){g.save();g.translate(x,y);g.scale(s,s);grow=grow==null?1:grow;
+  shape(g,pl([[-20,0],[-12,-120],[12,-120],[20,0]],true),C.rust,gg=>Pat.vlines(gg,bb(-22,-124,44,126),C.dgold,7,1.6),{lw:2});
+  [[-1,0],[1,0]].forEach(([d])=>{g.strokeStyle=C.ink;g.lineWidth=13;g.beginPath();g.moveTo(0,-100);g.quadraticCurveTo(d*40,-120,d*70,-160);g.stroke();g.strokeStyle=C.rust;g.lineWidth=8;g.stroke()});
+  const cl=[[0,-200,92,64],[-72,-170,56,46],[72,-170,56,46],[-40,-236,52,40],[40,-236,52,40]];
+  cl.forEach(([a,b,rx,ry])=>shape(g,ell(a,b,rx,ry),C.leaf,gg=>{Pat.petals(gg,bb(a-rx,b-ry,rx*2,ry*2),C.teal,22);Pat.dots(gg,bb(a-rx,b-ry,rx*2,ry*2),C.cream,15,1.4)},{lw:2.2}));
+  const spots=[[-60,-176],[-20,-214],[24,-196],[64,-168],[0,-250],[-44,-240],[46,-238],[-84,-150],[86,-150],[10,-160]];const r=rng(11);
+  spots.forEach(([a,b],i)=>{const k=clamp(grow*spots.length-i,0,1);if(k<=0)return;if(i%2)flowerTop(g,a,b,9*Ease.back(k),i%4===1?C.pink:C.coral,C.gold,6);else shape(g,ell(a,b,8*Ease.back(k)),C.gold,gg=>dot(gg,a-2,b-2,1.6,C.cream),{lw:1.3,line:'single'});void r});
+  if(grow>.6)[[-30,-262,1],[52,-208,-1]].forEach(([a,b,d])=>{g.save();g.translate(a,b+Math.sin((t||0)*2)*1.5);g.scale(d*.7,.7);shape(g,sp([[-16,0],[0,-10],[16,-6],[20,0],[8,8],[-10,6]],true),C.turq,gg=>Pat.scales(gg,bb(-16,-10,36,18),C.deep,4,1),{lw:1.4});shape(g,pl([[20,-3],[28,0],[20,3]],true),C.saffron,null,{lw:1,line:'single'});dot(g,13,-3,1.6,C.ink);g.restore()});
+  g.restore()}
+/* ENV-06 lotus frame: ring of petals around a round window */
+function lotusFrame(g,x,y,r,o){o=o||{};const n=o.n||18;for(let k=0;k<n;k++){const a=k*TAU/n+Math.PI/n;shape(g,petal(x+Math.cos(a)*r*.92,y+Math.sin(a)*r*.92,r*.34,r*.1,a),k%2?(o.c2||C.coral):(o.c1||C.gold),null,{lw:1.5})}
+  shape(g,ell(x,y,r),o.bg||C.cream,o.pat||null,{lw:2.6})}
+
+/* ===== Sound: everything synthesised with Web Audio behind one master gain; mute silences all of it ===== */
+const AU={ctx:null,master:null,sfxG:null,ambG:null,muted:false,noiseBuf:null,
+  init(){if(this.ctx)return;try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;this.ctx=new AC();
+    this.master=this.ctx.createGain();this.master.gain.value=this.muted?0:1;this.master.connect(this.ctx.destination);
+    this.sfxG=this.ctx.createGain();this.sfxG.gain.value=.55;this.sfxG.connect(this.master);
+    const len=this.ctx.sampleRate*2,b=this.ctx.createBuffer(1,len,this.ctx.sampleRate),d=b.getChannelData(0);for(let i=0;i<len;i++)d[i]=Math.random()*2-1;this.noiseBuf=b;
+    this.ambience();Music.init()}catch(e){this.ctx=null}},
+  resume(){try{this.ctx&&this.ctx.state==='suspended'&&this.ctx.resume()}catch(e){}},
+  setMute(m){this.muted=m;if(this.master)this.master.gain.setTargetAtTime(m?0:1,this.ctx.currentTime,.05)},
+  t(){return this.ctx.currentTime},
+  /* soft water ambience throughout: slow-swelling filtered noise */
+  ambience(){const c=this.ctx,s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain(),l=c.createOscillator(),lg=c.createGain();s.buffer=this.noiseBuf;s.loop=true;f.type='lowpass';f.frequency.value=420;
+    g.gain.value=.025;l.frequency.value=.11;lg.gain.value=.014;l.connect(lg);lg.connect(g.gain);s.connect(f);f.connect(g);g.connect(this.master);s.start();l.start();this.ambG=g},
+  amb(level){if(this.ambG)this.ambG.gain.setTargetAtTime(level,this.t(),1.2)},
+  osc(type,f,t0,dur,g,f2){const c=this.ctx,o=c.createOscillator(),e=c.createGain();o.type=type;o.frequency.setValueAtTime(f,t0);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t0+dur);
+    e.gain.setValueAtTime(.0001,t0);e.gain.exponentialRampToValueAtTime(g,t0+Math.min(.04,dur*.2));e.gain.exponentialRampToValueAtTime(.0001,t0+dur);o.connect(e);e.connect(this.sfxG);o.start(t0);o.stop(t0+dur+.05)},
+  noise(t0,dur,g,type,f,q,f2){const c=this.ctx,s=c.createBufferSource(),fl=c.createBiquadFilter(),e=c.createGain();s.buffer=this.noiseBuf;s.loop=true;fl.type=type||'bandpass';
+    fl.frequency.setValueAtTime(f||1000,t0);if(f2)fl.frequency.exponentialRampToValueAtTime(f2,t0+dur);fl.Q.value=q||1;e.gain.setValueAtTime(.0001,t0);e.gain.exponentialRampToValueAtTime(g,t0+Math.min(.3,dur*.3));
+    e.gain.exponentialRampToValueAtTime(.0001,t0+dur);s.connect(fl);fl.connect(e);e.connect(this.sfxG);s.start(t0);s.stop(t0+dur+.05)},
+  bell(f,t0,g,dur){this.osc('sine',f,t0,dur||1.8,g||.12);this.osc('sine',f*2.76,t0,(dur||1.8)*.5,(g||.12)*.3)},
+  sfx(name){if(!this.ctx||this.muted)return;const t=this.t();try{switch(name){
+    case'ripple':this.noise(t,1.6,.12,'lowpass',380,.7,900);[784,1175].forEach((f,i)=>this.bell(f,t+.05+i*.16,.07,1.4));break;
+    case'chime':[784,988,1175,1568].forEach((f,i)=>this.bell(f,t+i*.08,.08,1.4));break;
+    case'creak':this.osc('sawtooth',62,t,.5,.035,74);this.noise(t,.45,.07,'bandpass',300,6,520);this.noise(t+.25,1.1,.11,'lowpass',420,.8,240);break;
+    case'nudge':this.osc('sine',330,t,.3,.07,294);break;
+    case'shimmer':for(let k=0;k<7;k++)this.bell(1046*Math.pow(1.122,k%5),t+k*.11,.05,1.2);break;
+    case'slide':this.noise(t,.8,.11,'bandpass',600,.9,1500);break;
+    case'hush':this.noise(t,2.6,.07,'lowpass',700,.6,180);this.osc('sine',196,t,2.4,.03,147);break;
+    case'call':this.bell(659,t,.07,1.3);this.bell(988,t+.18,.05,1.2);break;
+    case'warm':[262,392,523,659].forEach((f,i)=>this.bell(f,t+i*.05,.07,3));break;
+    case'sparkle':[1318,1568,1760,2093,2637].forEach((f,i)=>this.bell(f,t+i*.07,.05,1.1));break;
+    case'glowbell':this.bell(523,t,.11,3.2);this.bell(784,t+.3,.07,3);break;
+    case'crackle':for(let k=0;k<6;k++)this.noise(t+k*.09+Math.random()*.05,.05,.06,'highpass',2400,1);break;
+    case'tap':this.osc('triangle',660,t,.12,.1);break;
+    case'lock':this.osc('triangle',523,t,.14,.1);this.osc('triangle',784,t+.09,.2,.1);break;
+    case'soft':this.osc('sine',392,t,.35,.08,330);break}}catch(e){}}};
+
+/* soft ambient music: low drone and sparse sitar/flute-like pentatonic notes; swells at moments of relief */
+const Music={nodes:null,level:.35,next:0,scale:[293.66,329.63,369.99,440,493.88,587.33],
+  init(){const c=AU.ctx;const g=c.createGain();g.gain.value=0;g.connect(AU.master);const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=650;lp.connect(g);
+    [146.83,220,293.66].forEach((f,i)=>{const o=c.createOscillator();o.type=i===2?'sine':'triangle';o.frequency.value=f;const og=c.createGain();og.gain.value=i===2?.012:.03;o.connect(og);og.connect(lp);
+      const lfo=c.createOscillator(),lg=c.createGain();lfo.frequency.value=.07+i*.03;lg.gain.value=.01;lfo.connect(lg);lg.connect(og.gain);lfo.start();o.start()});
+    const pl=c.createGain();pl.gain.value=1;pl.connect(g);this.nodes={g,lp,pl};this.set(.35,3)},
+  set(v,sec){this.level=v;if(this.nodes)this.nodes.g.gain.setTargetAtTime(v*.5,AU.t(),(sec||2)/3)},
+  swell(){this.set(1,1.5);clearTimeout(this.sw);this.sw=setTimeout(()=>this.set(.4,4),9000)},
+  mood(m){if(!this.nodes)return;const map={calm:[293.66,329.63,369.99,440,493.88,587.33],dark:[220,246.94,261.63,329.63,349.23],bright:[392,440,493.88,587.33,659.25,783.99]};
+    this.scale=map[m]||map.calm;this.nodes.lp.frequency.setTargetAtTime(m==='dark'?380:m==='bright'?950:650,AU.t(),1.5)},
+  tick(){if(!this.nodes||AU.muted||this.level<.05)return;const c=AU.ctx,t=c.currentTime;if(t<this.next)return;
+    const f=this.scale[Math.floor(Math.random()*this.scale.length)]*(Math.random()<.3?.5:1);const o=c.createOscillator(),o2=c.createOscillator(),e=c.createGain();o.type='triangle';o2.type='sine';o.frequency.value=f;o2.frequency.value=f*2.01;
+    e.gain.setValueAtTime(.0001,t);e.gain.exponentialRampToValueAtTime(.035*this.level+.006,t+.02);e.gain.exponentialRampToValueAtTime(.0001,t+1.9);o.connect(e);o2.connect(e);e.connect(this.nodes.pl);o.start(t);o2.start(t);o.stop(t+2);o2.stop(t+2);
+    this.next=t+(this.level>.8?.55:1.5)+Math.random()*1.6}};
+
+/* ===== Narrator: one warm Indian-English storyteller voice. Displayed text stays verbatim; speech uses a pronunciation map. ===== */
+const SAY_MAP=[[/\bamrita\b/gi,'um-ree-ta'],[/\bHalahala\b/g,'Haa-la-haa-la'],[/\bNeelakantha\b/g,'Neela-kantha'],[/\bUchchaihshravas\b/g,'Ooch-chai-shra-vus'],
+  [/\bKalpavriksha\b/g,'Kalpa-vrik-sha'],[/\bAiravata\b/g,'Ai-raa-vata'],[/\bDhanvantari\b/g,'Dhun-vun-turi'],[/\bVasuki\b/g,'Vaa-suki'],[/\bMandara\b/g,'Mun-dara'],
+  [/\bKurma\b/g,'Koor-ma'],[/\bKailasa\b/g,'Kai-laa-sa'],[/\bAyurveda\b/g,'Aa-yur-vay-da'],[/\bdevas\b/gi,'day-vahs'],[/\bdeva\b/gi,'day-vah'],[/\basuras\b/gi,'uh-sur-ahs'],[/\basura\b/gi,'uh-sur-ah'],
+  [/\bDhanteras\b/g,'Dhun-teh-ras'],[/\bParvati\b/g,'Paar-vati'],[/\bLakshmi\b/g,'Luksh-mee'],[/\bSamudra Manthan\b/g,'Sa-mudra Mun-thun']];
+function sayable(t){let s=t.replace(/[‘’]/g,"'").replace(/[“”]/g,'').replace(/…/g,'...');SAY_MAP.forEach(([re,v])=>{s=s.replace(re,v)});return s}
+const Speech={ok:false,voices:[],voice:null,hiVoice:null,cur:null,
+  init(){try{if(!('speechSynthesis' in window)||!window.SpeechSynthesisUtterance)return;this.ok=true;const load=()=>{try{this.voices=speechSynthesis.getVoices()||[]}catch(e){this.voices=[]}this.pick()};load();
+    if(speechSynthesis.addEventListener)speechSynthesis.addEventListener('voiceschanged',load);else speechSynthesis.onvoiceschanged=load}catch(e){this.ok=false}},
+  pick(){const en=this.voices.filter(v=>/^en/i.test(v.lang));const score=v=>(/en[-_]IN/i.test(v.lang)?10:0)+(/en[-_]GB/i.test(v.lang)?2:0)+(/natural|neural|online/i.test(v.name)?1:0)+(v.localService?1:0);
+    this.voice=en.slice().sort((a,b)=>score(b)-score(a))[0]||null;this.hiVoice=this.voices.find(v=>/^hi[-_]IN/i.test(v.lang))||this.voices.find(v=>/^(sa|mr|ne)/i.test(v.lang))||null},
+  available(){return this.ok&&!!this.voice},
+  describe(){if(!this.ok)return'no speech synthesis';if(!this.voice)return'speech synthesis present, no English voice';return this.voice.name+' ('+this.voice.lang+')'+(/en[-_]IN/i.test(this.voice.lang)?'':' (no Indian-English voice found)')},
+  speak(text,o){o=o||{};return new Promise(res=>{const v=o.hindi?this.hiVoice:this.voice;if(!this.ok||!v||AU.muted){res('none');return}let done=false,to;const fin=r=>{if(!done){done=true;clearTimeout(to);this.cur=null;res(r)}};
+    try{const u=new SpeechSynthesisUtterance(o.hindi?text:sayable(text));u.voice=v;u.lang=v.lang;u.rate=o.rate||.9;u.pitch=o.pitch||1;u.onend=()=>fin('end');u.onerror=()=>fin('error');
+      this.cur=fin;speechSynthesis.speak(u);to=setTimeout(()=>fin('timeout'),Math.max(5000,text.length*110+4000))}catch(e){fin('error')}})},
+  stop(){try{if(this.ok)speechSynthesis.cancel()}catch(e){}if(this.cur){const f=this.cur;this.cur=null;f('stopped')}}};
+
+/* ===== Sanskrit audio: speech synthesis cannot be trusted for Sanskrit. Put a reviewed recording URL here to replace the placeholder. ===== */
+const MANTRA_AUDIO_SRC='';
+const Mantra={el:null,
+  async play(onCue){if(MANTRA_AUDIO_SRC){try{if(!this.el)this.el=new Audio(MANTRA_AUDIO_SRC);this.el.currentTime=0;this.el.muted=AU.muted;await this.el.play();
+      await new Promise(r=>{this.el.onended=r;this.el.onerror=r});return'recording'}catch(e){}}
+    if(Speech.ok&&Speech.hiVoice&&!AU.muted){Music.set(.08,1);const r=await Speech.speak(MANTRA.dev.replace(/॥/g,''),{hindi:true,rate:.72});Music.set(.4,3);if(r==='end'||r==='timeout')return'placeholder-voice';return'stopped'}
+    /* no Sanskrit-capable voice: a silent read-along that steps through the pronunciation cues */
+    for(let i=0;i<MANTRA.cues.length;i++){if(onCue)onCue(i);await new Promise(r=>setTimeout(r,1300))}if(onCue)onCue(-1);return'read-along'},
+  stop(){try{if(this.el)this.el.pause()}catch(e){}Speech.stop()}};
+
+/* ===== Director: plays screens in order, pauses for every activity, never stalls ===== */
+const ABORT={abort:true};
+const sleepReal=ms=>new Promise(r=>setTimeout(r,ms));
+function splitSentences(t){return(t.match(/[^.!?…]+[.!?…]+[’”'"]*\s*|[^.!?…]+$/g)||[t]).map(s=>s.trim()).filter(Boolean)}
+const D={i:0,token:0,fast:false,speed:1,paused:false,done:new Array(10).fill(false),seenCh:new Set(),act:null,skipFn:null,lastInput:performance.now(),
+  scene:null,trans:null,qa:null,hintAt:-1e9,
+  guard(tok){if(tok!==this.token)throw ABORT},
+  wait(ms){const tok=this.token;return new Promise((res,rej)=>Timers.add(this.fast?Math.min(ms,5):ms,()=>tok===this.token?res():rej(ABORT)))},
+  tw(o,p,ms,e){const tok=this.token;return tw(o,p,this.fast?4:ms,e).then(()=>this.guard(tok))},
+  poke(){this.lastInput=performance.now();AU.resume()},
+  async untilPlaying(tok){while(this.paused&&!this.fast){await sleepReal(120);this.guard(tok)}},
+  timed(text){const ms=Math.max(1800,text.split(/\s+/).length*390);return new Promise(res=>{const t0=performance.now();const iv=setInterval(()=>{if(this.paused){clearInterval(iv);res('stopped')}else if(performance.now()-t0>=ms){clearInterval(iv);res('end')}},100)})},
+  /* narration: verbatim text, spoken sentence by sentence with the current sentence underlined */
+  async say(text,o){o=o||{};const tok=this.token;this.guard(tok);const sents=splitSentences(text);UI.cap(sents);let skipped=false;
+    for(let i=0;i<sents.length&&!skipped;i++){UI.capHL(i);
+      for(;;){await this.untilPlaying(tok);const skipP=new Promise(r=>{this.skipFn=()=>{skipped=true;Speech.stop();r('skip')}});let p;
+        if(this.fast)p=sleepReal(6);else if(Speech.available()&&!AU.muted)p=Speech.speak(sents[i]);else p=this.timed(sents[i]);
+        await Promise.race([p,skipP]);this.skipFn=null;this.guard(tok);if(this.paused&&!skipped&&!this.fast)continue;break}
+      if(!skipped)await this.wait(o.gap==null?260:o.gap)}
+    UI.capHL(-1)},
+  /* the takeaway line: shown on a small plaque and spoken */
+  async remember(text){UI.remember(text);await this.say(text,{gap:600})},
+  skip(){if(this.skipFn){this.skipFn();return}if(this.act&&this.act.spec.assist){this.poke();this.act.spec.assist()}},
+  /* activity contract: the narrator sets it up, the child acts (characters react), the outcome lands and the story continues */
+  async activity(spec){const tok=this.token;this.guard(tok);let resolve;const done=new Promise(r=>resolve=r);let fin=false;
+    this.act={spec,complete:()=>{if(fin)return;fin=true;this.done[this.i]=true;UI.nav();UI.progress();resolve()}};
+    UI.act(spec);if(spec.build)spec.build($('act'));this.lastInput=performance.now();
+    const qaHold=this.qa&&this.qa.at===this.i&&this.qa.stop==='act';if(qaHold){this.fast=false;this.speed=1;this.qa.paused=true}
+    if(spec.prompt&&spec.speak!==false&&!this.fast&&!AU.muted&&Speech.available())Speech.speak(spec.prompt);
+    let stage=0;
+    while(!fin){await sleepReal(this.fast?4:250);this.guard(tok);if(fin)break;
+      if(this.fast){if(spec.assist)spec.assist();continue}if(qaHold)continue;
+      if(this.paused){this.lastInput=performance.now();continue}
+      const idle=(performance.now()-this.lastInput)/1000;
+      if(stage===0&&idle>(spec.idle||15)){stage=1;this.lastInput=performance.now();this.hint(spec)}
+      else if(stage===1&&idle>(spec.assistAfter||8)){stage=0;this.lastInput=performance.now();if(spec.assist)spec.assist()}}
+    await done;this.guard(tok);this.act=null;UI.unpulse()},
+  complete(){if(this.act)this.act.complete()},
+  hint(spec){this.hintAt=T.now;UI.pulse();if(spec.hint){UI.status(spec.hint,true);if(!AU.muted&&Speech.available()&&!this.skipFn)Speech.speak(spec.hint)}},
+  setScene(S,how){if(how!=='cut'&&this.scene&&!this.fast){const snap=document.createElement('canvas');snap.width=cv.width;snap.height=cv.height;try{snap.getContext('2d').drawImage(cv,0,0)}catch(e){}this.trans={snap,t0:T.now,ms:reduceMotion?400:900}}
+    this.scene=S;if(S.enter)S.enter();cv.setAttribute('aria-label',S.alt||S.title)},
+  /* a late-frame hold point for QA screenshots; in normal play it does nothing */
+  async beforeOutro(){if(this.qa&&this.qa.at===this.i&&this.qa.stop==='end'){this.fast=false;this.speed=1;this.qa.paused=true;await new Promise(()=>{})}},
+  go(i,o){o=o||{};if(i<0||i>=SCREENS.length)return;this.token++;Tw.kill();Timers.kill();Speech.stop();Mantra.stop();this.act=null;this.skipFn=null;this.paused=false;UI.reset();
+    this.run(i,o)},
+  async run(i,o){const tok=this.token;this.i=i;const S=SCREENS[i];
+    try{const ch=CHAPTERS.find(c=>c.at===i);
+      if(ch&&!o.noCard){const replay=this.seenCh.has(ch.id);this.seenCh.add(ch.id);UI.header(S);UI.progress();UI.nav();await UI.card(ch,tok);this.guard(tok);
+        this.setScene(S,'fade');if(replay&&ch.prev){await this.wait(500);await this.say(ch.prev)}}
+      else{this.setScene(S,o.cut?'cut':'fade');UI.header(S);UI.progress();UI.nav()}
+      UI.header(S);UI.progress();UI.nav();
+      await S.run(tok);this.guard(tok);this.done[i]=true;UI.progress();UI.nav();
+      if(this.qa&&this.qa.at===i){this.fast=false;this.speed=1;this.qa.paused=true;return}
+      if(i+1<SCREENS.length&&!S.final)this.go(i+1,{auto:true})}
+    catch(e){if(e!==ABORT)console.error(e)}}};
+
+/* ===== UI layer: header, 10-diya progress, captions, activity panel, plaque, cards ===== */
+const DIYA_SVG='<svg viewBox="0 0 22 26" aria-hidden="true"><path class="fl" d="M12 2c3 4 4 7 0 11c-4-4-3-7 0-11z" fill="#F28C28" stroke="#1A1020" stroke-width="1.2"/><path class="fl" d="M12 6c1.2 2 1.4 3.6 0 5c-1.4-1.4-1.2-3 0-5z" fill="#E6B422"/><path class="cup" d="M2 15h18c-1 5-4 7-9 7s-8-2-9-7z" fill="#C9A24A" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+const UI={
+  init(){const p=$('prog');for(let j=0;j<10;j++){const li=document.createElement('li');li.innerHTML=DIYA_SVG;p.append(li)}this.progress()},
+  header(S){$('tScr').textContent='Book 2 · Dhanteras · '+S.label;$('tName').textContent=S.title;document.title=S.title+' · The Ocean of Treasures'},
+  progress(){const lis=$('prog').children;let n=0;for(let j=0;j<lis.length;j++){const lit=D.done[j];if(lit)n++;lis[j].className=(lit?'lit ':'')+(j===D.i?'now':'')}
+    $('prog').setAttribute('aria-label',`Story progress: screen ${D.i+1} of 10, ${n} completed`)},
+  nav(){$('bPrev').disabled=D.i<=0;const can=D.done[D.i]&&D.i<SCREENS.length-1;$('bNext').disabled=!can;$('bNext').setAttribute('aria-label',can?'Next screen':'Next screen (finish the activity first)')},
+  cap(sents){const el=$('cap');el.innerHTML='';sents.forEach((s,i)=>{const sp_=document.createElement('span');sp_.textContent=s+(i<sents.length-1?' ':'');el.append(sp_)})},
+  capHL(i){const sp_=$('cap').children;for(let j=0;j<sp_.length;j++)sp_[j].classList.toggle('on',j===i)},
+  act(spec){$('actHead').textContent=spec.head||'';$('prompt').textContent=spec.prompt||'';$('status').textContent=spec.status||'';$('act').innerHTML='';$('panel').classList.toggle('wide',!!spec.wide)},
+  status(t,pulse){const el=$('status');el.textContent=t||'';if(pulse){el.classList.remove('pulse');void el.offsetWidth;el.classList.add('pulse')}},
+  pulse(){document.querySelectorAll('#act .ab:not(.done):not([disabled]), #act .slot:not(.ok)').forEach(b=>{b.classList.remove('pulse');void b.offsetWidth;b.classList.add('pulse')});const p=$('prompt');p.classList.remove('pulse');void p.offsetWidth;p.classList.add('pulse')},
+  unpulse(){document.querySelectorAll('.pulse').forEach(b=>b.classList.remove('pulse'))},
+  /* the takeaway is spoken into the caption; a small "Remember" tag marks it there, so nothing covers the art */
+  remember(t){$('remember').hidden=!t},
+  reset(){$('cap').innerHTML='';this.act({});this.remember(null);$('ovl').innerHTML='';$('panel').classList.remove('wide');$('card').hidden=true},
+  btn(label,o){o=o||{};const b=document.createElement('button');b.type='button';b.className='ab'+(o.main?' main':'')+(o.sm?' sm':'');if(o.icon)b.append(iconCanvas(o.icon,36));
+    const s=document.createElement('span');s.textContent=label;if(o.sub){const sm=document.createElement('small');sm.textContent=o.sub;s.append(sm)}b.append(s);
+    const tk=document.createElement('span');tk.className='tick';tk.textContent='✓';tk.setAttribute('aria-hidden','true');b.append(tk);
+    if(o.aria)b.setAttribute('aria-label',o.aria);if(o.pressed!=null)b.setAttribute('aria-pressed',String(o.pressed));
+    b.addEventListener('click',e=>{e.stopPropagation();D.poke();if(o.on)o.on(b)});return b},
+  markDone(b,label){b.classList.add('done');if(label)b.setAttribute('aria-label',label)},
+  card(ch,tok){return new Promise(res=>{const el=$('card');$('cardKick').textContent=ch.kick;$('cardTitle').textContent=ch.title;$('cardSub').textContent=ch.sub||'';el.hidden=false;
+    let done=false;const fin=()=>{if(done)return;done=true;el.hidden=true;el.removeEventListener('click',fin);res()};el.addEventListener('click',fin);
+    if(D.fast){setTimeout(fin,5);return}
+    if(!AU.muted&&Speech.available())Speech.speak(ch.kick.replace(/·/g,'.')+'. '+ch.title+'.').then(()=>setTimeout(fin,700));else setTimeout(fin,2800);
+    setTimeout(fin,9000);const chk=setInterval(()=>{if(tok!==D.token){clearInterval(chk);fin()}if(done)clearInterval(chk)},200)})},
+  toast(t,ms){const el=$('toast');el.textContent=t;el.hidden=false;clearTimeout(this._tt);this._tt=setTimeout(()=>el.hidden=true,ms||3200)},
+  relayout(){const pr=$('prayer');if(pr){const want=L.portrait?$('act'):$('ovl');if(pr.parentNode!==want)want.prepend(pr)}}};
+
+/* ===== Input: tap/drag on the painting is the base layer; every hotspot also has an HTML button in the panel ===== */
+const Input={down:null,
+  start(x,y){const S=D.scene;D.poke();if(!S||!S.hit)return;const h=S.hit(x,y);if(!h){if(S.miss)S.miss(x,y);return}this.down={h,x0:x,y0:y,moved:false};if(h.dragStart)h.dragStart(x,y)},
+  move(x,y){const S=D.scene;if(!this.down){cv.classList.toggle('hot',!!(S&&S.hit&&S.hit(x,y)));return}const d=this.down;if(Math.hypot(x-d.x0,y-d.y0)>14)d.moved=true;if(d.h.dragMove)d.h.dragMove(x-d.x0,y-d.y0,x,y)},
+  end(x,y){const d=this.down;this.down=null;if(!d)return;D.poke();if(d.moved&&d.h.dragEnd){if(d.h.dragEnd(x-d.x0,y-d.y0)!==false)return}if(d.h.tap)d.h.tap()}};
+cv.addEventListener('pointerdown',e=>{if(e.button>0)return;try{cv.setPointerCapture(e.pointerId)}catch(_){}const p=toDesign(e.clientX,e.clientY);Input.start(p.x,p.y)});
+cv.addEventListener('pointermove',e=>{const p=toDesign(e.clientX,e.clientY);Input.move(p.x,p.y)});
+cv.addEventListener('pointerup',e=>{const p=toDesign(e.clientX,e.clientY);Input.end(p.x,p.y)});
+cv.addEventListener('pointercancel',()=>{Input.down=null});
+const inCirc=(x,y,cx_,cy_,r)=>Math.hypot(x-cx_,y-cy_)<=r;
+const inRect=(x,y,a,b,w,h)=>x>=a&&x<=a+w&&y>=b&&y<=b+h;
+
+/* ===== Optional camera hand-pinch. Loaded only after the child turns Hand mode on and the camera is granted.
+   If anything fails (no camera, permission denied, library or model blocked) it quietly switches off; tap/drag keep working. ===== */
+const TASKS_VISION='https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14';
+const HAND_MODEL='https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task';
+const Cam={on:false,stream:null,lm:null,raf:0,pinch:false,mode:null,target:null,lastVT:-1,status:'off',
+  async toggle(){if(this.on){this.stop();return}this.on=true;$('bCam').setAttribute('aria-pressed','true');
+    try{this.stream=await navigator.mediaDevices.getUserMedia({video:{width:640,height:480,facingMode:'user'},audio:false});
+      const v=$('camVid');v.srcObject=this.stream;await v.play();$('camBox').hidden=false;this.status='camera';
+      if(!this.lm){const vision=await import(TASKS_VISION+'/vision_bundle.mjs');const fs=await vision.FilesetResolver.forVisionTasks(TASKS_VISION+'/wasm');
+        this.lm=await vision.HandLandmarker.createFromOptions(fs,{baseOptions:{modelAssetPath:HAND_MODEL,delegate:'GPU'},runningMode:'VIDEO',numHands:1})}
+      if(!this.on)return;this.status='tracking';$('cursor').hidden=false;UI.toast('Hand mode on: pinch your finger and thumb to tap, pinch and move to drag.');this.loop()}
+    catch(e){this.status='fallback: '+(e&&e.name||'error');this.stop(true)}},
+  stop(failed){this.on=false;cancelAnimationFrame(this.raf);try{this.stream&&this.stream.getTracks().forEach(t=>t.stop())}catch(e){}this.stream=null;$('camBox').hidden=true;$('cursor').hidden=true;
+    $('bCam').setAttribute('aria-pressed','false');if(this.pinch)this.release(0,0);if(failed)UI.toast('Hand mode is not available here. Tapping works just the same.')},
+  loop(){if(!this.on)return;this.raf=requestAnimationFrame(()=>this.loop());const v=$('camVid');if(!this.lm||v.readyState<2||v.currentTime===this.lastVT)return;this.lastVT=v.currentTime;
+    let r;try{r=this.lm.detectForVideo(v,performance.now())}catch(e){return}const h=r&&r.landmarks&&r.landmarks[0];const cur=$('cursor');if(!h){cur.style.opacity=.3;return}cur.style.opacity=1;
+    const a=$('app').getBoundingClientRect(),st=stage.getBoundingClientRect();const tip=h[8],th=h[4],wr=h[0],mid=h[9];
+    const x=(1-(tip.x+th.x)/2)*a.width,y=((tip.y+th.y)/2)*a.height;cur.style.left=(x-(st.left-a.left))+'px';cur.style.top=(y-(st.top-a.top))+'px';
+    const span=Math.hypot(wr.x-mid.x,wr.y-mid.y)||.1,d=Math.hypot(tip.x-th.x,tip.y-th.y)/span;
+    const cxp=a.left+x,cyp=a.top+y;if(!this.pinch&&d<.32){this.pinch=true;cur.classList.add('pinch');this.press(cxp,cyp)}else if(this.pinch&&d>.45){this.pinch=false;cur.classList.remove('pinch');this.release(cxp,cyp)}
+    else if(this.pinch&&this.mode==='canvas'){const p=toDesign(cxp,cyp);Input.move(p.x,p.y)}},
+  press(x,y){const el=document.elementFromPoint(x,y);D.poke();if(el===cv){this.mode='canvas';const p=toDesign(x,y);Input.start(p.x,p.y);return}
+    const t=el&&el.closest('button,.card,.slot,summary');this.mode=t?'html':null;this.target=t;if(t&&t.classList.contains('card'))t.click()},
+  release(x,y){if(this.mode==='canvas'){const p=toDesign(x,y);Input.end(p.x,p.y)}else if(this.mode==='html'&&this.target){const el=document.elementFromPoint(x,y);const t=el&&el.closest('button,.card,.slot,summary');
+      if(this.target.classList.contains('card')){if(t&&t.classList.contains('slot'))t.click()}else if(t===this.target)t.click()}this.mode=null;this.target=null}};
+
+/* ===== Verbatim narration (story document) and takeaway lines. Typographic apostrophes in visible text. ===== */
+const TXT={
+  s1:['Long ago, the devas had lost much of their strength. They sought Lord Vishnu’s guidance. Vishnu explained that the cosmic ocean could be churned to reveal precious gifts, including amrita, the nectar associated with immortality.','But churning the ocean would be an enormous task. The devas would need help.'],
+  s2:['The devas and asuras agreed to churn the ocean. Mount Mandara would serve as the churning rod, and the serpent Vasuki would serve as the rope.','With Vishnu’s guidance and help, they began the mighty task.'],
+  s3:['The ocean swirled and shimmered. Waves rose, patterns of foam spread across the water, and mysterious treasures began to emerge.','But the first great appearance was not a treasure. It was something dangerous.'],
+  s4:['A terrible poison called Halahala emerged from the ocean. It threatened the worlds, and everyone feared what would happen if it spread.','The devas sought help. Lord Shiva stepped forward to protect creation.'],
+  s5:['Lord Shiva took the Halahala poison and held it in his throat to prevent it from spreading. His throat turned blue, and he became known as Neelakantha, the blue-throated Lord.','His act protected creation from a terrible danger.'],
+  s6:['With the danger contained, the churning continued. Many precious beings and objects appeared from the ocean in different traditional tellings of the story.','Among them was Goddess Lakshmi, radiant on a lotus. The ocean was revealing gifts that would change the world.'],
+  s7:['At last, Lord Dhanvantari emerged from the cosmic ocean, traditionally depicted carrying a vessel of amrita.','Dhanvantari is honoured as a divine figure associated with Ayurveda and healing. His appearance reminds us that health and well-being are among life’s most precious gifts.'],
+  s8:['During Dhanteras, many families pray for health, prosperity and a good life. Some buy precious metals or new household objects, while others honour Dhanvantari and the importance of well-being.','The story of the ocean reminds us that life’s greatest treasures include health, wisdom, generosity and care for one another.'],
+  end:'May we value the gifts we receive, care for one another, and use our blessings wisely.'};
+const REM=['Sometimes a big problem requires asking for help and finding a wise solution.',
+  'Big tasks become possible when different groups work together toward a shared goal.',
+  'Curiosity is valuable, but when something may be dangerous, we should pause and seek help.',
+  'When danger threatens others, asking for help and acting responsibly are important first steps.',
+  'Courage is not about being fearless. It is about caring enough to help protect others when they are in danger.',
+  'A treasure can represent more than gold or jewels. Nature, beauty, prosperity and the well-being of living beings are precious gifts too.',
+  'Health is not just a treasure to pray for. We can also care for our bodies, seek help when we are unwell, and show kindness to others.',
+  'Prosperity includes material well-being, but it also includes health, knowledge, relationships, generosity and the ability to care for one another.'];
+const MANTRA={head:'श्री धन्वन्तरि मन्त्रः',dev:'ॐ नमो भगवते धन्वन्तरये अमृतकलशहस्ताय सर्वामयविनाशनाय त्रिलोकनाथाय विष्णवे स्वाहा ॥',
+  iast:'Oṃ namo bhagavate dhanvantaraye amṛtakalaśahastāya sarvāmayavināśanāya trailokyanāthāya viṣṇave svāhā.',
+  meaning:'We offer our respectful salutations to Lord Dhanvantari, the divine healer, who holds the vessel of amrita, is honoured as the Lord of the three worlds, and is worshipped as a form of Lord Vishnu. We pray for well-being and freedom from illness.',
+  cues:['Om','Na-mo','Bha-ga-va-te','Dhan-van-ta-ra-ye','A-mri-ta-ka-la-sha-has-taa-ya','Sar-vaa-ma-ya-vi-naa-sha-naa-ya','Trai-lok-ya-naa-thaa-ya','Vish-na-ve Svaa-haa'],
+  dhyana:'शङ्खं चक्रं जलूकां दधदमृतघटं चापि चतुर्भिः कराब्जैः ।\nसूक्ष्मस्वच्छातिहृद्यांशुकपरिविलसन्मौलिमम्भोजनेत्रम् ।\nकालाम्भोदोज्ज्वलाङ्गं कटितटविलसच्चारुपीताम्बराढ्यम् ।\nवन्दे धन्वन्तरिं तं निखिलगदवनप्रौढदावाग्निलीलम् ॥',
+  dhyanaMeaning:'I offer my salutations to Lord Dhanvantari, whose hands bear sacred emblems and the vessel of amrita, whose eyes are like lotuses, whose garments are beautiful, and whose radiant form resembles a rain-filled cloud. He is revered as the divine healer who overcomes illness.'};
+const CHAPTERS=[{id:1,at:0,kick:'Chapter 1',title:'The Great Plan',sub:'The devas need help, and a mighty task begins.'},
+  {id:2,at:3,kick:'Chapter 2',title:'The Blue-Throated Protector',sub:'A danger rises, and someone steps forward to protect creation.',prev:'Previously, the devas and asuras churned the ocean together, and something dangerous began to rise.'},
+  {id:3,at:5,kick:'Chapter 3',title:'The Treasures',sub:'The ocean reveals its gifts.',prev:'Previously, Lord Shiva held the poison in his throat and protected creation.'}];
+
+/* ===== shared helpers ===== */
+function makeFish(n,y0,y1,seed){const r=rng(seed);const a=[];for(let k=0;k<n;k++)a.push({x:L.B.x+r()*L.B.w,y:lerp(y0,y1,r()),dir:r()<.5?-1:1,spd:18+r()*20,s:.55+r()*.4,col:[C.coral,C.saffron,C.gold,C.pink][k%4],ph:r()*6});return a}
+function moveFish(arr,dt,flee){arr.forEach(f=>{let v=f.spd;if(flee){const d=f.x-flee.x;f.dir=d<0?-1:1;v=f.spd*5*Math.max(0,1-(T.now-flee.t)/2600)+f.spd}f.x+=f.dir*v*dt;const B=L.B;if(f.x<B.x-60)f.x=B.x+B.w+50;if(f.x>B.x+B.w+60)f.x=B.x-50})}
+function drawFish(g,arr,t){arr.forEach(f=>fish(g,f.x,f.y,f.s,f.col,f.dir,t+f.ph))}
+/* glowing lotus or ocean-shell icon marking an interactive object; it pulses by shape, and grows during a hint */
+function hotIcon(g,x,y,r,t,kind){const hinting=T.now-D.hintAt<4500,k=reduceMotion?0:Math.sin(t*3)*.08;rings(g,x,y,r*(1.25+k),hinting?4:2,r*.35,C.gold,3,hinting?.95:.75);
+  if(kind==='shell'){g.save();g.translate(x,y);const p=new Path2D();p.moveTo(0,r*.55);for(let j=0;j<=8;j++){const a=Math.PI*(1.1+j*.8/8);p.lineTo(Math.cos(a)*r*.9,Math.sin(a)*r*.9+r*.2)}p.closePath();
+    shape(g,p,C.coral,gg=>{gg.strokeStyle=C.cream;gg.lineWidth=2;gg.beginPath();for(let j=1;j<8;j++){const a=Math.PI*(1.1+j*.8/8);gg.moveTo(0,r*.55);gg.lineTo(Math.cos(a)*r*.85,Math.sin(a)*r*.85+r*.2)}gg.stroke()},{lw:1.8});g.restore()}
+  else lotus(g,x,y+r*.4,r,{col:C.pink,col2:C.coral})}
+function tick(g,x,y,r){shape(g,ell(x,y,r),C.leaf,null,{lw:1.6});g.strokeStyle=C.pale;g.lineWidth=r*.28;g.beginPath();g.moveTo(x-r*.45,y);g.lineTo(x-r*.1,y+r*.35);g.lineTo(x+r*.5,y-r*.35);g.stroke()}
+function island(g,x0,x1,y,h,col){const p=sp([[x0,y+6],[x0+24,y-12],[(x0+x1)/2,y-18],[x1-24,y-12],[x1,y+6],[x1-14,y+h],[x0+14,y+h]],true);shape(g,p,col||C.agold,gg=>{Pat.tri(gg,bb(x0,y-6,x1-x0,14),C.dgold,16);Pat.dots(gg,bb(x0,y+10,x1-x0,h),C.dgold,14,2)},{lw:2.2})}
+function halo(g,x,y,r,t,cols){cols=cols||[C.gold,C.saffron];rays(g,x,y,r*.9,r*1.35,20,cols[0],(t||0)*.05);shape(g,ell(x,y,r),cols[1],gg=>Pat.dots(gg,bb(x-r,y-r,r*2,r*2),C.gold,12,2),{lw:2});ring(g,x,y,r*.82,C.ink,1.6)}
+function smallVishnu(g,x,y,s,t){cloud(g,x,y+18*s/.36,s/.36*.55,C.cream,C.ink);halo(g,x,y-172*s,52*s,t);person(g,'vishnu','seated','serene',x,y,s)}
+
+/* ===== The churning composition (Screens 2, 3, 6): one layout scaled around (cx, baseY) ===== */
+function churnLayout(cx,baseY,S,spr){const fs=.82*S,fy=baseY+92*S;const offs=[600,490,380];
+  return{fs,fy,dev:offs.map((o,k)=>({key:'deva'+k,x:cx-o*S*spr,y:fy})),asu:offs.map((o,k)=>({key:'asura'+k,x:cx+o*S*spr,y:fy}))}}
+function churnScene(g,st,o){const{cx,baseY,S,spr}=o,t=o.t,lay=churnLayout(cx,baseY,S,spr),fs=lay.fs;
+  const pL=st.pL||0,pR=st.pR||0,leanL=-(.06+.1*pL)*(o.lean==null?1:o.lean),leanR=(.06+.1*pR)*(o.lean==null?1:o.lean);
+  const shake=side=>{const s0=st['sh'+side]||-1e9,e=T.now-s0;return e<700?Math.sin(e/30)*6*S*(1-e/700):0};
+  const hand=(f,lean,dir,dx)=>{const hx=71*fs*dir,hy=-184*fs;return[f.x+dx+hx*Math.cos(lean)-hy*Math.sin(lean),f.y+hx*Math.sin(lean)+hy*Math.cos(lean)]};
+  const dxL=-18*S*pL,dxR=18*S*pR;const slackL=o.slackL||0,slackR=o.slackR||0;
+  const hL=lay.dev.map(f=>hand(f,leanL,1,dxL)),hR=lay.asu.map(f=>hand(f,leanR,-1,dxR));
+  hL.forEach(p=>{p[1]+=slackL+shake('L')});hR.forEach(p=>{p[1]+=slackR+shake('R')});
+  const hw=y=>mandaraHW(y)*S,yA=baseY-150*S,yB=baseY-190*S,yC=baseY-230*S,yD=baseY-270*S;
+  const L1=[cx-hw(-150),yA],R1=[cx+hw(-190),yB],L2=[cx-hw(-230),yC],R2=[cx+hw(-270),yD];
+  /* Vasuki's head rises clear of the last asura, never over a face */
+  const tail=[hL[0][0]-80*fs,hL[0][1]+14*fs],head=[hR[0][0]+138*fs,hR[0][1]-118*fs];
+  const leftSeg=[tail,...hL,[lerp(hL[2][0],L1[0],.55),lerp(hL[2][1],L1[1],.4)],L1];
+  const rightSeg=[R2,[lerp(R2[0],hR[2][0],.45),lerp(R2[1],hR[2][1],.6)],...hR.slice().reverse(),[hR[0][0]+86*fs,hR[0][1]-10*fs],head];
+  const wrap1=[L1,[cx,baseY-128*S],R1],wrap2=[L2,[cx,baseY-208*S],R2],back=[R1,[cx,baseY-232*S],L2];
+  const w=26*S,ph=st.phase||0;
+  serpentBody(g,sp(back),w,ph);
+  kurma(g,cx,baseY+86*S,.95*S,t);
+  sea(g,baseY+96*S,L.B.y+L.B.h+10,{cols:o.water,t,row:44*S+10,len:90,spd:6,dots:false,line:o.waterLine});
+  const nr=st.rings||0;for(let k=0;k<nr;k++){const age=clamp((T.now-(st.ringT?st.ringT[k]:0))/900,0,1);ring(g,cx,baseY+82*S,(250+k*46)*S*Ease.out(age),C.gold,3.4,(30+k*7)*S*Ease.out(age));ring(g,cx,baseY+82*S,(240+k*46)*S*Ease.out(age),C.pale,1.4,(27+k*7)*S*Ease.out(age))}
+  mandara(g,cx,baseY,S,st.rot||0);
+  serpentBody(g,sp(wrap1),w,ph);serpentBody(g,sp(wrap2),w,ph);
+  const minX=lay.dev[0].x-80*fs,maxX=lay.dev[2].x+70*fs;island(g,minX-30*S,maxX+20*S,lay.fy-4,70*S);island(g,cx+(cx-maxX)-20*S,cx+(cx-minX)+30*S,lay.fy-4,70*S);
+  lay.dev.forEach(f=>person(g,f.key,o.devPose||'pull',o.devMood||'determined',f.x+dxL,f.y,fs,false,o.devPose==='pull'||!o.devPose?leanL:0));
+  lay.asu.forEach(f=>person(g,f.key,o.asuPose||'pull',o.asuMood||'determined',f.x+dxR,f.y,fs,true,o.asuPose==='pull'||!o.asuPose?leanR:0));
+  serpentBody(g,sp(leftSeg),w,ph);serpentBody(g,sp(rightSeg),w,ph);
+  const ta=Math.atan2(tail[1]-hL[0][1],tail[0]-hL[0][0]);serpentTail(g,tail[0],tail[1],ta,w);
+  serpentHead(g,head[0],head[1],-1.15,S*.82);
+  return{lay,hL,hR,L1,R2}}
+
+/* ===== SCREEN 1 · A World That Needed Help ===== */
+const S1={label:'Screen 1 of 8',title:'A World That Needed Help',border:[C.indigo,C.agold],
+  alt:'A celestial terrace. Worried devas with folded hands approach Lord Vishnu, who sits on the coils of the serpent Shesha. A deep-blue patterned ocean stretches across the horizon.',
+  enter(){const P=L.portrait;this.st={devMood:'worried',line:0,tapped:false,ripple:-1e9,mand:0,out:0,armed:false,fish:makeFish(6,P?380:470,P?540:630,3)}},
+  lay(){return L.portrait?{seaY:[330,560],hot:[300,455],vx:620,vy:1075,vs:.84,dev:[[85,1095],[190,1095],[295,1095]],ds:.7,clouds:[[160,120,.7],[520,80,.6],[780,170,.6]]}
+    :{seaY:[425,655],hot:[760,545],vx:1230,vy:868,vs:1,dev:[[160,860],[300,860],[440,860]],ds:.95,clouds:[[200,120,1],[620,70,.8],[1050,135,.9],[1460,85,.8]]}},
+  draw(g,t){const st=this.st,l=this.lay(),B=L.B;skyField(g,C.indigo,{seed:4,density:7000,maxY:l.seaY[0]});
+    l.clouds.forEach(([x,y,s])=>cloud(g,x,y,s,C.agold,C.ink));[[380,250],[980,300],[1320,230]].forEach(([x,y])=>{if(!L.portrait||x<900)lotus(g,L.portrait?x*.6:x,y,22,{col:C.agold,col2:C.gold})});
+    const[h0,h1]=l.seaY;sea(g,h0,h1,{cols:[C.deep,C.indigo],t,row:40,len:80,circles:L.portrait?[[120,500,26],[760,470,22]]:[[260,600,30],[1080,520,26],[1420,610,22]]});
+    const[hx,hy]=l.hot;const fl=st.tapped?{x:hx,t:st.ripple}:null;drawFish(g,st.fish,t);
+    if(st.tapped){const e=(T.now-st.ripple)/1000;if(e<3.4)for(let k=0;k<4;k++){const r=(e*120+k*46);if(r>0){g.globalAlpha=clamp(1-e/3.4,0,1);ring(g,hx,hy,r,C.pale,3,r*.36);ring(g,hx,hy,r-8,C.turq,1.6,(r-8)*.36);g.globalAlpha=1}}
+      if(e>.4&&e<3)[[-90,-20],[70,-35],[-30,40],[110,25],[-140,30]].forEach(([dx,dy],i)=>{g.globalAlpha=clamp(Math.sin((e-.4)*2.4+i),0,1)*.9;i%2?star(g,hx+dx,hy+dy,10,C.gold,8):flowerTop(g,hx+dx,hy+dy,9,C.gold,C.cream,6);g.globalAlpha=1})}
+    if(st.mand>0){const s=1+st.out*1.4;mandala(g,hx+(L.portrait?0:(800-hx))*st.out,hy+(L.portrait?160:90)*st.out,135*st.mand*s,{sy:.42,p:st.mand,rot:t*.08})}
+    if(st.armed&&!st.tapped)hotIcon(g,hx,hy,26,t,'shell');
+    g.globalAlpha=1-st.out*.85;
+    const ty=L.portrait?560:650;shape(g,pl([[B.x-10,ty],[B.x+B.w+10,ty],[B.x+B.w+10,B.y+B.h+10],[B.x-10,B.y+B.h+10]],true),C.agold,gg=>{gg.fillStyle=C.dgold;gg.fillRect(B.x-10,ty,B.w+20,22);Pat.tri(gg,bb(B.x-10,ty+2,B.w+20,18),C.gold,20);
+      Pat.diamonds(gg,bb(B.x,ty+30,B.w,400),C.dgold,34,false);Pat.dots(gg,bb(B.x,ty+30,B.w,400),C.cream,34,2)},{lw:2.4});
+    if(st.line>0){const vx=l.vx-118*l.vs*1.08,vy=l.vy-(100+182-90)*l.vs;g.save();g.globalAlpha=st.line;g.setLineDash([3,16]);g.lineDashOffset=-t*30;g.strokeStyle=C.gold;g.lineWidth=7;g.lineCap='round';
+      g.beginPath();g.moveTo(vx,vy);g.quadraticCurveTo((vx+hx)/2,Math.min(vy,hy)-80,hx+30,hy+10);g.stroke();g.restore()}
+    l.dev.forEach(([x,y],k)=>person(g,'deva'+k,'fold',st.devMood,x,y,l.ds));
+    shesha(g,l.vx,l.vy,l.vs);const sy=l.vy-112*l.vs;halo(g,l.vx,sy-172*l.vs*1.08,50*l.vs,t);person(g,'vishnu','seated','serene',l.vx,sy,1.08*l.vs);g.globalAlpha=1},
+  hit(x,y){const st=this.st,l=this.lay();if(!st.armed||st.tapped)return null;if(y>l.seaY[0]-10&&y<l.seaY[1]&&x<l.vx-200*l.vs)return{tap:()=>this.tap()};return null},
+  tap(b){const st=this.st;if(st.tapped)return;st.tapped=true;st.ripple=T.now;AU.sfx('ripple');const btn=b||document.querySelector('#act .ab');if(btn)UI.markDone(btn,'Explore the ocean, done');
+    UI.status('The ocean is answering…');Timers.add(D.fast?5:2400,()=>{AU.sfx('chime');st.devMood='wonder';tw(st,{mand:1},D.fast?5:1100,'out').then(()=>{UI.status('A golden mandala was hidden beneath the water!');D.complete()})})},
+  update(dt){const st=this.st;moveFish(st.fish,dt,st.tapped?{x:this.lay().hot[0],t:st.ripple}:null)},
+  async run(){const st=this.st;Music.mood('calm');AU.amb(.025);await D.wait(700);await D.say(TXT.s1[0]);st.devMood='hope';D.tw(st,{line:1},1200).catch(()=>{});await D.say(TXT.s1[1]);
+    st.armed=true;await D.activity({head:'What is hidden beneath the ocean?',prompt:'Tap the ocean to reveal its mystery.',hint:'Tap the glowing shell on the water.',
+      build:el=>el.append(UI.btn('Explore the ocean',{main:true,icon:'lotus',aria:'Explore the ocean: tap to reveal what is hidden',on:b=>this.tap(b)})),assist:()=>this.tap()});
+    st.devMood='happy';await D.wait(900);await D.remember(REM[0]);await D.beforeOutro();UI.remember(null);await D.tw(st,{out:1},1500,'io')}};
+
+/* ===== SCREEN 2 · A Great Plan ===== */
+const S2={label:'Screen 2 of 8',title:'A Great Plan',border:[C.deep,C.gold],
+  alt:'Mount Mandara stands in the ocean on the back of Kurma the tortoise. The serpent Vasuki is wrapped around it; devas pull from the left and asuras from the right. A small Lord Vishnu watches from a cloud.',
+  enter(){this.st={rot:0,phase:0,pL:0,pR:0,pulls:0,next:'L',rings:0,ringT:[],shimmer:-1e9,devMood:'determined',asuMood:'determined',armed:false,swirl:0,fish:makeFish(5,L.portrait?760:640,L.portrait?1100:860,8)}},
+  geo(){return L.portrait?{cx:450,baseY:700,S:.72,spr:.6,sea:640,v:[700,200,.3]}:{cx:800,baseY:600,S:1,spr:1,sea:540,v:[1150,200,.36]}},
+  draw(g,t){const st=this.st,o=this.geo();skyField(g,C.deep,{seed:12,density:8000,maxY:o.sea});
+    (L.portrait?[[140,110,.6],[460,70,.5]]:[[200,110,.9],[560,70,.7],[1420,120,.8]]).forEach(([x,y,s])=>cloud(g,x,y,s,C.cream,C.ink));
+    sea(g,o.sea,L.B.y+L.B.h,{cols:[C.turq,C.teal,C.deep,C.teal],t,row:46,len:96,circles:L.portrait?[]:[[230,820,26],[1380,830,24]]});drawFish(g,st.fish,t);
+    if(st.swirl>0){const cx_=o.cx,cy_=o.baseY+90*o.S;for(let k=0;k<5;k++){const r=(160+k*70)*o.S*(1+st.swirl*.3);ring(g,cx_,cy_,r,C.pale,2.6,r*.16)}if(st.swirl>.4)mandala(g,cx_,cy_+10,120*o.S*st.swirl,{sy:.3,p:st.swirl,cols:[C.violet,C.plum,C.violet,C.plum],rot:t*.3})}
+    churnScene(g,st,{cx:o.cx,baseY:o.baseY,S:o.S,spr:o.spr,t,water:[C.teal,C.turq],devMood:st.devMood,asuMood:st.asuMood});
+    smallVishnu(g,o.v[0],o.v[1],o.v[2],t);
+    const se=(T.now-st.shimmer)/1000;if(se>0&&se<3.2){const r=rng(5);for(let k=0;k<40;k++){const x=L.B.x+r()*L.B.w,y=lerp(o.sea+30,L.B.y+L.B.h,r());g.globalAlpha=clamp(Math.sin((se*2+r()*3))*1,0,1);star(g,x,y,7,C.gold,4);g.globalAlpha=1}}
+    if(st.armed&&st.pulls<6){const lay=churnLayout(o.cx,o.baseY,o.S,o.spr);const yh=lay.fy-184*lay.fs-50*o.S;hotIcon(g,lay.dev[1].x+30*o.S,yh-40*o.S,22*o.S+8,t,'lotus');hotIcon(g,lay.asu[1].x-30*o.S,yh-40*o.S,22*o.S+8,t,'lotus');
+      g.save();g.fillStyle=C.gold;g.strokeStyle=C.ink;g.lineWidth=2.5;[[lay.dev[0].x-70*o.S,-1,'L'],[lay.asu[0].x+70*o.S,1,'R']].forEach(([x,d,side])=>{const big=st.next===side?1.3:.9,y=yh-40*o.S,p=new Path2D();
+        p.moveTo(x+d*28*big,y);p.lineTo(x,y-18*big);p.lineTo(x,y-8*big);p.lineTo(x-d*24*big,y-8*big);p.lineTo(x-d*24*big,y+8*big);p.lineTo(x,y+8*big);p.lineTo(x,y+18*big);p.closePath();g.fill(p);g.stroke(p)});g.restore()}},
+  update(dt){moveFish(this.st.fish,dt)},
+  hit(x,y){const st=this.st,o=this.geo();if(!st.armed||st.pulls>=6)return null;const lay=churnLayout(o.cx,o.baseY,o.S,o.spr);const top=lay.fy-330*lay.fs,bot=lay.fy+40*o.S;if(y<top||y>bot)return null;
+    const side=x<o.cx-150*o.S?'L':x>o.cx+150*o.S?'R':null;if(!side)return null;let used=false;
+    return{tap:()=>{if(!used)this.pull(side)},dragMove:(dx)=>{if(!used&&Math.abs(dx)>34){used=true;this.pull(dx<0?'L':'R')}},dragEnd:()=>used}},
+  pull(side){const st=this.st;if(st.pulls>=6)return;const nm=s=>s==='L'?'left':'right';
+    if(side!==st.next){st['sh'+side]=T.now;AU.sfx('nudge');UI.status('Next pull: '+nm(st.next)+'.',true);const b=document.getElementById(st.next==='L'?'pullL':'pullR');if(b){b.classList.remove('pulse');void b.offsetWidth;b.classList.add('pulse')}return}
+    st.pulls++;st.next=side==='L'?'R':'L';AU.sfx('creak');const k='p'+side;tw(st,{[k]:1},D.fast?2:260,'out').then(()=>tw(st,{[k]:0},D.fast?2:520));
+    tw(st,{rot:st.rot+.55},D.fast?2:900);tw(st,{phase:st.phase+(side==='L'?-70:70)},D.fast?2:800);st.ringT.push(T.now);st.rings=st.pulls;
+    this.meter();if(st.pulls>=6){st.shimmer=T.now;AU.sfx('shimmer');st.devMood='happy';st.asuMood='happy';UI.status('The whole ocean shimmers!');['pullL','pullR'].forEach(id=>{const b=$(id);if(b){b.disabled=true;UI.markDone(b)}});D.complete()}
+    else UI.status('Next pull: '+nm(st.next)+'.')},
+  meter(){const m=$('meter');if(!m)return;const n=this.st.pulls;m.querySelector('b').textContent=n+'/6 pulls';m.querySelector('i').textContent='●'.repeat(n)+'○'.repeat(6-n);m.setAttribute('aria-label','Churning progress '+n+' of 6 pulls')},
+  async run(){const st=this.st;Music.mood('calm');await D.wait(500);await D.say(TXT.s2[0]);await D.say(TXT.s2[1]);st.armed=true;
+    await D.activity({head:'Help churn the ocean!',prompt:'Pull left, then right!',status:'Next pull: left.',hint:'Pull the rope on the left side first, then the right side.',
+      build:el=>{const m=document.createElement('div');m.id='meter';m.className='reveal';m.setAttribute('role','status');m.innerHTML='Churning progress <b>0/6 pulls</b> <i aria-hidden="true">○○○○○○</i>';el.append(m);
+        const bl=UI.btn('Pull left',{main:true,on:()=>this.pull('L')});bl.id='pullL';const br=UI.btn('Pull right',{main:true,on:()=>this.pull('R')});br.id='pullR';el.append(bl,br)},
+      assist:()=>this.pull(st.next)});
+    await D.wait(1200);await D.remember(REM[1]);await D.beforeOutro();UI.remember(null);AU.sfx('hush');await D.tw(st,{swirl:1},2200,'io')}};
+
+/* ===== SCREEN 3 · The Ocean Begins to Change ===== */
+const S3={label:'Screen 3 of 8',title:'The Ocean Begins to Change',border:[C.indigo,C.violet],
+  alt:'The ocean fills most of the picture in three big patterned waves. Far behind, the devas and asuras pause at the churning mountain. A small violet spiral peeks out from the water.',
+  enter(){this.st={dx:[0,0,0],done:[false,false,false],mist:0,pL:0,pR:0,rot:.8,phase:0,armed:false,fish:[]}},
+  geo(){return L.portrait?{cx:450,baseY:285,S:.4,spr:.62,tops:[370,610,850],far:230}:{cx:800,baseY:300,S:.5,spr:1,tops:[400,555,705],far:250}},
+  draw(g,t){const st=this.st,o=this.geo(),B=L.B;skyField(g,C.indigo,{seed:21,density:7000,maxY:o.tops[0]});
+    (L.portrait?[[150,90,.55],[700,120,.5]]:[[180,100,.8],[1420,90,.8]]).forEach(([x,y,s])=>cloud(g,x,y,s,C.plum,C.ink));
+    sea(g,o.far,o.tops[0]+40,{cols:[C.teal,C.deep],t,row:34,len:70,spd:8});
+    churnScene(g,st,{cx:o.cx,baseY:o.baseY,S:o.S,spr:o.spr,t,water:[C.teal,C.deep],devPose:'pause',asuPose:'loosen',devMood:'curious',asuMood:'concern',slackR:16*o.S,lean:.3});
+    /* the violet spiral, partly hidden by foam */
+    const sx=o.cx,sy=o.tops[0]-4;g.save();g.strokeStyle=C.violet;g.lineWidth=7;g.beginPath();for(let k=0;k<60;k++){const a=k*.22+t*.6,r=4+k*.75;k?g.lineTo(sx+Math.cos(a)*r,sy+Math.sin(a)*r*.45):g.moveTo(sx,sy)}g.stroke();g.strokeStyle=C.plum;g.lineWidth=2;g.stroke();g.restore();
+    /* hidden layers under the waves */
+    const bot=B.y+B.h+10;g.fillStyle=C.deep;g.fillRect(B.x-10,o.tops[0]+10,B.w+20,bot-o.tops[0]);
+    const b1=[o.tops[0]+40,o.tops[1]+20],b2=[o.tops[1]+40,o.tops[2]+20],b3=[o.tops[2]+40,bot];
+    for(let k=0;k<6;k++){const x=lerp(B.x+80,B.x+B.w-80,(k+.5)/6)+Math.sin(t*.7+k)*20;fish(g,x,lerp(b1[0],b1[1],.5)+Math.sin(k*2)*14,.6,[C.coral,C.gold,C.pink][k%3],k%2?1:-1,t+k)}
+    for(let k=0;k<14;k++){const x=lerp(B.x+40,B.x+B.w-40,k/13),y=b1[1]-((t*30+k*37)%(b1[1]-b1[0]));ring(g,x,y,4+(k%3)*2,C.pale,1.6)}
+    for(let k=0;k<10;k++){const x=lerp(B.x+60,B.x+B.w-60,(k+.5)/10),y=lerp(b2[0],b2[1],.3+(k%3)*.2);g.globalAlpha=.6+.4*Math.sin(t*1.4+k);star(g,x,y,8,C.gold,8);g.globalAlpha=1}
+    [[-.3,.6],[0,.4],[.32,.7]].forEach(([dx,dy])=>{const x=o.cx+dx*B.w*.9,y=lerp(b2[0],b2[1],dy);g.strokeStyle=C.violet;g.lineWidth=4;g.beginPath();for(let k=0;k<30;k++){const a=k*.3+t,r=k*.9;k?g.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r*.5):g.moveTo(x,y)}g.stroke()});
+    const gy=lerp(b3[0],Math.min(b3[1],b3[0]+230),.45);rings(g,o.cx,gy,40+Math.sin(t*1.5)*4,6,26,C.violet,6,1,16);mandala(g,o.cx,gy,90,{sy:.4,cols:[C.violet,C.plum,C.violet,C.pink],rot:t*.2});
+    /* the three wave bands (wave 3 on top) */
+    [0,1,2].forEach(k=>{const top=o.tops[k],bt=k<2?o.tops[k+1]+46:bot,dx=st.dx[k];g.save();g.translate(dx,0);const p=this.band(top,bt,k,t);
+      const cols=[[C.turq,C.teal],[C.teal,C.indigo],[C.cream,C.turq]][k];shape(g,p,cols[0],gg=>{Pat.waves(gg,bb(B.x-200,top-30,B.w+400,bt-top+30),cols[1],26,2);Pat.dots(gg,bb(B.x-200,top,B.w+400,bt-top),k===2?C.teal:C.pale,22,1.8)},{lw:2.6,gap:k===2?C.turq:C.pale});
+      if(st.armed&&!st.done[k]){hotIcon(g,B.x+B.w*.5+(k-1)*B.w*.28,top+42,20,t+k,'shell')}
+      if(st.done[k])tick(g,dx>0?B.x-140:B.x+B.w+140,top+48,17);g.restore()});
+    if(st.mist>0){const s=st.mist;g.save();g.globalAlpha=Math.min(1,s*1.5);for(let k=0;k<6;k++){const a=k*1.1+t*.3,r=(40+k*30)*s;shape(g,ell(o.cx+Math.cos(a)*r*.7,o.tops[0]-60-s*240+Math.sin(a)*r*.4,(60+k*12)*s,(42+k*8)*s),k%2?C.violet:C.plum,null,{lw:2,gap:C.grey})}g.restore()}},
+  /* one wave band: scalloped crest, rounded curling ends (they show once the band slides aside) */
+  band(top,bot,k,t){const B=L.B,len=230,amp=28,p=new Path2D(),ph=(t*(k%2?.3:-.3))%TAU;const x0=B.x-200,x1=B.x+B.w+200,mid=(top+bot)/2;
+    p.moveTo(x0,bot);p.quadraticCurveTo(x0-90,mid,x0,top);const n=Math.ceil((x1-x0)/len);const step=(x1-x0)/n;
+    for(let i=0;i<n;i++){const x=x0+i*step,a=amp*(1+.25*Math.sin(ph+i));p.quadraticCurveTo(x+step*.3,top-a*1.4,x+step*.5,top);p.quadraticCurveTo(x+step*.7,top+a*.6,x+step,top)}
+    p.quadraticCurveTo(x1+90,mid,x1,bot);p.closePath();return p},
+  hit(x,y){const st=this.st,o=this.geo();if(!st.armed)return null;for(let k=2;k>=0;k--){const top=o.tops[k]-20,bt=k<2?o.tops[k+1]+20:L.B.y+L.B.h;if(y>top&&y<bt){let used=false;
+      return{tap:()=>{if(!used)this.wave(k)},dragMove:dx=>{if(!used&&Math.abs(dx)>40){used=true;this.wave(k,dx>0?1:-1)}},dragEnd:()=>used}}}return null},
+  wave(k,dir){const st=this.st,W=L.B.w;const open=st.dx[k]!==0;const d=dir||(k%2?1:-1);AU.sfx('slide');tw(st.dx,{[k]:open?0:d*(W*.78+200)},D.fast?2:900,'io');
+    if(!st.done[k]){st.done[k]=true;const b=$('wave'+k);if(b)UI.markDone(b,'Wave '+(k+1)+', revealed');const msg=['Fish and bubbles swim beneath the first wave.','Gold glimmers… and the first traces of violet.','A bright violet glow is spreading beneath the ocean.'][k];UI.status(msg);
+      if(k===2)AU.sfx('hush');else AU.sfx('ripple');if(st.done.every(Boolean))D.complete()}},
+  async run(){const st=this.st;Music.mood('dark');AU.amb(.035);await D.wait(500);await D.say(TXT.s3[0]);await D.say(TXT.s3[1]);st.armed=true;
+    await D.activity({head:'Move the waves',prompt:'Choose each wave to uncover what is happening beneath the ocean.',hint:'Tap a wave, or swipe it sideways, to see what is under it.',
+      build:el=>[0,1,2].forEach(k=>{const b=UI.btn('Wave '+(k+1),{icon:'water',aria:'Wave '+(k+1)+': slide it aside',on:()=>this.wave(k)});b.id='wave'+k;el.append(b)}),
+      assist:()=>{const k=st.done.indexOf(false);if(k>=0)this.wave(k)}});
+    await D.wait(900);await D.remember(REM[2]);await D.beforeOutro();UI.remember(null);AU.sfx('hush');await D.tw(st,{mist:1},2200,'io')}};
+
+/* ===== SCREEN 4 · The Halahala Poison ===== */
+const WORLDS=[{k:'living',name:'Living world',sub:'A tree and a village'},{k:'water',name:'Water world',sub:'A river with fish'},{k:'celestial',name:'Celestial world',sub:'A palace among the stars'}];
+function worldMedal(g,x,y,r,k,lit,t){if(lit)rings(g,x,y,r*1.1,3,r*.18,C.gold,3,.9);lotusFrame(g,x,y,r,{n:16,c1:lit?C.gold:C.agold,c2:lit?C.saffron:C.grey,bg:k==='celestial'?C.indigo:k==='water'?C.turq:C.cream});
+  g.save();g.beginPath();g.ellipse(x,y,r-3,r-3,0,0,TAU);g.clip();const s=r/90;
+  if(k==='living'){g.fillStyle=C.leaf;g.fillRect(x-r,y+20*s,r*2,r);Pat.dots(g,bb(x-r,y+20*s,r*2,r),C.cream,12*s,1.5*s);[[-42,0],[-16,-14]].forEach(([dx,dy])=>{shape(g,pl([[x+dx*s-4*s,y+24*s],[x+dx*s+4*s,y+24*s],[x+dx*s+3*s,y+dy*s],[x+dx*s-3*s,y+dy*s]],true),C.rust,null,{lw:1.2,line:'single'});shape(g,ell(x+dx*s,y+(dy-22)*s,22*s,26*s),C.leaf,gg=>Pat.petals(gg,bb(x+(dx-24)*s,y+(dy-50)*s,48*s,54*s),C.teal,12*s),{lw:1.6})});
+    [[22,8],[50,12]].forEach(([dx,dy])=>{shape(g,pl([[x+(dx-16)*s,y+(dy+16)*s],[x+(dx+16)*s,y+(dy+16)*s],[x+(dx+16)*s,y+(dy-4)*s],[x+dx*s,y+(dy-20)*s],[x+(dx-16)*s,y+(dy-4)*s]],true),C.saffron,gg=>Pat.dots(gg,bb(x+(dx-16)*s,y+(dy-20)*s,32*s,36*s),C.verm,7*s,1.4*s),{lw:1.4});shape(g,rrect(x+(dx-4)*s,y+(dy+4)*s,8*s,12*s,2),C.ink,null,{line:'none'})})}
+  else if(k==='water'){Pat.waves(g,bb(x-r,y-r,r*2,r*2),C.pale,22*s,2);[[-24,-10,1],[20,22,-1]].forEach(([dx,dy,d])=>fish(g,x+dx*s,y+dy*s,.6*s,C.coral,d,t))}
+  else{Pat.dots(g,bb(x-r,y-r,r*2,r),C.cream,16*s,1.6*s);[[-40,-40],[38,-46],[0,-58]].forEach(([dx,dy])=>star(g,x+dx*s,y+dy*s,7*s,C.gold,4));
+    shape(g,pl([[x-46*s,y+60*s],[x-46*s,y+4*s],[x-30*s,y-12*s],[x-14*s,y+4*s],[x-14*s,y-18*s],[x,y-40*s],[x+14*s,y-18*s],[x+14*s,y+4*s],[x+30*s,y-12*s],[x+46*s,y+4*s],[x+46*s,y+60*s]],true),C.gold,gg=>{Pat.diamonds(gg,bb(x-48*s,y-40*s,96*s,100*s),C.verm,14*s,true)},{lw:1.8});cloud(g,x,y+56*s,.5*s,C.cream,C.ink)}
+  g.restore();if(lit)tick(g,x+r*.72,y+r*.72,r*.2)}
+function kailasa(g,x,y,s,glow,t){g.save();g.translate(x,y);g.scale(s,s);if(glow>0){rings(g,0,-60,90,5,26,C.pale,5,glow);rings(g,0,-60,100,4,26,C.sblue,3,glow*.8)}
+  [[-110,0,-40,-110,30,0],[-40,0,40,-170,120,0],[40,0,100,-100,160,0]].forEach(([a,b,c,d,e,f])=>shape(g,pl([[a,b],[c,d],[e,f]],true),C.pale,gg=>{gg.fillStyle=C.sblue;for(let k=0;k<5;k++){const yy=d+(b-d)*(.3+k*.15);gg.beginPath();for(let xx=-200;xx<200;xx+=14){gg.moveTo(xx,yy);gg.lineTo(xx+7,yy-8);gg.lineTo(xx+14,yy)}gg.fill()}},{lw:2.2,gap:C.sblue}));
+  g.restore()}
+function poisonCloud(g,x,y,h,w,t,s){s=s==null?1:s;if(s<=0)return;g.save();g.translate(x,y);g.scale(s,s);const br=reduceMotion?0:Math.sin(t*.9)*.02;g.scale(1+br,1-br);
+  const curls=[[0,-h*.15,w*.42],[-w*.32,-h*.3,w*.26],[w*.32,-h*.32,w*.27],[-w*.18,-h*.55,w*.28],[w*.2,-h*.58,w*.27],[0,-h*.8,w*.28],[-w*.36,-h*.06,w*.2],[w*.36,-h*.05,w*.2]];
+  curls.forEach(([a,b,r])=>{g.strokeStyle=C.grey;g.lineWidth=9;g.beginPath();g.ellipse(a,b,r,r*.8,0,0,TAU);g.stroke()});
+  curls.forEach(([a,b,r],i)=>{shape(g,ell(a,b,r,r*.8),i%2?C.violet:C.plum,gg=>{Pat.diamonds(gg,bb(a-r,b-r,r*2,r*2),i%2?C.plum:C.violet,22,true);gg.strokeStyle=i%2?C.pink:C.violet;gg.lineWidth=3;gg.beginPath();for(let k=0;k<40;k++){const an=k*.28+t*.4*(i%2?1:-1),rr=k*r/48;k?gg.lineTo(a+Math.cos(an)*rr,b+Math.sin(an)*rr*.8):gg.moveTo(a,b)}gg.stroke()},{lw:2.4,gap:C.violet})});
+  g.restore()}
+const S4={label:'Screen 4 of 8',title:'The Halahala Poison',border:[C.plum,C.violet],
+  alt:'A tall violet cloud of curling, patterned vapour rises from the ocean. The devas and asuras step back cautiously. Three round medallions show the living world, the water world and the celestial world. Far away stands Mount Kailasa.',
+  enter(){this.st={lit:[false,false,false],ringP:[0,0,0],merge:0,armed:false,cloud:.6}},
+  geo(){return L.portrait?{med:[[150,350,82],[450,330,82],[750,350,82]],kai:[450,190,.5],cl:[450,860,520,380],dev:[[70,1105],[160,1105]],asu:[[740,1105],[830,1105]],fs:.5,sea:870}
+    :{med:[[250,300,94],[540,190,88],[1080,200,90]],kai:[1400,330,.85],cl:[800,690,500,460],dev:[[150,850],[280,850],[410,850]],asu:[[1190,850],[1320,850],[1450,850]],fs:.78,sea:650}},
+  draw(g,t){const st=this.st,o=this.geo();skyField(g,C.indigo,{seed:31,density:7000,dot:C.grey,star:C.agold});
+    (L.portrait?[[160,560,.5],[740,600,.5]]:[[760,90,.9],[260,540,.7],[1360,560,.7]]).forEach(([x,y,s])=>cloud(g,x,y,s,C.plum,C.ink));
+    kailasa(g,o.kai[0],o.kai[1],o.kai[2],st.merge,t);
+    sea(g,o.sea,L.B.y+L.B.h,{cols:[C.indigo,C.plum,C.deep],t,row:46,len:92,spd:8});
+    poisonCloud(g,o.cl[0],o.cl[1],o.cl[3],o.cl[2],t,st.cloud);
+    o.med.forEach(([x,y,r],k)=>{worldMedal(g,x,y,r,WORLDS[k].k,st.lit[k],t);if(st.armed&&!st.lit[k])hotIcon(g,x,y-r-18,16,t+k,'lotus')});
+    const kx=o.kai[0],ky=o.kai[1]-60*o.kai[2];o.med.forEach(([x,y],k)=>{const p=st.ringP[k];if(p<=0)return;const e=Ease.io(Math.min(1,p)),mx=(x+kx)/2,my=Math.min(y,ky)-90;
+      const bx=(1-e)*(1-e)*x+2*(1-e)*e*mx+e*e*kx,by=(1-e)*(1-e)*y+2*(1-e)*e*my+e*e*ky;if(st.merge<1){ring(g,bx,by,20,C.gold,5);ring(g,bx,by,13,C.cream,2)}});
+    const bl=L.portrait?0:1;island(g,L.B.x-20,(o.dev[o.dev.length-1][0])+70,o.dev[0][1]-4,80);island(g,o.asu[0][0]-70,L.B.x+L.B.w+20,o.asu[0][1]-4,80);void bl;
+    o.dev.forEach(([x,y],k)=>person(g,'deva'+k,'back','concern',x,y,o.fs,false,-.05));o.asu.forEach(([x,y],k)=>person(g,'asura'+(2-k),'back','concern',x,y,o.fs,true,.05))},
+  hit(x,y){const st=this.st,o=this.geo();if(!st.armed)return null;for(let k=0;k<3;k++){const[mx,my,r]=o.med[k];if(inCirc(x,y,mx,my,r+14))return{tap:()=>this.call(k)}}return null},
+  call(k){const st=this.st;if(st.lit[k])return;st.lit[k]=true;AU.sfx('call');const b=$('world'+k);if(b)UI.markDone(b,WORLDS[k].name+', has called for help');
+    const n=st.lit.filter(Boolean).length;this.count(n);tw(st.ringP,{[k]:1},D.fast?2:1600,'io').then(()=>{if(st.lit.every(Boolean)&&st.ringP.every(v=>v>=1)&&st.merge<1){AU.sfx('warm');tw(st,{merge:1},D.fast?2:1200,'io').then(()=>D.complete())}})},
+  count(n){const c=$('wcount');if(c)c.textContent=n+' of 3 worlds have called for help.'},
+  async run(){const st=this.st;Music.mood('dark');AU.amb(.03);await D.wait(400);AU.sfx('hush');await D.say(TXT.s4[0]);await D.say(TXT.s4[1]);st.armed=true;
+    await D.activity({head:'Protect the three worlds',prompt:'Tap each symbol to send a call for help.',hint:'Tap a round world picture to send a golden call for help.',
+      build:el=>{const c=document.createElement('p');c.id='wcount';c.className='panelNote';c.setAttribute('role','status');c.textContent='0 of 3 worlds have called for help.';el.append(c);
+        WORLDS.forEach((w,k)=>{const b=UI.btn(w.name,{sub:w.sub,icon:'w-'+w.k,on:()=>this.call(k)});b.id='world'+k;el.append(b)})},
+      assist:()=>{const k=st.lit.indexOf(false);if(k>=0)this.call(k)}});
+    await D.wait(700);await D.remember(REM[3]);await D.beforeOutro();UI.remember(null)}};
+
+/* ===== SCREEN 5 · Shiva Protects Creation ===== */
+function trident(g,x,y,h,s){g.save();g.translate(x,y);g.scale(s,s);shape(g,pl([[-4,0],[4,0],[4,-h],[-4,-h]],true),C.dgold,null,{lw:1.6,line:'single'});
+  const p=new Path2D();p.moveTo(-36,-h+40);p.quadraticCurveTo(-36,-h-6,-28,-h-40);p.lineTo(-20,-h-6);p.quadraticCurveTo(-10,-h+14,0,-h+12);p.quadraticCurveTo(10,-h+14,20,-h-6);p.lineTo(28,-h-40);p.quadraticCurveTo(36,-h-6,36,-h+40);p.quadraticCurveTo(10,-h+28,0,-h+30);p.quadraticCurveTo(-10,-h+28,-36,-h+40);p.closePath();
+  shape(g,p,C.pale,null,{lw:1.8,gap:C.sblue});shape(g,pl([[0,-h-70],[9,-h-20],[0,-h+10],[-9,-h-20]],true),C.pale,null,{lw:1.8,gap:C.sblue});
+  shape(g,ell(0,-h+60,16,10),C.dgold,gg=>Pat.dots(gg,bb(-16,-h+50,32,20),C.cream,6,1.4),{lw:1.4});g.restore()}
+const S5={label:'Screen 5 of 8',title:'Shiva Protects Creation',border:[C.sblue,C.pale],
+  alt:'Lord Shiva sits calmly before the snowy peaks of Mount Kailasa, with Goddess Parvati beside him and his trident nearby. A small violet-blue glow is held safely at his throat, circled by a bright blue ring.',
+  enter(){this.st={halo:0,revealed:false,armed:false,shrink:0,blue:0}},
+  geo(){return L.portrait?{sx:450,sy:905,ss:1.48,px:742,py:935,ps:1.0,tx:150,ty:950,ts:.75,far:[170,170,.55]}:{sx:800,sy:812,ss:1.7,px:1130,py:822,ps:1.28,tx:520,ty:830,ts:1,far:[230,150,.8]}},
+  draw(g,t){const st=this.st,o=this.geo(),B=L.B;skyField(g,C.pale,{seed:51,density:9000,dot:C.sblue,star:C.sblue});
+    (L.portrait?[[640,90,.55]]:[[560,90,.8],[1100,80,.8]]).forEach(([x,y,s])=>cloud(g,x,y,s,C.pale,C.sblue));
+    const base=L.portrait?720:640;[[o.sx-520,base,o.sx-260,base-300,o.sx,base],[o.sx-330,base,o.sx,base-560,o.sx+330,base],[o.sx,base,o.sx+280,base-330,o.sx+560,base]].forEach(([a,b,c,d,e,f],i)=>{
+      shape(g,pl([[a,b],[c,d],[e,f]],true),i===1?C.pale:C.cream,gg=>{gg.fillStyle=C.sblue;for(let k=0;k<6;k++){const yy=d+(b-d)*(.22+k*.13);gg.beginPath();for(let xx=a;xx<e;xx+=18){gg.moveTo(xx,yy);gg.lineTo(xx+9,yy-10);gg.lineTo(xx+18,yy)}gg.fill()}},{lw:2.4,gap:C.sblue})});
+    shape(g,pl([[B.x-10,base-6],[B.x+B.w+10,base-6],[B.x+B.w+10,B.y+B.h+10],[B.x-10,B.y+B.h+10]],true),C.pale,gg=>{Pat.flowers(gg,bb(B.x,base,B.w,500),C.sblue,46,C.gold);Pat.dots(gg,bb(B.x,base,B.w,500),C.cream,23,1.4)},{lw:2.4,gap:C.sblue});
+    /* the distant worlds, safe inside a blue-white ring as the cloud shrinks */
+    const[fx,fy,fs]=o.far;poisonCloud(g,fx,fy+10*fs,120*fs,140*fs,t,1-.75*st.shrink);[[-46,40],[-16,52],[16,52],[46,40]].forEach(([dx,dy],i)=>shape(g,ell(fx+dx*fs,fy+dy*fs,13*fs),[C.leaf,C.turq,C.saffron,C.gold][i],null,{lw:1.4,line:'single'}));
+    if(st.shrink>0){g.globalAlpha=st.shrink;ring(g,fx,fy+44*fs,90*fs,C.pale,6,40*fs);ring(g,fx,fy+44*fs,98*fs,C.sblue,3,46*fs);g.globalAlpha=1}
+    const hx=o.sx,hy=o.sy+(-262+DYS)*o.ss;if(st.halo>0){rays(g,hx,hy,150*o.ss*(.6+.4*st.halo),230*o.ss*(.6+.4*st.halo),24,C.gold,t*.04,Math.min(1,st.halo));rings(g,hx,hy,140*o.ss*st.halo,3,18,C.sblue,4,Math.min(1,st.halo))}
+    trident(g,o.tx,o.ty,420,o.ts);
+    halo(g,hx,hy-14*o.ss,64*o.ss,t,[C.pale,C.sblue]);
+    shape(g,ell(o.sx,o.sy+6,150*o.ss,22*o.ss),C.saffron,gg=>lowPats.tiger()(gg,bb(o.sx-160*o.ss,o.sy-20*o.ss,320*o.ss,50*o.ss)),{lw:2});
+    person(g,'parvati','seated','compassion',o.px,o.py,o.ps);person(g,'shiva','seated','serene',o.sx,o.sy,o.ss);
+    /* Neelakantha: the contained glow at the throat, always unobstructed */
+    const[tx,ty]=throatPos(o.sx,o.sy,o.ss),k=reduceMotion?0:Math.sin(t*2.2)*.08,r=9*o.ss;
+    rings(g,tx,ty,r*(1.7+k),3,r*.55,C.sblue,3,.9);shape(g,ell(tx,ty,r*1.25),C.sblue,null,{lw:1.4,line:'single'});shape(g,ell(tx,ty,r*.8),C.violet,gg=>dot(gg,tx,ty,r*.3,C.pale),{lw:1.2,line:'single'});ring(g,tx,ty,r*1.25,C.pale,2);
+    if(st.armed&&!st.revealed&&T.now-D.hintAt<4500)rings(g,tx,ty,r*2.4,3,r*.6,C.gold,3,.9)},
+  hit(x,y){const st=this.st,o=this.geo();if(!st.armed||st.revealed)return null;const[tx,ty]=throatPos(o.sx,o.sy,o.ss);if(inCirc(x,y,tx,ty,64))return{tap:()=>this.reveal()};return null},
+  reveal(){const st=this.st;if(st.revealed)return;st.revealed=true;AU.sfx('warm');Music.swell();const b=$('neel');if(b)UI.markDone(b,'Meaning revealed');
+    tw(st,{halo:1},D.fast?2:1600,'out');const box=document.createElement('div');box.className='reveal';
+    box.innerHTML='<b>Neelakantha: the blue-throated Lord</b>Shiva held the poison in his throat so it could not spread. He did it to protect all of creation.<details><summary>For older readers</summary>In the Śrīmad Bhāgavatam, Canto 8, Chapter 7, Shiva’s response to the spreading poison is connected with compassion for living beings and the duty to protect those in danger.</details>';
+    $('act').append(box);UI.status('');Timers.add(D.fast?2:900,()=>D.complete())},
+  async run(){const st=this.st;Music.mood('calm');AU.amb(.02);await D.wait(500);await D.say(TXT.s5[0]);tw(st,{shrink:1},2400,'io');await D.say(TXT.s5[1]);st.armed=true;
+    await D.activity({head:'Discover Neelakantha',prompt:'Tap the blue glow on Shiva’s throat.',hint:'Look for the small blue glow at Shiva’s throat, and tap it.',
+      build:el=>{const b=UI.btn('Reveal the meaning',{main:true,aria:'Reveal the meaning of Neelakantha',on:()=>this.reveal()});b.id='neel';el.append(b)},assist:()=>this.reveal()});
+    await D.wait(1600);await D.remember(REM[4]);await D.beforeOutro();UI.remember(null);await D.tw(st,{halo:1.4},1200,'io')}};
+
+/* ===== SCREEN 6 · The Churning Continues ===== */
+const TREASURES=[{k:'lakshmi',name:'Lakshmi',theme:'Prosperity and well-being',fx:'Lotus petals open and a golden halo appears.'},
+  {k:'airavata',name:'Airavata',theme:'Strength and majesty',fx:'The celestial elephant emerges through patterned foam.'},
+  {k:'horse',name:'Uchchaihshravas',theme:'Energy and splendour',fx:'The radiant white horse rises with lines of movement.'},
+  {k:'tree',name:'Kalpavriksha',theme:'Nature and abundance',fx:'Flowers and fruits appear on the branches.'}];
+const S6={label:'Screen 6 of 8',title:'The Churning Continues',border:[C.coral,C.gold],
+  alt:'The churning continues on a bright ocean. Four lotus-shaped windows float in front: Goddess Lakshmi on a pink lotus, the white elephant Airavata, the white horse Uchchaihshravas and the wishing tree Kalpavriksha.',
+  enter(){this.st={rot:1.4,phase:0,pL:0,pR:0,open:[0,0,0,0],done:[false,false,false,false],tab:0,lot:0,rise:0,glow:0,armed:false,wonder:false}},
+  geo(){return L.portrait?{cx:450,baseY:300,S:.45,spr:.62,sea:250,win:[[245,560,150],[665,575,118],[245,885,118],[665,885,118]]}
+    :{cx:800,baseY:440,S:.6,spr:1,sea:360,win:[[280,712,150],[640,730,112],[960,730,112],[1290,730,112]]}},
+  windowArt(g,k,x,y,r,p,t){const T_=TREASURES[k].k;g.save();g.beginPath();g.ellipse(x,y,r-3,r-3,0,0,TAU);g.clip();g.fillStyle=k===0?C.cream:C.turq;g.fillRect(x-r,y-r,r*2,r*2);
+    rays(g,x,y,r*.2,r*1.1,18,k===0?C.gold:C.pale,t*.05,.6*p);
+    if(T_==='lakshmi'){lotus(g,x,y+r*.72,r*.62,{col:C.pink,col2:C.coral,open:.3+.7*p});if(p>.2){g.globalAlpha=clamp((p-.2)/.4,0,1);halo(g,x,y+r*.6-170*r/195,40*r/150,t);person(g,'lakshmi','seated','serene',x,y+r*.6,r/195);g.globalAlpha=1}}
+    else if(T_==='airavata'){airavata(g,x-r*.12,y+r*.62+(1-p)*r*.9,r/210)}
+    else if(T_==='horse'){celestialHorse(g,x-r*.08,y+r*.6+(1-p)*r*.9,r/200,t)}
+    else kalpavriksha(g,x,y+r*.82,r/240,p,t);
+    if(T_==='airavata'||T_==='horse'||T_==='lakshmi'){sea(g,y+r*.62,y+r,{cols:[C.teal,C.turq],t,row:22,len:40,spd:10,dots:false})}
+    const c=1-Ease.io(clamp(p*1.4,0,1));if(c>0){[-1,1].forEach(s=>{g.save();g.translate(s*r*1.1*(1-c),0);g.beginPath();g.rect(s<0?x-r:x,y-r,r,r*2);g.clip();g.fillStyle=C.teal;g.fillRect(x-r,y-r,r*2,r*2);Pat.waves(g,bb(x-r,y-r,r*2,r*2),C.pale,24,2);Pat.dots(g,bb(x-r,y-r,r*2,r*2),C.turq,18,2);g.restore()})}
+    g.restore();ring(g,x,y,r,C.ink,3)},
+  drawMain(g,t){const st=this.st,o=this.geo();skyField(g,C.deep,{seed:61,density:7500,maxY:o.sea});(L.portrait?[[150,90,.55],[740,100,.5]]:[[200,100,.8],[1420,110,.8]]).forEach(([x,y,s])=>cloud(g,x,y,s,C.cream,C.ink));
+    sea(g,o.sea,L.B.y+L.B.h,{cols:[C.turq,C.coral,C.gold,C.turq],t,row:46,len:96,line:C.pale});
+    churnScene(g,st,{cx:o.cx,baseY:o.baseY,S:o.S,spr:o.spr,t,water:[C.turq,C.gold],devPose:st.wonder?'wonder':'pull',asuPose:st.wonder?'wonder':'pull',devMood:st.wonder?'wonder':'happy',asuMood:st.wonder?'wonder':'happy'});
+    o.win.forEach(([x,y,r],k)=>{lotusFrame(g,x,y,r,{n:k===0?22:18,c1:C.gold,c2:k===0?C.pink:C.coral});this.windowArt(g,k,x,y,r,st.open[k],t);
+      if(st.done[k])tick(g,x+r*.74,y+r*.74,r*.16);else if(st.armed)hotIcon(g,x,y-r-14,14,t+k,'shell')})},
+  drawTableau(g,t){const st=this.st,P=L.portrait,cx=P?450:800,seaY=P?600:520;skyField(g,C.deep,{seed:62,density:7500,maxY:seaY});
+    sea(g,seaY,L.B.y+L.B.h,{cols:[C.turq,C.gold,C.coral],t,row:46,len:96});
+    const ly=P?960:830,lr=P?210:240;mandala(g,cx,ly-lr*1.1,lr*1.2*st.lot,{p:st.lot,cols:[C.gold,C.pink,C.cream,C.coral],rot:t*.04});rays(g,cx,ly-lr*1.1,lr*1.15,lr*1.55*Math.max(.8,st.lot),28,C.gold,t*.03,st.lot*.8);
+    const gy=P?720:600,gs=P?.42:.6;island(g,L.B.x-20,cx-(P?220:420),gy,60);island(g,cx+(P?220:420),L.B.x+L.B.w+20,gy,60);
+    (P?[[60,'deva0'],[150,'deva1']]:[[150,'deva0'],[260,'deva1'],[370,'deva2']]).forEach(([x,k])=>person(g,k,'wonder','wonder',x,gy+6,gs));
+    (P?[[750,'asura1'],[840,'asura0']]:[[1230,'asura2'],[1340,'asura1'],[1450,'asura0']]).forEach(([x,k])=>person(g,k,'wonder','wonder',x,gy+6,gs,true));
+    /* the vast lotus opens first; Lakshmi rises out of its centre and sits on it */
+    lotus(g,cx,ly,lr,{col:C.pink,col2:C.coral,open:.2+.8*st.lot});
+    const s=P?1:1.15,lyF=ly-lr*.2+(1-st.rise)*lr*1.2;g.save();g.beginPath();g.rect(L.B.x,L.B.y,L.B.w,ly-lr*.12-L.B.y);g.clip();if(st.rise>.4){g.globalAlpha=clamp((st.rise-.4)/.4,0,1);halo(g,cx,lyF-172*s,60*s,t);g.globalAlpha=1}person(g,'lakshmi','seated','serene',cx,lyF,s);g.restore();
+    if(st.glow>0){rings(g,cx,ly-20,60*st.glow,5,30,C.gold,5,st.glow)}},
+  draw(g,t){const st=this.st;if(st.tab<1)this.drawMain(g,t);if(st.tab>0){g.globalAlpha=st.tab;this.drawTableau(g,t);g.globalAlpha=1}},
+  hit(x,y){const st=this.st;if(!st.armed||st.tab>0)return null;const o=this.geo();for(let k=0;k<4;k++){const[wx,wy,r]=o.win[k];if(inCirc(x,y,wx,wy,r+10))return{tap:()=>this.reveal(k)}}return null},
+  reveal(k){const st=this.st,T_=TREASURES[k];AU.sfx('sparkle');tw(st.open,{[k]:1},D.fast?2:1400,'out');
+    const box=$('tbox');if(box){box.innerHTML='';const b=document.createElement('b');b.textContent=T_.name+': '+T_.theme;const p=document.createElement('span');p.textContent=T_.fx;
+      const n=document.createElement('p');n.className='panelNote';n.textContent='The treasures and their order vary across traditional accounts; these are illustrative examples.';box.append(b,p,n);box.hidden=false}
+    if(!st.done[k]){st.done[k]=true;const btn=$('tre'+k);if(btn){UI.markDone(btn,T_.name+', discovered');btn.querySelector('small').textContent=T_.theme}const n=st.done.filter(Boolean).length;$('tcount').textContent=n+' of 4 discoveries completed.';
+      if(n===4)Timers.add(D.fast?2:1800,()=>D.complete())}},
+  async run(){const st=this.st;Music.mood('bright');AU.amb(.025);await D.wait(400);await D.say(TXT.s6[0]);await D.say(TXT.s6[1]);st.armed=true;
+    await D.activity({head:'Discover the ocean’s gifts',prompt:'Tap each patterned wave to discover what the ocean has revealed.',hint:'Tap one of the round lotus windows to open it.',wide:true,
+      build:el=>{const c=document.createElement('p');c.id='tcount';c.className='panelNote';c.setAttribute('role','status');c.textContent='0 of 4 discoveries completed.';el.append(c);
+        TREASURES.forEach((T_,k)=>{const b=UI.btn(T_.name,{sub:'Tap to reveal',icon:['lotus','elephant','horse','tree'][k],on:()=>this.reveal(k)});b.id='tre'+k;el.append(b)});
+        const box=document.createElement('div');box.id='tbox';box.className='reveal';box.hidden=true;el.append(box)},
+      assist:()=>{const k=st.done.indexOf(false);if(k>=0)this.reveal(k)}});
+    st.wonder=true;await D.wait(600);AU.sfx('glowbell');Music.swell();await D.tw(st,{tab:1},1400,'io');D.tw(st,{lot:1},2200,'out').catch(()=>{});await D.tw(st,{rise:1},2600,'out');
+    await D.remember(REM[5]);await D.beforeOutro();UI.remember(null);await D.tw(st,{glow:1},1600,'io')}};
+
+/* ===== SCREEN 7 · Lord Dhanvantari Appears ===== */
+const HABITS=[{k:'leaf',name:'Leaf',habit:'Eat nourishing foods and care for nature',hint:'The leaf grows in nature. Which habit talks about nature?'},
+  {k:'pot',name:'Water pot',habit:'Drink water regularly',hint:'A water pot holds something our bodies need many times a day.'},
+  {k:'bowl',name:'Food bowl',habit:'Choose balanced, nourishing meals',hint:'A bowl holds a meal. Which habit is about meals?'},
+  {k:'hands',name:'Joined hands',habit:'Show care, kindness and ask for help when needed',hint:'Joined hands show people caring for each other.'}];
+function healthMedal(g,x,y,r,k,locked,t){if(locked)rings(g,x,y,r*1.12,3,r*.16,C.gold,3,.9);shape(g,rrect(x-r,y-r,r*2,r*2,r*.3),locked?C.gold:C.cream,gg=>Pat.dots(gg,bb(x-r,y-r,r*2,r*2),locked?C.saffron:C.agold,r*.22,r*.03),{lw:2.4});
+  shape(g,ell(x,y,r*.78),C.pale,null,{lw:1.6,line:'single'});g.save();g.translate(x,y);drawIcon(g,k,r/72);g.restore();
+  if(locked){const lx=x+r*.78,ly=y-r*.78;shape(g,rrect(lx-r*.2,ly-r*.08,r*.4,r*.32,r*.06),C.dgold,null,{lw:1.4});g.strokeStyle=C.ink;g.lineWidth=r*.07;g.beginPath();g.arc(lx,ly-r*.08,r*.12,Math.PI,0);g.stroke()}}
+const S7={label:'Screen 7 of 8',title:'Lord Dhanvantari Appears',border:[C.gold,C.coral],
+  alt:'A column of golden-white light rises from a calm turquoise ocean. Lord Dhanvantari stands on a lotus, holding the golden vessel of amrita. Four small framed symbols surround him: a leaf, a water pot, a food bowl and joined hands.',
+  enter(){this.st={col:0,lot:0,rise:0,glow:0,lock:[false,false,false,false],armed:false,diya:0}},
+  geo(){return L.portrait?{cx:450,sea:770,fy:820,fs:1.05,med:[[120,200],[780,200],[120,440],[780,440]],mr:58,dev:[[60,890],[140,890]],asu:[[760,890],[840,890]],gs:.36}
+    :{cx:800,sea:560,fy:612,fs:1.25,med:[[360,200],[1240,200],[360,430],[1240,430]],mr:66,dev:[[90,640],[195,640]],asu:[[1405,640],[1510,640]],gs:.52}},
+  draw(g,t){const st=this.st,o=this.geo(),B=L.B;skyField(g,C.teal,{seed:71,density:8000,star:C.gold,dot:C.cream,maxY:o.sea});
+    const cw=(L.portrait?180:240)*st.col;if(cw>1){shape(g,rrect(o.cx-cw/2,B.y-20,cw,o.sea-B.y+40,cw*.5),C.cream,gg=>{for(let k=-3;k<=3;k++){gg.fillStyle=k%2?C.gold:C.pale;gg.fillRect(o.cx+k*cw/7-cw/14,B.y,cw/7,o.sea-B.y+40)}Pat.flowers(gg,bb(o.cx-cw/2,B.y,cw,o.sea-B.y),C.saffron,40,C.verm)},{lw:2.4,gap:C.gold})}
+    sea(g,o.sea,B.y+B.h,{cols:[C.turq,C.teal],t,row:46,len:100,spd:4});for(let k=0;k<5;k++){const r=(120+k*90)*(.6+.4*st.col);ring(g,o.cx,o.fy+10,r,k%2?C.gold:C.pale,2.6,r*.16)}
+    o.med.forEach(([x,y],k)=>healthMedal(g,x,y,o.mr,HABITS[k].k,st.lock[k],t));
+    const isl=(a,b)=>island(g,a,b,o.dev[0][1]-4,70);isl(B.x-20,o.dev[1][0]+60);isl(o.asu[0][0]-60,B.x+B.w+20);
+    const fx=o.cx,fy=o.fy+(1-st.rise)*360;const vy=fy+(-112-62*.72)*o.fs;
+    const lit=st.glow;[...o.dev,...o.asu].forEach(([x,y],i)=>{const hy=y-262*o.gs;if(lit>0){g.save();g.globalAlpha=lit*.8;g.setLineDash([4,14]);g.strokeStyle=C.gold;g.lineWidth=4;g.beginPath();g.moveTo(fx,vy);g.lineTo(x,hy);g.stroke();g.restore();rings(g,x,hy,34*o.gs/.52,2,10,C.gold,3,lit)}});
+    o.dev.forEach(([x,y],k)=>person(g,'deva'+k,lit>0?'wonder':'fold','wonder',x,y,o.gs));o.asu.forEach(([x,y],k)=>person(g,'asura'+k,lit>0?'wonder':'fold','wonder',x,y,o.gs,true));
+    g.save();g.beginPath();g.rect(B.x-10,B.y-10,B.w+20,o.fy+14-B.y);g.clip();if(st.rise>.3){g.globalAlpha=clamp((st.rise-.3)/.5,0,1);halo(g,fx,fy-262*o.fs,62*o.fs,t);g.globalAlpha=1}
+    person(g,'dhanv','stand','serene',fx,fy,o.fs);g.restore();
+    lotus(g,o.cx,o.fy+18,(L.portrait?110:130)*Math.max(.2,st.lot),{col:C.pink,col2:C.coral,open:st.lot});
+    if(st.glow>0){const k=st.glow;rings(g,fx,vy,50*o.fs,4,14*o.fs,C.gold,3,k*.8);for(let j=0;j<8;j++){const a=j*TAU/8+t*.3,r=(70+((t*20+j*13)%40))*o.fs;flowerTop(g,fx+Math.cos(a)*r,vy+Math.sin(a)*r*.8,5*o.fs,C.gold,C.cream,6)}}
+    if(st.diya>0){g.globalAlpha=st.diya;diya(g,fx-30,vy+30,3*st.diya,t,true,.8);g.globalAlpha=1}},
+  hit(){return null},
+  sel:null,slots:[null,null,null,null],
+  build(el){this.sel=null;this.slots=[null,null,null,null];const st=this.st;
+    const grid=document.createElement('div');grid.className='match';HABITS.forEach((h,k)=>{const s=document.createElement('button');s.type='button';s.className='slot';s.id='slot'+k;s.append(iconCanvas(h.k,40));
+      const tx=document.createElement('span');tx.className='st';tx.innerHTML='<b></b><br><span></span>';tx.querySelector('b').textContent=h.name;tx.querySelector('span').textContent='Choose a match';s.append(tx);
+      s.setAttribute('aria-label',h.name+': choose a match');s.addEventListener('click',()=>{D.poke();this.slotTap(k)});grid.append(s)});
+    /* cards: tap to pick up then tap a symbol, or drag a card onto a symbol */
+    const cards=document.createElement('div');cards.className='cards';[2,0,3,1].forEach(k=>{const c=document.createElement('button');c.type='button';c.className='card';c.dataset.k=k;c.textContent=HABITS[k].habit;
+      c.addEventListener('click',()=>{D.poke();this.cardTap(k)});c.addEventListener('pointerdown',()=>{this.dragK=k});cards.append(c)});
+    if(!this.dropHooked){this.dropHooked=true;window.addEventListener('pointerup',e=>{const k=this.dragK;this.dragK=null;if(k==null||D.scene!==this)return;const el2=document.elementFromPoint(e.clientX,e.clientY);const s=el2&&el2.closest('.slot');
+      if(s&&!s.disabled){D.poke();this.place(+s.id.slice(4),k)}})}
+    const chk=UI.btn('Check my matches',{main:true,on:()=>this.check()});void st;cards.append(chk);el.append(grid,cards)},
+  cardTap(k){if(this.slots.includes(k)&&this.st.lock[this.slots.indexOf(k)])return;const pending=document.querySelector('.slot.sel');if(pending){this.place(+pending.id.slice(4),k);return}
+    this.sel=this.sel===k?null:k;this.paint();AU.sfx('tap')},
+  slotTap(k){if(this.st.lock[k])return;if(this.sel!=null){this.place(k,this.sel);return}document.querySelectorAll('.slot').forEach(s=>s.classList.toggle('sel',s.id==='slot'+k&&!s.classList.contains('sel')));AU.sfx('tap')},
+  place(slot,card){if(this.st.lock[slot])return;const prev=this.slots.indexOf(card);if(prev>=0)this.slots[prev]=null;this.slots[slot]=card;this.sel=null;document.querySelectorAll('.slot').forEach(s=>s.classList.remove('sel'));AU.sfx('tap');this.paint()},
+  paint(){HABITS.forEach((h,k)=>{const s=$('slot'+k);if(!s)return;const c=this.slots[k];const txt=c==null?'Choose a match':HABITS[c].habit;s.querySelector('.st span').textContent=txt;s.classList.toggle('ok',this.st.lock[k]);
+      s.setAttribute('aria-label',h.name+': '+(this.st.lock[k]?'locked, ':'')+txt);if(this.st.lock[k])s.disabled=true});
+    document.querySelectorAll('.card').forEach(c=>{const k=+c.dataset.k;c.classList.toggle('sel',this.sel===k);c.classList.toggle('used',this.slots.includes(k));c.setAttribute('aria-pressed',String(this.sel===k))})},
+  check(){const st=this.st;let wrong=-1,empty=0;this.slots.forEach((c,k)=>{if(st.lock[k])return;if(c==null){empty++;return}if(c===k){st.lock[k]=true}else{if(wrong<0)wrong=k;this.slots[k]=null}});
+    this.paint();const n=st.lock.filter(Boolean).length;
+    if(n===4){AU.sfx('lock');UI.status('All four treasures of good health are matched!');D.complete();return}
+    if(wrong>=0){AU.sfx('soft');const msg='Nearly! Try that one again. '+HABITS[wrong].hint;UI.status(msg,true);if(!AU.muted&&Speech.available())Speech.speak(msg)}
+    else if(empty){AU.sfx('lock');UI.status(n+' locked in. Choose a match for every symbol, then check again.',true)}},
+  assist(){const st=this.st;const k=st.lock.indexOf(false);if(k<0)return;const prev=this.slots.indexOf(k);if(prev>=0&&prev!==k)this.slots[prev]=null;this.slots[k]=k;st.lock[k]=true;AU.sfx('lock');this.paint();
+    UI.status('Here is one: '+HABITS[k].name+' matches “'+HABITS[k].habit+'”.');if(st.lock.every(Boolean))D.complete()},
+  async run(){const st=this.st;Music.mood('bright');AU.amb(.02);await D.wait(300);D.tw(st,{col:1},1800,'out').catch(()=>{});D.tw(st,{lot:1},1600,'out').catch(()=>{});await D.wait(700);
+    AU.sfx('glowbell');Music.swell();D.tw(st,{rise:1},3000,'out').catch(()=>{});await D.say(TXT.s7[0]);D.tw(st,{glow:1},1400,'io').catch(()=>{});await D.say(TXT.s7[1]);
+    await D.activity({head:'Match the treasures of good health',prompt:'Choose the habit that best matches each symbol.',hint:'Tap a habit card, then tap the symbol it belongs to. Then press Check my matches.',wide:true,idle:18,
+      build:el=>this.build(el),assist:()=>this.assist()});
+    await D.wait(900);await D.remember(REM[6]);await D.beforeOutro();UI.remember(null);await D.tw(st,{diya:1},1600,'io')}};
+
+/* ===== The Dhanteras home (ENV-07): same family and decorations in Screens 8 and 10 ===== */
+const CHOICES=[{k:'health',name:'Health',sub:'Caring for our body and mind.',resp:'A lovely choice. Every diya in the home glows a little brighter, like a healthy body and a calm mind.'},
+  {k:'friendship',name:'Friendship',sub:'Sharing, listening and helping.',resp:'What a warm choice. Two friends wave from the doorway, ready to share, listen and help.'},
+  {k:'knowledge',name:'Knowledge',sub:'Learning, asking and exploring.',resp:'A wise choice. An open book appears beside the prayer space, ready for learning and exploring.'},
+  {k:'kindness',name:'Kindness',sub:'Caring for others and living things.',resp:'A kind choice. A little plant at the entrance gets a drink of water from small, caring hands.'}];
+function homeGeo(){return L.portrait?{floor:860,door:[370,530,240],alt:[40,240,600],frame:[70,360,140,180],gran:[300,995,.74],mom:[690,995,.74],boy:[410,1005,.48],girl:[560,1005,.45],plant:[620,1012,.5],book:[150,575,.4],
+    rang:[450,1060,110],diyas:[[60,880],[160,880],[740,880],[840,880],[300,1085],[600,1085]],uten:[820,1065],ds:.8}
+  :{floor:740,door:[690,910,180],alt:[110,420,560],frame:[180,300,170,220],gran:[540,848,.95],mom:[1190,848,.95],boy:[640,852,.62],girl:[970,852,.58],plant:[1050,860,.62],book:[300,535,.5],
+    rang:[800,815,150],diyas:[[150,770],[250,770],[1300,770],[1400,770],[600,830],[1000,830]],uten:[1430,835],ds:.9}}
+function drawHome(g,t,st,o){o=o||{};const h=homeGeo(),B=L.B,P=L.portrait;
+  g.fillStyle=C.cream;g.fillRect(B.x-5,B.y-5,B.w+10,B.h+10);Pat.dots(g,bb(B.x,B.y,B.w,h.floor-B.y),C.agold,30,1.6);
+  const[dx0,dx1,dtop]=h.door,dmid=(dx0+dx1)/2;
+  [[B.x+30,dx0-60],[dx1+60,B.x+B.w-30]].forEach(([a,b],i)=>{if(b-a<120)return;const y0=P?150:130,y1=h.floor-90;shape(g,rrect(a,y0,b-a,y1-y0,14),C.saffron,gg=>{Pat.diamonds(gg,bb(a,y0,b-a,y1-y0),C.gold,34,true);Pat.dots(gg,bb(a,y0,b-a,y1-y0),C.verm,17,1.6)},{lw:2.2});
+    /* peacocks only on the right wall: the left wall carries the prayer space */
+    const pcx=(a+b)/2,py=y0+(y1-y0)*.42;if(i===1){peacock(g,pcx-46,py,P?.7:.95,1);peacock(g,pcx+46,py,P?.7:.95,-1);flowerTop(g,pcx,py+70*(P?.7:1),16,C.pink,C.gold,8)}});
+  g.fillStyle=C.verm;g.fillRect(B.x-5,h.floor-26,B.w+10,26);Pat.tri(g,bb(B.x-5,h.floor-26,B.w+10,12),C.gold,16,true);
+  shape(g,pl([[B.x-10,h.floor],[B.x+B.w+10,h.floor],[B.x+B.w+10,B.y+B.h+10],[B.x-10,B.y+B.h+10]],true),C.agold,gg=>{Pat.diamonds(gg,bb(B.x,h.floor,B.w,400),C.dgold,40,false);Pat.dots(gg,bb(B.x,h.floor,B.w,400),C.cream,20,1.6)},{lw:2.2});
+  /* doorway opening to the evening sky */
+  const arch=new Path2D();arch.moveTo(dx0,h.floor);arch.lineTo(dx0,dtop+70);arch.quadraticCurveTo(dx0,dtop,dmid,dtop-30);arch.quadraticCurveTo(dx1,dtop,dx1,dtop+70);arch.lineTo(dx1,h.floor);arch.closePath();
+  g.strokeStyle=C.ink;g.lineWidth=46;g.stroke(arch);g.strokeStyle=C.verm;g.lineWidth=40;g.stroke(arch);g.save();g.setLineDash([2,16]);g.strokeStyle=C.gold;g.lineWidth=8;g.stroke(arch);g.restore();
+  shape(g,arch,C.indigo,gg=>{Pat.dots(gg,bb(dx0,dtop-30,dx1-dx0,h.floor-dtop+30),C.cream,26,1.6);star(gg,dmid-30,dtop+60,9,C.gold,4);star(gg,dmid+40,dtop+120,7,C.gold,4);
+    const m=new Path2D();m.arc(dmid+30,dtop+40,16,0,TAU);gg.fillStyle=C.pale;gg.fill(m)},{lw:2.2});
+  if(!o.end){toran(g,dx0-30,dx1+30,dtop-38,1);garland(g,B.x,P?118:96,dx0-20,dtop-30,60,1);garland(g,dx1+20,dtop-30,B.x+B.w,P?118:96,60,1)}
+  /* prayer space with the small framed Dhanvantari panel */
+  const[a0,a1,ay]=h.alt,[fx,fy,fw,fh]=h.frame;shape(g,rrect(fx,fy,fw,fh,8),C.gold,gg=>Pat.dots(gg,bb(fx,fy,fw,fh),C.verm,9,1.6),{lw:2.4});shape(g,rrect(fx+12,fy+12,fw-24,fh-24,6),C.cream,null,{lw:1.6,line:'single'});
+  g.save();g.beginPath();g.rect(fx+12,fy+12,fw-24,fh-24);g.clip();const ps=(fh-30)/420;halo(g,fx+fw/2,fy+fh-14-262*ps,40*ps,t);person(g,'dhanv','stand','serene',fx+fw/2,fy+fh-14,ps);g.restore();
+  shape(g,rrect(a0,ay,a1-a0,26,6),C.rust,gg=>Pat.tri(gg,bb(a0,ay,a1-a0,10),C.gold,12,true),{lw:2});shape(g,pl([[a0+20,ay+26],[a0+34,ay+26],[a0+34,h.floor],[a0+20,h.floor]],true),C.rust,null,{lw:1.6});shape(g,pl([[a1-34,ay+26],[a1-20,ay+26],[a1-20,h.floor],[a1-34,h.floor]],true),C.rust,null,{lw:1.6});
+  [[a0+40,ay-8],[a1-40,ay-8]].forEach(([x,y])=>flowerTop(g,x,y,12,C.saffron,C.verm,8));diya(g,(a0+a1)/2,ay,P?.6:.8,t,true,.5+(st.bright||0)*.5);
+  if(st.book>0){g.save();g.translate(h.book[0],h.book[1]);drawIcon(g,'book',h.book[2]*Ease.back(st.book));g.restore()}
+  const lp=1+(st.bright||0)*.8;h.diyas.forEach(([x,y],i)=>{if(st.light>0){const r=60+st.light*220;g.globalAlpha=.6*(1-st.light*.7);ring(g,x+20*h.ds,y-30*h.ds,r,C.gold,4);g.globalAlpha=1}diya(g,x,y,h.ds,t+i,true,.6*lp)});
+  if(!o.noRangoli)rangoli(g,h.rang[0],h.rang[1],h.rang[2],.36,1);
+  const[ux,uy]=h.uten,us=P?.7:1;shape(g,ell(ux,uy,56*us,13*us),C.agold,gg=>Pat.dots(gg,bb(ux-56*us,uy-13*us,112*us,26*us),C.dgold,9,1.4),{lw:2});[[-26,-12,C.gold],[0,-20,C.verm],[24,-12,C.leaf],[-8,-8,C.saffron]].forEach(([a,b,c])=>shape(g,ell(ux+a*us,uy+b*us,13*us),c,null,{lw:1.4,line:'single'}));
+  shape(g,sp([[ux-100*us,uy],[ux-112*us,uy-30*us],[ux-96*us,uy-58*us],[ux-70*us,uy-58*us],[ux-54*us,uy-30*us],[ux-66*us,uy]],true),C.agold,gg=>Pat.hlines(gg,bb(ux-115*us,uy-60*us,64*us,60*us),C.dgold,8,1.4),{lw:2});
+  const[px,py,pls]=h.plant;g.save();g.translate(px,py-40*pls);g.scale(1+(st.plantGrow||0)*.25,1+(st.plantGrow||0)*.25);drawIcon(g,'plant',pls*1.2);g.restore();
+  const fam=o.fam||{};const gp=fam.gran||h.gran,mp=fam.mom||h.mom,bp=fam.boy||h.boy,gl=fam.girl||h.girl;
+  person(g,'gran','flower','happy',gp[0],gp[1],gp[2]);person(g,'mom','lamp','happy',mp[0],mp[1],mp[2]);
+  person(g,'boy',st.wave?'wave':'garland','happy',bp[0],bp[1],bp[2]);person(g,'girl',st.wave?'wave':st.water?'water':'hold','happy',gl[0],gl[1],gl[2],st.water&&!P?false:false);
+  if(st.wave){[bp,gl].forEach(([x,y,s])=>{for(let k=0;k<2;k++){g.strokeStyle=C.dgold;g.lineWidth=3;g.beginPath();g.arc(x-72*s,y-302*s,18*s+k*10*s,Math.PI*1.1,Math.PI*1.6);g.stroke()}})}
+  if(st.water){const[x,y,s]=gl;for(let k=0;k<5;k++){const ph=((t*1.6+k/5)%1);dot(g,x+(90+ph*40)*s,y-(160-ph*120)*s,4*s+1,C.turq)}}}
+/* ===== SCREEN 8 · Why We Celebrate Dhanteras ===== */
+const S8={label:'Screen 8 of 8',title:'Why We Celebrate Dhanteras',border:[C.saffron,C.verm],
+  alt:'A festive home decorated for Dhanteras with marigold garlands, mango leaves, a rangoli and rows of diyas. A grandmother places flowers near a small prayer space with a framed picture of Lord Dhanvantari, a mother arranges lamps, and two children decorate the doorway.',
+  enter(){this.st={bright:0,book:0,wave:false,water:false,plantGrow:0,light:0}},
+  draw(g,t){drawHome(g,t,this.st)},
+  hit(){return null},
+  choose(i,b){const st=this.st,c=CHOICES[i];if(st.chosen!=null&&st.chosen===i)return;const first=st.chosen==null;st.chosen=i;Store.set('treasure',c.k);
+    document.querySelectorAll('#act .choice').forEach(x=>{x.setAttribute('aria-pressed',String(x===b));x.classList.toggle('done',x===b)});AU.sfx('sparkle');
+    st.wave=false;st.water=false;tw(st,{bright:0,book:0,plantGrow:0},D.fast?2:200);
+    if(c.k==='health')tw(st,{bright:1},D.fast?2:1400,'out');else if(c.k==='friendship')st.wave=true;else if(c.k==='knowledge')tw(st,{book:1},D.fast?2:1000,'out');else{st.water=true;tw(st,{plantGrow:1},D.fast?2:3000,'out')}
+    UI.status(c.resp);if(!AU.muted&&Speech.available()&&!D.fast){Speech.stop();Speech.speak(c.resp)}
+    if(first)Timers.add(D.fast?2:2400,()=>D.complete())},
+  async reflection(){const tok=D.token;return new Promise(res=>{const el=$('act');const wrap=document.createElement('div');wrap.className='reveal';wrap.style.width='100%';
+    wrap.innerHTML='<b>What is one thing you can do to care for your health or help someone else?</b><span class="panelNote">You can write, speak, or pick a picture. This is optional, and your answer stays on this device.</span>';
+    const ta=document.createElement('textarea');ta.setAttribute('aria-label','Write your answer');ta.maxLength=300;ta.placeholder='I can…';const prev=Store.data.reflect8;if(prev&&prev.text)ta.value=prev.text;
+    const save=(pic)=>{const cur=Store.data.reflect8||{text:'',pic:''};Store.set('reflect8',{text:ta.value.slice(0,300),pic:pic!=null?pic:cur.pic})};ta.addEventListener('input',()=>{D.poke();save()});
+    const pics=document.createElement('div');pics.className='row';
+    [['help','Helping a friend'],['water','Drinking water'],['read','Reading with family'],['plant','Caring for a plant']].forEach(([k,lab])=>{const b=UI.btn(lab,{sm:true,icon:k,pressed:prev&&prev.pic===k,on:()=>{pics.querySelectorAll('.ab').forEach(x=>{x.setAttribute('aria-pressed',String(x===b));x.classList.toggle('done',x===b)});save(k);AU.sfx('tap')}});pics.append(b)});
+    /* the way on is always the first thing in reach; the answer options follow */
+    const go=UI.btn('Continue to the closing screens',{main:true,on:()=>fin()});el.append(go);
+    ta.style.minHeight='44px';wrap.append(ta);Voice.attach(wrap,ta,save);wrap.append(pics);el.append(wrap);
+    let done=false;const fin=()=>{if(done)return;done=true;Voice.stop();res()};D.lastInput=performance.now();
+    const iv=setInterval(()=>{if(tok!==D.token||done){clearInterval(iv);if(!done){done=true;Voice.stop()}return}if(D.fast||performance.now()-D.lastInput>60000){clearInterval(iv);fin()}},400)})},
+  async run(){const st=this.st;Music.mood('bright');AU.amb(.012);await D.wait(400);AU.sfx('crackle');await D.say(TXT.s8[0]);await D.say(TXT.s8[1]);
+    await D.activity({head:'Choose your treasure of life',prompt:'What is one treasure you want to care for in your life?',hint:'Choose any one card. Every choice is a good one.',wide:true,
+      build:el=>{const n=document.createElement('p');n.className='panelNote';n.textContent='All four are equally good choices. There is no wrong answer.';el.append(n);
+        CHOICES.forEach((c,i)=>{const b=UI.btn(c.name,{sub:c.sub,icon:c.k,pressed:false,on:b2=>this.choose(i,b2)});b.classList.add('choice');el.append(b)})},
+      assist:()=>{if(st.chosen==null){const b=document.querySelectorAll('#act .choice')[0];this.choose(0,b)}}});
+    await D.wait(1500);UI.act({head:'Choose your treasure of life',prompt:'',wide:true});const c=CHOICES[st.chosen];UI.status('You chose '+c.name+'.');await this.reflection();D.guard(D.token);
+    await D.remember(REM[7]);await D.beforeOutro();UI.remember(null);await D.tw(st,{light:1},1800,'io')}};
+
+/* ===== Speaking an answer: a local recording, kept in memory only and never uploaded ===== */
+const Voice={rec:null,chunks:[],stream:null,
+  attach(wrap,ta,save){const row=document.createElement('div');row.className='row';
+    if(navigator.mediaDevices&&window.MediaRecorder){const b=UI.btn('Record a spoken answer',{sm:true,icon:'friends',on:()=>this.toggleRec(b,row)});row.append(b)}
+    /* No dictation: browser speech recognition usually sends audio to a server, and probing the on-device variant crashed the renderer in testing. */
+    wrap.append(row)},
+  async toggleRec(b,row){if(this.rec&&this.rec.state==='recording'){this.rec.stop();return}
+    try{this.stream=await navigator.mediaDevices.getUserMedia({audio:true});this.chunks=[];this.rec=new MediaRecorder(this.stream);this.rec.ondataavailable=e=>this.chunks.push(e.data);
+      this.rec.onstop=()=>{try{this.stream.getTracks().forEach(t=>t.stop())}catch(e){}const url=URL.createObjectURL(new Blob(this.chunks));let a=row.querySelector('audio');if(!a){a=document.createElement('audio');a.controls=true;a.style.maxWidth='100%';row.append(a)}a.src=url;b.querySelector('span').firstChild.textContent='Record again'};
+      this.rec.start();b.querySelector('span').firstChild.textContent='Stop recording';setTimeout(()=>{if(this.rec&&this.rec.state==='recording')this.rec.stop()},20000)}
+    catch(e){b.disabled=true;b.querySelector('span').firstChild.textContent='Recording is not available'}},
+  stop(){try{if(this.rec&&this.rec.state==='recording')this.rec.stop()}catch(e){}}};
+
+/* ===== SCREEN 9 · A Prayer for Health and Well-being ===== */
+const S9={label:'Closing · Prayer',title:'A Prayer for Health and Well-being',border:[C.agold,C.coral],
+  alt:'Lord Dhanvantari stands serenely holding the golden vessel of amrita, framed by a large floral mandala. A brass diya glows in the lower-left corner.',
+  enter(){this.st={halo:0,heard:false}},
+  geo(){return L.portrait?{dx:450,dy:1030,ds:1.12,mx:450,my:640,mr:330,lx:120,ly:1070,ls:1.6}:{dx:1170,dy:836,ds:1.3,mx:1170,my:460,mr:360,lx:230,ly:800,ls:1.8}},
+  draw(g,t){const o=this.geo();skyField(g,C.cream,{seed:91,density:7000,dot:C.agold,star:C.gold});
+    mandala(g,o.mx,o.my,o.mr,{cols:[C.agold,C.coral,C.turq,C.gold],rot:t*.02});halo(g,o.dx,o.dy-262*o.ds,64*o.ds,t);person(g,'dhanv','stand','serene',o.dx,o.dy,o.ds);
+    lotus(g,o.dx,o.dy+20,L.portrait?90:110,{col:C.pink,col2:C.coral});diya(g,o.lx,o.ly,o.ls,t,true,.8)},
+  hit(){return null},
+  build(){const d=document.createElement('div');d.id='prayer';
+    d.innerHTML='<h2 lang="sa"></h2><p class="dev" lang="sa"></p><p class="lbl">Transliteration (IAST)</p><p class="iast" lang="sa-Latn"></p><div class="pbtns" style="display:flex;flex-wrap:wrap;gap:6px"></div>'+
+      '<div class="mean" hidden><p class="lbl">Child-friendly meaning</p><p class="meaning"></p></div><p class="aud note" role="status"></p>'+
+      '<details><summary>Pronunciation guide</summary><ul class="cues"></ul><p class="note">Simplified cues for children, not a substitute for Sanskrit phonetic instruction.</p></details>'+
+      '<p class="note">This commonly recited prayer is a mantra, not a metrical śloka. Source: Sanskrit Documents, “Dhanvantari Mantra”, which notes that other recensions are in circulation. The text and its recording must be checked by a qualified Sanskrit reviewer before publication. Listening silently is perfectly fine.</p>';
+    d.querySelector('h2').textContent=MANTRA.head;d.querySelector('.dev').textContent=MANTRA.dev;d.querySelector('.iast').textContent=MANTRA.iast;d.querySelector('.meaning').textContent=MANTRA.meaning;
+    const cues=d.querySelector('.cues');MANTRA.cues.forEach(c=>{const li=document.createElement('li');li.textContent=c;cues.append(li)});
+    const row=d.querySelector('.pbtns');const play=async()=>{this.st.heard=true;D.poke();const det=d.querySelector('details');Music.set(.1,1);const kind=await Mantra.play(i=>{if(i===0)det.open=true;cues.querySelectorAll('li').forEach((li,j)=>li.classList.toggle('on',j===i))});Music.set(.4,3);
+      d.querySelector('.aud').textContent=kind==='recording'?'Played the reviewed recording.':kind==='placeholder-voice'?'Played with a placeholder device voice. Replace it with a reviewed recording before publication.':kind==='read-along'?'This device has no Sanskrit voice, so the pronunciation guide was stepped through as a silent read-along.':'';D.complete()};
+    row.append(UI.btn('Listen to the mantra',{main:true,on:play}),UI.btn('Understand the meaning',{on:b=>{d.querySelector('.mean').hidden=false;UI.markDone(b);D.poke();this.st.heard=true;D.complete()}}),UI.btn('Listen again',{on:play}),
+      UI.btn('Copy Sanskrit mantra',{on:b=>this.copy(b)}),UI.btn('Extended prayer (older readers)',{on:()=>{$('older').hidden=false;$('bOlderClose').focus()}}));return d},
+  copy(b){const done=()=>{UI.markDone(b);UI.toast('Sanskrit mantra copied.')};try{navigator.clipboard.writeText(MANTRA.dev).then(done,()=>this.copyOld(done))}catch(e){this.copyOld(done)}},
+  copyOld(done){const t=document.createElement('textarea');t.value=MANTRA.dev;document.body.append(t);t.select();try{document.execCommand('copy');done()}catch(e){}t.remove()},
+  async run(){Music.mood('calm');AU.amb(.012);await D.wait(400);
+    await D.activity({head:'A prayer for health and well-being',prompt:'You can listen to the mantra, read its meaning, or simply sit quietly. Listening silently is perfectly fine.',hint:'Press Listen to the mantra, or Next when you are ready.',idle:25,assistAfter:20,
+      build:el=>{const p=this.build();if(L.portrait)el.append(p);else $('ovl').append(p);const cont=UI.btn('Continue',{on:()=>D.complete()});el.append(cont)},assist:()=>D.complete()});
+    Mantra.stop();await D.wait(600);await D.beforeOutro()}};
+
+/* ===== SCREEN 10 · The Greatest Treasures ===== */
+const MOTIFS=['health','friendship','knowledge','kindness'];
+const S10={label:'Closing · Ending',title:'The Greatest Treasures',border:[C.saffron,C.gold],final:true,
+  alt:'A glowing brass diya sits at the centre of a circular floral mandala, surrounded by a leaf, two friends, an open book and joined hands. The family celebrates around it in their decorated home.',
+  enter(){this.st={b:0,complete:0}},
+  geo(){return L.portrait?{cx:450,cy:520,mr:200,mot:[[280,380],[620,380],[280,670],[620,670]],ds:2,ks:.5,ky:690,fam:{gran:[150,1040,.62],mom:[290,1040,.62],boy:[620,1050,.42],girl:[760,1050,.4]}}
+    :{cx:800,cy:440,mr:220,mot:[[580,300],[1020,300],[580,590],[1020,590]],ds:2.2,ks:.55,ky:650,fam:{gran:[300,850,.9],mom:[470,850,.9],boy:[1130,856,.6],girl:[1290,856,.56]}}},
+  draw(g,t){const st=this.st,o=this.geo(),b=st.b,B=L.B;const chosen=Store.data.treasure;
+    const vessel=()=>{g.fillStyle=C.cream;g.fillRect(B.x-5,B.y-5,B.w+10,B.h+10);rays(g,o.cx,o.cy+40,120,Math.max(B.w,B.h),32,C.gold,t*.02,.6);rings(g,o.cx,o.cy,150,4,40,C.agold,3,.7);kalasha(g,o.cx,o.cy+150,2.6,t,1)};
+    const zoom=b<3?1.18:lerp(1.18,1,Ease.io(clamp(b-3,0,1)));
+    const home=()=>{g.save();g.translate(o.cx,o.cy);g.scale(zoom,zoom);g.translate(-o.cx,-o.cy);g.__zoom=zoom;drawHome(g,t,{bright:.6+st.complete*.6,light:0},{end:true,noRangoli:false,fam:o.fam});
+      const p3=clamp(b-2,0,1),p4=clamp(b-3,0,1);
+      if(p3>0){shape(g,ell(o.cx,o.cy,o.mr*1.12),C.cream,null,{lw:2.4});mandala(g,o.cx,o.cy,o.mr*(.55+.45*p4),{p:Math.max(.25,p4),cols:[C.saffron,C.gold,C.verm,C.leaf],rot:t*.03})}
+      MOTIFS.forEach((m,i)=>{const order=chosen?(m===chosen?0:1+MOTIFS.filter(x=>x!==chosen).indexOf(m)):i;const k=clamp(p3*4-order,0,1);if(k<=0)return;const[mx,my]=o.mot[i];
+        const x=lerp(mx,o.cx+(mx-o.cx)*.62,p4),y=lerp(my,o.cy+(my-o.cy)*.62,p4);if(p4>0){g.strokeStyle=C.gold;g.lineWidth=5;g.setLineDash([2,12]);g.beginPath();g.moveTo(x,y);g.lineTo(o.cx,o.cy);g.stroke();g.setLineDash([])}
+        if(m===chosen)rings(g,x,y,62,3,12,C.gold,4,.9);shape(g,ell(x,y,52*Ease.back(k)),C.pale,null,{lw:2.2});g.save();g.translate(x,y);drawIcon(g,m,.5*Ease.back(k));g.restore()});
+      if(p3>0){kalasha(g,o.cx,o.ky,o.ks,t,.4);diya(g,o.cx-22*o.ds,o.cy+20*o.ds,o.ds,t,true,.7+st.complete*.5);if(st.complete>0)rings(g,o.cx,o.cy-14*o.ds,90,5,40,C.gold,4,st.complete*.8)}
+      g.__zoom=1;g.restore()};
+    if(b<1){vessel();return}
+    if(b<2){vessel();const k=Ease.io(b-1),R=Math.hypot(B.w,B.h)*.75*k;g.save();g.beginPath();g.arc(o.cx,o.cy,Math.max(1,R),0,TAU);g.clip();home();g.restore();
+      for(let j=0;j<3;j++)ring(g,o.cx,o.cy,R+j*12,j===1?C.saffron:C.gold,j===1?8:4);return}
+    home()},
+  hit(){return null},
+  reflect(){const tok=D.token;return new Promise(res=>{const el=$('act');el.innerHTML='';const ch=Store.data.treasure,c=CHOICES.find(x=>x.k===ch);
+    const wrap=document.createElement('div');wrap.className='reveal';wrap.style.width='100%';const p=document.createElement('b');p.textContent=(c?'You chose '+c.name+'. ':'')+'This Dhanteras, I will share my blessings by…';wrap.append(p);
+    const ta=document.createElement('textarea');ta.maxLength=300;ta.setAttribute('aria-label','Complete the sentence: This Dhanteras, I will share my blessings by');ta.placeholder='…helping at home, sharing my snacks, calling my grandparents…';
+    const prev=Store.data.reflect10;if(prev&&prev.text)ta.value=prev.text;let pic=prev?prev.pic:'';const save=()=>Store.set('reflect10',{text:ta.value.slice(0,300),pic});ta.addEventListener('input',()=>{D.poke();save()});
+    const mk=(t)=>{const h=document.createElement('p');h.className='lbl';h.style.cssText='margin:.5em 0 .2em;font-weight:800';h.textContent=t;return h};
+    wrap.append(mk('Write'),ta,mk('Speak'));Voice.attach(wrap,ta,save);wrap.append(mk('Draw or select'));
+    const pics=document.createElement('div');pics.className='row';[['help','Helping someone'],['share','Sharing with others'],['plant','Caring for nature'],['heart','Being kind']].forEach(([k,lab])=>{
+      const b=UI.btn(lab,{sm:true,icon:k,pressed:pic===k,on:()=>{pic=k;pics.querySelectorAll('.ab').forEach(x=>{x.setAttribute('aria-pressed',String(x===b));x.classList.toggle('done',x===b)});save();AU.sfx('tap')}});pics.append(b)});
+    const pad=document.createElement('canvas');pad.className='pad';pad.width=280;pad.height=140;pad.setAttribute('aria-label','Drawing pad: draw an act of kindness or care');const pg=pad.getContext('2d');pg.lineCap='round';pg.lineWidth=5;pg.strokeStyle=C.verm;let drawing=false;
+    const pos=e=>{const r=pad.getBoundingClientRect();return[(e.clientX-r.left)*pad.width/r.width,(e.clientY-r.top)*pad.height/r.height]};
+    pad.addEventListener('pointerdown',e=>{drawing=true;D.poke();try{pad.setPointerCapture(e.pointerId)}catch(_){}const[x,y]=pos(e);pg.beginPath();pg.moveTo(x,y)});pad.addEventListener('pointermove',e=>{if(!drawing)return;const[x,y]=pos(e);pg.lineTo(x,y);pg.stroke();D.poke()});
+    pad.addEventListener('pointerup',()=>drawing=false);wrap.append(pics,pad);
+    const row=document.createElement('div');row.className='row';row.style.marginTop='0';row.append(UI.btn('Submit my reflection',{main:true,on:()=>fin()}),UI.btn('Skip',{on:()=>fin()}));el.append(row,wrap);
+    let done=false;const fin=()=>{if(done)return;done=true;Voice.stop();res()};D.lastInput=performance.now();
+    const iv=setInterval(()=>{if(tok!==D.token||done){clearInterval(iv);return}if(D.fast||performance.now()-D.lastInput>90000){clearInterval(iv);fin()}},400)})},
+  async run(){const st=this.st;Music.mood('bright');Music.swell();AU.amb(.012);await D.wait(300);await D.tw(st,{b:1},1600,'io');await D.wait(700);AU.sfx('chime');await D.tw(st,{b:2},1800,'io');AU.sfx('crackle');
+    await D.tw(st,{b:3},2600,'io');AU.sfx('sparkle');D.tw(st,{b:4},2000,'io').catch(()=>{});
+    const t=document.createElement('div');t.id='endTitle';t.innerHTML='<small>Book 2 · Dhanteras</small>The Ocean of Treasures';$('ovl').append(t);
+    await D.say(TXT.end);
+    await D.activity({head:'Final reflection',prompt:'This Dhanteras, I will share my blessings by…',hint:'Press Complete my reflection, or Skip.',idle:30,assistAfter:30,wide:true,
+      build:el=>{el.append(UI.btn('Complete my reflection',{main:true,on:async()=>{await this.reflect();D.complete()}}),UI.btn('Skip',{on:()=>D.complete()}))},assist:()=>D.complete()});
+    AU.sfx('glowbell');Music.swell();D.tw(st,{complete:1},1500,'io').catch(()=>{});
+    UI.act({head:'The greatest treasures',prompt:'',wide:true});const msg=document.createElement('p');msg.className='reveal';msg.textContent='The greatest treasures are not only those we discover, but also those we protect, nurture and share.';
+    $('act').append(msg,UI.btn('Replay the story',{main:true,icon:'lamp',on:()=>{D.done.fill(false);D.go(0)}}));D.done[9]=true;UI.progress();UI.nav()}};
+
+const SCREENS=[S1,S2,S3,S4,S5,S6,S7,S8,S9,S10];
+
+/* ===== Main loop ===== */
+let lastT=performance.now();
+function loop(now){const dt=Math.min(.05,(now-lastT)/1000);lastT=now;T.sec+=dt;T.now+=dt*1000*D.speed;Tw.update();Timers.update();if(AU.ctx)Music.tick();
+  const S=D.scene;cx.setTransform(1,0,0,1,0,0);cx.fillStyle=C.deep;cx.fillRect(0,0,cv.width,cv.height);
+  if(S){if(S.update)S.update(dt);cx.setTransform(L.PX,0,0,L.PX,L.ox*L.dpr,L.oy*L.dpr);cx.lineCap='round';cx.lineJoin='round';
+    try{S.draw(cx,T.now/1000);frameBorder(S)}catch(e){console.error(e)}}
+  const tr=D.trans;if(tr){const k=clamp((T.now-tr.t0)/tr.ms,0,1);cx.setTransform(1,0,0,1,0,0);cx.globalAlpha=1-Ease.io(k);cx.drawImage(tr.snap,0,0);cx.globalAlpha=1;if(k>=1)D.trans=null}
+  requestAnimationFrame(loop)}
+function frameBorder(S){cx.save();frame(cx,S.border);cx.restore()}
+
+/* ===== Controls ===== */
+function setPaused(p){D.paused=p;$('bPlay').setAttribute('aria-pressed',String(p));$('bPlay').setAttribute('aria-label',p?'Play narration':'Pause narration');$('gPlay').setAttribute('d',p?'M7 5l12 7-12 7z':'M8 5v14M16 5v14');if(p){Speech.stop();Mantra.stop()}}
+$('bPlay').addEventListener('click',()=>{AU.resume();setPaused(!D.paused)});
+$('bReplay').addEventListener('click',()=>{AU.resume();setPaused(false);D.go(D.i,{noCard:true})});
+$('bHelp').addEventListener('click',()=>{AU.resume();const t=[$('actHead').textContent,$('prompt').textContent].filter(Boolean).join('. ');if(!t)return;UI.pulse();if(!AU.muted&&Speech.available()){Speech.stop();Speech.speak(t)}else UI.status(t,true)});
+$('bSubs').addEventListener('click',()=>{const on=$('bSubs').getAttribute('aria-pressed')!=='true';$('bSubs').setAttribute('aria-pressed',String(on));$('cap').classList.toggle('off',!on)});
+$('bMute').addEventListener('click',()=>{AU.init();const m=!AU.muted;AU.setMute(m);if(m){Speech.stop();Mantra.stop()}$('bMute').setAttribute('aria-pressed',String(m));$('bMute').setAttribute('aria-label',m?'Unmute sound':'Mute all sound');$('gWave').style.display=m?'none':'';$('gX').style.display=m?'':'none'});
+$('bSkip').addEventListener('click',()=>{AU.resume();D.skip()});
+$('bCam').addEventListener('click',()=>{AU.resume();Cam.toggle()});
+$('bPrev').addEventListener('click',()=>{AU.resume();setPaused(false);D.go(D.i-1,{noCard:false})});
+$('bNext').addEventListener('click',()=>{AU.resume();setPaused(false);if(D.done[D.i])D.go(D.i+1)});
+$('bOlderClose').addEventListener('click',()=>{$('older').hidden=true});
+$('older').addEventListener('keydown',e=>{if(e.key==='Escape')$('older').hidden=true});
+$('bBegin').addEventListener('click',()=>{AU.init();AU.resume();Speech.init();try{if(Speech.ok){const u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u)}}catch(e){}$('start').hidden=true;D.go(0)});
+
+/* ===== Boot ===== */
+Store.load();UI.init();relayout();window.addEventListener('resize',relayout);if(window.ResizeObserver)new ResizeObserver(relayout).observe(stage);
+Speech.init();D.scene=S1;S1.enter();UI.header(S1);UI.nav();requestAnimationFrame(loop);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>Spr.clear());
+/* QA hook (#qa): __qa.go(i,'end'|'act'|'run') fast-forwards screen i to its late frame (end), its activity (act), or plays it */
+if(/qa/.test(location.hash)){$('start').hidden=true;window.__qa={go(i,stop,o){o=o||{};D.qa=Object.assign({at:i,stop:stop||'end',paused:false},o);D.fast=stop!=='run';D.speed=stop==='run'?(o.speed||4):40;
+    if(o.treasure)Store.data.treasure=o.treasure;D.go(i,{noCard:true});return true},paused:()=>!!(D.qa&&D.qa.paused),
+  info:()=>({voice:Speech.describe(),hi:Speech.hiVoice?Speech.hiVoice.name:null,cam:Cam.status,screen:D.i,done:D.done.slice()})}}
+
+</script>
+</body>
+</html>
