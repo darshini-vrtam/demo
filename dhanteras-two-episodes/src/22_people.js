@@ -57,7 +57,6 @@ class FrontPerson{constructor(kind,parent,o){o=o||{};this.kind=kind;this.Q=PEOPL
     else if(fem)shp(body,'M-40 -318Q-50 -276 -42 -246L42 -246Q50 -276 40 -318Z',hairCol,Q.hair==='greybun'?2.6:0);
     const arm=(sx,sy)=>{const up=grp(body);const fo=grp(up);limb(up,'M0 0V52',sk,17);if(fem)ln(up,'M-9 12H9',Q.top,7);limb(fo,'M0 0V48',sk,15);
       if(fem)ln(fo,'M-8 34H8M-8 40H8',P.turmeric,3.2);circ(fo,0,50,10,sk,3);return{up,fo,sx,sy}};
-    this.lArm=arm(-38,-240);this.rArm=arm(38,-240);
     ell(body,-16,-6,15,7,sk,3);ell(body,16,-6,15,7,sk,3);
     if(fem){/* sari or long skirt, with a patterned border */shp(body,'M-36 -178L36 -178L56 -14Q0 -4 -56 -14Z',Pat.u(Q.sari?'petals':'vlines',Q.bord,Q.low,.6),4.4);
       shp(body,'M-54 -34L54 -34L56 -14Q0 -4 -56 -14Z',Q.bord,3);ln(body,'M-48 -24Q0 -16 48 -24',P.ivory,3.6,{'stroke-dasharray':'.1 9'});
@@ -65,6 +64,8 @@ class FrontPerson{constructor(kind,parent,o){o=o||{};this.kind=kind;this.Q=PEOPL
     else{/* kurta over pajama */limb(body,'M-13 -100L-15 -12',Q.low,20);limb(body,'M13 -100L15 -12',Q.low,20);
       shp(body,'M-38 -240Q0 -252 38 -240L46 -90L-46 -90Z',Pat.u('dots',Q.bord,Q.top,.7),4.4);ln(body,'M0 -244V-190',K,2.4);ln(body,'M-44 -100H44',Q.bord,6)}
     limb(body,'M0 -240V-262',sk,20);if(fem){ln(body,'M-22 -244Q0 -224 22 -244',K,7);ln(body,'M-22 -244Q0 -224 22 -244',P.turmeric,4)}
+    /* arms in front of the clothes, so the hands always show */
+    this.lArm=arm(-38,-240);this.rArm=arm(38,-240);
     const head=this.head=grp(body);if(Q.hair==='bun'||Q.hair==='greybun')circ(head,0,-346,16,hairCol,Q.hair==='greybun'?2.6:0);
     frontFace(head,{sk,eyes:'open',tilak:fem?'dot':null});
     shp(head,fem?'M-38 -296C-40 -332 -20 -347 0 -347C20 -347 40 -332 38 -296C32 -320 14 -330 0 -324C-14 -330 -32 -320 -38 -296Z'
@@ -72,8 +73,13 @@ class FrontPerson{constructor(kind,parent,o){o=o||{};this.kind=kind;this.Q=PEOPL
     if(Q.hair==='bun')marigold(head,8,P.turmeric).setAttribute('transform','translate(14 -350)');
     if(fem)for(const sd of[-1,1])circ(head,sd*38,-288,5.5,P.turmeric,2.2);
     /* joined palms for namaste; a lit diya held in both hands */
-    this.jp=grp(body);shp(this.jp,'M0 -236C-9 -226 -12 -208 -7 -196H7C12 -208 9 -226 0 -236Z',sk,3);ln(this.jp,'M0 -232V-198',K,2);
-    this.dg=grp(body);const d=diya(this.dg,{lit:o.lit||0});d.s=.78;d.x=0;d.y=-166;d.glow.style.visibility='hidden';this.d=d}
+    this.jp=grp(body);for(const sd of[-1,1]){shp(this.jp,`M0 -240C${sd*8} -238 ${sd*13} -226 ${sd*13} -212C${sd*13} -202 ${sd*10} -195 ${sd*4} -192L0 -192Z`,sk,3);
+      ln(this.jp,`M${sd*4} -233L${sd*11} -229M${sd*5} -226L${sd*13} -222M${sd*5} -219L${sd*13} -215`,K,1.8);ln(this.jp,`M${sd*11} -208Q${sd*17} -206 ${sd*15} -199`,K,2.2)}
+    ln(this.jp,'M0 -240V-193',K,2.2);
+    this.dg=grp(body);const d=diya(this.dg,{lit:o.lit||0});d.s=.78;d.x=0;d.y=-192;d.glow.style.visibility='hidden';this.d=d;
+    /* cupped hands under the bowl, fingers curling up its sides */
+    for(const sd of[-1,1]){shp(this.dg,`M${sd*6} -176C${sd*14} -170 ${sd*30} -172 ${sd*36} -184C${sd*38} -192 ${sd*32} -196 ${sd*28} -190C${sd*24} -184 ${sd*16} -184 ${sd*8} -186Z`,sk,3);
+      ln(this.dg,`M${sd*30} -187L${sd*34} -193M${sd*22} -183L${sd*25} -190M${sd*14} -182L${sd*16} -188`,K,1.8)}}
   set(p){if(FPOSE[p]){this.pose=p;Object.assign(this.tgt,FPOSE[p])}}
   update(dt,t){const k=1-Math.exp(-(dt||.016)*6);for(const q in this.tgt)this.cur[q]+=(this.tgt[q]-this.cur[q])*k;const c=this.cur;
     tf(this.g,this.x,this.y,this.s);tf(this.body,0,Math.sin(t*1.4+this.ph)*1.2*MV(),1);
