@@ -859,14 +859,14 @@ class FrontPerson{constructor(kind,parent,o){o=o||{};this.kind=kind;this.Q=PEOPL
     show(this.jp,this.pose==='namaste');show(this.dg,this.pose==='diya');if(this.pose==='diya')this.d.update(t)}}
 
 /* ===== Sound: synthesised cues and soft ambient music, all behind one master gain (respects mute) ===== */
-const AU={ctx:null,master:null,sfxG:null,muted:false,noiseBuf:null,
+const AU={ctx:null,master:null,vol:.4,/* music and sound effects sit at 40%; narration plays separately at full volume */sfxG:null,muted:false,noiseBuf:null,
   init(){if(this.ctx)return;try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;this.ctx=new AC();
-    this.master=this.ctx.createGain();this.master.gain.value=this.muted?0:1;this.master.connect(this.ctx.destination);
+    this.master=this.ctx.createGain();this.master.gain.value=this.muted?0:this.vol;this.master.connect(this.ctx.destination);
     this.sfxG=this.ctx.createGain();this.sfxG.gain.value=.7;this.sfxG.connect(this.master);
     const len=this.ctx.sampleRate*2,b=this.ctx.createBuffer(1,len,this.ctx.sampleRate),d=b.getChannelData(0);for(let i=0;i<len;i++)d[i]=Math.random()*2-1;this.noiseBuf=b;
     Music.init();Snd.load()}catch(e){this.ctx=null}},
   resume(){try{this.ctx&&this.ctx.state==='suspended'&&this.ctx.resume()}catch(e){}},
-  setMute(m){this.muted=m;if(this.master)this.master.gain.setTargetAtTime(m?0:1,this.ctx.currentTime,.05)},
+  setMute(m){this.muted=m;if(this.master)this.master.gain.setTargetAtTime(m?0:this.vol,this.ctx.currentTime,.05)},
   t(){return this.ctx.currentTime},
   osc(type,f,t0,dur,g,dest,f2){const c=this.ctx,o=c.createOscillator(),e=c.createGain();o.type=type;o.frequency.setValueAtTime(f,t0);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t0+dur);
     e.gain.setValueAtTime(0.0001,t0);e.gain.exponentialRampToValueAtTime(g,t0+Math.min(.04,dur*.2));e.gain.exponentialRampToValueAtTime(0.0001,t0+dur);o.connect(e);e.connect(dest||this.sfxG);o.start(t0);o.stop(t0+dur+.05);return o},

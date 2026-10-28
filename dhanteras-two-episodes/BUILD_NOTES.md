@@ -188,3 +188,4 @@ What the numbers suggest:
 - `build.py` embeds the file list as `SND_IDS`; `Snd` decodes them once. `Music.mood()` crossfades to the matching bed; levels and ducking under narration still apply, with a floor so beds stay audible. Any missing file falls back to the synthesised cue/drone.
 - The beds are looping sound-effect textures, not composed scores (the connected ElevenLabs connector cannot generate music).
 - `fetch` does not work from `file://`; test over a local server (`python3 -m http.server`).
+- Music and sound effects play at 40% (`AU.vol` in `src/30_audio.js`); narration clips stay at full volume.
