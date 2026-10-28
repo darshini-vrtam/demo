@@ -132,7 +132,7 @@ async function titleCard(n,title,o){o=o||{};D.chip('');D.clearAct();Store.data.e
   await D.wait(700);D.setMood({});/* Episode 1's card is shown silently; the story opens straight into the narration */
   if(n===1)await D.wait(D.fast?5:2600);else await D.say(`Episode ${n}. ${typeof o==='string'?o:title}`);await D.wait(500);$('tcard').hidden=true}
 /* "Previously..." lines, used only on resume or replay (builder additions) */
-const PREV={1:'Previously, we sailed the Ocean of Wonders together.',2:'Previously, Lord Shiva saved the universe from Halahala.'};
+const PREV={2:'Previously, Lord Shiva saved the universe from Halahala.'};
 /* the script's mood tags set the Narrator's pace, pitch and volume; they are never spoken */
 const MOOD={warm:{rate:.9,pitch:1},inviting:{rate:1,pitch:1.05},plain:{},suspense:{rate:.9,pitch:.96},energetic:{rate:1.04,pitch:1.02},serious:{rate:.86,pitch:.93,vol:.9},
   gentle:{rate:.86,pitch:.98,vol:.95},cliff:{rate:.94,pitch:1.04},welcome:{rate:1,pitch:1.05},building:{rate:.86,pitch:1},respectful:{rate:.84,pitch:.97,vol:.95},friendly:{rate:.94,pitch:1.03},heartfelt:{rate:.86,pitch:1}};
