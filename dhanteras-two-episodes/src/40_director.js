@@ -129,7 +129,8 @@ async function titleCard(n,title,o){o=o||{};D.chip('');D.clearAct();Store.data.e
   if((D.resumed&&n===D.resumedAt)||(D.replay&&n===1)){const line=PREV[n];if(line){D.setScene(titleScene(n),900);await D.wait(600);D.setMood({});await D.say(line)}D.resumed=false;D.replay=false}
   if(!D.scene||D.scene.id!=='title')D.setScene(titleScene(n),900);
   $('tEye').textContent=`Episode ${n}`;$('tTitle').textContent=title;$('tcard').hidden=false;
-  await D.wait(700);D.setMood({});await D.say(`Episode ${n}. ${typeof o==='string'?o:title}`);await D.wait(500);$('tcard').hidden=true}
+  await D.wait(700);D.setMood({});/* Episode 1's card is shown silently; the story opens straight into the narration */
+  if(n===1)await D.wait(D.fast?5:2600);else await D.say(`Episode ${n}. ${typeof o==='string'?o:title}`);await D.wait(500);$('tcard').hidden=true}
 /* "Previously..." lines, used only on resume or replay (builder additions) */
 const PREV={1:'Previously, we sailed the Ocean of Wonders together.',2:'Previously, Lord Shiva saved the universe from Halahala.'};
 /* the script's mood tags set the Narrator's pace, pitch and volume; they are never spoken */
