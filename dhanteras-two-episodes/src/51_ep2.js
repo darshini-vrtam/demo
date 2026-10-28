@@ -5,55 +5,56 @@ const CALLBACK={kurma:{A:'You tried to lift the mountain first!',B:'You called L
 /* a soft golden ring around a treasure window (never a flash) */
 function goldRing(s,p,r){s.fx.ripple(p[0],p[1],r||200,P.turmeric,1600);Timers.add(260,()=>s.fx.ripple(p[0],p[1],(r||200)*.7,P.ivory,1400))}
 
+/* the four treasures arrive as medallions across the top while the churning carries on below; the mountain never moves */
+const TREAS=[['cow','Kamadhenu — generosity.'],['elephant','Airavata — a magnificent divine elephant.'],['tree','Kalpavriksha — abundance.'],['lakshmi','Goddess Lakshmi — prosperity.']];
+const TROW={L:{pos:[[230,215],[560,200],[1218,200],[1548,215]],r:92,horse:[330,452],hs:.56,jew:[1452,440],js:.85},
+  P:{pos:[[125,230],[375,215],[625,215],[875,230]],r:100,horse:[150,770],hs:.5,jew:[850,760],js:.75}};
+function treasureMed(parent,key,label){const g=grp(parent);const ring=grp(g);rings(ring,130,{n:2,step:.18,w:5,dots:16});rays(ring,140,175,20,P.turmeric,4);
+  const m=medallion(g,110,{bg:key==='tree'?P.ivory:key==='elephant'?P.turq:key==='cow'?P.sea:P.indigo});const pic=m.pic;
+  shp(pic,'M-120 58Q-100 50 -80 58T-40 58T0 58T40 58T80 58T120 58V140H-120Z',Pat.u('wave',P.foam,P.turq,.5),3);
+  if(key==='cow'){const c=kamadhenu(pic);tf(c.g,-6,70,.78)}else if(key==='elephant'){const e=airavata(pic);tf(e.g,-12,72,.7);e.update(0)}
+  else if(key==='tree'){const t=kalpavriksha(pic);tf(t.g,0,96,.62);t.update(0)}
+  else{const lt=lotus(pic,{r:44,n:9,open:1});tf(lt.g,0,92,1);const d=new Deity('lakshmi',pic,{pose:'lotus'});d.x=0;d.y=90;d.s=.4;d.update(0,0)}
+  /* the script's discovery label, on a ribbon across the medallion's lower rim */
+  const parts=label.replace(/\.$/,'').split(' — ');const lb=grp(g);let sub=[parts[1]||''];
+  if(sub[0].length>16){const ws=sub[0].split(' ');let best=1,bd=1e9;for(let i=1;i<ws.length;i++){const d=Math.abs(ws.slice(0,i).join(' ').length-ws.slice(i).join(' ').length);if(d<bd){bd=d;best=i}}sub=[ws.slice(0,best).join(' '),ws.slice(best).join(' ')]}
+  const w=Math.max(170,Math.max(parts[0].length*12,...sub.map(x=>x.length*10.5))+34);const h=64+(sub.length-1)*20;
+  shp(lb,`M${-w/2} 78H${w/2}L${w/2+14} ${78+h/2}L${w/2} ${78+h}H${-w/2}L${-w/2-14} ${78+h/2}Z`,P.ivory,3.4);
+  const T=(t,y,fs,wt)=>{el('text',{x:0,y,'text-anchor':'middle','font-family':'"Baloo 2","Trebuchet MS",sans-serif','font-weight':wt,'font-size':fs,fill:K},lb).textContent=t};
+  T(parts[0],106,21,800);sub.forEach((x,i)=>{if(x)T(x,131+i*20,17,600)});
+  return{g,ring,k:0,glow:0}}
 async function shot2_1(){await titleCard(2,EP2_TITLE[0],EP2_TITLE[1]);D.chip('Episode 2 · The Ocean Reveals Its Treasures');mood('welcome');Music.mood('wonder');Music.setLevel(.55,2);
   const s=churnScene({mood:'wonder',frame:'gold'});const C=s.C;C.ringK=1;D.setScene(s,1300);const M=churnMotor(s);groupSet(C.devas,'idle');groupSet(C.asuras,'idle');C.hold.d=0;C.hold.a=0;C.sag=1;
+  const row=grp(s.top);const meds=TREAS.map(([k,l])=>treasureMed(row,k,l));s.tmeds=meds;
+  /* the horse and the jewels rise from the water by themselves (they are narrated but not among the four) */
+  const side=grp(s.comp);const hg=grp(side),jg=grp(side);const hz=horse(hg);crest(hg,220).setAttribute('transform','translate(0 4)');jewels(jg);crest(jg,170).setAttribute('transform','translate(0 4)');
+  const sk={h:0,j:0};
+  s.parts.push({update:(dt,t)=>{const A=L.portrait?TROW.P:TROW.L;meds.forEach((m,i)=>{const p=A.pos[i];tf(m.g,p[0],p[1]+(1-m.k)*40,A.r/110*(.3+.7*m.k));op(m.g,m.k);op(m.ring,m.glow);
+      if(m.glow>0)tf(m.ring,0,0,1+.04*Math.sin(t*1.2+i)*MV(),t*6*MV())});
+    tf(hg,A.horse[0],A.horse[1]+(1-sk.h)*90,A.hs);op(hg,clamp(sk.h*2,0,1));tf(jg,A.jew[0],A.jew[1]+(1-sk.j)*70,A.js);op(jg,clamp(sk.j*2,0,1))}});
+  const pos=i=>(L.portrait?TROW.P:TROW.L).pos[i];
+  const show=i=>{const m=meds[i];AU.sfx('sparkle');D.go(m,{k:1},1100,'back');Timers.add(500,()=>{goldRing(s,pos(i),L.portrait?160:150);AU.sfx('chime')})};
+  const rise=k=>{AU.sfx('sparkle');D.go(sk,{[k]:1},1400,'out');const A=L.portrait?TROW.P:TROW.L;const p=k==='h'?A.horse:A.jew;Timers.add(700,()=>goldRing(s,[p[0],p[1]-60],120))};
   await D.wait(700);
   await D.say('Welcome back, Ocean Explorers!');
   const ch=Store.data.choices||{};for(const k of['kurma','shiva']){const v=ch[k];if(v==='A'||v==='B')await D.say(CALLBACK[k][v])}
   await D.say('The devas and asuras began churning the Ocean of Milk once again.',{cues:[['churning',()=>{groupSet(C.devas,'pull');groupSet(C.asuras,'pull');D.go(C.hold,{d:1,a:1},900);D.go(C,{sag:0},900);M.base=C.flow;M.rbase=C.rot;D.go(M,{speed:.7},1400)}]]});
-  /* the churning shrinks into a small medallion as the treasure windows fill the frame */
-  const g=galleryScene();GAL.keys.forEach(k=>{g.panels[k].rise=0});const sh={k:1};
-  s.parts.push({update:()=>{const A=C.A;const tgt=(L.portrait?GAL.P:GAL.L).med;const [mx,my]=toStage(A.mx,A.my-200);const [tx,ty]=toStage(tgt[0],tgt[1]);const k=sh.k;
-    s.camG.setAttribute('transform',`translate(${f1(lerp(tx,mx,k))} ${f1(lerp(ty,my,k))}) scale(${f3(lerp(.16,1,k))}) translate(${f1(-mx)} ${f1(-my)})`)}});
-  await D.say('One by one, wonderful treasures emerged!',{cues:[['One by one',()=>{D.go(sh,{k:0},1600,'io');Timers.add(700,()=>D.setScene(g,1100))}]]});
-  const Pn=g.panels;const pos=k=>(L.portrait?GAL.P:GAL.L).pos[GAL.keys.indexOf(k)];
-  const rise=k=>{AU.sfx('sparkle');D.go(Pn[k],{rise:1},1100,'back');Timers.add(500,()=>goldRing(g,pos(k),LP(190,210)))};
-  const outline=k=>{rise(k);Timers.add(700,()=>D.go(Pn[k],{open:.42},1200))};
-  const full=k=>{rise(k);Timers.add(700,()=>{D.go(Pn[k],{open:1},1300);D.go(Pn[k],{reveal:1},1300);AU.sfx('chime')})};
-  await D.say('First came Kamadhenu, the divine cow associated with abundance and generosity.',{cues:[['Kamadhenu',()=>outline('cow')]]});
-  await D.say('Then appeared a magnificent celestial horse, followed by Airavata, the majestic white elephant.',{cues:[['celestial horse',()=>full('horse')],['Airavata',()=>outline('elephant')]]});
-  await D.say('The divine wish-fulfilling tree, Kalpavriksha, rose from the ocean, and precious jewels sparkled in the light.',{cues:[['Kalpavriksha',()=>outline('tree')],['jewels',()=>full('jewels')]]});
-  await D.say('Finally, Goddess Lakshmi appeared on a lotus, bringing the promise of prosperity and abundance.',{cues:[['Goddess Lakshmi',()=>outline('lakshmi')]]});
-  g.cast.devas.forEach(f=>f.set('amazed'));g.cast.asuras.forEach(f=>f.set('amazed'));
+  await D.say('One by one, wonderful treasures emerged!',{cues:[['wonderful',()=>D.go(C,{glim:.8,energy:1},1400)]]});
+  await D.say('First came Kamadhenu, the divine cow associated with abundance and generosity.',{cues:[['Kamadhenu',()=>show(0)]]});
+  await D.say('Then appeared a magnificent celestial horse, followed by Airavata, the majestic white elephant.',{cues:[['celestial horse',()=>rise('h')],['Airavata',()=>show(1)]]});
+  await D.say('The divine wish-fulfilling tree, Kalpavriksha, rose from the ocean, and precious jewels sparkled in the light.',{cues:[['Kalpavriksha',()=>show(2)],['jewels',()=>rise('j')]]});
+  await D.say('Finally, Goddess Lakshmi appeared on a lotus, bringing the promise of prosperity and abundance.',{cues:[['Goddess Lakshmi',()=>show(3)]]});
+  groupSet(C.devas,'amazed');groupSet(C.asuras,'amazed');D.go(M,{speed:.35},1500);
   await D.say('The ocean was full of wonders!');
-  await D.say("But the churning wasn't finished. One special gift was still waiting—a gift that would remind everyone that health is one of life's greatest treasures.",{cues:[['special gift',()=>D.go(g.st,{glow:.5},1500)]]});
+  await D.say("But the churning wasn't finished. One special gift was still waiting—a gift that would remind everyone that health is one of life's greatest treasures.");
   await D.late()}
 
-/* ---- 2.2 Discover the treasures: four glowing lotus windows, any order ---- */
-const DISCOVER=[['cow','Kamadhenu — generosity.'],['elephant','Airavata — a magnificent divine elephant.'],['tree','Kalpavriksha — abundance.'],['lakshmi','Goddess Lakshmi — prosperity.']];
-function labelRibbon(parent,text,w){const g=grp(parent);const tw_=Math.max(140,text.length*12.5);shp(g,`M${-tw_/2} -20H${tw_/2}L${tw_/2+16} 0L${tw_/2} 20H${-tw_/2}L${-tw_/2-16} 0Z`,P.ivory,3.4);
-  el('text',{x:0,y:7,'text-anchor':'middle','font-family':'"Baloo 2","Trebuchet MS",sans-serif','font-weight':800,'font-size':21,fill:K},g).textContent=text;return g}
-async function shot2_2(){D.chip('Episode 2 · Discover the Treasures');let s=D.scene;if(!s||s.id!=='gallery'){s=galleryScene();D.setScene(s);GAL.keys.forEach(k=>{const p=s.panels[k];p.rise=1;if(k==='horse'||k==='jewels'){p.open=1;p.reveal=1}else p.open=.42})}
-  const tok=D.token,Pn=s.panels;mood('inviting');const pos=k=>s.A.pos[GAL.keys.indexOf(k)];const sc=()=>s.A.w/290;
-  const items=DISCOVER.map(([k,label])=>{const t=target(s.top,LP(150,160));const rb=labelRibbon(s.top,label.replace('.',''));const o={k,label,done:false,t,rb,rk:0};return o});
-  s.parts.push({update:t=>items.forEach(o=>{const p=pos(o.k);o.t.x=p[0];o.t.y=p[1];o.t.on=o.on||0;o.t.update(t);tf(o.rb,p[0],p[1]+s.A.h*sc()*.5+LP(10,8),(L.portrait?.95:.85)*(.6+.4*o.rk));op(o.rb,o.rk)})});
-  items.forEach((o,i)=>Timers.add(i*200,()=>D.go(o,{on:1},600)));
-  await D.say("Ocean Explorers, tap the glowing lotus flowers to discover the ocean's treasures!");
-  let n=0;D.instr('Tap the glowing lotus flowers.','0 of 4 treasures','tap');Hot.dirty=true;
-  const open=async o=>{if(o.done)return;o.done=true;n++;D.go(o,{on:0},300);AU.sfx('chime');goldRing(s,pos(o.k),LP(190,210));D.go(Pn[o.k],{open:1},1100);D.go(Pn[o.k],{reveal:1},1100);
-    D.counter(`${n} of 4 treasures`);D.go(o,{rk:1},700,'back');await D.say(o.label).catch(()=>{});if(n>=4&&s._t)s._t.finish()};
-  s.down=p=>{const o=items.find(o=>!o.done&&Math.hypot(p.x-pos(o.k)[0],p.y-pos(o.k)[1])<170*sc());if(o)open(o);else if(!items.some(o=>Math.hypot(p.x-pos(o.k)[0],p.y-pos(o.k)[1])<170*sc()))s.fx.ripple(p.x,p.y,60,P.foam,700)};
-  s.hots=()=>items.filter(o=>!o.done).map(o=>({id:'lotus-'+o.k,label:'Glowing lotus: tap to discover a treasure',x:pos(o.k)[0],y:pos(o.k)[1],r:130,on:()=>open(o)}));
-  const first=pos(items[0].k);s.demo.tap(first[0],first[1],2);
-  await D.task({hint:'Tap a glowing lotus to open it!',start(t){s._t=t;if(n>=4)t.finish()},demo(){const o=items.find(o=>!o.done);if(o){const p=pos(o.k);s.demo.tap(p[0],p[1],2)}},
-    async assist(t){for(const o of items)if(!o.done){await open(o);await D.wait(400)}t.finish()}});
-  await D.q;s._t=null;s.down=null;s.hots=null;D.clearAct();D.guard(tok);
-  /* after the last discovery the screen glows gold */
-  const g=grp(null);s.comp.insertBefore(g,s.comp.firstChild);rays(g,240,420,36,P.turmeric,6);rings(g,220,{n:3,step:.2,w:6,dots:22});const go={k:0};s.parts.push({update:(dt,t)=>{const c=s.A.lotus;tf(g,c[0],c[1]-80,.6+.5*go.k,t*3*MV());op(g,go.k*.85)}});
-  AU.sfx('swell');D.go(go,{k:1},1600);D.go(s.st,{glow:1},1600);s.cast.devas.forEach(f=>f.set('relieved'));s.cast.asuras.forEach(f=>f.set('relieved'));
-  await D.say('So many wonderful gifts! But one final treasure is still waiting to appear.');await D.late();
-  GAL.keys.forEach(k=>{const p=Pn[k];const sd=pos(k)[0]<(L.portrait?500:889)?-1:1;Timers.add(300,()=>D.go(p,{x:p.x+sd*LP(700,600)},1200,'in'))});items.forEach(o=>D.go(o,{rk:0},500));
-  D.go(go,{k:0},1200);D.go(s.mc,{s:0},1200);AU.sfx('swish');await D.tw(s.st,{lot:1.25},1800,'io')}
+/* ---- 2.2 the treasures glow gold together (no interaction) ---- */
+async function shot2_2(){D.chip('Episode 2 · So Many Wonderful Gifts');let s=D.scene;if(!s||!s.tmeds){await shot2_1();s=D.scene}
+  const C=s.C;mood('inviting');s.tmeds.forEach((m,i)=>Timers.add(i*250,()=>{D.go(m,{glow:1},900);AU.sfx('chime')}));D.go(C,{glim:1},1200);
+  groupSet(C.devas,'relieved');groupSet(C.asuras,'relieved');AU.sfx('swell');await D.wait(1200);
+  await D.say('So many wonderful gifts! But one final treasure is still waiting to appear.');
+  groupSet(C.devas,'gaze');groupSet(C.asuras,'gaze');D.go(s.motor,{speed:0},1600);D.go(s,{seaK:.3},1600);await D.wait(900);await D.late()}
 
 /* ---- 2.3 The divine arrival of Lord Dhanvantari ---- */
 async function shot2_3(){D.chip('Episode 2 · The Divine Arrival of Lord Dhanvantari');mood('building');Music.mood('divine');
@@ -208,7 +209,7 @@ async function shot2_5(){D.chip('Episode 2 · What Is True Wealth?');mood('frien
 
 /* ---- 2.6 A little light for Dhanteras: a traditional home, the family lights diyas together ---- */
 const FAM={L:{door:[889,420],dw:360,dh:520,rang:[889,700],fam:[['grandma',300,700,'offer','flower'],['woman',500,706,'light','diya'],['man',1290,706,'hold','diya'],['girl',1460,712,'hold','diya'],['boy',1600,712,'namaste',null]],fs:.86,
-    diya:[[620,760],[700,772],[780,780],[998,780],[1078,772],[1158,760],[889,600],[420,768]],shrine:[160,560],med:[[260,130],[575,96],[889,80],[1203,96],[1518,130]],mr:62},
+    diya:[[620,760],[700,772],[780,780],[998,780],[1078,772],[1158,760],[889,600],[420,768]],shrine:[160,560],med:[[330,205],[600,140],[889,118],[1178,140],[1448,205]],mr:62},
   P:{door:[500,620],dw:360,dh:520,rang:[500,1080],fam:[['grandma',120,1230,'offer','flower'],['woman',290,1236,'light','diya'],['man',700,1236,'hold','diya'],['girl',860,1260,'hold','diya'],['boy',500,1480,'namaste',null]],fs:.74,
     diya:[[300,1400],[380,1420],[620,1420],[700,1400],[500,940],[150,1440],[850,1440],[500,1290]],shrine:[860,960],med:[[110,250],[300,170],[500,150],[700,170],[890,250]],mr:64}};
 function homeLight(){const s=mkScene('family',{frame:'gold'});

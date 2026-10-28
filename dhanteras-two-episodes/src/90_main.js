@@ -4,7 +4,7 @@ const SHOTS=[['1.1','shot1_1'],['1.2','shot1_2'],['1.3','shot1_3'],['1.4','shot1
 /* production targets in seconds (Episode 1 7:30, Episode 2 7:30); title cards count inside the first shot of each episode */
 const TARGETS=[['1.1','Ocean of Secrets (with title)',70],['1.2','Wake Up the Ocean',40],['1.3','Mountain That Sank',35],['1.4','Save the Sinking Mountain',40],['1.5','Kurma Supports',45],
   ['1.6','Great Churning',75],['1.7','Poison Spreads',30],['1.8','Who Can Save?',40],['1.9','Shiva Saves',50],['1.10','Golden Light Beneath',25],
-  ['2.1','Treasures (with title)',60],['2.2','Discover the Treasures',30],['2.3','Dhanvantari Arrives',90],['2.4','Shloka',90],['2.5','True Wealth',75],['2.6','A Little Light',105]];
+  ['2.1','Treasures (with title)',75],['2.2','So Many Wonderful Gifts',15],['2.3','Dhanvantari Arrives',90],['2.4','Shloka',90],['2.5','True Wealth',75],['2.6','A Little Light',105]];
 const epStart=ep=>Math.max(0,SHOTS.findIndex(s=>s[0].startsWith(String(ep)+'.')));
 let lastT=performance.now(),hotT=0;
 function frame(now){const dt=Math.min(.05,(now-lastT)/1000);lastT=now;T.sec+=dt*Math.min(D.speed,4);T.now+=dt*1000*D.speed;Tw.update();Timers.update();if(AU.ctx)Music.tick();

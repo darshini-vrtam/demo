@@ -23,8 +23,8 @@ The drawing engine (SVG pattern library, ocean, Mandara, Kurma, Vasuki, devas an
 | 1.8 Who Can Save the Universe? | **Decision.** **A:** both groups reach towards the cluster, which keeps swirling inside its boundary and grows a little. **B:** a soft golden light and Shiva's golden-outline silhouette steps into it. |
 | 1.9 Lord Shiva Saves the Universe | The cluster contracts and enters Shiva's throat from below. The throat turns blue with a ring motif, then the protective halo appears. The clouds fade and the ocean cross-fades back to blue and gold, with a music swell. "True strength…" appears as a large read-along card. |
 | 1.10 The Golden Light Beneath | A golden light grows beneath calm water, then a golden iris leads to the Episode 2 title card. |
-| 2.1 The Ocean Reveals Its Treasures | Callback lines (below), then churning resumes and shrinks into a medallion as six lotus windows rise, each with a soft golden ring. The horse and jewels appear in full colour. Kamadhenu, Airavata, Kalpavriksha and Lakshmi appear as small golden outlines behind half-open lotus doors. |
-| 2.2 Discover the Treasures | **Activity.** Four glowing lotus windows, tapped in any order. Each opens to full colour with its label ribbon, read in the Narrator's voice ("Kamadhenu — generosity."…). Extra taps are ignored. After the last, a gold glow (drawn behind the windows), then the script line. |
+| 2.1 The Ocean Reveals Its Treasures | Callback lines (below), then the churning resumes in place; the mountain never moves. Kamadhenu, Airavata, Kalpavriksha and Lakshmi appear one by one as medallions across the top, each with a soft golden ring and its script label ("Kamadhenu — generosity." and so on) on a ribbon. The narrated celestial horse and jewels rise from the water at the sides. |
+| 2.2 So Many Wonderful Gifts | No interaction (removed after review). The four treasure medallions glow gold together and the churning slows, then "So many wonderful gifts! But one final treasure is still waiting to appear." The script line "Ocean Explorers, tap the glowing lotus flowers…" is not spoken, since there is nothing to tap. |
 | 2.3 The Divine Arrival of Lord Dhanvantari | In order: the ocean stills, golden rings spread, the central lotus glows and opens petal by petal, and Dhanvantari rises at the exact centre holding the Amrit Kalash at chest level. Devas and asuras watch from the edges, and herbs drift during the health lines. |
 | 2.4 The Dhanvantari Shloka | Dhanvantari on the right in a mandala, five children in namaste on a terrace in the foreground, and the shloka in a live-text Devanagari panel (Noto Serif Devanagari) on the quiet left-middle. A joined-hands "Namaste" button starts it (or after about 5 s, or palms together on camera). Pass 1: the Narrator recites line by line with a word highlight. Pass 2: soft music, the highlight replays for about 10 s with the Narrator silent. Then the "Simple meaning for children" label and text, read aloud, then the closing lines while golden light spreads from the pot across the water. |
 | 2.5 What Is True Wealth? | **Activity.** The golden treasure pot (the kalash with tiny carved lotuses) at the centre, five treasures floating around it with labels. Each icon glows once as its name is spoken. The labels are read aloud. Drag (or tap) any treasures into the pot: each glows as it enters and the pot brightens. The lotus "I'm ready" button appears after the first. |
@@ -60,7 +60,6 @@ localStorage key `dhanteras.twoep.v1` holds `ep`, `done` and `choices` (`kurma`,
 - 1.2 "Tap a glowing light under the waves!"
 - 1.4 "Tap a card to help the mountain."
 - 1.8 "Tap a card to choose who helps."
-- 2.2 "Tap a glowing lotus to open it!"
 - 2.5 "Drag a treasure into the pot!"
 
 **Callback lines (Shot 2.1):** "You tried to lift the mountain first!" / "You called Lord Vishnu right away!" / "You asked the devas and asuras first!" / "You called Lord Shiva right away!"
@@ -79,7 +78,7 @@ localStorage key `dhanteras.twoep.v1` holds `ep`, `done` and `choices` (`kurma`,
 - the chip labels (shot names);
 - accessible button labels.
 
-**Verbatim:** the instruction "Tap the glowing lights to awaken the ocean!", the choice labels and branch captions, the discovery labels, the five treasure labels, "Dhanvantari Shloka", "Simple meaning for children" and the final title are all verbatim from the script.
+**Verbatim:** the instruction "Tap the glowing lights to awaken the ocean!", the choice labels and branch captions, the discovery labels (shown on the treasure medallions), the five treasure labels, "Dhanvantari Shloka", "Simple meaning for children" and the final title are all verbatim from the script.
 
 ## Character revisions (after review)
 
@@ -87,6 +86,8 @@ localStorage key `dhanteras.twoep.v1` holds `ep`, `done` and `choices` (`kurma`,
 - **Eyes**: the profile eye is larger, with a bigger pupil and highlight, and the happy-eye arc and its outer flick are now drawn in black on every figure (a variable clash had left the happy eye invisible on cheering devas and asuras). The deities' front-facing eyes are larger with a highlight, so they read at medallion size.
 
 ## Cut or simplified
+
+- **Shot 2.2's lotus-tapping activity was removed after review**, along with its instruction line. The treasures appear as top medallions instead of lotus windows, and the 2.6 recap medallions were moved clear of the frame, the episode label and the buttons.
 
 - **Vishnu** is two-armed (conch and discus). The storyboard asks for four arms with mace and lotus; the medallion only shows a bust.
 - **Dhanvantari** is two-armed holding the kalash, as the brief proposed. Please confirm.
