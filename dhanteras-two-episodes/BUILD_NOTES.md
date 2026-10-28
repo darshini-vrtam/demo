@@ -16,7 +16,7 @@ The drawing engine (SVG pattern library, ocean, Mandara, Kurma, Vasuki, devas an
 | 1.1 The Ocean of Secrets | Still ocean under a star-filled sky with a slow 7% push-in. The seven lights appear on "precious jewels", "extraordinary creatures" and "divine gifts". Medallion cameos: the tired devas, Vishnu (his line in his voice), the asuras, then the devas' and asuras' medallions slide together. |
 | 1.2 Wake Up the Ocean | **Activity.** Seven glowing lights. The verbatim instruction comes with a finger demonstration. Each tap gives a golden ripple and a chime, and the waves, lotuses and colour wake gradually. Off-target taps make a harmless ripple. Idle: hint, then the remaining lights wake one by one. A rising sound plays when all seven are awake. |
 | 1.3 The Mountain That Sank | Mandara rises out of the water, Vasuki wraps it in one continuous spiral, the groups take their ends and pull, then the mountain sinks slowly with calm water rings. |
-| 1.4 Save the Sinking Mountain | **Decision**, read aloud, cards at centre-bottom (the painting shrinks above them so no face is covered). **A:** the mountain trembles, lifts a hair, then sinks further. **B:** a soft golden light under the water and Vishnu's medallion shines once. |
+| 1.4 Save the Sinking Mountain | **Decision**, read aloud. The two cards float over the painting, which dims to 30% while they show (no separate card band). **A:** the mountain trembles, lifts a hair, then sinks further. **B:** a soft golden light under the water and Vishnu's medallion shines once. |
 | 1.5 Kurma Supports the Mountain | Both branches converge. Vishnu's medallion dissolves into Kurma's blue-and-gold shell motif on "took the form of Kurma". Kurma rises beneath, lifts the mountain and it steadies, with a deep reassuring note. |
 | 1.6 The Great Churning Begins | Alternating pulls, rotation speeding up on "Round and round", bubbles and golden currents. The border patterns vibrate instead of camera shake. The contained violet cluster rises on "A strange, dark cloud rose from the ocean." |
 | 1.7 The Poison Spreads | Cross-fades to the restrained palette with lower pattern density. Patterned violet clouds spread across the sky and the water below the mountain, clear of every face. |
@@ -80,6 +80,11 @@ localStorage key `dhanteras.twoep.v1` holds `ep`, `done` and `choices` (`kurma`,
 - accessible button labels.
 
 **Verbatim:** the instruction "Tap the glowing lights to awaken the ocean!", the choice labels and branch captions, the discovery labels, the five treasure labels, "Dhanvantari Shloka", "Simple meaning for children" and the final title are all verbatim from the script.
+
+## Character revisions (after review)
+
+- **Asuras** redrawn after the supplied reference: terracotta skin, a vermilion spiked crown with a gold crescent plume behind it, zigzag-patterned skirts (vermilion, indigo or coral) with a gold hem, a coloured sash (indigo, turquoise or vermilion), hair curled at the nape and a small curled moustache. No horns or fangs; the crescent is a crown plume.
+- **Eyes**: the profile eye is larger, with a bigger pupil and highlight, and the happy-eye arc and its outer flick are now drawn in black on every figure (a variable clash had left the happy eye invisible on cheering devas and asuras). The deities' front-facing eyes are larger with a highlight, so they read at medallion size.
 
 ## Cut or simplified
 

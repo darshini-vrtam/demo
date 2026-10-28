@@ -136,17 +136,17 @@ const MOOD={warm:{rate:.9,pitch:1},inviting:{rate:1,pitch:1.05},plain:{},suspens
 function mood(k){D.setMood(MOOD[k]||{})}
 
 /* ===== Decisions: two large picture cards, read aloud, never a wrong answer. Idle: hint, then option B is picked as "B (auto)" ===== */
-D.choice=async function(id,opts,hint){const tok=this.token;const tray=$('tray');tray.className='tray n2';tray.innerHTML='';let resolve;const done=new Promise(r=>resolve=r);let picked=null;
+D.choice=async function(id,opts,hint){const tok=this.token;const tray=$('tray');tray.className='tray n2 over';tray.innerHTML='';let resolve;const done=new Promise(r=>resolve=r);let picked=null;
   const btns=opts.map(o=>{const b=document.createElement('button');b.type='button';b.className='card';b.setAttribute('aria-pressed','false');b.setAttribute('aria-label',`Choice ${o.key}: ${o.label}`);
     const sv=document.createElementNS(NS,'svg');sv.setAttribute('viewBox','-110 -70 220 140');sv.setAttribute('aria-hidden','true');el('rect',{x:-110,y:-70,width:220,height:140,fill:Pat.u('dots',P.turmeric,P.ivory,.8)},sv);
     try{o.icon(grp(sv))}catch(e){console.error(e)}const t=document.createElement('b');t.textContent=o.label;const k=document.createElement('small');k.textContent='Choice '+o.key;b.append(sv,k,t);
     b.addEventListener('click',()=>{D.poke();AU.resume();pick(o.key,false)});tray.append(b);return b});
   const pick=(key,auto)=>{if(picked)return;picked=auto?key+' (auto)':key;Speech.stop();if(this.skipFn)this.skipFn();btns.forEach((b,i)=>{b.setAttribute('aria-pressed',String(opts[i].key===key));if(opts[i].key!==key)b.style.opacity='.35'});
     AU.sfx('chime');const c=Store.data.choices||{};c[id]=picked;Store.set('choices',c);resolve(key)};
-  tray.hidden=false;await new Promise(r=>requestAnimationFrame(r));this.trayPx=tray.getBoundingClientRect().height;this.go(this,{inset:1},this.fast?10:700);
+  tray.hidden=false;const dim={k:1};const sc=layers.scenes;const dimTick=setInterval(()=>{sc.style.opacity=String(f3(dim.k))},30);this.go(dim,{k:.3},this.fast?10:600);
   (async()=>{for(let i=0;i<opts.length&&!picked;i++){btns[i].classList.add('reading');await this.say(opts[i].label).catch(()=>{});btns[i].classList.remove('reading')}})();
   await this.task({hint,start(t){done.then(()=>t.finish())},demo(){btns.forEach(b=>{b.classList.remove('pulse');void b.offsetWidth;b.classList.add('pulse')})},assist(t){const qp=D.qa&&D.qa.pick;pick(qp||'B',!qp);t.finish()}});
-  const key=await done;this.guard(tok);await this.wait(this.fast?5:700);this.go(this,{inset:0},this.fast?10:600);await this.wait(this.fast?5:620);tray.hidden=true;tray.innerHTML='';tray.className='tray';return key};
+  let key;try{key=await done;this.guard(tok);await this.wait(this.fast?5:700);tray.hidden=true;tray.innerHTML='';tray.className='tray';await this.tw(dim,{k:1},this.fast?10:600)}finally{clearInterval(dimTick);sc.style.opacity=''}return key};
 
 /* ===== Dev timing overlay (press T): each shot's elapsed time against its production target ===== */
 const Timing={rows:{},cur:null,on:false,

@@ -3,8 +3,8 @@
    so clothing, crowns, colours and proportions never change between shots. */
 const KIN={deva:[{sk:P.ochre,g:P.verm,g2:P.turmeric,c:P.gold},{sk:P.coral,g:P.pink,g2:P.gold,c:P.turmeric},{sk:P.terra,g:P.gold,g2:P.verm,c:P.turmeric},
     {sk:P.ochre,g:P.pink,g2:P.turmeric,c:P.gold},{sk:P.coral,g:P.verm,g2:P.gold,c:P.turmeric}],
-  asura:[{sk:P.terra,g:P.ochre,g2:P.leaf,c:P.leaf},{sk:P.ochre,g:P.terra,g2:P.turmeric,c:P.indigo},{sk:P.coral,g:P.leaf,g2:P.ochre,c:P.terra},
-    {sk:P.ochre,g:P.indigo,g2:P.turmeric,c:P.leaf},{sk:P.terra,g:P.leaf,g2:P.turmeric,c:P.indigo}]};
+  asura:[{sk:P.terra,g:P.verm,g2:P.indigo,z:P.turmeric},{sk:P.terra,g:P.indigo,g2:P.turmeric,z:P.turmeric},{sk:P.terra,g:P.coral,g2:P.turq,z:P.terra},
+    {sk:P.terra,g:P.verm,g2:P.turq,z:P.turmeric},{sk:P.terra,g:P.indigo,g2:P.verm,z:P.turmeric}]};
 /* poses: back arm (ba,bb) and front arm (fa,fb), degrees from straight down, + towards the facing side */
 const POSE={idle:{ba:-6,bb:12,fa:8,fb:16,lean:0,tilt:0},
   pull:{ba:64,bb:16,fa:74,fb:8,lean:10,tilt:-3},
@@ -21,41 +21,43 @@ const FACE_DEF={brow:0,mouth:'smile',eye:'open',step:0};
 class Fig{constructor(kind,v,parent){this.kind=kind;this.v=v;this.K=KIN[kind][v%5];this.x=0;this.y=0;this.s=1;this.f=1;this.vis=true;
     this.cur=Object.assign({},POSE.idle,{step:0});this.tgt=Object.assign({},this.cur);this.face=Object.assign({},FACE_DEF);this.state='idle';
     this.heave=0;this.ph=Math.random()*TAU;this.blinkAt=2+Math.random()*4;this.talking=false;this.build(parent)}
-  build(parent){const K=this.K,A=this.kind==='asura',sk=K.sk,w=A?16:13;const g=this.g=grp(parent);const body=this.body=grp(g);
+  build(parent){const Q=this.K,A=this.kind==='asura',sk=Q.sk,w=A?16:13;const g=this.g=grp(parent);const body=this.body=grp(g);
     const arm=(sx,sy)=>{const up=grp(body);const fo=grp(up);limb(up,`M0 0V46`,sk,w);ln(up,`M${-w/2-1} 15H${w/2+1}`,P.turmeric,4);
       limb(fo,`M0 0V42`,sk,w*.92);ln(fo,`M${-w/2} 34H${w/2}`,P.turmeric,3.6);circ(fo,0,46,w*.62,sk,3);return{up,fo,sx,sy}};
     this.bArm=arm(4,-210);
     /* legs, feet */
     limb(body,'M-10 -32L-12 -8',sk,13);limb(body,'M12 -32L14 -8',sk,13);ell(body,-4,-5,15,7,sk,3);ell(body,22,-5,15,7,sk,3);
     /* lower garment with hem band */
-    const sx=A?1.12:1;const skirt=`M${-30*sx} -152L${32*sx} -152L${44*sx} -30L${-40*sx} -30Z`;shp(body,skirt,A?Pat.u('grid',K.g2,K.g,.9):Pat.u('vlines',K.g2,K.g,.9),4.4);
-    shp(body,`M${-42*sx} -48L${44*sx} -48L${45*sx} -30L${-41*sx} -30Z`,K.g2,3);ln(body,`M${-36*sx} -39H${40*sx}`,P.ivory,3.6,{'stroke-dasharray':'.1 9'});
+    const sx=A?1.08:1;if(A){shp(body,'M-32 -152L34 -152L40 -20L-36 -20Z',Pat.u('chevron',Q.z,Q.g,1.15),4.4);shp(body,'M-37 -34L40 -34L40 -20L-36 -20Z',P.turmeric,3);ln(body,'M-32 -27H36',K,2.6,{'stroke-dasharray':'.1 8'})}
+    else{const skirt=`M${-30*sx} -152L${32*sx} -152L${44*sx} -30L${-40*sx} -30Z`;shp(body,skirt,Pat.u('vlines',Q.g2,Q.g,.9),4.4);
+    shp(body,`M${-42*sx} -48L${44*sx} -48L${45*sx} -30L${-41*sx} -30Z`,Q.g2,3);ln(body,`M${-36*sx} -39H${40*sx}`,P.ivory,3.6,{'stroke-dasharray':'.1 9'})}
     /* torso, sash, waist band, necklace */
     const tw=A?1.24:1;const torso=`M${-26*tw} -150L${-31*tw} -214Q2 ${-230-(A?6:0)} ${31*tw} -214L${26*tw} -150Z`;dbl(body,torso,sk,0,-182,.86,4.4);
-    shp(body,`M${-31*tw} -214L${-18*tw} -222L${28*tw} -152L${14*tw} -150Z`,K.g2,3);ln(body,`M${-24*tw} -212L${21*tw} -154`,P.ivory,3.4,{'stroke-dasharray':'.1 10'});
-    shp(body,`M${-27*tw} -164H${28*tw}V-150H${-27*tw}Z`,K.g,3);ln(body,`M${-22*tw} -157H${24*tw}`,P.ivory,3.4,{'stroke-dasharray':'.1 8'});
-    limb(body,'M3 -214L5 -236',sk,17);ln(body,'M-12 -222Q4 -200 20 -222',K,7);ln(body,'M-12 -222Q4 -200 20 -222',P.turmeric,4);circ(body,4,-206,4.5,P.verm,2);
+    shp(body,`M${-31*tw} -214L${-18*tw} -222L${28*tw} -152L${14*tw} -150Z`,Q.g2,3);ln(body,`M${-24*tw} -212L${21*tw} -154`,P.ivory,3.4,{'stroke-dasharray':'.1 10'});
+    shp(body,`M${-27*tw} -164H${28*tw}V-150H${-27*tw}Z`,A?Q.g2:Q.g,3);ln(body,`M${-22*tw} -157H${24*tw}`,P.ivory,3.4,{'stroke-dasharray':'.1 8'});
+    limb(body,'M3 -214L5 -236',sk,17);ln(body,'M-12 -222Q4 -200 20 -222',K,7);ln(body,'M-12 -222Q4 -200 20 -222',P.turmeric,4);if(!A)circ(body,4,-206,4.5,P.verm,2);
     /* head: hair bun, face, hair, ear, eye, brows, mouth, crown */
     const head=this.head=grp(body);const hy=-262;
-    circ(head,-28,hy+4,13,K,0);
+    if(!A)circ(head,-28,hy+4,13,K,0);else{ln(head,'M-24 -236Q-34 -224 -24 -218Q-16 -216 -18 -224',K,6)}
     const face=smooth([[-26,-284],[0,-295],[22,-287],[29,-273],[30,-262],[40,-249],[31,-245],[33,-238],[28,-228],[12,-223],[-10,-228],[-27,-248]],true);
     shp(head,face,sk,4.2);
     shp(head,smooth([[-30,-250],[-29,-282],[-4,-298],[20,-291],[16,-283],[2,-279],[-6,-266],[-9,-246],[-22,-232]],true),K,0);
     ell(head,-5,hy+2,6,8.5,sk,2.4);circ(head,-5,hy+15,4.4,P.turmeric,1.8);
-    if(A)ln(head,'M37 -246Q28 -242 22 -246Q18 -250 21 -253',K,3);
-    const eye=this.eye=grp(head);this.eyeOpen=grp(eye);shp(this.eyeOpen,'M5 -265Q16 -276 27 -265Q16 -257 5 -265Z',P.ivory,2.6);ln(this.eyeOpen,'M5 -265L-1 -263',K,2.4);
-    this.pupil=circ(this.eyeOpen,17,-266,3.8,K,0);circ(this.eyeOpen,16,-267.5,1.1,P.foam,0);
-    this.lid=shp(this.eyeOpen,'M4 -265Q16 -277 28 -265Q16 -268 4 -265Z',sk,2.4);show(this.lid,false);
-    this.eyeShut=ln(eye,'M5 -264Q16 -259 27 -264',K,2.8);show(this.eyeShut,false);this.eyeHappy=ln(eye,'M5 -263Q16 -272 27 -263',K,2.8);show(this.eyeHappy,false);
-    this.brows=ln(head,'M5 -276Q16 -283 28 -276',K,2.8);
+    if(A){shp(head,'M38 -246Q30 -240 22 -245Q16 -249 19 -254Q24 -246 30 -248Q34 -250 38 -246Z',K,1.6);ln(head,'M24 -238Q30 -236 34 -239',P.verm,3)}
+    const eye=this.eye=grp(head);this.eyeOpen=grp(eye);shp(this.eyeOpen,'M3 -265Q17 -280 31 -265Q17 -254 3 -265Z',P.ivory,3);ln(this.eyeOpen,'M3 -265L-4 -261',K,3);
+    this.pupil=circ(this.eyeOpen,18,-266,5,K,0);circ(this.eyeOpen,16.6,-268,1.5,P.foam,0);
+    this.lid=shp(this.eyeOpen,'M2 -265Q17 -281 32 -265Q17 -271 2 -265Z',sk,3);show(this.lid,false);
+    this.eyeShut=ln(eye,'M3 -264Q17 -257 31 -264',K,3.8);show(this.eyeShut,false);this.eyeHappy=grp(eye);ln(this.eyeHappy,'M3 -262Q17 -276 31 -262',K,4);ln(this.eyeHappy,'M3 -262L-4 -259',K,3);show(this.eyeHappy,false);
+    this.brows=ln(head,'M3 -279Q17 -287 31 -279',K,3.4);
     const mo=this.mouthG=grp(head);this.mouths={smile:ln(mo,'M23 -240Q29 -233 35 -238',K,2.6),o:circ(mo,31,-237,3.6,K,0),worry:ln(mo,'M24 -235Q29 -240 34 -235',K,2.6),
       flat:ln(mo,'M24 -237H34',K,2.6),big:shp(mo,'M22 -241Q29 -229 36 -239Z',P.verm,2.2)};this.talkM=ell(mo,30,-237,4,2.4,K,0);show(this.talkM,false);
     if(!A){circ(head,24,-281,2.6,P.verm,0)}
     const cr=grp(head);
-    if(!A){shp(cr,'M-22 -284L30 -284L24 -300L14 -308L6 -344L-2 -308L-12 -300Z',Pat.u('petals',P.turmeric,K.c,.55),4);
+    if(!A){shp(cr,'M-22 -284L30 -284L24 -300L14 -308L6 -344L-2 -308L-12 -300Z',Pat.u('petals',P.turmeric,Q.c,.55),4);
       shp(cr,'M-27 -294H33V-282H-27Z',P.verm,3);ln(cr,'M-22 -288H30',P.ivory,3.4,{'stroke-dasharray':'.1 8'});circ(cr,6,-347,4.5,P.turmeric,2.4)}
-    else{shp(cr,'M-30 -292Q2 -334 38 -292Z',K.c,4);[[-14,-318],[4,-326],[22,-318]].forEach(([x,y])=>{circ(cr,x,y,9.5,P.turmeric,3);circ(cr,x,y,4.2,P.verm,2)});
-      shp(cr,'M-33 -296H40V-283H-33Z',P.turmeric,3);ln(cr,'M-28 -289.5H36',K,3.4,{'stroke-dasharray':'.1 8'});circ(cr,-30,-276,6,P.turmeric,2.4)}
+    else{/* a gold crescent plume rising behind a vermilion spiked crown */shp(cr,'M-22 -300C-46 -306 -52 -334 -38 -356C-36 -334 -24 -320 -6 -314Z',P.turmeric,3.6);
+      shp(cr,'M-26 -286L34 -286L36 -302L28 -320L19 -303L10 -324L1 -303L-8 -322L-16 -303L-27 -302Z',P.verm,4);
+      shp(cr,'M-28 -296H37V-283H-28Z',P.turmeric,3);ln(cr,'M-23 -289.5H33',K,3.4,{'stroke-dasharray':'.1 8'});}
     this.fArm=arm(12,-208)}
   set(state){if(!POSE[state])return;this.state=state;const p=POSE[state];Object.assign(this.tgt,{ba:p.ba,bb:p.bb,fa:p.fa,fb:p.fb,lean:p.lean,tilt:p.tilt,step:p.step||0});
     this.face={brow:p.brow||0,mouth:p.mouth||'smile',eye:p.eye||'open'};this.applyFace()}
@@ -70,7 +72,7 @@ class Fig{constructor(kind,v,parent){this.kind=kind;this.v=v;this.K=KIN[kind][v%
     const br=Math.sin(t*1.7+this.ph)*1.2*MV();
     if(t>this.blinkAt){this.blinkAt=t+3.5+Math.random()*4;this.blinkEnd=t+.13}const blink=this.blinkEnd&&t<this.blinkEnd&&MV()>.5;
     const e=this.face.eye;show(this.eyeOpen,!blink&&e!=='closed'&&e!=='happy');show(this.eyeShut,blink||e==='closed');show(this.eyeHappy,!blink&&e==='happy');show(this.lid,e==='half');
-    tf(this.eye,e==='wide'?-2.4:0,e==='wide'?-3:0,e==='wide'?1.12:1);
+    const ew=e==='wide'?'translate(17 -265) scale(1.15) translate(-17 265)':'';if(this.eye._ew!==ew){this.eye._ew=ew;ew?this.eye.setAttribute('transform',ew):this.eye.removeAttribute('transform')}
     if(this.talking){const m=.35+.65*Math.abs(Math.sin(t*7.5+this.ph));this.talkM.setAttribute('transform',`translate(30 -237) scale(1 ${f3(m)}) translate(-30 237)`)}
     if(this._tk!==this.talking){this._tk=this.talking;this.applyFace()}
     tf(this.g,this.x,this.y,this.s,0,this.f,1);tf(this.body,c.step,br,1,-lean);
@@ -96,9 +98,9 @@ function frontFace(parent,o){const g=grp(parent);const sk=o.sk;
   dbl(g,face,sk,0,-302,.88,4.4);
   if(o.hairFront)shp(g,o.hairFront,K,0);
   const eyes=grp(g);const half=o.eyes==='half';
-  for(const sd of[-1,1]){const x=sd*15;shp(eyes,`M${x-11} -306Q${x} ${half?-311:-316} ${x+11} -306Q${x} -299 ${x-11} -306Z`,P.ivory,2.4);
-    circ(eyes,x+sd*.5,-306,half?3:3.8,K,0);if(half)ln(eyes,`M${x-11} -306Q${x} -312 ${x+11} -306`,K,3);ln(eyes,`M${x+sd*11} -306L${x+sd*17} -309`,K,2.2)}
-  ln(g,'M-28 -318Q-15 -326 -3 -317M3 -317Q15 -326 28 -318',K,2.8);ln(g,'M-1 -314Q-6 -296 -1 -289Q2 -287 5 -290',K,2.4);
+  for(const sd of[-1,1]){const x=sd*16;shp(eyes,`M${x-13} -306Q${x} ${half?-313:-319} ${x+13} -306Q${x} -297 ${x-13} -306Z`,P.ivory,3);
+    circ(eyes,x+sd*.5,-306.5,half?3.8:5,K,0);if(!half)circ(eyes,x+sd*.5-1.4,-308.4,1.4,P.foam,0);if(half)ln(eyes,`M${x-13} -306Q${x} -313 ${x+13} -306`,K,3.6);ln(eyes,`M${x+sd*13} -306L${x+sd*20} -310`,K,3)}
+  ln(g,'M-30 -320Q-16 -329 -3 -319M3 -319Q16 -329 30 -320',K,3.4);ln(g,'M-1 -314Q-6 -296 -1 -289Q2 -287 5 -290',K,2.4);
   ln(g,'M-9 -278Q0 -271 9 -278',K,2.6);shp(g,'M-6 -277Q0 -273 6 -277Q0 -275 -6 -277Z',P.verm,1.4);
   if(o.tilak==='u'){ln(g,'M-5 -336V-322Q0 -317 5 -322V-336',P.ivory,3);ln(g,'M0 -334V-320',P.verm,2.4)}
   else if(o.tilak==='tri'){ln(g,'M-14 -334H14M-15 -329H15M-14 -324H14',P.ivory,2.4);ln(g,'M0 -333V-325',P.verm,2.6)}

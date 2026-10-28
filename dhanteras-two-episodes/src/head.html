@@ -94,6 +94,10 @@ button:focus-visible{outline:4px solid var(--focus);outline-offset:3px}
 .card b{font:800 clamp(12px,.8vw + .6vh + 4px,18px)/1.1 var(--font-body);text-align:center;letter-spacing:.04em}
 .card small{font:600 clamp(11px,.6vw + .5vh + 3px,15px)/1.15 var(--font-body);text-align:center;text-wrap:balance}
 .tray.n2{grid-template-columns:repeat(2,minmax(0,330px))}
+/* decision cards float over the dimmed painting instead of taking their own band */
+.tray.over{top:0;bottom:var(--dk);background:transparent;border-top:0;align-content:center;padding:calc(var(--bd) + 56px) clamp(10px,3vw,40px) calc(var(--bd) + 10px)}
+.tray.over .card{box-shadow:0 0 0 5px var(--turmeric),0 0 0 8px var(--ink)}
+.tray.over .card[aria-pressed="true"]{box-shadow:0 0 0 6px var(--ivory),0 0 0 10px var(--verm)}
 .tray.n2 .card svg{aspect-ratio:5/3.2;max-height:22vh}
 .tray.n2 .card b{font-size:clamp(14px,1vw + .8vh + 6px,22px);letter-spacing:.01em}
 .card[aria-pressed="true"]{transform:translateY(-4px);box-shadow:0 0 0 5px var(--turmeric),0 0 0 8px var(--ink)}
