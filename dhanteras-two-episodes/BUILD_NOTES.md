@@ -181,3 +181,4 @@ What the numbers suggest:
 - Playback order: recorded clip → browser speech fallback → captions only.
 - Both episodes are recorded: 134 clips incl. hints, choice labels, branch captions, callbacks, "Previously…" lines and the Sanskrit shloka (voice `shloka`, recited once). The browser voice is only a fallback.
 - Publishing: pass every `audio/*.mp3` in the Artifact `files` map.
+- Playback speed: narration clips play at 1.2× and the shloka at 1.1× (`Clips.rate` / `Clips.shlokaRate` in `src/30_audio.js`), pitch preserved.
