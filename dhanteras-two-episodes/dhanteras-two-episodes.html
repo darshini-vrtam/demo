@@ -816,6 +816,40 @@ class Person{constructor(kind,parent,o){o=o||{};this.kind=kind;this.K=PEOPLE[kin
     tf(this.bArm.up,this.bArm.sx,this.bArm.sy,1,-c.ba);tf(this.fArm.up,this.fArm.sx,this.fArm.sy,1,-c.fa);tf(this.bArm.fo,0,44,1,-c.bb);tf(this.fArm.fo,0,44,1,-c.fb);
     if(this.diya){this.prop.setAttribute('transform',`rotate(${f1(c.fa+c.fb)} 0 44)`);this.diya.update(t)}}}
 
+/* ===== Front-facing people for the closing: same face language as the deities, simple festive clothes ===== */
+const FPOSE={namaste:{la:-5,lb:120,ra:5,rb:-120},diya:{la:-30,lb:99,ra:30,rb:-99},idle:{la:-10,lb:12,ra:10,rb:-12}};
+class FrontPerson{constructor(kind,parent,o){o=o||{};this.kind=kind;this.Q=PEOPLE[kind];this.x=0;this.y=0;this.s=1;this.pose=o.pose||'namaste';
+    this.cur=Object.assign({},FPOSE[this.pose]);this.tgt=Object.assign({},this.cur);this.ph=Math.random()*TAU;this.build(parent,o)}
+  build(parent,o){const Q=this.Q,sk=Q.sk;const fem=!!(Q.sari||Q.hair==='plait'||Q.hair==='bun'||Q.hair==='greybun');const hairCol=Q.hair==='greybun'?P.ivory:K;
+    const g=this.g=grp(parent);const body=this.body=grp(g);
+    /* long hair or plaits falling behind the shoulders */
+    if(Q.hair==='plait'){for(const sd of[-1,1]){ln(body,`M${sd*30} -300Q${sd*44} -250 ${sd*40} -196`,K,12);circ(body,sd*40,-194,5,P.verm,1.6)}}
+    else if(fem)shp(body,'M-40 -318Q-50 -276 -42 -246L42 -246Q50 -276 40 -318Z',hairCol,Q.hair==='greybun'?2.6:0);
+    const arm=(sx,sy)=>{const up=grp(body);const fo=grp(up);limb(up,'M0 0V52',sk,17);if(fem)ln(up,'M-9 12H9',Q.top,7);limb(fo,'M0 0V48',sk,15);
+      if(fem)ln(fo,'M-8 34H8M-8 40H8',P.turmeric,3.2);circ(fo,0,50,10,sk,3);return{up,fo,sx,sy}};
+    this.lArm=arm(-38,-240);this.rArm=arm(38,-240);
+    ell(body,-16,-6,15,7,sk,3);ell(body,16,-6,15,7,sk,3);
+    if(fem){/* sari or long skirt, with a patterned border */shp(body,'M-36 -178L36 -178L56 -14Q0 -4 -56 -14Z',Pat.u(Q.sari?'petals':'vlines',Q.bord,Q.low,.6),4.4);
+      shp(body,'M-54 -34L54 -34L56 -14Q0 -4 -56 -14Z',Q.bord,3);ln(body,'M-48 -24Q0 -16 48 -24',P.ivory,3.6,{'stroke-dasharray':'.1 9'});
+      shp(body,'M-38 -238Q0 -252 38 -238L33 -174L-33 -174Z',Q.top,4.2);if(Q.sari){shp(body,'M-38 -238L-20 -246L36 -176L16 -176Z',Pat.u('petals',P.turmeric,Q.low,.5),3)}}
+    else{/* kurta over pajama */limb(body,'M-13 -100L-15 -12',Q.low,20);limb(body,'M13 -100L15 -12',Q.low,20);
+      shp(body,'M-38 -240Q0 -252 38 -240L46 -90L-46 -90Z',Pat.u('dots',Q.bord,Q.top,.7),4.4);ln(body,'M0 -244V-190',K,2.4);ln(body,'M-44 -100H44',Q.bord,6)}
+    limb(body,'M0 -240V-262',sk,20);if(fem){ln(body,'M-22 -244Q0 -224 22 -244',K,7);ln(body,'M-22 -244Q0 -224 22 -244',P.turmeric,4)}
+    const head=this.head=grp(body);if(Q.hair==='bun'||Q.hair==='greybun')circ(head,0,-346,16,hairCol,Q.hair==='greybun'?2.6:0);
+    frontFace(head,{sk,eyes:'open',tilak:fem?'dot':null});
+    shp(head,fem?'M-38 -296C-40 -332 -20 -347 0 -347C20 -347 40 -332 38 -296C32 -320 14 -330 0 -324C-14 -330 -32 -320 -38 -296Z'
+      :'M-38 -300C-40 -334 -20 -349 0 -349C20 -349 40 -334 38 -300C30 -322 10 -330 -6 -326C-20 -326 -32 -318 -38 -300Z',hairCol,Q.hair==='greybun'?2.6:0);
+    if(Q.hair==='bun')marigold(head,8,P.turmeric).setAttribute('transform','translate(14 -350)');
+    if(fem)for(const sd of[-1,1])circ(head,sd*38,-288,5.5,P.turmeric,2.2);
+    /* joined palms for namaste; a lit diya held in both hands */
+    this.jp=grp(body);shp(this.jp,'M0 -236C-9 -226 -12 -208 -7 -196H7C12 -208 9 -226 0 -236Z',sk,3);ln(this.jp,'M0 -232V-198',K,2);
+    this.dg=grp(body);const d=diya(this.dg,{lit:o.lit||0});d.s=.78;d.x=0;d.y=-166;d.glow.style.visibility='hidden';this.d=d}
+  set(p){if(FPOSE[p]){this.pose=p;Object.assign(this.tgt,FPOSE[p])}}
+  update(dt,t){const k=1-Math.exp(-(dt||.016)*6);for(const q in this.tgt)this.cur[q]+=(this.tgt[q]-this.cur[q])*k;const c=this.cur;
+    tf(this.g,this.x,this.y,this.s);tf(this.body,0,Math.sin(t*1.4+this.ph)*1.2*MV(),1);
+    tf(this.lArm.up,this.lArm.sx,this.lArm.sy,1,-c.la);tf(this.lArm.fo,0,52,1,-c.lb);tf(this.rArm.up,this.rArm.sx,this.rArm.sy,1,-c.ra);tf(this.rArm.fo,0,52,1,-c.rb);
+    show(this.jp,this.pose==='namaste');show(this.dg,this.pose==='diya');if(this.pose==='diya')this.d.update(t)}}
+
 /* ===== Sound: synthesised cues and soft ambient music, all behind one master gain (respects mute) ===== */
 const AU={ctx:null,master:null,sfxG:null,muted:false,noiseBuf:null,
   init(){if(this.ctx)return;try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;this.ctx=new AC();
@@ -1895,7 +1929,7 @@ async function shot2_4(){D.chip('Episode 2 · The Dhanvantari Shloka');mood('res
   D.hideCap();await D.wait(D.fast?5:900);await recite(spans,lineWords,true);D.guard(tok);
   /* pass 2: soft music, the highlight replays for the child to recite along (about 10 seconds of narrator silence) */
   Music.setLevel(.55,2);const t0=T.now;D.instr('Recite along with the glowing words.','','hold');
-  for(let r=0;r<2&&T.now-t0<10000;r++){await recite(spans,lineWords,false);}D.clearAct();Music.setLevel(.3,2);D.guard(tok);
+  await recite(spans,lineWords,false);D.clearAct();Music.setLevel(.3,2);D.guard(tok);
   /* the simple meaning, read aloud */
   $('meaningText').textContent=MEANING;$('meaning').hidden=false;placeShloka(s);
   await D.say(MEANING);
@@ -1967,38 +2001,49 @@ async function shot2_5(){D.chip('Episode 2 · What Is True Wealth?');mood('frien
   const g=grp(s.top);halo(g,120,{col:P.turmeric});const o={k:0};s.parts.push({update:()=>tf(g,s.A.pot[0],s.A.pot[1]-60*s.A.ks,.3+o.k*7)});AU.sfx('swish');await D.tw(o,{k:1},1500,'in')}
 
 /* ---- 2.6 A little light for Dhanteras: a traditional home, the family lights diyas together ---- */
-const FAM={L:{door:[889,420],dw:360,dh:520,rang:[889,700],fam:[['grandma',300,700,'offer','flower'],['woman',500,706,'light','diya'],['man',1290,706,'hold','diya'],['girl',1460,712,'hold','diya'],['boy',1600,712,'namaste',null]],fs:.86,
-    diya:[[620,760],[700,772],[780,780],[998,780],[1078,772],[1158,760],[889,600],[420,768]],shrine:[160,560],med:[[330,205],[600,140],[889,118],[1178,140],[1448,205]],mr:62},
-  P:{door:[500,620],dw:360,dh:520,rang:[500,1080],fam:[['grandma',120,1230,'offer','flower'],['woman',290,1236,'light','diya'],['man',700,1236,'hold','diya'],['girl',860,1260,'hold','diya'],['boy',500,1480,'namaste',null]],fs:.74,
-    diya:[[300,1400],[380,1420],[620,1420],[700,1400],[500,940],[150,1440],[850,1440],[500,1290]],shrine:[860,960],med:[[110,250],[300,170],[500,150],[700,170],[890,250]],mr:64}};
+/* the closing: a Diwali house seen from its courtyard, with lanterns, string lights, a rangoli and diyas; the family faces front */
+const FAM={L:{sky:280,eave:285,wall:[380,1398],floor:625,door:[889,625],ds:.66,win:[[560,350],[1218,350]],lan:[450,700,1078,1328],lanY:290,
+    rang:[889,712],rs:1,fam:[['grandma',150,792,'diya'],['woman',285,792,'namaste'],['man',1490,792,'diya'],['girl',1615,792,'namaste'],['boy',1712,792,'namaste']],fs:.86,
+    diya:[[470,612],[640,612],[1138,612],[1308,612],[700,735],[800,775],[978,775],[1078,735]],med:[[330,205],[600,140],[889,118],[1178,140],[1448,205]],mr:62},
+  P:{sky:330,eave:335,wall:[90,910],floor:1045,door:[500,1045],ds:.72,win:[[220,470],[780,470]],lan:[110,300,700,890],lanY:340,
+    rang:[500,1170],rs:.9,fam:[['grandma',100,1480,'diya'],['woman',255,1480,'namaste'],['boy',500,1488,'namaste'],['man',745,1480,'diya'],['girl',900,1480,'namaste']],fs:.8,
+    diya:[[170,1032],[330,1032],[670,1032],[830,1032],[330,1190],[420,1240],[580,1240],[670,1190]],med:[[110,250],[300,170],[500,150],[700,170],[890,250]],mr:64}};
 function homeLight(){const s=mkScene('family',{frame:'gold'});
-  s.paintBg=function(){this.bg.innerHTML='';const W=L.W,H=L.Ha;const A=L.portrait?FAM.P:FAM.L;const fy=toStage(0,L.portrait?1180:640)[1];
-    el('rect',{x:-4,y:-4,width:W+8,height:fy+4,fill:Pat.u('grid',P.turmeric,P.terra,1.2)},this.bg);ln(this.bg,`M-4 ${fy}H${W+4}`,K,5);
-    shp(this.bg,`M-4 ${fy}H${W+4}V${H+4}H-4Z`,Pat.u('petals',P.turmeric,P.ochre,1),0);
-    /* ornamental wall borders */
-    const b=grp(this.bg);el('rect',{x:-4,y:fy-46,width:W+8,height:30,fill:Pat.u('chevron',P.verm,P.ivory,1)},b);ln(b,`M-4 ${fy-46}H${W+4}M-4 ${fy-16}H${W+4}`,K,3)};
-  const comp=s.comp;const doorG=grp(comp),shrG=grp(comp),rangG=grp(comp),famL=grp(comp),diyL=grp(comp),medL=grp(comp);
-  /* a patterned doorway with marigold garlands and mango leaves */
-  const door=grp(doorG);{const w=360,h=520;shp(door,`M${-w/2-40} 0V${-h+120}Q0 ${-h-80} ${w/2+40} ${-h+120}V0Z`,Pat.u('petals',P.verm,P.turmeric,.8),5);
-    shp(door,`M${-w/2} 0V${-h+140}Q0 ${-h-30} ${w/2} ${-h+140}V0Z`,P.indigo,4);shp(door,`M${-w/2+24} 0V${-h+160}Q0 ${-h+10} ${w/2-24} ${-h+160}V0Z`,Pat.u('stars',P.turmeric,P.midnight,.9),3);
-    const lamp=diya(door,{lit:1});lamp.x=0;lamp.y=-120;lamp.s=1.3;lamp.update(0);s.doorLamp=lamp;
-    let d='';const n=7;for(let i=0;i<n;i++){const x0=-w/2-40+i*(w+80)/n,x1=x0+(w+80)/n;d+=`M${f1(x0)} ${-h+110}Q${f1((x0+x1)/2)} ${-h+170} ${f1(x1)} ${-h+110}`}ln(door,d,K,7);ln(door,d,P.leaf,3.4);
-    for(let i=0;i<n;i++){const x0=-w/2-40+i*(w+80)/n,x1=x0+(w+80)/n;for(let j=1;j<4;j++){const u=j/4;const m=marigold(door,10,j%2?P.turmeric:P.ochre);tf(m,lerp(x0,x1,u),-h+110+Math.sin(u*Math.PI)*30,1)}leaf(door,28,9,P.leaf,90,x0,-h+112)}
-    for(const sd of[-1,1]){let gd='';for(let k=0;k<9;k++)gd+=`M${sd*(w/2+20)} ${-h+130+k*44}h.1`;ln(door,gd,K,22);ln(door,gd,P.turmeric,16)}}
-  /* a small prayer space */
-  const shr=grp(shrG);shp(shr,'M-90 60V-80Q0 -150 90 -80V60Z',Pat.u('dots',P.turmeric,P.verm,.8),4);shp(shr,'M-60 60V-60Q0 -110 60 -60V60Z',P.ivory,3);const sk=kalash(shr,{lotus:true});sk.s=.55;sk.y=20;sk.update(0);
-  [-40,40].forEach(x=>{const m=marigold(shr,14,P.turmeric);tf(m,x,46,1)});
-  /* rangoli in the foreground */
-  const rang=grp(rangG);circ(rang,0,0,120,P.ivory,4);for(let i=0;i<12;i++){const p=grp(rang,{transform:`rotate(${i*30})`});shp(p,'M0 -20C-14 -50 -10 -90 0 -110C10 -90 14 -50 0 -20Z',i%2?P.pink:P.turmeric,3)}
-  circ(rang,0,0,46,P.verm,3);circ(rang,0,0,30,P.leaf,3);circ(rang,0,0,12,P.turmeric,2.4);for(let i=0;i<24;i++){const a=i/24*TAU;circ(rang,Math.cos(a)*126,Math.sin(a)*126,5,i%2?P.verm:P.leaf,1.6)}
-  const fam=(L.portrait?FAM.P:FAM.L).fam.map(([k,x,y,pose,prop])=>new Person(k,famL,{pose,prop,lit:0}));
-  const diyas=[];for(let i=0;i<8;i++)diyas.push(diya(diyL,{col:i%2?P.terra:P.ochre}));
-  /* miniature medallions of the story's own drawings, along the border */
+  s.paintBg=function(){this.bg.innerHTML='';el('rect',{x:-4,y:-4,width:L.W+8,height:L.Ha+8,fill:Pat.u('stars',P.ivory,P.midnight,1.2)},this.bg);
+    const fy=toStage(0,(L.portrait?FAM.P:FAM.L).floor)[1];shp(this.bg,`M-4 ${fy}H${L.W+4}V${L.Ha+4}H-4Z`,Pat.u('grid',P.turmeric,P.terra,1.1),4)};
+  const comp=s.comp;const yardL=grp(comp),houseL=grp(comp),lightL=grp(comp),lanL=grp(comp),rangL=grp(comp),diyL=grp(comp),famL=grp(comp),medL=grp(comp);
+  const lans=[P.verm,P.pink,P.leaf,P.turmeric].map(c=>lantern(lanL,c));
+  const rang=grp(rangL);circ(rang,0,0,128,P.ivory,4);for(let i=0;i<12;i++){const p=grp(rang,{transform:`rotate(${i*30})`});shp(p,'M0 -20C-14 -50 -10 -90 0 -112C10 -90 14 -50 0 -20Z',i%2?P.pink:P.turmeric,3)}
+  for(let i=0;i<12;i++){const p=grp(rang,{transform:`rotate(${i*30+15})`});shp(p,'M0 -40C-8 -60 -6 -78 0 -88C6 -78 8 -60 0 -40Z',i%2?P.verm:P.leaf,2.4)}
+  circ(rang,0,0,46,P.verm,3);circ(rang,0,0,30,P.leaf,3);circ(rang,0,0,12,P.turmeric,2.4);for(let i=0;i<24;i++){const a=i/24*TAU;circ(rang,Math.cos(a)*136,Math.sin(a)*136,6,i%2?P.verm:P.turmeric,1.6)}
+  const fam=[];const diyas=[];for(let i=0;i<8;i++)diyas.push(diya(diyL,{col:i%2?P.terra:P.ochre}));
   const meds=[3,2,4,5,6].map((k,i)=>{const m=medallion(medL,62,{bg:i===2?P.violet:P.indigo});miniPic(m.pic,k);const dim=circ(m.pic,0,0,m.inner,P.midnight,0);return{m,dim,lit:0}});
   Object.assign(s,{fam,diyas,meds,st:{}});
-  s.onLayout=function(){s.A=L.portrait?FAM.P:FAM.L;s.A.fam.forEach(([k,x,y],i)=>{fam[i].x=x;fam[i].y=y;fam[i].s=s.A.fs*(PEOPLE[k].h)})};
-  s.tick=function(dt,t){const A=s.A;tf(door,A.door[0],A.door[1]+260,L.portrait?1.05:.95);s.doorLamp.update(t);tf(shr,A.shrine[0],A.shrine[1],L.portrait?.9:1);tf(rang,A.rang[0],A.rang[1],(L.portrait?.9:.75),0,1,.42);
-    fam.forEach(f=>f.update(dt,t));diyas.forEach((d,i)=>{d.x=A.diya[i][0];d.y=A.diya[i][1];d.s=L.portrait?1.05:1;d.update(t)});
+  s.onLayout=function(){const A=s.A=L.portrait?FAM.P:FAM.L;yardL.innerHTML='';houseL.innerHTML='';lightL.innerHTML='';const [x0,x1]=A.wall;
+    /* a low courtyard wall with diyas on top, either side of the house */
+    shp(yardL,`M24 ${A.floor-95}H${x0}V${A.floor}H24Z M${x1} ${A.floor-95}H${(L.portrait?1000:1778)-24}V${A.floor}H${x1}Z`,Pat.u('chevron',P.verm,P.ivory,1),3.4);
+    ln(yardL,`M24 ${A.floor-95}H${x0}M${x1} ${A.floor-95}H${(L.portrait?1000:1778)-24}`,K,4);
+    for(const x of(L.portrait?[50]:[70,190,310]).concat(L.portrait?[950]:[1460,1580,1700])){const d=diya(yardL,{lit:1});d.x=x;d.y=A.floor-96;d.s=.45;d.update(0)}
+    /* the house: patterned wall, tiled eave, a gable, lit windows and the doorway with toran */
+    shp(houseL,`M${x0} ${A.floor}V${A.eave}H${x1}V${A.floor}Z`,Pat.u('rock',P.ochre,P.terra,.8),4.4);
+    shp(houseL,`M${x0-40} ${A.eave+10}L${(x0+x1)/2} ${A.eave-(L.portrait?90:75)}L${x1+40} ${A.eave+10}L${x1+40} ${A.eave+34}H${x0-40}Z`,Pat.u('fish',K,P.verm,.8),4);
+    A.win.forEach(([x,y])=>{shp(houseL,`M${x-60} ${y+80}V${y}Q${x} ${y-50} ${x+60} ${y}V${y+80}Z`,P.turmeric,4);ln(houseL,`M${x} ${y-36}V${y+80}M${x-60} ${y+30}H${x+60}`,K,4);
+      shp(houseL,`M${x-74} ${y+80}H${x+74}V${y+96}H${x-74}Z`,P.verm,3);for(const sd of[-1,1]){const m=marigold(houseL,10,P.turmeric);tf(m,x+sd*48,y+90,1)}});
+    const door=grp(houseL);{const w=360,h=520;shp(door,`M${-w/2-40} 0V${-h+120}Q0 ${-h-80} ${w/2+40} ${-h+120}V0Z`,Pat.u('petals',P.verm,P.turmeric,.8),5);
+      shp(door,`M${-w/2} 0V${-h+140}Q0 ${-h-30} ${w/2} ${-h+140}V0Z`,P.indigo,4);shp(door,`M${-w/2+24} 0V${-h+160}Q0 ${-h+10} ${w/2-24} ${-h+160}V0Z`,Pat.u('vlines',P.ochre,P.terra,.9),3);
+      let d='';const n=7;for(let i=0;i<n;i++){const a=-w/2-40+i*(w+80)/n,b=a+(w+80)/n;d+=`M${f1(a)} ${-h+110}Q${f1((a+b)/2)} ${-h+170} ${f1(b)} ${-h+110}`}ln(door,d,K,7);ln(door,d,P.leaf,3.4);
+      for(let i=0;i<n;i++){const a=-w/2-40+i*(w+80)/n,b=a+(w+80)/n;for(let j=1;j<4;j++){const u=j/4;const m=marigold(door,10,j%2?P.turmeric:P.ochre);tf(m,lerp(a,b,u),-h+110+Math.sin(u*Math.PI)*30,1)}leaf(door,28,9,P.leaf,90,a,-h+112)}}
+    tf(door,A.door[0],A.door[1],A.ds);
+    shp(houseL,`M${x0-20} ${A.floor-14}H${x1+20}V${A.floor+8}H${x0-20}Z`,P.verm,3.4);ln(houseL,`M${x0-10} ${A.floor-3}H${x1+10}`,P.turmeric,4,{'stroke-dasharray':'.1 12'});
+    /* strings of lights along the eave */
+    const sw=(a,b,y,sag,n,cols)=>{const d=`M${a} ${y}Q${(a+b)/2} ${y+sag*2} ${b} ${y}`;ln(lightL,d,K,2.6);for(let i=1;i<n;i++){const u=i/n;const x=lerp(a,b,u),yy=y+sag*2*2*u*(1-u);const g=grp(lightL);circ(g,0,0,7,cols[i%cols.length],2.2);tf(g,x,yy+4,1)}};
+    sw(x0-30,(x0+x1)/2,A.eave+36,L.portrait?40:34,12,[P.turmeric,P.verm,P.foam,P.pink]);sw((x0+x1)/2,x1+30,A.eave+36,L.portrait?40:34,12,[P.foam,P.turmeric,P.turq,P.verm]);
+    lans.forEach((l,i)=>{l.x=A.lan[i];l.y=A.eave+(L.portrait?175:165)+(i%2)*26});
+    /* the family, front facing: some with palms joined, some holding a diya */
+    famL.innerHTML='';fam.length=0;A.fam.forEach(([k,x,y,pose])=>{const f=new FrontPerson(k,famL,{pose,lit:0});f.x=x;f.y=y;f.s=A.fs*PEOPLE[k].h;fam.push(f)})};
+  s.tick=function(dt,t){const A=s.A,m=MV();lans.forEach((l,i)=>{tf(l.g,l.x,l.y,L.portrait?.75:.7);l.sw.setAttribute('transform',`rotate(${f1(Math.sin(t*.8+i)*4*m)} 0 -200)`)});
+    tf(rang,A.rang[0],A.rang[1],A.rs,0,1,.42);fam.forEach(f=>{if(s.famLit)f.d.lit=Math.max(f.d.lit,s.famLit);f.update(dt,t)});
+    diyas.forEach((d,i)=>{d.x=A.diya[i][0];d.y=A.diya[i][1];d.s=L.portrait?.85:.8;d.update(t)});
     meds.forEach((o,i)=>{const p=A.med[i];tf(o.m.g,p[0],p[1],A.mr/62*(1+.1*Math.sin(o.lit*Math.PI)));op(o.dim,.55*(1-o.lit))})};
   s.fx=fxLayer(s);s.demo=demoHand(s);return s}
 /* the final card: one diya against deep blue, golden lotus petals drifting, the chosen treasures glowing softly in the border ring */
@@ -2026,7 +2071,7 @@ async function shot2_6(){D.chip('Episode 2 · A Little Light for Dhanteras');moo
   s.down=p=>{const A=s.A;const i=A.diya.findIndex(q=>Math.hypot(p.x-q[0],p.y-(q[1]-30))<70);if(i>=0)lightDiya(i)};
   s.hots=()=>s.A?s.diyas.map((d,i)=>({id:'diya'+i,label:d.lit>.5?'Glowing diya: tap to sparkle':'Diya: tap to light it',x:s.A.diya[i][0],y:s.A.diya[i][1]-30,r:56,on:()=>lightDiya(i)})):[];Hot.dirty=true;
   /* the family lights diyas together */
-  const famLight=async()=>{for(let i=0;i<4;i++){if(s.diyas[i].lit<.5)lightDiya(i,i%2);await D.wait(1600)}s.fam.forEach(f=>{if(f.diya)D.go(f.diya,{lit:1},700)})};famLight().catch(()=>{});
+  const famLight=async()=>{for(let i=0;i<4;i++){if(s.diyas[i].lit<.5)lightDiya(i,i%2);await D.wait(1600)}s.famLit=0;D.go(s,{famLit:1},900)};famLight().catch(()=>{});
   const med=i=>{AU.sfx('chime');D.go(s.meds[i],{lit:1},900,'out')};
   await D.wait(800);
   await D.say('And so, dear Ocean Explorers, our journey through the Ocean of Milk comes to an end.');

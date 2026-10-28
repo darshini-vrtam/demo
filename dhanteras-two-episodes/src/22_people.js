@@ -45,3 +45,37 @@ class Person{constructor(kind,parent,o){o=o||{};this.kind=kind;this.K=PEOPLE[kin
     tf(this.g,this.x,this.y,this.s,0,this.f,1);tf(this.body,0,Math.sin(t*1.5+this.ph)*1.2*MV(),1);
     tf(this.bArm.up,this.bArm.sx,this.bArm.sy,1,-c.ba);tf(this.fArm.up,this.fArm.sx,this.fArm.sy,1,-c.fa);tf(this.bArm.fo,0,44,1,-c.bb);tf(this.fArm.fo,0,44,1,-c.fb);
     if(this.diya){this.prop.setAttribute('transform',`rotate(${f1(c.fa+c.fb)} 0 44)`);this.diya.update(t)}}}
+
+/* ===== Front-facing people for the closing: same face language as the deities, simple festive clothes ===== */
+const FPOSE={namaste:{la:-5,lb:120,ra:5,rb:-120},diya:{la:-30,lb:99,ra:30,rb:-99},idle:{la:-10,lb:12,ra:10,rb:-12}};
+class FrontPerson{constructor(kind,parent,o){o=o||{};this.kind=kind;this.Q=PEOPLE[kind];this.x=0;this.y=0;this.s=1;this.pose=o.pose||'namaste';
+    this.cur=Object.assign({},FPOSE[this.pose]);this.tgt=Object.assign({},this.cur);this.ph=Math.random()*TAU;this.build(parent,o)}
+  build(parent,o){const Q=this.Q,sk=Q.sk;const fem=!!(Q.sari||Q.hair==='plait'||Q.hair==='bun'||Q.hair==='greybun');const hairCol=Q.hair==='greybun'?P.ivory:K;
+    const g=this.g=grp(parent);const body=this.body=grp(g);
+    /* long hair or plaits falling behind the shoulders */
+    if(Q.hair==='plait'){for(const sd of[-1,1]){ln(body,`M${sd*30} -300Q${sd*44} -250 ${sd*40} -196`,K,12);circ(body,sd*40,-194,5,P.verm,1.6)}}
+    else if(fem)shp(body,'M-40 -318Q-50 -276 -42 -246L42 -246Q50 -276 40 -318Z',hairCol,Q.hair==='greybun'?2.6:0);
+    const arm=(sx,sy)=>{const up=grp(body);const fo=grp(up);limb(up,'M0 0V52',sk,17);if(fem)ln(up,'M-9 12H9',Q.top,7);limb(fo,'M0 0V48',sk,15);
+      if(fem)ln(fo,'M-8 34H8M-8 40H8',P.turmeric,3.2);circ(fo,0,50,10,sk,3);return{up,fo,sx,sy}};
+    this.lArm=arm(-38,-240);this.rArm=arm(38,-240);
+    ell(body,-16,-6,15,7,sk,3);ell(body,16,-6,15,7,sk,3);
+    if(fem){/* sari or long skirt, with a patterned border */shp(body,'M-36 -178L36 -178L56 -14Q0 -4 -56 -14Z',Pat.u(Q.sari?'petals':'vlines',Q.bord,Q.low,.6),4.4);
+      shp(body,'M-54 -34L54 -34L56 -14Q0 -4 -56 -14Z',Q.bord,3);ln(body,'M-48 -24Q0 -16 48 -24',P.ivory,3.6,{'stroke-dasharray':'.1 9'});
+      shp(body,'M-38 -238Q0 -252 38 -238L33 -174L-33 -174Z',Q.top,4.2);if(Q.sari){shp(body,'M-38 -238L-20 -246L36 -176L16 -176Z',Pat.u('petals',P.turmeric,Q.low,.5),3)}}
+    else{/* kurta over pajama */limb(body,'M-13 -100L-15 -12',Q.low,20);limb(body,'M13 -100L15 -12',Q.low,20);
+      shp(body,'M-38 -240Q0 -252 38 -240L46 -90L-46 -90Z',Pat.u('dots',Q.bord,Q.top,.7),4.4);ln(body,'M0 -244V-190',K,2.4);ln(body,'M-44 -100H44',Q.bord,6)}
+    limb(body,'M0 -240V-262',sk,20);if(fem){ln(body,'M-22 -244Q0 -224 22 -244',K,7);ln(body,'M-22 -244Q0 -224 22 -244',P.turmeric,4)}
+    const head=this.head=grp(body);if(Q.hair==='bun'||Q.hair==='greybun')circ(head,0,-346,16,hairCol,Q.hair==='greybun'?2.6:0);
+    frontFace(head,{sk,eyes:'open',tilak:fem?'dot':null});
+    shp(head,fem?'M-38 -296C-40 -332 -20 -347 0 -347C20 -347 40 -332 38 -296C32 -320 14 -330 0 -324C-14 -330 -32 -320 -38 -296Z'
+      :'M-38 -300C-40 -334 -20 -349 0 -349C20 -349 40 -334 38 -300C30 -322 10 -330 -6 -326C-20 -326 -32 -318 -38 -300Z',hairCol,Q.hair==='greybun'?2.6:0);
+    if(Q.hair==='bun')marigold(head,8,P.turmeric).setAttribute('transform','translate(14 -350)');
+    if(fem)for(const sd of[-1,1])circ(head,sd*38,-288,5.5,P.turmeric,2.2);
+    /* joined palms for namaste; a lit diya held in both hands */
+    this.jp=grp(body);shp(this.jp,'M0 -236C-9 -226 -12 -208 -7 -196H7C12 -208 9 -226 0 -236Z',sk,3);ln(this.jp,'M0 -232V-198',K,2);
+    this.dg=grp(body);const d=diya(this.dg,{lit:o.lit||0});d.s=.78;d.x=0;d.y=-166;d.glow.style.visibility='hidden';this.d=d}
+  set(p){if(FPOSE[p]){this.pose=p;Object.assign(this.tgt,FPOSE[p])}}
+  update(dt,t){const k=1-Math.exp(-(dt||.016)*6);for(const q in this.tgt)this.cur[q]+=(this.tgt[q]-this.cur[q])*k;const c=this.cur;
+    tf(this.g,this.x,this.y,this.s);tf(this.body,0,Math.sin(t*1.4+this.ph)*1.2*MV(),1);
+    tf(this.lArm.up,this.lArm.sx,this.lArm.sy,1,-c.la);tf(this.lArm.fo,0,52,1,-c.lb);tf(this.rArm.up,this.rArm.sx,this.rArm.sy,1,-c.ra);tf(this.rArm.fo,0,52,1,-c.rb);
+    show(this.jp,this.pose==='namaste');show(this.dg,this.pose==='diya');if(this.pose==='diya')this.d.update(t)}}
