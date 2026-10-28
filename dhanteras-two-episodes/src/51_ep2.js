@@ -26,23 +26,18 @@ function treasureMed(parent,key,label){const g=grp(parent);const ring=grp(g);rin
 async function shot2_1(){await titleCard(2,EP2_TITLE[0],EP2_TITLE[1]);D.chip('Episode 2 · The Ocean Reveals Its Treasures');mood('welcome');Music.mood('wonder');Music.setLevel(.55,2);
   const s=churnScene({mood:'wonder',frame:'gold'});const C=s.C;C.ringK=1;D.setScene(s,1300);const M=churnMotor(s);groupSet(C.devas,'idle');groupSet(C.asuras,'idle');C.hold.d=0;C.hold.a=0;C.sag=1;
   const row=grp(s.top);const meds=TREAS.map(([k,l])=>treasureMed(row,k,l));s.tmeds=meds;
-  /* the horse and the jewels rise from the water by themselves (they are narrated but not among the four) */
-  const side=grp(s.comp);const hg=grp(side),jg=grp(side);const hz=horse(hg);crest(hg,220).setAttribute('transform','translate(0 4)');jewels(jg);crest(jg,170).setAttribute('transform','translate(0 4)');
-  const sk={h:0,j:0};
   s.parts.push({update:(dt,t)=>{const A=L.portrait?TROW.P:TROW.L;meds.forEach((m,i)=>{const p=A.pos[i];tf(m.g,p[0],p[1]+(1-m.k)*40,A.r/110*(.3+.7*m.k));op(m.g,m.k);op(m.ring,m.glow);
-      if(m.glow>0)tf(m.ring,0,0,1+.04*Math.sin(t*1.2+i)*MV(),t*6*MV())});
-    tf(hg,A.horse[0],A.horse[1]+(1-sk.h)*90,A.hs);op(hg,clamp(sk.h*2,0,1));tf(jg,A.jew[0],A.jew[1]+(1-sk.j)*70,A.js);op(jg,clamp(sk.j*2,0,1))}});
+      if(m.glow>0)tf(m.ring,0,0,1+.04*Math.sin(t*1.2+i)*MV(),t*6*MV())});}});
   const pos=i=>(L.portrait?TROW.P:TROW.L).pos[i];
   const show=i=>{const m=meds[i];AU.sfx('sparkle');D.go(m,{k:1},1100,'back');Timers.add(500,()=>{goldRing(s,pos(i),L.portrait?160:150);AU.sfx('chime')})};
-  const rise=k=>{AU.sfx('sparkle');D.go(sk,{[k]:1},1400,'out');const A=L.portrait?TROW.P:TROW.L;const p=k==='h'?A.horse:A.jew;Timers.add(700,()=>goldRing(s,[p[0],p[1]-60],120))};
   await D.wait(700);
   await D.say('Welcome back, Ocean Explorers!');
   const ch=Store.data.choices||{};for(const k of['kurma','shiva']){const v=ch[k];if(v==='A'||v==='B')await D.say(CALLBACK[k][v])}
   await D.say('The devas and asuras began churning the Ocean of Milk once again.',{cues:[['churning',()=>{groupSet(C.devas,'pull');groupSet(C.asuras,'pull');D.go(C.hold,{d:1,a:1},900);D.go(C,{sag:0},900);M.base=C.flow;M.rbase=C.rot;D.go(M,{speed:.7},1400)}]]});
   await D.say('One by one, wonderful treasures emerged!',{cues:[['wonderful',()=>D.go(C,{glim:.8,energy:1},1400)]]});
   await D.say('First came Kamadhenu, the divine cow associated with abundance and generosity.',{cues:[['Kamadhenu',()=>show(0)]]});
-  await D.say('Then appeared a magnificent celestial horse, followed by Airavata, the majestic white elephant.',{cues:[['celestial horse',()=>rise('h')],['Airavata',()=>show(1)]]});
-  await D.say('The divine wish-fulfilling tree, Kalpavriksha, rose from the ocean, and precious jewels sparkled in the light.',{cues:[['Kalpavriksha',()=>show(2)],['jewels',()=>rise('j')]]});
+  await D.say('Then appeared a magnificent celestial horse, followed by Airavata, the majestic white elephant.',{cues:[['Airavata',()=>show(1)]]});
+  await D.say('The divine wish-fulfilling tree, Kalpavriksha, rose from the ocean, and precious jewels sparkled in the light.',{cues:[['Kalpavriksha',()=>show(2)]]});
   await D.say('Finally, Goddess Lakshmi appeared on a lotus, bringing the promise of prosperity and abundance.',{cues:[['Goddess Lakshmi',()=>show(3)]]});
   groupSet(C.devas,'amazed');groupSet(C.asuras,'amazed');D.go(M,{speed:.35},1500);
   await D.say('The ocean was full of wonders!');
@@ -58,13 +53,12 @@ async function shot2_2(){D.chip('Episode 2 · So Many Wonderful Gifts');let s=D.
 
 /* ---- 2.3 The divine arrival of Lord Dhanvantari ---- */
 async function shot2_3(){D.chip('Episode 2 · The Divine Arrival of Lord Dhanvantari');mood('building');Music.mood('divine');
-  const s=divineScene();const st=s.st;D.setScene(s,1300);s.cast.devas.concat(s.cast.asuras).forEach(f=>f.set('gaze'));s.seaK=1;
+  const s=divineScene();const st=s.st;st.up=0;D.setScene(s,1300);s.cast.devas.concat(s.cast.asuras).forEach(f=>f.set('gaze'));s.seaK=1;
   await D.wait(800);
   await D.say('The ocean grew still.',{cues:[['still',()=>D.go(s,{seaK:.2},2400)]]});
   await D.say('The waves shimmered. A beautiful golden light spread across the water.',{cues:[['shimmered',()=>{D.go(st,{rip:.5},2000);AU.sfx('sparkle')}],['golden light',()=>{D.go(st,{rip:1,aura:.3},2400);AU.sfx('bell')}]]});
-  s.cT.on=1;
-  await D.say('And then…',{after:900});s.cT.on=0;
-  await D.say('From the depths of the Ocean of Milk emerged a radiant divine being.',{cues:[['From the depths',()=>{AU.sfx('chime');D.go(s,{lotOpen:1},3400,'io')}],['emerged',()=>{AU.sfx('swell');D.go(st,{rise:1,aura:.8},3200,'out')}]]});
+  await D.say('And then…',{after:900});
+  await D.say('From the depths of the Ocean of Milk emerged a radiant divine being.',{cues:[['From the depths',()=>{AU.sfx('chime');st.rise=1;D.go(st,{up:1},4600,'out');D.go(s,{lotOpen:1},3600,'io');s.fx.ripple(s.A.lot[0],s.A.lot[1]+60,LP(420,360),P.foam,2200,.25)}],['emerged',()=>{AU.sfx('swell');D.go(st,{aura:.8},3200,'out')}]]});
   await D.wait(900);
   await D.say('His face was calm. His presence was gentle. In His hands, He carried a beautiful pot that gleamed like gold.',{cues:[['pot',()=>{D.go(st,{aura:1},1200);AU.sfx('sparkle')}]]});
   await D.say('It was Lord Dhanvantari, revered as the divine physician and associated with Ayurveda and healing.');
@@ -87,17 +81,18 @@ const SHL={L:{dh:[1340,690],ds:1.12,man:[1340,360],mr:1.25,panel:[70,112,860,470
   P:{dh:[640,1400],ds:.98,man:[640,1110],mr:1.05,panel:[40,70,920,740],kids:[[90,1480],[200,1486],[310,1480]],ks:.56,water:900}};
 function shlokaScene(){const s=mkScene('shloka',{frame:'gold'});
   s.paintBg=function(){this.bg.innerHTML='';const W=L.W,H=L.Ha;const wy=toStage(0,(L.portrait?SHL.P:SHL.L).water)[1];
-    el('rect',{x:-4,y:-4,width:W+8,height:H+8,fill:Pat.u('dots',P.gold,P.ivory,1.3)},this.bg);
+    el('rect',{x:-4,y:-4,width:W+8,height:H+8,fill:Pat.u('stars',P.ivory,P.midnight,1.1)},this.bg);
     this.sea=ocean(this.bg,W,wy,H,{mood:'wonder',n:3,scale:.75});};
   s.parts.push({update:(dt,t)=>{s.sea&&(s.sea.k=.35,s.sea.update(t,dt))}});
-  const comp=s.comp;const manG=grp(comp),ripG=grp(comp),dG=grp(comp),ledL=grp(comp),kidL=grp(comp),lightL=grp(comp);
+  const comp=s.comp;const decoL=grp(comp);const manG=grp(comp),ripG=grp(comp),dG=grp(comp),ledL=grp(comp),kidL=grp(comp),lightL=grp(comp);
+  const deco=diwaliOutdoors(decoL);s.parts.push(deco);
   const man=grp(manG);halo(man,250,{col:P.turmeric});rings(man,220,{n:3,step:.13,w:5,c1:P.gold,c2:P.turq,dots:18});circ(man,0,0,160,P.ivory,4);rays(man,264,320,32,P.coral,5);
   const pl=lotus(dG,{r:120,n:9,open:1});const dh=new Deity('dhanv',dG,{pose:'kalash'});const kal=kalash(dG);
   const rip=[0,1,2].map(i=>{const g=grp(ripG);circ(g,0,0,200,'none',5,{stroke:P.turmeric,'stroke-dasharray':'.1 14','stroke-width':8,'stroke-linecap':'round'});return g});
   const kids=['girl','boy','girl2','boy2','girl3'].map(k=>new Person(k,kidL,{pose:'idle'}));
   const spread=[0,1,2].map(i=>{const g=grp(lightL);el('ellipse',{rx:200,ry:40,fill:'none',stroke:K,'stroke-width':9},g);el('ellipse',{rx:200,ry:40,fill:'none',stroke:i%2?P.ivory:P.turmeric,'stroke-width':5,'stroke-dasharray':'.1 14','stroke-linecap':'round'},g);return g});
   Object.assign(s,{dh,kal,kids,st:{glow:0,rip:0,spread:0,bow:0}});
-  s.onLayout=function(){s.A=L.portrait?SHL.P:SHL.L;const A=s.A,n=L.portrait?3:5;ledL.innerHTML='';ledge(ledL,A.kids[0][0]-70,A.kids[n-1][0]+70,A.kids[0][1]-4,L.portrait?44:40);s.placePanel&&s.placePanel()};
+  s.onLayout=function(){s.A=L.portrait?SHL.P:SHL.L;const A=s.A,n=L.portrait?3:5;deco.layout(A);ledL.innerHTML='';ledge(ledL,A.kids[0][0]-70,A.kids[n-1][0]+70,A.kids[0][1]-4,L.portrait?44:40);s.placePanel&&s.placePanel()};
   s.tick=function(dt,t){const A=s.A,st=s.st,m=MV();tf(man,A.man[0],A.man[1],A.mr,t*1.2*m);
     tf(pl.g,A.dh[0],A.dh[1]+30,.9);dh.x=A.dh[0];dh.y=A.dh[1];dh.s=A.ds;dh.update(dt,t);const hl=dh.handW(-1),hr=dh.handW(1);kal.x=(hl[0]+hr[0])/2;kal.y=(hl[1]+hr[1])/2-22*dh.s;kal.s=.5*dh.s;kal.glow=st.glow;kal.update(t);
     rip.forEach((g,i)=>{const k=((t*.18+i/3)%1);tf(g,kal.x,kal.y-30,.3+k*1.6);op(g,st.rip*(1-k))});
@@ -116,6 +111,31 @@ async function recite(spans,lineWords,voice){/* highlight word by word; spoken i
       await Speech.speak('shloka',text,{},ci=>{got=true;let i=0;while(i<starts.length-1&&starts[i+1]<=ci)i++;hl(i)});clearInterval(iv)}
     else{for(let i=0;i<words.length;i++){hl(i);await D.wait(per)}}
     hl(-1);await D.wait(D.fast?5:600)}}
+/* a Diwali evening outdoors: rooftops with lit windows, strings of lights, hanging lanterns and a parapet of diyas */
+function lantern(parent,col){const g=grp(parent);const sw=grp(g);ln(sw,'M0 -200V-60',K,3);
+  shp(sw,'M0 -64L-34 -20L-24 30L0 50L24 30L34 -20Z',Pat.u('petals',P.turmeric,col,.55),3.6);shp(sw,'M-34 -20H34L24 30H-24Z','none',2.4);
+  shp(sw,'M-12 -70H12V-60H-12Z',P.gold,2.4);rays(sw,0,0,1,P.turmeric,1).remove();
+  for(const x of[-14,0,14])ln(sw,`M${x} 50V${78+Math.abs(x)*-.6}`,col,4);circ(sw,0,6,9,P.turmeric,2.4);return{g,sw}}
+function diwaliOutdoors(parent){const g=grp(parent);const roofs=grp(g),strings=grp(g),lantL=grp(g),wall=grp(g);const lan=[P.verm,P.pink,P.leaf,P.indigo,P.verm].map(c=>lantern(lantL,c));
+  const diyas=[];for(let i=0;i<9;i++)diyas.push(diya(wall,{lit:1,col:i%2?P.terra:P.ochre}));
+  const D_={g,lan,diyas,A:null,layout(A){this.A=A;const P_=L.portrait;roofs.innerHTML='';strings.innerHTML='';
+      const wy=A.water,x1=P_?1000:1000;
+      /* rooftops and little houses along the far bank, each window lit */
+      const hs=P_?[[30,150],[170,120],[300,170],[450,130],[600,160],[760,120],[890,150]]:[[30,150],[190,120],[330,170],[490,130],[650,160],[810,140]];
+      hs.forEach(([x,h],i)=>{const w=P_?120:150,top=wy-40-h;shp(roofs,`M${x} ${wy-40}V${top}L${x+w/2} ${top-60}L${x+w} ${top}V${wy-40}Z`,i%2?P.indigo:P.violet==null?P.indigo:P.sea,3.4);
+        shp(roofs,`M${x-8} ${top+4}L${x+w/2} ${top-64}L${x+w+8} ${top+4}Z`,P.terra,3.2);for(let k=0;k<2;k++)shp(roofs,`M${x+20+k*(w-60)} ${top+30}h22v30h-22Z`,P.turmeric,2.4);
+        const tor=marigold(roofs,8,P.turmeric);tf(tor,x+w/2,top+12,1)});
+      /* the parapet with a row of lit diyas */
+      shp(roofs,`M0 ${wy-44}H${x1}V${wy+2}H0Z`,Pat.u('vlines',P.ochre,P.terra,.8),3.4);ln(roofs,`M0 ${wy-36}H${x1}`,P.turmeric,4,{'stroke-dasharray':'.1 12'});
+      /* two strings of lights swagging across the top */
+      const sw=(y0,sag,n,cols)=>{const d=`M0 ${y0}Q${x1/4} ${y0+sag} ${x1/2} ${y0}T${x1} ${y0}`;ln(strings,d,K,2.6);
+        for(let i=1;i<n;i++){const u=i/n;const half=u<.5?u*2:(u-.5)*2;const y=y0+sag*2*half*(1-half)*(u<.5?1:-1)*-1*-1;const yy=y0+Math.sin(half*Math.PI)*sag*.5*(u<.5?1:-1);
+          const b=grp(strings);circ(b,0,0,7,cols[i%cols.length],2.4);ln(b,'M-8 0H-12M8 0H12M0 9V13',cols[i%cols.length],2.4);tf(b,u*x1,y0+(u<.5?1:-1)*Math.sin(half*Math.PI)*sag*.5,1)}};
+      sw(P_?40:30,P_?80:60,16,[P.turmeric,P.verm,P.pink,P.foam]);sw(P_?120:96,P_?70:50,18,[P.foam,P.turmeric,P.turq]);
+      const lx=P_?[110,300,500,700,890]:[90,300,510,720,930];lan.forEach((l,i)=>{l.x=lx[i];l.y=(P_?250:190)+(i%2)*(P_?50:36)});
+      diyas.forEach((d,i)=>{d.x=40+i*(x1-80)/8;d.y=wy-48;d.s=P_?.55:.5})},
+    update(dt,t){const m=MV();lan.forEach((l,i)=>{tf(l.g,l.x,l.y,L.portrait?.95:.8);l.sw.setAttribute('transform',`rotate(${f1(Math.sin(t*.8+i)*4*m)} 0 -200)`)});diyas.forEach(d=>d.update(t))}};
+  return D_}
 async function shot2_4(){D.chip('Episode 2 · The Dhanvantari Shloka');mood('respectful');Music.mood('divine');Music.setLevel(.25,2);
   const s=shlokaScene();D.setScene(s,1300);const tok=D.token;const st=s.st;s.placePanel=()=>{if(!$('shloka').hidden)placeShloka(s)};
   const tick=setInterval(()=>{if(D.scene!==s){clearInterval(tick);return}s.placePanel()},300);
@@ -246,7 +266,7 @@ function homeLight(){const s=mkScene('family',{frame:'gold'});
 function finalDiya(){const s=mkScene('finale',{frame:'gold'});
   s.paintBg=function(){this.bg.innerHTML='';el('rect',{x:-4,y:-4,width:L.W+8,height:L.Ha+8,fill:Pat.u('stars',P.ivory,P.midnight,1.2)},this.bg)};
   const comp=s.comp;const ringL=grp(comp),petL=grp(comp),dG=grp(comp),titleL=grp(comp);
-  const glowR=grp(dG);rings(glowR,170,{n:4,step:.18,w:5,dots:20});rays(glowR,190,250,28,P.turmeric,5);const d=diya(dG,{lit:0});s.d=d;
+  const glowR=grp(dG);rays(glowR,150,205,24,P.turmeric,5);const d=diya(dG,{lit:0});s.d=d;op(d.glow,0);d.glow.style.visibility='hidden';
   const ch=(Store.data.choices||{}).treasures||[];const all=ch.includes('all (auto)');const keys=all?SYMS.map(x=>x.key):SYMS.map(x=>x.key).filter(k=>ch.includes(k));
   const ring=keys.map(k=>{const g=grp(ringL);const h=grp(g);rings(h,74,{n:2,step:.2,w:4});circ(g,0,0,54,P.ivory,4);const ic=grp(g);symbol(ic,k);ic.setAttribute('transform','scale(.56)');return{g,h,k}});
   const pet=[];for(let i=0;i<14;i++){const g=grp(petL);shp(g,'M0 0C-10 -10 -8 -24 0 -30C8 -24 10 -10 0 0Z',i%3?P.turmeric:P.gold,2.4);pet.push({g,u:Math.random(),v:Math.random(),sp:.02+Math.random()*.02,ph:Math.random()*TAU})}
@@ -255,11 +275,11 @@ function finalDiya(){const s=mkScene('finale',{frame:'gold'});
       el('text',Object.assign({fill:'none',stroke:K,'stroke-width':9,'stroke-linejoin':'round'},a),tl).textContent=t;el('text',Object.assign({fill:P.turmeric},a),tl).textContent=t})};
   Object.assign(s,{st:{title:0,ring:0,glow:0}});
   s.onLayout=function(){drawTitle()};
-  s.tick=function(dt,t){const P_=L.portrait,m=MV();const c=P_?[500,860]:[889,500];d.x=c[0];d.y=c[1];d.s=P_?3:2.6;d.update(t);tf(glowR,c[0],c[1]-60*d.s,(.5+.5*s.st.glow)*(1+.03*Math.sin(t*1.1)*m));op(glowR,s.st.glow);
+  s.tick=function(dt,t){const P_=L.portrait,m=MV();const c=P_?[500,880]:[889,560];d.x=c[0];d.y=c[1];d.s=P_?3:2.6;d.update(t);tf(glowR,c[0],c[1]-60*d.s,(.5+.5*s.st.glow)*(1+.03*Math.sin(t*1.1)*m));op(glowR,s.st.glow);
     ring.forEach((o,i)=>{const n=ring.length;let x,y;if(P_){const a=Math.PI+(i+.5)/Math.max(n,1)*Math.PI;x=c[0]+Math.cos(a)*400;y=c[1]-40+Math.sin(a)*420}else{const sd=i%2?1:-1,row=Math.floor(i/2);const rows=Math.ceil(n/2);x=c[0]+sd*(560+row%2*60);y=c[1]-60+(row-(rows-1)/2)*170}
       tf(o.g,x,y,P_?1.05:1);op(o.g,s.st.ring);tf(o.h,0,0,.9+.08*Math.sin(t*1.2+i)*m)});
     const W=P_?1000:1778,H=P_?1500:810;pet.forEach(p=>{p.v+=dt*p.sp*m;const y=-40+((p.v%1))*(H+80);const x=p.u*W+Math.sin(t*.5+p.ph)*40*m;tf(p.g,x,y,1.2,Math.sin(t*.6+p.ph)*40)});
-    tf(tl,c[0],P_?150:120,L.portrait?1:.9);op(tl,s.st.title)};
+    tf(tl,c[0],P_?150:95,L.portrait?1:.9);op(tl,s.st.title)};
   return s}
 async function shot2_6(){D.chip('Episode 2 · A Little Light for Dhanteras');mood('heartfelt');Music.mood('divine');Music.setLevel(.5,2);
   const s=homeLight();D.setScene(s,1400);const tok=D.token;
@@ -288,6 +308,6 @@ async function shot2_6(){D.chip('Episode 2 · A Little Light for Dhanteras');moo
   await D.say('Happy Dhanteras, little Ocean Explorers!',{cues:[['Happy',()=>D.go(f.st,{ring:1},1600)]]});
   D.go(f.st,{title:1},1400);await D.wait(1600);
   Store.set('done',true);Store.set('ep',1);
-  /* end card: the painting moves up so the diya stays uncovered */
-  const end=$('end');end.hidden=false;await new Promise(r=>requestAnimationFrame(r));const pr=end.querySelector('.panel').getBoundingClientRect();D.trayPx=pr.height+18;D.go(D,{inset:1},900);
+  /* "Play again" sits in the bottom panel, so the diya stays uncovered */
+  D.instr('','');D.controls([{id:'again',label:'Play again',on:()=>begin(1)}]);
   D.chip('');await D.late();await new Promise(()=>{})}

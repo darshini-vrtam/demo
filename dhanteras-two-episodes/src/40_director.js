@@ -62,7 +62,7 @@ const D={token:0,speed:1,fast:false,qa:null,scene:null,old:null,inset:0,trayPx:0
     this.guard(tok);box.hidden=true;if(this.actOn)$('act').hidden=false},
   /* ---- the activity row in the dock: instruction (with an icon), counter, controls ---- */
   instr(ins,cnt,icon){this.actOn=true;const el=$('ins');el.innerHTML='';if(icon)el.insertAdjacentHTML('beforeend',ICON[icon]||'');el.append(document.createTextNode(ins||''));
-    el.classList.remove('hint');this.baseIns=el.innerHTML;$('cnt').textContent=cnt||'';$('cnt').hidden=!cnt;if($('cap').hidden&&$('chant').hidden)$('act').hidden=false},
+    el.classList.remove('hint');this.baseIns=el.innerHTML;$('actText').hidden=!ins&&!cnt;$('cnt').textContent=cnt||'';$('cnt').hidden=!cnt;if($('cap').hidden&&$('chant').hidden)$('act').hidden=false},
   counter(t){$('cnt').textContent=t;$('cnt').hidden=!t},
   hint(t,ms){const el=$('ins');el.innerHTML='';el.insertAdjacentHTML('beforeend',ICON.leaf);el.append(document.createTextNode(t));el.classList.add('hint');clearTimeout(this.hintTimer);
     this.hintTimer=setTimeout(()=>{el.innerHTML=this.baseIns||'';el.classList.remove('hint')},ms||6000)},
