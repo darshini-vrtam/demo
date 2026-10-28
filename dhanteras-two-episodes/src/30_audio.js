@@ -4,7 +4,7 @@ const AU={ctx:null,master:null,sfxG:null,muted:false,noiseBuf:null,
     this.master=this.ctx.createGain();this.master.gain.value=this.muted?0:1;this.master.connect(this.ctx.destination);
     this.sfxG=this.ctx.createGain();this.sfxG.gain.value=.7;this.sfxG.connect(this.master);
     const len=this.ctx.sampleRate*2,b=this.ctx.createBuffer(1,len,this.ctx.sampleRate),d=b.getChannelData(0);for(let i=0;i<len;i++)d[i]=Math.random()*2-1;this.noiseBuf=b;
-    Music.init()}catch(e){this.ctx=null}},
+    Music.init();Snd.load()}catch(e){this.ctx=null}},
   resume(){try{this.ctx&&this.ctx.state==='suspended'&&this.ctx.resume()}catch(e){}},
   setMute(m){this.muted=m;if(this.master)this.master.gain.setTargetAtTime(m?0:1,this.ctx.currentTime,.05)},
   t(){return this.ctx.currentTime},
@@ -19,7 +19,7 @@ const AU={ctx:null,master:null,sfxG:null,muted:false,noiseBuf:null,
     seq.forEach(([dt,f])=>o.frequency.linearRampToValueAtTime(f,t+dt));fl.type='bandpass';fl.frequency.value=ff;fl.Q.value=q;const end=seq[seq.length-1][0];
     e.gain.setValueAtTime(.0001,t);e.gain.exponentialRampToValueAtTime(g,t+.12);e.gain.setValueAtTime(g,t+end-.25);e.gain.exponentialRampToValueAtTime(.0001,t+end);
     o.connect(fl);fl.connect(e);e.connect(this.sfxG);o.start(t);o.stop(t+end+.05)},
-  sfx(name){if(!this.ctx||this.muted)return;const t=this.t();try{switch(name){
+  sfx(name){if(!this.ctx||this.muted)return;if(Snd.play(name))return;const t=this.t();try{switch(name){
     case'ripple':this.noise(t,.9,.22,'bandpass',500,1.4,1400);this.osc('sine',300,t,.5,.06,null,520);break;
     case'bubble':for(let i=0;i<3;i++)this.osc('sine',380+i*140,t+i*.07,.12,.18,null,900+i*200);break;
     case'pop':this.osc('sine',620,t,.09,.22,null,1300);break;
@@ -45,17 +45,32 @@ const AU={ctx:null,master:null,sfxG:null,muted:false,noiseBuf:null,
 
 /* ambient music: a low drone and slow pentatonic plucks; level and filter follow the mood */
 const Music={nodes:null,level:.5,next:0,ducked:false,
-  init(){const c=AU.ctx;const g=c.createGain();g.gain.value=0;g.connect(AU.master);const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=560;lp.connect(g);
+  init(){const c=AU.ctx;const g=c.createGain();g.gain.value=0;g.connect(AU.master);const synthG=c.createGain();synthG.connect(g);const bedG=c.createGain();bedG.gain.value=1.3;bedG.connect(g);const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=560;lp.connect(synthG);
     const dr=[146.83,220].map(f=>{const o=c.createOscillator();o.type='sawtooth';o.frequency.value=f;const og=c.createGain();og.gain.value=.028;o.connect(og);og.connect(lp);o.start();return o});
-    const pl=c.createGain();pl.gain.value=1;pl.connect(g);this.nodes={g,lp,pl,dr};this.setLevel(this.level,3)},
-  setLevel(v,sec){this.level=v;if(!this.nodes)return;this.nodes.g.gain.setTargetAtTime(v*(this.ducked?.45:.6),AU.t(),(sec||2)/3)},
+    const pl=c.createGain();pl.gain.value=1;pl.connect(synthG);this.nodes={g,lp,pl,dr,synthG,bedG};this.setLevel(this.level,3)},
+  /* a recorded bed per mood, crossfaded; while one plays the synthesised drone and plucks rest */
+  BEDS:{wonder:'bg_wonder',team:'bg_energy',energy:'bg_energy',poison:'bg_poison',divine:'bg_divine',festive:'bg_festive'},want:'wonder',bed:null,bedName:null,
+  playBed(){if(!this.nodes)return;const id=this.BEDS[this.want]||'bg_wonder';if(id===this.bedName)return;const b=Snd.buf[id];if(!b)return;const c=AU.ctx,t=c.currentTime;
+    if(this.bed){const o=this.bed;o.e.gain.setTargetAtTime(0,t,.7);setTimeout(()=>{try{o.s.stop()}catch(e){}},4000)}
+    const s=c.createBufferSource();s.buffer=b;s.loop=true;const e=c.createGain();e.gain.value=0;s.connect(e);e.connect(this.nodes.bedG);s.start();e.gain.setTargetAtTime(1,t,.7);
+    this.bed={s,e};this.bedName=id;this.nodes.synthG.gain.setTargetAtTime(0,t,.5);this.setLevel(this.level,1)},
+  setLevel(v,sec){this.level=v;if(!this.nodes)return;const k=this.bedName?Math.max(v,.35):v;/* recorded beds never drop to near-silence */
+    this.nodes.g.gain.setTargetAtTime(k*(this.ducked?.45:.6),AU.t(),(sec||2)/3)},
   duck(on){this.ducked=on;this.setLevel(this.level,.6)},
   swell(){AU.sfx('swell');this.setLevel(1,2);setTimeout(()=>{if(this.level===1)this.setLevel(.55,4)},9000)},
-  mood(m){if(!this.nodes)return;this.nodes.lp.frequency.setTargetAtTime(m==='poison'?260:m==='divine'?820:600,AU.t(),1.5)},
-  tick(){if(!this.nodes||AU.muted||this.level<.08)return;const c=AU.ctx,t=c.currentTime;if(t<this.next)return;
+  mood(m){this.want=m;if(!this.nodes)return;this.playBed();this.nodes.lp.frequency.setTargetAtTime(m==='poison'?260:m==='divine'?820:600,AU.t(),1.5)},
+  tick(){if(!this.nodes||this.bedName||AU.muted||this.level<.08)return;const c=AU.ctx,t=c.currentTime;if(t<this.next)return;
     const sc=[293.66,329.63,369.99,440,493.88,587.33,659.25];const f=sc[Math.floor(Math.random()*sc.length)]*(Math.random()<.3?.5:1);
     const o=c.createOscillator(),e=c.createGain();o.type='triangle';o.frequency.value=f;e.gain.setValueAtTime(.0001,t);e.gain.exponentialRampToValueAtTime(.045*this.level+.008,t+.02);
     e.gain.exponentialRampToValueAtTime(.0001,t+1.6);o.connect(e);e.connect(this.nodes.pl);o.start(t);o.stop(t+1.7);this.next=t+(this.level>.8?.8:1.7)+Math.random()*1.8}};
+
+/* recorded sound effects and music beds (ElevenLabs), decoded once; the synthesised cues above stay as the fallback */
+const SFX_GAIN={hush:.6,swell:.7,chime:.7,sparkle:.7,rumble:.9,cow:.8,elephant:.7};
+const Snd={ids:typeof SND_IDS!=='undefined'?SND_IDS:[],buf:{},
+  load(){this.ids.forEach(id=>{fetch('sfx/'+id+'.mp3').then(r=>r.ok?r.arrayBuffer():Promise.reject(r.status)).then(b=>AU.ctx.decodeAudioData(b))
+    .then(d=>{this.buf[id]=d;if(id.startsWith('bg_'))Music.playBed()}).catch(()=>{})})},
+  play(name){const b=this.buf[name];if(!b)return false;const c=AU.ctx,s=c.createBufferSource(),e=c.createGain();s.buffer=b;e.gain.value=SFX_GAIN[name]||.85;
+    s.connect(e);e.connect(AU.sfxG);s.start();return true}};
 
 /* ===== Speech: the Narrator, Lord Vishnu, the devas and the asuras each get their own voice or pitch ===== */
 const VOICE={narr:{name:'Narrator',col:P.turmeric,pitch:.98,rate:.86},vishnu:{name:'Lord Vishnu',col:P.sea,pitch:.62,rate:.78},

@@ -182,3 +182,9 @@ What the numbers suggest:
 - Both episodes are recorded: 134 clips incl. hints, choice labels, branch captions, callbacks, "Previously…" lines and the Sanskrit shloka (voice `shloka`, recited once). The browser voice is only a fallback.
 - Publishing: pass every `audio/*.mp3` in the Artifact `files` map.
 - Playback speed: narration clips play at 1.2× and the shloka at 1.1× (`Clips.rate` / `Clips.shlokaRate` in `src/30_audio.js`), pitch preserved.
+
+## Sound effects and background music (ElevenLabs Sound Effects v2)
+- `sfx/*.mp3`: 18 one-shot effects named after the `AU.sfx()` cue they replace (chime, conch `shell`, temple `bell`, dhol `drum`, cow, elephant…), plus five 30 s looping beds: `bg_wonder` (bansuri/tanpura/santoor), `bg_energy` (dhol/tabla), `bg_poison` (dark drone), `bg_divine` (sitar/temple bells), `bg_festive` (shehnai/dholak).
+- `build.py` embeds the file list as `SND_IDS`; `Snd` decodes them once. `Music.mood()` crossfades to the matching bed; levels and ducking under narration still apply, with a floor so beds stay audible. Any missing file falls back to the synthesised cue/drone.
+- The beds are looping sound-effect textures, not composed scores (the connected ElevenLabs connector cannot generate music).
+- `fetch` does not work from `file://`; test over a local server (`python3 -m http.server`).

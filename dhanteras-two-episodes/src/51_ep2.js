@@ -191,7 +191,7 @@ function wealthScene(){const s=mkScene('wealth',{frame:'gold'});
       if(o.inPot){const n=inside.length,j=inside.indexOf(o);const sp=LP(46,50);o.x=A.pot[0]+(j-(n-1)/2)*sp;o.y=A.pot[1]-62*A.ks-28-(j%2)*14}
       tf(o.g,o.x,o.y,(o.inPot?.42:A.ir/64)*(1+.12*o.k));op(o.hl,clamp(o.k+o.glow,0,1));op(o.lb,o.inPot?0:1)})};
   s.fx=fxLayer(s);s.demo=demoHand(s);return s}
-async function shot2_5(){D.chip('Episode 2 · What Is True Wealth?');mood('friendly');Music.mood('divine');Music.setLevel(.45,2);
+async function shot2_5(){D.chip('Episode 2 · What Is True Wealth?');mood('friendly');Music.mood('wonder');Music.setLevel(.45,2);
   const s=wealthScene();D.setScene(s,1300);const tok=D.token;const ic=s.icons;
   await D.wait(800);
   await D.say('Children, imagine you have a magical treasure pot.',{cues:[['treasure pot',()=>{D.go(s.st,{glow:.4},1200);AU.sfx('chime')}]]});
@@ -293,7 +293,7 @@ function finalDiya(){const s=mkScene('finale',{frame:'gold'});
     const W=P_?1000:1778,H=P_?1500:810;pet.forEach(p=>{p.v+=dt*p.sp*m;const y=-40+((p.v%1))*(H+80);const x=p.u*W+Math.sin(t*.5+p.ph)*40*m;tf(p.g,x,y,1.2,Math.sin(t*.6+p.ph)*40)});
     tf(tl,c[0],P_?150:95,L.portrait?1:.9);op(tl,s.st.title)};
   return s}
-async function shot2_6(){D.chip('Episode 2 · A Little Light for Dhanteras');mood('heartfelt');Music.mood('divine');Music.setLevel(.5,2);
+async function shot2_6(){D.chip('Episode 2 · A Little Light for Dhanteras');mood('heartfelt');Music.mood('festive');Music.setLevel(.5,2);
   const s=homeLight();D.setScene(s,1400);const tok=D.token;
   const lightDiya=(i,quiet)=>{const d=s.diyas[i];if(d.lit<.5){if(!quiet)AU.sfx('diya');D.go(d,{lit:1},700,'out')}else{AU.sfx('sparkle');s.fx.burst(d.x,d.y-60,6,'spark',TAU)}};
   s.down=p=>{const A=s.A;const i=A.diya.findIndex(q=>Math.hypot(p.x-q[0],p.y-(q[1]-30))<70);if(i>=0)lightDiya(i)};
