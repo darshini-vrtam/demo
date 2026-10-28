@@ -112,7 +112,34 @@ localStorage key `dhanteras.twoep.v1` holds `ep`, `done` and `choices` (`kurma`,
 
 The overlay lists every shot's target against its real elapsed time, plus episode totals.
 
-TIMING_TABLE
+One full run at real speed with no input, in a headless browser. **Caveat:** it had no speech voices, so captions advanced on the reading-time fallback (about 62 ms per character), not real narration. Every activity also waited out its idle hint and auto-assist (about 25 s each), so the activity rows show the slow case. Treat this as a first calibration, then re-time with real voices.
+
+```
+SHOT  TARGET  ACTUAL  DIFF
+1.1     1:10    1:08  -0:02  Ocean of Secrets (with title)
+1.2     0:40    0:45  +0:05  Wake Up the Ocean
+1.3     0:35    0:33  -0:02  Mountain That Sank
+1.4     0:40    0:40  +0:00  Save the Sinking Mountain
+1.5     0:45    0:25  -0:20  Kurma Supports
+1.6     1:15    0:30  -0:45  Great Churning
+1.7     0:30    0:14  -0:16  Poison Spreads
+1.8     0:40    0:39  -0:01  Who Can Save?
+1.9     0:50    1:04  +0:14  Shiva Saves
+1.10    0:25    0:30  +0:05  Golden Light Beneath
+2.1     1:00    1:00  -0:00  Treasures (with title)
+2.2     0:30    0:50  +0:20  Discover the Treasures
+2.3     1:30    1:27  -0:03  Dhanvantari Arrives
+2.4     1:30    1:36  +0:06  Shloka
+2.5     1:15    1:35  +0:20  True Wealth
+2.6     1:45    1:23  -0:22   A Little Light
+
+Ep1 6:29 of 7:30 (titles and transitions included in shot rows)
+Ep2 7:51 of 7:30
+```
+
+What the numbers suggest:
+- Episode 1 runs short (6:29). 1.6, the churning, is 45 s under its 1:15 target, because its narration is short. If real voices don't close the gap, the churning loop is the place to add a few seconds of pure animation between lines.
+- Episode 2 runs long (7:51). 2.2 and 2.5 include the full ~25 s idle wait, so a child who taps along brings them close to target.
 
 ## QA performed
 
