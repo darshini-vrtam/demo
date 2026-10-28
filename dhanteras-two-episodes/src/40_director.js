@@ -34,10 +34,11 @@ const D={token:0,speed:1,fast:false,qa:null,scene:null,old:null,inset:0,trayPx:0
           const skipP=new Promise(r=>{this.skipFn=()=>{skipped=true;Speech.stop();r()}});this.talk(part.v,true);this.showCap(part.v,pg.text);
           const est=part.t.length*62/((VOICE[part.v]||VOICE.narr).rate*(part.v==='narr'?this.mood.rate:1));const t0=T.now;
           let p;const onWord=ci=>{my.forEach((c,i)=>{if(ci>=idx[i]-1)fire(c)})};
+          Clips.note(part.v,part.t);const useClip=Clips.has(part.v,part.t)&&!AU.muted;
           if(this.fast)p=new Promise(r=>setTimeout(r,20));
-          else if(Speech.available()&&!AU.muted)p=Promise.all([Speech.speak(part.v,part.t,this.mood,onWord),this.wait(500)]);
+          else if(canSpeak(part.v,part.t))p=Promise.all([speakAny(part.v,part.t,this.mood,onWord),this.wait(500)]);
           else p=this.wait(Math.max(1600,est));
-          const ticker=setInterval(()=>{const el=(T.now-t0);my.forEach((c,i)=>{if(el>=est*(idx[i]/part.t.length)*1.08)fire(c)})},60);
+          const ticker=setInterval(()=>{if(useClip)return;const el=(T.now-t0);my.forEach((c,i)=>{if(el>=est*(idx[i]/part.t.length)*1.08)fire(c)})},60);
           Music.duck(true);try{await Promise.race([p,skipP])}finally{clearInterval(ticker);this.skipFn=null;Music.duck(false);this.talk(part.v,false)}
           my.forEach(fire);this.guard(tok)}
         if(!this.fast&&!skipped)await this.wait(o.after==null?320:o.after)}
@@ -51,9 +52,10 @@ const D={token:0,speed:1,fast:false,qa:null,scene:null,old:null,inset:0,trayPx:0
     $('cap').hidden=true;$('act').hidden=true;box.hidden=false;const hl=i=>spans.forEach((s,j)=>{s.classList.toggle('on',j===i);s.classList.toggle('done',j<i)});
     let skipped=false;const skipP=new Promise(r=>{this.chantSkip=()=>{skipped=true;Speech.stop();r()}});const tap=()=>{this.poke();this.chantSkip&&this.chantSkip()};
     box.onclick=tap;box.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tap()}};
+    if(o.narr)Clips.note('narr',text);
     try{if(o.narr&&!this.fast){const est=text.length*62/VOICE.narr.rate;const t0=T.now;let got=false;
         const iv=setInterval(()=>{if(got)return;const k=(T.now-t0)/est;let i=0;while(i<starts.length-1&&starts[i+1]<=k*text.length)i++;hl(i)},80);
-        const sp=Speech.available()&&!AU.muted?Speech.speak('narr',text,this.mood,ci=>{got=true;let i=0;while(i<starts.length-1&&starts[i+1]<=ci)i++;hl(i)}):this.wait(Math.max(1800,est));
+        const sp=canSpeak('narr',text)?speakAny('narr',text,this.mood,ci=>{got=true;let i=0;while(i<starts.length-1&&starts[i+1]<=ci)i++;hl(i)}):this.wait(Math.max(1800,est));
         this.talk('narr',true);await Promise.race([sp,skipP]);clearInterval(iv);this.guard(tok)}
       /* the child's turn: about 4 seconds, a slow sweep to read along */
       if(!skipped){o.onChild&&o.onChild();const per=this.fast?5:Math.max(380,(o.wait||4000)/words.length);for(let i=0;i<words.length&&!skipped;i++){hl(i);await Promise.race([this.wait(per),skipP])}
@@ -133,7 +135,7 @@ const PREV={1:'Previously, we sailed the Ocean of Wonders together.',2:'Previous
 /* the script's mood tags set the Narrator's pace, pitch and volume; they are never spoken */
 const MOOD={warm:{rate:.9,pitch:1},inviting:{rate:1,pitch:1.05},plain:{},suspense:{rate:.9,pitch:.96},energetic:{rate:1.04,pitch:1.02},serious:{rate:.86,pitch:.93,vol:.9},
   gentle:{rate:.86,pitch:.98,vol:.95},cliff:{rate:.94,pitch:1.04},welcome:{rate:1,pitch:1.05},building:{rate:.86,pitch:1},respectful:{rate:.84,pitch:.97,vol:.95},friendly:{rate:.94,pitch:1.03},heartfelt:{rate:.86,pitch:1}};
-function mood(k){D.setMood(MOOD[k]||{})}
+function mood(k){D.moodKey=k;D.setMood(MOOD[k]||{})}
 
 /* ===== Decisions: two large picture cards, read aloud, never a wrong answer. Idle: hint, then option B is picked as "B (auto)" ===== */
 D.choice=async function(id,opts,hint){const tok=this.token;const tray=$('tray');tray.className='tray n2 over';tray.innerHTML='';let resolve;const done=new Promise(r=>resolve=r);let picked=null;

@@ -174,3 +174,10 @@ What the numbers suggest:
   - resume to Episode 2 (the "Previously…" line, then the Kurma A callback, with the auto Shiva choice skipped);
   - the T overlay.
 - Not tested: a real camera, real voices (including hi-IN) and the host's CSP behaviour for the camera library. The Sanskrit should still get the qualified review the storyboard asks for before release.
+
+## Narration audio (ElevenLabs)
+- Voice: Krishna - Energetic and Expressive, model Eleven v3; English script spoken verbatim, mood tags as v3 audio tags (never spoken).
+- Clips live in `audio/<id>.mp3`; `id` is an FNV-1a hash of `voice|text` (narr/both/devas/asuras share `narr`). `build.py` embeds the id list as `CLIP_IDS`.
+- Playback order: recorded clip → browser speech fallback → captions only.
+- Episode 1 is recorded (69 clips incl. hints, choice labels, branch captions, "Previously…"). Episode 2 still uses the browser voice.
+- Publishing: pass every `audio/*.mp3` in the Artifact `files` map.

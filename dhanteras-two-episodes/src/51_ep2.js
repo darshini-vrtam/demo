@@ -106,9 +106,10 @@ function placeShloka(s){const el_=$('shloka');const r=s.A.panel;const ins=D.inse
 async function recite(spans,lineWords,voice){/* highlight word by word; spoken in a Hindi voice when one is available, otherwise on a timer */
   for(let li=0;li<lineWords.length;li++){const words=lineWords[li];const sp=spans[li];const text=words.join(' ');const per=D.fast?5:Math.max(650,text.length*70/words.length);
     const hl=i=>sp.forEach((s,j)=>s.classList.toggle('on',j===i));
-    if(voice&&Speech.hindi&&!AU.muted&&!D.fast){let starts=[],c=0;words.forEach(w=>{starts.push(c);c+=w.length+1});let got=false;const t0=T.now,est=text.length*110;
+    if(voice)Clips.note('shloka',text);
+    if(voice&&!AU.muted&&!D.fast&&(Clips.has('shloka',text)||Speech.hindi)){let starts=[],c=0;words.forEach(w=>{starts.push(c);c+=w.length+1});let got=false;const t0=T.now,est=text.length*110;
       const iv=setInterval(()=>{if(got)return;const k=(T.now-t0)/est;let i=0;while(i<starts.length-1&&starts[i+1]<=k*text.length)i++;hl(i)},90);
-      await Speech.speak('shloka',text,{},ci=>{got=true;let i=0;while(i<starts.length-1&&starts[i+1]<=ci)i++;hl(i)});clearInterval(iv)}
+      await speakAny('shloka',text,{},ci=>{got=true;let i=0;while(i<starts.length-1&&starts[i+1]<=ci)i++;hl(i)});clearInterval(iv)}
     else{for(let i=0;i<words.length;i++){hl(i);await D.wait(per)}}
     hl(-1);await D.wait(D.fast?5:600)}}
 /* a Diwali evening outdoors: rooftops with lit windows, strings of lights, hanging lanterns and a parapet of diyas */

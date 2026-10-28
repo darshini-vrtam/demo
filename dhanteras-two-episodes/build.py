@@ -1,12 +1,11 @@
-import glob,os,re,sys
+import glob,os,re,sys,json
 d=os.path.dirname(os.path.abspath(__file__))
 head=open(os.path.join(d,'src/head.html')).read()
-js='\n'.join(open(f).read() for f in sorted(glob.glob(os.path.join(d,'src/*.js'))))
+ids=sorted(os.path.basename(f)[:-4] for f in glob.glob(os.path.join(d,'audio/*.mp3')))
+js='const CLIP_IDS='+json.dumps(ids)+';\n'+'\n'.join(open(f).read() for f in sorted(glob.glob(os.path.join(d,'src/*.js'))))
 body='\n<script>\n'+js+'\n</script>\n'
-# standalone page for the repo
 open(os.path.join(d,'dhanteras-two-episodes.html'),'w').write(head+body+'</body>\n</html>\n')
-# artifact page: the host adds its own doctype/head/body skeleton, so strip ours
 art=re.sub(r'<!doctype html>\s*<html[^>]*>\s*<head>\s*<meta charset="utf-8">\s*<meta name="viewport"[^>]*>\s*','',head,flags=re.I)
 art=art.replace('</head>\n<body>\n','')
 if len(sys.argv)>1:open(sys.argv[1],'w').write(art+body)
-print(len(head+body))
+print(len(head+body),'bytes,',len(ids),'clips')

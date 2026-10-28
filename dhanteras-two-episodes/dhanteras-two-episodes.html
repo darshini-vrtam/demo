@@ -186,6 +186,7 @@ button:focus-visible{outline:4px solid var(--focus);outline-offset:3px}
 </div>
 
 <script>
+const CLIP_IDS=["11cy381", "12788lf", "12dox4p", "12vwcz8", "14cd068", "14m1knu", "14umsed", "16td90g", "195xupq", "1acs323", "1bcrnag", "1cybw4s", "1d79yzp", "1e4d564", "1f5lqw0", "1f5tbbt", "1fkblft", "1gt13sn", "1gzklhe", "1iwbdgc", "1jaotx5", "1jo1o1c", "1khpud1", "1ku0iwe", "1l9zrlk", "1mro3ze", "1nc0fy7", "1o193yb", "1p5dfq4", "1qewja0", "1qwgwlx", "1skhwt8", "1tnp63z", "1uuzv15", "1v54lsj", "1vf0qbz", "1vfr0wp", "1vks9y6", "1yd3su9", "2kyrjm", "2oqybf", "3t4i5n", "3xlm1", "3xybd1", "56uz98", "581rwv", "6arfrr", "773xwd", "a4g1rt", "beggid", "c905ym", "cwqnc2", "d0g6rh", "en3zsu", "gg7xa3", "hkwndk", "i4wopf", "j7urh", "jfz4sw", "l4p3fs", "lloemj", "lsswem", "qm4r9k", "sd34v0", "ta6nqz", "uupi1q", "vfx3sa", "wc5qyo", "x2jpb5"];
 'use strict';
 /* ===== Palette tokens: the only colours used anywhere in the illustration ===== */
 const P={midnight:'#0E1240',indigo:'#262F85',sea:'#2C7CC4',turq:'#17B2AE',ivory:'#FFF4D9',foam:'#FFFFFF',verm:'#E03C1F',terra:'#C25E3A',coral:'#F2755E',
@@ -936,7 +937,22 @@ const Speech={ok:false,voices:[],pick:{},
       u.pitch=clamp(V.pitch*(who==='narr'?(md.pitch||1):1),.1,2);u.rate=clamp(V.rate*(who==='narr'?(md.rate||1):1),.5,1.5);u.volume=who==='narr'?(md.vol||1):1;
       const v=this.pick[who];if(v)u.voice=v;u.lang=v?v.lang:(who==='shloka'?'hi-IN':'en-IN');u.onend=fin;u.onerror=fin;if(onWord)u.onboundary=e=>{if(e.name==='word'||e.name==null)onWord(e.charIndex)};
       this.cur=fin;speechSynthesis.speak(u);setTimeout(fin,Math.max(4000,text.length*95/u.rate+3000))}catch(e){fin()}})},
-  stop(){try{if(this.ok)speechSynthesis.cancel()}catch(e){}if(this.cur){const f=this.cur;this.cur=null;f()}}};
+  stop(){Clips.stop();try{if(this.ok)speechSynthesis.cancel()}catch(e){}if(this.cur){const f=this.cur;this.cur=null;f()}}};
+/* ===== Recorded narration (ElevenLabs, Krishna voice): one mp3 per spoken line in audio/, keyed by voice and exact text.
+   A line with no recording falls back to the browser voice, then to timed captions. ===== */
+const Clips={ids:new Set(typeof CLIP_IDS!=='undefined'?CLIP_IDS:[]),cur:null,log:new Map(),
+  id(v,t){const s=(v==='narr'||v==='both'||v==='devas'||v==='asuras'?'narr':v)+'|'+t;let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(36)},
+  note(v,t){const id=this.id(v,t);if(!this.log.has(id))this.log.set(id,{id,v,t,mood:D.moodKey||'plain'})},
+  has(v,t){return this.ids.has(this.id(v,t))},
+  play(v,t,onWord){return new Promise(res=>{let done=false;const a=new Audio('audio/'+this.id(v,t)+'.mp3');
+    const fin=ok=>{if(done)return;done=true;clearInterval(iv);clearTimeout(to);if(this.cur&&this.cur.a===a)this.cur=null;res(ok)};
+    const iv=setInterval(()=>{if(a.duration&&onWord)onWord(Math.floor(a.currentTime/a.duration*t.length))},80);const to=setTimeout(()=>fin(true),Math.max(9000,t.length*220));
+    a.onended=()=>fin(true);a.onerror=()=>fin(false);this.cur={a,fin};const pr=a.play();if(pr&&pr.catch)pr.catch(()=>fin(false))})},
+  stop(){if(this.cur){try{this.cur.a.pause()}catch(e){}this.cur.fin(true)}}};
+function canSpeak(v,t){return !AU.muted&&(Clips.has(v,t)||Speech.available())}
+function speakAny(v,t,mood,onWord){if(AU.muted)return Promise.resolve(false);
+  if(Clips.has(v,t))return Clips.play(v,t,onWord).then(ok=>ok||(Speech.available()?Speech.speak(v,t,mood,onWord):false));
+  return Speech.available()?Speech.speak(v,t,mood,onWord):Promise.resolve(false)}
 
 /* ===== Director: plays shots in order, pauses for every activity, resumes on completion ===== */
 const ABORT={abort:true};
@@ -974,10 +990,11 @@ const D={token:0,speed:1,fast:false,qa:null,scene:null,old:null,inset:0,trayPx:0
           const skipP=new Promise(r=>{this.skipFn=()=>{skipped=true;Speech.stop();r()}});this.talk(part.v,true);this.showCap(part.v,pg.text);
           const est=part.t.length*62/((VOICE[part.v]||VOICE.narr).rate*(part.v==='narr'?this.mood.rate:1));const t0=T.now;
           let p;const onWord=ci=>{my.forEach((c,i)=>{if(ci>=idx[i]-1)fire(c)})};
+          Clips.note(part.v,part.t);const useClip=Clips.has(part.v,part.t)&&!AU.muted;
           if(this.fast)p=new Promise(r=>setTimeout(r,20));
-          else if(Speech.available()&&!AU.muted)p=Promise.all([Speech.speak(part.v,part.t,this.mood,onWord),this.wait(500)]);
+          else if(canSpeak(part.v,part.t))p=Promise.all([speakAny(part.v,part.t,this.mood,onWord),this.wait(500)]);
           else p=this.wait(Math.max(1600,est));
-          const ticker=setInterval(()=>{const el=(T.now-t0);my.forEach((c,i)=>{if(el>=est*(idx[i]/part.t.length)*1.08)fire(c)})},60);
+          const ticker=setInterval(()=>{if(useClip)return;const el=(T.now-t0);my.forEach((c,i)=>{if(el>=est*(idx[i]/part.t.length)*1.08)fire(c)})},60);
           Music.duck(true);try{await Promise.race([p,skipP])}finally{clearInterval(ticker);this.skipFn=null;Music.duck(false);this.talk(part.v,false)}
           my.forEach(fire);this.guard(tok)}
         if(!this.fast&&!skipped)await this.wait(o.after==null?320:o.after)}
@@ -991,9 +1008,10 @@ const D={token:0,speed:1,fast:false,qa:null,scene:null,old:null,inset:0,trayPx:0
     $('cap').hidden=true;$('act').hidden=true;box.hidden=false;const hl=i=>spans.forEach((s,j)=>{s.classList.toggle('on',j===i);s.classList.toggle('done',j<i)});
     let skipped=false;const skipP=new Promise(r=>{this.chantSkip=()=>{skipped=true;Speech.stop();r()}});const tap=()=>{this.poke();this.chantSkip&&this.chantSkip()};
     box.onclick=tap;box.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tap()}};
+    if(o.narr)Clips.note('narr',text);
     try{if(o.narr&&!this.fast){const est=text.length*62/VOICE.narr.rate;const t0=T.now;let got=false;
         const iv=setInterval(()=>{if(got)return;const k=(T.now-t0)/est;let i=0;while(i<starts.length-1&&starts[i+1]<=k*text.length)i++;hl(i)},80);
-        const sp=Speech.available()&&!AU.muted?Speech.speak('narr',text,this.mood,ci=>{got=true;let i=0;while(i<starts.length-1&&starts[i+1]<=ci)i++;hl(i)}):this.wait(Math.max(1800,est));
+        const sp=canSpeak('narr',text)?speakAny('narr',text,this.mood,ci=>{got=true;let i=0;while(i<starts.length-1&&starts[i+1]<=ci)i++;hl(i)}):this.wait(Math.max(1800,est));
         this.talk('narr',true);await Promise.race([sp,skipP]);clearInterval(iv);this.guard(tok)}
       /* the child's turn: about 4 seconds, a slow sweep to read along */
       if(!skipped){o.onChild&&o.onChild();const per=this.fast?5:Math.max(380,(o.wait||4000)/words.length);for(let i=0;i<words.length&&!skipped;i++){hl(i);await Promise.race([this.wait(per),skipP])}
@@ -1073,7 +1091,7 @@ const PREV={1:'Previously, we sailed the Ocean of Wonders together.',2:'Previous
 /* the script's mood tags set the Narrator's pace, pitch and volume; they are never spoken */
 const MOOD={warm:{rate:.9,pitch:1},inviting:{rate:1,pitch:1.05},plain:{},suspense:{rate:.9,pitch:.96},energetic:{rate:1.04,pitch:1.02},serious:{rate:.86,pitch:.93,vol:.9},
   gentle:{rate:.86,pitch:.98,vol:.95},cliff:{rate:.94,pitch:1.04},welcome:{rate:1,pitch:1.05},building:{rate:.86,pitch:1},respectful:{rate:.84,pitch:.97,vol:.95},friendly:{rate:.94,pitch:1.03},heartfelt:{rate:.86,pitch:1}};
-function mood(k){D.setMood(MOOD[k]||{})}
+function mood(k){D.moodKey=k;D.setMood(MOOD[k]||{})}
 
 /* ===== Decisions: two large picture cards, read aloud, never a wrong answer. Idle: hint, then option B is picked as "B (auto)" ===== */
 D.choice=async function(id,opts,hint){const tok=this.token;const tray=$('tray');tray.className='tray n2 over';tray.innerHTML='';let resolve;const done=new Promise(r=>resolve=r);let picked=null;
@@ -1885,9 +1903,10 @@ function placeShloka(s){const el_=$('shloka');const r=s.A.panel;const ins=D.inse
 async function recite(spans,lineWords,voice){/* highlight word by word; spoken in a Hindi voice when one is available, otherwise on a timer */
   for(let li=0;li<lineWords.length;li++){const words=lineWords[li];const sp=spans[li];const text=words.join(' ');const per=D.fast?5:Math.max(650,text.length*70/words.length);
     const hl=i=>sp.forEach((s,j)=>s.classList.toggle('on',j===i));
-    if(voice&&Speech.hindi&&!AU.muted&&!D.fast){let starts=[],c=0;words.forEach(w=>{starts.push(c);c+=w.length+1});let got=false;const t0=T.now,est=text.length*110;
+    if(voice)Clips.note('shloka',text);
+    if(voice&&!AU.muted&&!D.fast&&(Clips.has('shloka',text)||Speech.hindi)){let starts=[],c=0;words.forEach(w=>{starts.push(c);c+=w.length+1});let got=false;const t0=T.now,est=text.length*110;
       const iv=setInterval(()=>{if(got)return;const k=(T.now-t0)/est;let i=0;while(i<starts.length-1&&starts[i+1]<=k*text.length)i++;hl(i)},90);
-      await Speech.speak('shloka',text,{},ci=>{got=true;let i=0;while(i<starts.length-1&&starts[i+1]<=ci)i++;hl(i)});clearInterval(iv)}
+      await speakAny('shloka',text,{},ci=>{got=true;let i=0;while(i<starts.length-1&&starts[i+1]<=ci)i++;hl(i)});clearInterval(iv)}
     else{for(let i=0;i<words.length;i++){hl(i);await D.wait(per)}}
     hl(-1);await D.wait(D.fast?5:600)}}
 /* a Diwali evening outdoors: rooftops with lit windows, strings of lights, hanging lanterns and a parapet of diyas */
@@ -2140,7 +2159,7 @@ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>Hot.dirty=
 /* QA hook (#qa): window.__qa.go('1.4','act'|'late'|'end'|'all', {from, live, choices}) fast-forwards to a point in a shot */
 if(/qa/.test(location.hash)){window.__qa={go(at,stop,o){o=o||{};D.fast=!o.live;D.speed=D.fast?40:1;D.qa={at,stop:stop||'end',paused:false,cur:null,acts:!!o.acts,pick:o.pick};$('start').hidden=true;AU.init();
   if(o.choices)Store.data.choices=o.choices;const i=Math.max(0,SHOTS.findIndex(s=>s[0]===at));play(o.from?i:0);return true},
-  paused:()=>D.qa&&D.qa.paused,slow(){D.speed=1;D.fast=false},fast(){D.speed=40;D.fast=true},resume(){D.qa.resume&&D.qa.resume()},shots:()=>SHOTS.map(s=>s[0])}}
+  paused:()=>D.qa&&D.qa.paused,slow(){D.speed=1;D.fast=false},fast(){D.speed=40;D.fast=true},resume(){D.qa.resume&&D.qa.resume()},shots:()=>SHOTS.map(s=>s[0]),clips:()=>[...Clips.log.values()]}}
 
 </script>
 </body>

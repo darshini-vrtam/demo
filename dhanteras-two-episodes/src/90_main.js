@@ -36,4 +36,4 @@ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>Hot.dirty=
 /* QA hook (#qa): window.__qa.go('1.4','act'|'late'|'end'|'all', {from, live, choices}) fast-forwards to a point in a shot */
 if(/qa/.test(location.hash)){window.__qa={go(at,stop,o){o=o||{};D.fast=!o.live;D.speed=D.fast?40:1;D.qa={at,stop:stop||'end',paused:false,cur:null,acts:!!o.acts,pick:o.pick};$('start').hidden=true;AU.init();
   if(o.choices)Store.data.choices=o.choices;const i=Math.max(0,SHOTS.findIndex(s=>s[0]===at));play(o.from?i:0);return true},
-  paused:()=>D.qa&&D.qa.paused,slow(){D.speed=1;D.fast=false},fast(){D.speed=40;D.fast=true},resume(){D.qa.resume&&D.qa.resume()},shots:()=>SHOTS.map(s=>s[0])}}
+  paused:()=>D.qa&&D.qa.paused,slow(){D.speed=1;D.fast=false},fast(){D.speed=40;D.fast=true},resume(){D.qa.resume&&D.qa.resume()},shots:()=>SHOTS.map(s=>s[0]),clips:()=>[...Clips.log.values()]}}
