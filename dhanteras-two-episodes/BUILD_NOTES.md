@@ -179,5 +179,5 @@ What the numbers suggest:
 - Voice: Krishna - Energetic and Expressive, model Eleven v3; English script spoken verbatim, mood tags as v3 audio tags (never spoken).
 - Clips live in `audio/<id>.mp3`; `id` is an FNV-1a hash of `voice|text` (narr/both/devas/asuras share `narr`). `build.py` embeds the id list as `CLIP_IDS`.
 - Playback order: recorded clip → browser speech fallback → captions only.
-- Episode 1 is recorded (69 clips incl. hints, choice labels, branch captions, "Previously…"). Episode 2 still uses the browser voice.
+- Both episodes are recorded: 134 clips incl. hints, choice labels, branch captions, callbacks, "Previously…" lines and the Sanskrit shloka (voice `shloka`, recited once). The browser voice is only a fallback.
 - Publishing: pass every `audio/*.mp3` in the Artifact `files` map.
