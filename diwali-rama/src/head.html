@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Rama's Journey to Light</title>
+<meta name="description" content="Diwali Stories of India: Rama's Journey from Darkness to Light. An interactive Madhubani-inspired story in two episodes for children aged 6 to 10.">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Noto+Sans+Devanagari:wght@500;700&family=Yatra+One&display=swap">
+<style>
+/* Layout: one painted SVG stage; a quiet dock below it holds narration captions and controls; activity instructions sit in a clear band at the top. */
+:root{
+  --ink:#2A1608; --verm:#D9381E; --turmeric:#F2B01E; --marigold:#F4A21D; --gold:#E0A526; --leaf:#4C9A3A; --forest:#1F5E3B; --peacock:#0E7C8C; --ocean:#17407A; --indigo:#2B2A6B; --terra:#C4623A; --maroon:#6E1A22; --ivory:#F7EBD0;
+  --bg:#F7EBD0; --fg:#2A1608; --panel:#F7EBD0; --panel-fg:#2A1608; --line:#2A1608; --hint:#D9381E; --pill:#2B2A6B; --pill-fg:#F7EBD0; --focus:#2B2A6B;
+  --font-display:"Yatra One","Palatino Linotype",Georgia,serif;
+  --font-body:"Baloo 2","Trebuchet MS","Segoe UI",system-ui,sans-serif;
+  --font-deva:"Noto Sans Devanagari","Kohinoor Devanagari","Nirmala UI","Mangal","Devanagari Sangam MN","Devanagari MT",sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1B0F06; --fg:#F7EBD0; --panel:#2B2A6B; --panel-fg:#F7EBD0; --line:#F2B01E; --hint:#F2B01E; --pill:#F7EBD0; --pill-fg:#2B2A6B; --focus:#F2B01E; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1B0F06; --fg:#F7EBD0; --panel:#2B2A6B; --panel-fg:#F7EBD0; --line:#F2B01E; --hint:#F2B01E; --pill:#F7EBD0; --pill-fg:#2B2A6B; --focus:#F2B01E; color-scheme:dark }
+html{height:100%;box-sizing:border-box}
+*,*::before,*::after{box-sizing:inherit}
+body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);overflow:hidden;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-top:max(10px,env(safe-area-inset-top,0px));padding-bottom:max(10px,env(safe-area-inset-bottom,0px))}
+#app{position:relative;width:100%;height:100%;overflow:hidden;border-radius:14px;background:var(--indigo);border:3px solid var(--line);
+  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;--dk:120px;--bd:24px}
+#stage{position:absolute;left:0;top:0;width:100%;height:100%;display:block;touch-action:none;overflow:hidden}
+[hidden]{display:none!important}
+button{font-family:var(--font-body)}
+button:focus-visible{outline:4px solid var(--focus);outline-offset:3px}
+/* real buttons laid over the painting for keyboard and screen readers; the painting draws the highlight */
+#hot{position:absolute;inset:0;pointer-events:none;z-index:3}
+.hs{position:absolute;left:0;top:0;pointer-events:none;background:transparent;border:0;padding:0;margin:0;opacity:0}
+.hs:focus-visible{opacity:1;outline:none;box-shadow:0 0 0 4px var(--ivory),0 0 0 8px var(--ink);border-radius:50%}
+#hud{position:absolute;top:calc(var(--bd) + 8px);right:calc(var(--bd) + 8px);display:flex;gap:8px;z-index:6}
+.hb{width:46px;height:46px;border-radius:50%;border:3px solid var(--ink);background:var(--ivory);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0}
+.hb svg{width:24px;height:24px}
+.hb[aria-pressed="true"]{background:var(--turmeric)}
+.hb:focus-visible{outline:none;box-shadow:0 0 0 4px var(--turmeric),0 0 0 7px var(--ink)}
+#chip{position:absolute;top:calc(var(--bd) + 14px);left:calc(var(--bd) + 10px);z-index:6;font:700 13px/1.1 var(--font-body);letter-spacing:.06em;text-transform:uppercase;
+  background:var(--ivory);color:var(--ink);border:2.5px solid var(--ink);border-radius:999px;padding:8px 12px;max-width:calc(100% - var(--bd)*2 - 260px);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:700px){ #chip{display:none} .hb{width:40px;height:40px} .hb svg{width:21px;height:21px} #hud{gap:6px} }
+/* the instruction band: a clear strip at the top of the picture during activities */
+#top{position:absolute;z-index:5;top:calc(var(--bd) + 8px);left:calc(var(--bd) + 10px);right:calc(var(--bd) + 230px);display:flex;justify-content:center;pointer-events:none}
+@media (max-width:700px){ #top{top:calc(var(--bd) + 58px);right:calc(var(--bd) + 6px);left:calc(var(--bd) + 6px)} }
+#topIn{display:flex;align-items:center;gap:10px;background:var(--ivory);color:var(--ink);border:3px solid var(--ink);border-radius:999px;padding:6px 16px;box-shadow:0 0 0 4px var(--turmeric);max-width:100%}
+#ins{margin:0;font:700 clamp(15px,1.1vw + 9px,24px)/1.2 var(--font-body);text-wrap:balance;display:flex;align-items:center;gap:.4em}
+#ins svg{width:1.5em;height:1.5em;flex:none}
+#ins.hint{color:var(--verm)}
+#cnt{margin:0;font:700 clamp(13px,.8vw + 8px,18px)/1.2 var(--font-body);background:var(--indigo);color:var(--ivory);border-radius:999px;padding:3px 12px;font-variant-numeric:tabular-nums;white-space:nowrap}
+/* dock: narration captions and activity controls */
+#dock{position:absolute;left:0;right:0;bottom:0;height:var(--dk);z-index:5;background:var(--panel);color:var(--panel-fg);border-top:4px solid var(--line);
+  display:flex;flex-direction:column;justify-content:center;gap:6px;padding:6px clamp(12px,3vw,40px);overflow:hidden;
+  --fs:clamp(14px,min(calc(var(--dk) * .14),calc(1.5vw + 9px)),27px)}
+#cap{max-width:1100px;width:100%;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:2px}
+#capWho{display:inline-flex;align-items:center;gap:6px;font:800 calc(var(--fs) * .56)/1 var(--font-body);letter-spacing:.1em;text-transform:uppercase;opacity:.9}
+#capWho i{width:.95em;height:.95em;border-radius:50%;display:inline-block;border:2px solid var(--ink)}
+#capText{margin:0;font-size:var(--fs);line-height:1.36;font-weight:600;text-wrap:pretty;text-align:center}
+#cap.off #capText{display:none}
+#act{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 18px;max-width:1200px;width:100%;margin:0 auto}
+#actNote{margin:0;font:600 calc(var(--fs) * .9)/1.3 var(--font-body);text-align:center;opacity:.85}
+#ctrl{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+#ctrl:empty{display:none}
+.big{font:800 clamp(16px,calc(var(--fs) * .92),22px)/1 var(--font-body);min-height:50px;padding:10px 24px;border-radius:999px;border:3px solid var(--ink);background:var(--turmeric);color:var(--ink);cursor:pointer;
+  box-shadow:0 4px 0 var(--ink);transition:transform .15s ease}
+.big.alt{background:var(--ivory)}
+.big:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.big:disabled{opacity:.45;cursor:default;box-shadow:none}
+/* shloka panel: live Devanagari text, one line at a time, each with its transliteration */
+#shloka{position:absolute;z-index:4;background:var(--ivory);color:var(--ink);border:4px solid var(--ink);border-radius:22px;box-shadow:0 0 0 6px var(--turmeric),0 0 0 9px var(--ink);
+  display:flex;flex-direction:column;justify-content:center;gap:clamp(4px,1vh,12px);padding:clamp(8px,1.4vh,18px) clamp(10px,1.6vw,24px);overflow:hidden}
+#shloka h2{margin:0;font:700 clamp(15px,.9vw + .8vh + 6px,24px)/1.3 var(--font-deva);color:var(--verm);text-align:center}
+#shlokaLines{display:flex;flex-direction:column;gap:clamp(2px,.8vh,10px)}
+.sl{text-align:center;border-radius:12px;padding:2px 8px;transition:background .6s ease,opacity .6s ease}
+.sl.wait{opacity:0}
+.sl.on{background:var(--turmeric)}
+.sl .dv{display:block;margin:0;font:700 clamp(18px,1.3vw + 1.2vh + 6px,36px)/1.45 var(--font-deva)}
+.sl .tr{display:block;margin:0;font:600 clamp(12px,.6vw + .8vh + 4px,19px)/1.25 var(--font-body);font-style:italic;color:var(--maroon)}
+#meaning{border-top:3px dotted var(--gold);padding-top:clamp(4px,.8vh,10px);display:flex;flex-direction:column;gap:2px}
+#meaning h3{margin:0;font:800 clamp(11px,.5vw + .6vh + 4px,15px)/1.1 var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--forest);text-align:center}
+#meaning p{margin:0;font:600 clamp(13px,.7vw + .8vh + 4px,20px)/1.35 var(--font-body);text-align:center;text-wrap:pretty}
+/* the chosen deed, typeset beside the child's diya */
+#deed{position:absolute;z-index:4;display:flex;align-items:center;justify-content:center;pointer-events:none}
+#deed div{background:var(--ivory);color:var(--ink);border:3px solid var(--ink);border-radius:18px;box-shadow:0 0 0 5px var(--turmeric),0 0 0 8px var(--ink);padding:8px 14px;text-align:center;max-width:100%}
+#deed small{display:block;font:800 clamp(10px,.5vw + 6px,14px)/1.2 var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--verm)}
+#deed b{display:block;font:400 clamp(17px,1.2vw + 10px,30px)/1.15 var(--font-display)}
+/* dev timing overlay (press T) */
+#dev{position:absolute;top:calc(var(--bd) + 64px);left:calc(var(--bd) + 8px);z-index:9;background:#2A1608;color:#F7EBD0;font:600 12px/1.35 ui-monospace,Menlo,Consolas,monospace;
+  border:2px solid #F2B01E;border-radius:10px;padding:8px 10px;max-height:70%;overflow:auto;font-variant-numeric:tabular-nums;white-space:pre}
+/* overlays: start card, episode title cards, end cards */
+.ov{position:absolute;left:0;right:0;top:0;bottom:0;z-index:8;display:grid;place-items:center;padding:calc(var(--bd) + 14px)}
+.panel{background:var(--ivory);color:var(--ink);border:4px solid var(--ink);border-radius:24px;padding:20px 26px;max-width:640px;width:100%;
+  text-align:center;display:flex;flex-direction:column;gap:12px;box-shadow:0 0 0 7px var(--turmeric),0 0 0 11px var(--ink)}
+.panel h1{font:400 clamp(26px,3.2vw + 1vh,48px)/1.12 var(--font-display);margin:0;text-wrap:balance}
+.panel .eyebrow{font:800 13px/1.2 var(--font-body);letter-spacing:.14em;text-transform:uppercase;margin:0;color:var(--verm)}
+.panel p{margin:0;font-size:16px;line-height:1.45}
+.row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+#begin{font-size:clamp(20px,2vw + 8px,28px);min-height:64px;padding:14px 34px}
+#tcard{pointer-events:none;bottom:var(--dk)}
+#tcard .panel{max-width:780px;background:transparent;border:0;box-shadow:none;color:var(--ivory)}
+#tcard .eyebrow{color:var(--turmeric);font-size:clamp(14px,1.2vw + 6px,22px);text-shadow:0 2px 0 var(--ink)}
+#tcard h1{font-size:clamp(28px,3.6vw + 1.4vh,64px);color:var(--ivory);text-shadow:0 3px 0 var(--ink),3px 0 0 var(--ink),-3px 0 0 var(--ink),0 -3px 0 var(--ink)}
+#tcard .sub{font:700 clamp(15px,1vw + 8px,22px)/1.3 var(--font-body);color:var(--ivory);text-shadow:0 2px 0 var(--ink),2px 0 0 var(--ink),-2px 0 0 var(--ink)}
+#end{bottom:var(--dk);pointer-events:none}
+#end .panel{pointer-events:auto;max-width:520px;padding:14px 20px;gap:10px}
+#end h1{font-size:clamp(22px,2.4vw + 1vh,40px)}
+#end .line{font:700 clamp(16px,1vw + 9px,22px)/1.3 var(--font-body);margin:0}
+@media (max-width:700px){#end .panel{padding:10px 14px;gap:8px;box-shadow:0 0 0 4px var(--turmeric),0 0 0 7px var(--ink)} #end .big{min-height:44px;padding:8px 20px}}
+@media (prefers-reduced-motion: reduce){.big,.sl{transition:none}}
+</style>
+</head>
+<body>
+<div id="app">
+  <svg id="stage" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Story picture. Tap or drag when the picture asks for help."></svg>
+  <div id="hot"></div>
+  <div id="chip" hidden></div>
+  <div id="top" hidden aria-live="polite"><div id="topIn"><p id="ins"></p><p id="cnt" hidden></p></div></div>
+  <div id="hud">
+    <button class="hb" id="bCC" aria-pressed="true" title="Read-along captions" aria-label="Read-along captions">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10.5 10.2a2.3 2.3 0 1 0 0 3.6M17 10.2a2.3 2.3 0 1 0 0 3.6"/></svg></button>
+    <button class="hb" id="bCam" aria-pressed="false" title="Camera magic (optional)" aria-label="Camera magic, optional">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button>
+    <button class="hb" id="bMute" aria-pressed="false" title="Mute" aria-label="Mute sound">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path id="mWave" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/><path id="mX" d="M16 9l5 6M21 9l-5 6" style="display:none"/></svg></button>
+    <button class="hb" id="bSkip" title="Skip" aria-label="Skip this line">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l9 7-9 7z"/><path d="M18 5v14"/></svg></button>
+  </div>
+  <div id="dock">
+    <div id="cap" hidden aria-live="polite"><span id="capWho"><i></i><b></b></span><p id="capText"></p></div>
+    <div id="act" hidden><p id="actNote"></p><div id="ctrl"></div></div>
+  </div>
+  <div id="shloka" hidden aria-live="polite"><h2 lang="sa">दीप श्लोक</h2><div id="shlokaLines"></div>
+    <div id="meaning" hidden><h3>Meaning in simple English</h3><p id="meaningText"></p></div></div>
+  <div id="deed" hidden aria-live="polite"><div><small>My kind deed</small><b id="deedText"></b></div></div>
+  <div id="dev" hidden></div>
+  <div class="ov" id="tcard" hidden><div class="panel"><p class="eyebrow" id="tEye"></p><h1 id="tTitle"></h1><p class="sub" id="tSub" hidden></p></div></div>
+  <div class="ov" id="start">
+    <div class="panel">
+      <p class="eyebrow">Diwali Stories of India · Two episodes · Ages 6 to 10</p>
+      <h1>Rama's Journey from Darkness to Light</h1>
+      <p>The Narrator tells the story aloud. When the picture asks for help, tap or drag. The camera is optional, and no microphone is used.</p>
+      <div class="row"><button class="big" id="begin">Begin the story</button><button class="big alt" id="bResume" hidden>Continue</button></div>
+    </div>
+  </div>
+  <div class="ov" id="end" hidden>
+    <div class="panel"><p class="eyebrow" id="endEye"></p><h1 id="endTitle"></h1><p class="line" id="endLine"></p>
+      <div class="row"><button class="big" id="bNext" hidden>Play Episode 2</button><button class="big alt" id="bAgain">Play again</button></div>
+    </div>
+  </div>
+</div>
