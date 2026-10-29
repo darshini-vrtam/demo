@@ -67,11 +67,9 @@ function scTeach(){const s=mkScene('2.7',{frame:'night'});artPart(s);const back=
   onOrient(s,[back,ringG,medG,cen],P_=>{const p=s.pos();S.rays=grp(back,{transform:`translate(${p.c[0]} ${p.c[1]-60})`});rays(S.rays,90,LP(300,280),24,P.turmeric,4);petalRing(S.rays,LP(170,160),20,P.gold,P.marigold,40);
     rings(S.rays,LP(240,230),{n:2,step:.15,w:4,c1:P.gold,c2:P.turmeric,dots:20});
     /* the four vignettes, revealed one by one, then joined into one decorative circle */
-    S.ringE=grp(ringG);const e=`M${p.c[0]-p.ell[0]} ${p.c[1]}A${p.ell[0]} ${p.ell[1]} 0 1 1 ${p.c[0]+p.ell[0]} ${p.c[1]}A${p.ell[0]} ${p.ell[1]} 0 1 1 ${p.c[0]-p.ell[0]} ${p.c[1]}`;
-    ln(S.ringE,e,K,16);const rl=ln(S.ringE,e,P.gold,10);dots(S.ringE,e,P.verm,6,22);
     S.meds=p.med.map(([x,y],i)=>{const g=grp(medG,{transform:`translate(${x} ${y})`});kindMedal(g,KIND_ORDER[i],p.mr,400+i*11);return g});
     S.d=keepArt(s,diya(cen,{lit:1,light:.6,decor:1}));S.d.x=p.c[0];S.d.y=p.c[1]+40;S.d.s=p.ds});
-  s.tick=(dt,t)=>{if(!S.rays)return;const p=s.pos();tf(S.rays,p.c[0],p.c[1]-50,.2+.8*S.ray,t*3*MV());op(S.rays,S.ray);op(S.ringE,S.ring);
+  s.tick=(dt,t)=>{if(!S.rays)return;const p=s.pos();tf(S.rays,p.c[0],p.c[1]-50,.2+.8*S.ray,t*3*MV());op(S.rays,S.ray);
     S.meds.forEach((g,i)=>{const k=S.shown[i];op(g,k);tf(g,lerp(p.c[0],p.med[i][0],k),lerp(p.c[1],p.med[i][1],k),.3+.7*k)})};
   return s}
 async function shot2_7(){mood('gentle');Amb.set('night');Music.mood('light');const s=D.setScene(scTeach(),1100);const S=s.S;
@@ -81,10 +79,10 @@ async function shot2_7(){mood('gentle');Amb.set('night');Music.mood('light');con
   const show=i=>{D.go(S.shown,{[i]:1},1200,'back');AU.sfx('chime')};
   await say("The diya reminds us to bring light into the world through our actions: by speaking kindly, helping someone who needs us, being brave when something is difficult, and sharing what we have.",
     [["speaking kindly",()=>show(0)],["helping someone",()=>show(1)],["sharing",()=>show(2)]]);
-  await say("We may not be able to light every lamp in the world, but we can each bring a little light to someone.",[["every lamp",()=>show(3)],["a little light",()=>{D.go(S,{ring:1},1800);AU.sfx('bloom')}]]);
+  await say("We may not be able to light every lamp in the world, but we can each bring a little light to someone.",[["every lamp",()=>show(3)],["a little light",()=>AU.sfx('bloom')]]);
   await hold(1800);await D.late();
   /* the circle contracts towards the diya */
-  await D.tw(S.shown,{0:0,1:0,2:0,3:0},1400,'io');await D.tw(S,{ring:0,ray:.4},600)}
+  await D.tw(S.shown,{0:0,1:0,2:0,3:0},1400,'io');await D.tw(S,{ray:.4},600)}
 
 /* ---------- Scene 2.8: The Sacred Shloka of the Diya ---------- */
 const SHLOKA=[{dv:'शुभं करोति कल्याणम्',tr:'Śubhaṃ karoti kalyāṇam',say:'Shubham karoti kalyaanam'},
@@ -184,10 +182,9 @@ async function shot2_9(){mood('inviting');Amb.set('none');Music.mood('day');cons
   K_.active=false;K_.stage='done';D.clearAct();Hot.dirty=true;
   /* plain clay becomes a folk-art lamp; the flame lights; the chosen deed appears beside it */
   await D.tw(K_.d,{decor:1},900);AU.sfx('diya');D.go(K_.d,{lit:1,light:1},900,'back');s.F.burst(s.pos().c[0],s.pos().c[1]-120,8,'spark',2.6);
-  $('deedText').textContent=KIND[K_.choice||'help'].label;$('deed').hidden=false;Overlay.add($('deed'),()=>{const q=s.pos().deed;return refRectPx(q[0],q[1],q[2],q[3])});
   s.bloom(1);Music.swell();await hold(1400);
   await say("Your diya is beautiful! And your kind action can make it even brighter. Remember, the light we share through kindness can last long after a lamp goes out.");
-  await hold(1600);await D.late();$('deed').hidden=true;Overlay.clear();
+  await hold(1600);await D.late();
   /* the finished flame becomes one of many lamps across Ayodhya */
   await D.tw(s.cam,{z:3,fx:s.pos().c[0],fy:s.pos().c[1]-80},1600,'io')}
 

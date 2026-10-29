@@ -12,7 +12,7 @@
 <style>
 /* Layout: one painted SVG stage; a quiet dock below it holds narration captions and controls; activity instructions sit in a clear band at the top. */
 :root{
-  --ink:#2A1608; --veil:rgba(247,235,208,.62); --verm:#D9381E; --turmeric:#F2B01E; --marigold:#F4A21D; --gold:#E0A526; --leaf:#4C9A3A; --forest:#1F5E3B; --peacock:#0E7C8C; --ocean:#17407A; --indigo:#2B2A6B; --terra:#C4623A; --maroon:#6E1A22; --ivory:#F7EBD0;
+  --ink:#2A1608; --veil:rgba(19,22,58,.72); --verm:#D9381E; --turmeric:#F2B01E; --marigold:#F4A21D; --gold:#E0A526; --leaf:#4C9A3A; --forest:#1F5E3B; --peacock:#0E7C8C; --ocean:#17407A; --indigo:#2B2A6B; --terra:#C4623A; --maroon:#6E1A22; --ivory:#F7EBD0;
   --bg:#F7EBD0; --fg:#2A1608; --panel:#F7EBD0; --panel-fg:#2A1608; --line:#2A1608; --hint:#D9381E; --pill:#2B2A6B; --pill-fg:#F7EBD0; --focus:#2B2A6B;
   --font-display:"Yatra One","Palatino Linotype",Georgia,serif;
   --font-body:"Baloo 2","Trebuchet MS","Segoe UI",system-ui,sans-serif;
@@ -1523,42 +1523,48 @@ function scRecap(){const s=mkScene('2.0',{frame:'lanka'});artPart(s);const back=
   s.gk=0;s.tick=()=>s.gate&&s.gate.set(s.gk);rama.hold('b','bow');rama.set('determined',0);return s}
 
 /* ---------- Scene 2.1: The Battle for Hope ---------- */
-function scBattle(){const s=mkScene('2.1',{frame:'lanka'});artPart(s);const back=grp(s.comp),air=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp);
+function scBattle(){const s=mkScene('2.1',{frame:'lanka'});artPart(s);const back=grp(s.comp),air=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp),fx2=grp(s.comp);
   skyBg(s,{kind:'lanka',kind2:'gold',horizon:[430,880],ground:['grid',P.gold,P.maroon,1.1],clouds:[[.15,.3,220],[.82,.26,240]],stars:8});s.skyMix=0;
   const rama=cast(s,'rama',CAST.rama,mid),lak=cast(s,'lak',CAST.lak,mid),han=cast(s,'hanuman',CAST.hanuman,mid);const rav=part(s,new Ravana(mid));s.rav=rav;
   s.pos=()=>LP({rama:[460,744,1.05,1],lak:[250,750,.82,1],han:[110,752,.84,1],rav:[1320,760,1.15],sky:[200,1500,90,300]},
     {rama:[300,1380,1.2,1],lak:[110,1250,.88,1],han:[130,1460,.92,1],rav:[690,1080,1.15],sky:[80,920,240,700]});
   const B={arrows:[],shields:[],dust:[],swirls:[],calm:0};s.B=B;
-  onOrient(s,[back,air,fore],P_=>{const p=s.pos();/* the grand courtyard: a palace wall, patterned columns, symmetrical floral border */
+  onOrient(s,[back,air,fore,fx2],P_=>{const p=s.pos();/* the grand courtyard: a palace wall, patterned columns, symmetrical floral border */
     const ls=lankaSkyline(back,LP(1800,1100),LP(300,320),{n:LP(11,7),flat:true});tf(ls,LP(889,500),LP(430,880),1);
     const wl=palaceWall(back,LP(1900,1100),LP(60,70),P.maroon,P.verm);tf(wl,-60,LP(430,880),1);
     (P_?[[40,1500],[960,1500]]:[[50,820],[1728,820]]).forEach(([x,y])=>{const c=grp(back,{transform:`translate(${x} ${y})`});rect(c,-34,-LP(680,960),68,LP(680,960),Pat.u('hlines',K,P.gold,.9),4);
       for(let k=1;k<6;k++)dots(c,`M-30 ${-k*LP(120,170)}H30`,P.verm,6,12);shp(c,`M-50 ${-LP(680,960)}H50L36 ${-LP(700,980)}H-36Z`,P.verm,3)});
     B.swirls=(P_?[[200,240,70],[800,300,80],[500,520,60]]:[[300,150,80],[889,110,70],[1480,150,80],[640,300,50],[1140,300,50]]).map(([x,y,r],i)=>{const g=grp(air,{transform:`translate(${x} ${y})`});const w=swirl(g,r,i%2?P.gold:P.terra);return{g:w,i}});
-    B.arrows=[];for(let i=0;i<6;i++){const g=grp(air);arrowLine(g,LP(110,90),i%2?P.ivory:P.turmeric);op(g,0);B.arrows.push({g,k:0,dir:i%2?-1:1,lane:i})}
-    B.shields=[];for(let i=0;i<3;i++){const g=grp(air);shieldFlash(g,LP(46,40));op(g,0);B.shields.push({g,k:0})}
+    /* the exchange of arrows: Rama and Lakshmana shoot at Ravana, Ravana shoots back; each arrow is stopped by a soft shield flash */
+    B.arrows=[0,1,2,3].map(i=>{const g=grp(fx2);arrowLine(g,LP(100,84),i<2?P.turmeric:P.ivory);op(g,0);const sh=grp(fx2);shieldFlash(sh,LP(40,34));op(sh,0);return{g,sh,lane:i,ph:i*.27}});
+    B.burn=grp(fx2);B.flames=[];for(let i=0;i<16;i++){const f=grp(B.burn);const c=[P.verm,P.marigold,P.turmeric][i%3];shp(f,'M0 0C-26 -14 -22 -50 0 -86C22 -50 26 -14 0 0Z',c,3);shp(f,'M0 -6C-11 -14 -10 -32 0 -50C10 -32 11 -14 0 -6Z',P.turmeric,2);B.flames.push({f,i,u:(i%4)/3-.5,v:Math.floor(i/4)/3})}op(B.burn,0);
     B.dust=[];(P_?[[300,1380],[700,1080],[180,1460]]:[[460,760],[1330,770],[900,780],[640,790],[1120,790]]).forEach(([x,y],i)=>{const g=grp(fore,{transform:`translate(${x} ${y})`});const d=dustCurl(g,LP(120,100),i%2?P.gold:P.terra);B.dust.push({g:d,i,x,y})});
     B.final=grp(air);B.fire=fireArrow(B.final,LP(200,170));op(B.final,0);
     put(rama,p.rama);put(lak,p.lak);put(han,p.han);rav.x=p.rav[0];rav.y=p.rav[1];rav.s=p.rav[2]});
   s.tick=(dt,t)=>{const p=s.pos();const m=MV()*(1-B.calm);const ax=p.sky[0],bx=p.sky[1],y0=p.sky[2],y1=p.sky[3];
     B.swirls.forEach(w=>tf(w.g,0,0,1,(t*14*(w.i%2?1:-1))*m));
-    B.arrows.forEach(a=>{if(!B.fight){op(a.g,lerp(+a.g.getAttribute('opacity')||0,0,.1));return}const ph=((t*.42+a.lane*.17)%1);const x=a.dir>0?lerp(ax,bx,ph):lerp(bx,ax,ph);const y=lerp(y0,y1,(a.lane%3)/3)+Math.sin(ph*Math.PI)*-40;
-      tf(a.g,x,y,1,0,a.dir);op(a.g,Math.sin(ph*Math.PI)*.95)});
-    B.shields.forEach((sh,i)=>{const ph=(t*.3+i*.33)%1;const on=B.fight?Math.max(0,Math.sin(ph*TAU))*.9:0;op(sh.g,on);tf(sh.g,lerp(ax+200,bx-200,(i+.5)/3),lerp(y0,y1,.5)+(i-1)*30,.8+.2*on)});
+    const rvHand=[rav.x-167*rav.s,rav.y-288*rav.s],rvFront=[rav.x-150*rav.s,rav.y-250*rav.s];
+    B.arrows.forEach(a=>{if(!B.fight){op(a.g,0);op(a.sh,0);return}const ph=(t/1.7+a.ph)%1;
+      const from=a.lane===0?rama.hand('f'):a.lane===1?lak.hand('f'):rvHand;const to=a.lane<2?rvFront:(a.lane===2?[rama.x+120*rama.s,rama.y-190*rama.s]:[lak.x+110*lak.s,lak.y-170*lak.s]);
+      const u=Math.min(ph/.8,1);const at=k=>[lerp(from[0],to[0],k),lerp(from[1],to[1],k)-Math.sin(k*Math.PI)*LP(70,90)];const p=at(u),q=at(Math.min(1,u+.02));const ang=Math.atan2(q[1]-p[1],q[0]-p[0])/DEG;
+      tf(a.g,p[0],p[1],1,ang);op(a.g,ph<.8?1:0);const hit=ph>=.8?Math.sin((ph-.8)/.2*Math.PI):0;op(a.sh,hit*.9);tf(a.sh,to[0],to[1],.7+.3*hit);
+      if(hit>0&&!a.snd){a.snd=true;AU.sfx('shield')}if(ph<.5)a.snd=false;if(ph<.05&&!a.shot){a.shot=true;AU.sfx('bow')}if(ph>.2)a.shot=false});
+    /* Ravana burns away: flat flame tongues rise over him while he fades into embers */
+    const bk=B.burnK||0;op(B.burn,bk);if(bk>0)B.flames.forEach(fl=>{const x=rav.x+fl.u*230*rav.s,y=rav.y-fl.v*330*rav.s-(fl.i%2)*40*rav.s;tf(fl.f,x,y,rav.s*bk*(.8+.35*Math.sin(t*9+fl.i*1.7)),Math.sin(t*6+fl.i)*8)});
     B.dust.forEach(d=>{const r=B.dustK==null?.4:B.dustK;tf(d.g,0,-((t*12+d.i*20)%40)*r*m,.8+.4*r);op(d.g,.3+.7*r)})};
-  rama.hold('b','bow');lak.hold('b','bow');rama.set('determined',0);lak.set('determined',0);han.set('determined',0);rav.set('raise',0);rav.angry=true;return s}
+  rama.hold('b','bow');lak.hold('b','bow');rama.set('determined',0);lak.set('determined',0);han.set('determined',0);rav.set('raise',0);rav.angry=true;s.F=fxLayer(s);return s}
 async function shot2_1(){Music.mood('lanka');Amb.set('lanka');mood('cliff');
   /* a short visual recap of the gates opening, through the symmetrical gate patterns */
   let r;await Trans.run('gate',()=>{r=D.setScene(scRecap(),0)},{ms:900});const rt=D.tw(r,{gk:1},5200,'io');
   await titleCard(2,'The Return of Light');await rt;await hold(400);
   let s;await Trans.run('gate',()=>{s=D.setScene(scBattle(),0)},{ms:900});const B=s.B;const rav=s.rav;const {rama,lak,hanuman:han}=s.cast;mood('serious');
   await say("Rama and his companions had reached Lanka, but Ravana would not let Sita go easily.",[["would not",()=>rav.set('proud',800)]]);
-  await say("A great battle began. The sounds of bows and clashing weapons echoed through the kingdom.",[["battle began",()=>{rav.set('raise',800);rama.set('bowRaised',700);B.fight=true;AU.sfx('bow')}],
+  await say("A great battle began. The sounds of bows and clashing weapons echoed through the kingdom.",[["battle began",()=>{rav.set('raise',800);rama.set('bowRaised',700);lak.set('bowRaised',700);B.fight=true}],
     ["clashing",()=>{AU.sfx('shield');D.go(B,{dustK:1},1500)}],["echoed",()=>AU.sfx('bow')]]);
   await hold(1200);AU.sfx('shield');
-  await say("Rama stood firm. He remembered why he had come: not for fame or anger, but to rescue Sita and restore what was right.",[["stood firm",()=>{rama.set('determined',700)}],["rescue Sita",()=>{rama.nod()}]]);
+  await say("Rama stood firm. He remembered why he had come: not for fame or anger, but to rescue Sita and restore what was right.",[["rescue Sita",()=>{rama.nod()}]]);
   /* the decisive keyframe: the final arrow reaches Ravana's defensive space; his weapons lower and the energy subsides */
-  B.fight=false;
+  B.fight=false;lak.set('determined',700);
   await say("At last, Rama faced Ravana with courage and determination.",[["faced Ravana",()=>rama.set('bowRaised',800)]]);
   /* Rama's final arrow is a fire arrow: it flies in an arc and strikes Ravana with a burst of flat flame shapes (no injury is shown) */
   const fin=(async()=>{const a=rama.hand('f');const b=[rav.x-10*rav.s,rav.y-232*rav.s];const o={k:0};op(B.final,1);AU.sfx('bow');AU.sfx('whoosh');
@@ -1569,8 +1575,9 @@ async function shot2_1(){Music.mood('lanka');Amb.set('lanka');mood('cliff');
     AU.sfx('flicker');AU.sfx('shield');s.F=s.F||fxLayer(s);s.F.burst(b[0],b[1],14,'flame',TAU);s.F.burst(b[0],b[1],8,'spark',TAU);s.F.ripple(b[0],b[1],LP(200,170),P.marigold,1400);rav.set('lower',1200)})();
   await say("Rama’s final arrow struck its mark, and Ravana was defeated.",[["defeated",()=>{rav.set('defeated',2400);rav.angry=false;D.go(B,{calm:1,dustK:0},3000);D.go(s,{skyMix:1},5000)}]]);
   await fin;await hold(1000);AU.sfx('dust');rama.set('idle',900);lak.set('idle',900);han.set('idle',900);
-  /* Ravana sinks back and fades into settling golden dust */
-  D.go(rav,{gone:1},3600,'io');s.F.burst(rav.x,rav.y-120*rav.s,10,'spark',TAU);
+  /* the fire arrow's flames rise over Ravana and he burns away into golden embers */
+  AU.sfx('flicker');await D.tw(B,{burnK:1},900);D.go(rav,{gone:1},2600,'io');Timers.add(400,()=>AU.sfx('flicker'));await hold(2200);
+  s.F.burst(rav.x,rav.y-200*rav.s,12,'spark',TAU);D.go(B,{burnK:0},1400);
   await say("The battle was over.");await hold(1200);mood('heartfelt');
   await say("The story reminds us that power alone does not make someone right. Courage, responsibility and the choice to do what is right matter far more.",[["Courage",()=>{rama.nod();s.bloom(.6)}]]);
   await hold(1400);await D.late();
@@ -1700,9 +1707,9 @@ function scLight(){const s=mkScene('2.5',{frame:'night'});artPart(s);const back=
   skyBg(s,{kind:'dusk',kind2:'night',horizon:[560,900],ground:['brick',P.maroon,P.terra,1],clouds:[[.2,.3,220],[.7,.24,240]],stars:12,stars2:16});s.skyMix=0;
   const A={lit:[],active:false,warm:0,lastNudge:-1e9};s.A=A;
   const folk=[personCfg(201,{child:false}),personCfg(202,{child:true}),personCfg(203,{child:false}),personCfg(204,{child:true})].map(c=>cast(s,'folk',c,mid));
-  s.pos=()=>LP({diyas:[[300,770],[640,748],[1140,748],[1480,770],[520,585],[1250,585],[286,468],[1484,468],[1596,468],[520,388],[1250,388],[889,582]],
+  s.pos=()=>LP({diyas:[[300,770],[640,748],[1140,748],[1480,770],[520,585],[1250,585],[889,582]],
       folk:[[430,768,.78,1],[790,760,.7,1],[1000,760,.78,-1],[1340,768,.7,-1]]},
-    {diyas:[[200,1430],[800,1430],[330,1230],[680,1230],[160,884],[840,884],[209,800],[791,800],[500,1060],[160,688],[840,688],[500,912]],
+    {diyas:[[200,1430],[800,1430],[330,1230],[680,1230],[160,884],[840,884],[500,912]],
       folk:[[90,1340,.74,1],[910,1340,.74,-1],[200,1100,.64,1],[800,1100,.64,-1]]});
   onOrient(s,[back,glowL,lampL,fx],P_=>{const p=s.pos();const C=cityArt(s,back,{wall:P.ivory,street:false,palace:LP([889,576,.8],[500,906,.7])});s.C=C;
     /* window and arch glows that warm the whole city at the end */
@@ -1714,13 +1721,13 @@ function scLight(){const s=mkScene('2.5',{frame:'night'});artPart(s);const back=
       const o={i,x,y,D:D_,patch,tg,k:A.lit[i]?1:0};op(patch,o.k);if(A.lit[i]){D_.lit=1}return o});
     folk.forEach((f,i)=>put(f,p.folk[i]))});
   s.F=fxLayer(s);s.hand=demoHand(s);
-  const last=11;s.ready=i=>i!==last||A.lit.filter(Boolean).length>=11;
+  const last=s.pos().diyas.length-1;s.ready=i=>i!==last||A.lit.filter(Boolean).length>=last;
   s.tick=(dt,t)=>{op(s.warmG,A.warm);(A.d||[]).forEach(o=>{op(o.patch,o.k);if(o.k>0)tf(o.patch,o.x,o.y-20,(.5+.5*o.k)*(1+.04*Math.sin(t*1.3+o.i)*MV()));
     const want=A.active&&!A.lit[o.i]&&s.ready(o.i);o.tg.on=lerp(o.tg.on,want?(A.nudge===o.i?1:.35+.25*Math.sin(t*2+o.i)):0,.12);o.tg.update(t)})};
   s.light=i=>{if(A.lit[i]||!A.active)return;if(!s.ready(i)){s.nudge(i);return}A.lit[i]=true;const o=A.d[i];AU.sfx('diya');Timers.add(200,()=>AU.sfx('flicker'));D.go(o.D,{lit:1},700,'back');
     /* the glow spreads to neighbouring motifs */
-    s.F.burst(o.x,o.y-50,6,'spark',2.4);const n=A.lit.filter(Boolean).length;D.counter(`${n} of 12 lamps`);D.go(s,{skyMix:n/12},1200);folk.forEach((f,j)=>{if(Math.hypot(f.x-o.x,f.y-o.y)<LP(380,360))f.set('smile',400)});
-    Hot.dirty=true;if(n===12)A.done&&A.done()};
+    s.F.burst(o.x,o.y-50,6,'spark',2.4);const n=A.lit.filter(Boolean).length;D.counter(`${n} of ${A.d.length} lamps`);D.go(s,{skyMix:n/A.d.length},1200);folk.forEach((f,j)=>{if(Math.hypot(f.x-o.x,f.y-o.y)<LP(380,360))f.set('smile',400)});
+    Hot.dirty=true;if(n===A.d.length)A.done&&A.done()};
   s.nudge=(i)=>{const p=s.pos();const open=A.d.filter(o=>!A.lit[o.i]&&s.ready(o.i));if(!open.length)return;const near=open.sort((a,b)=>Math.hypot(a.x-p.diyas[i][0],a.y-p.diyas[i][1])-Math.hypot(b.x-p.diyas[i][0],b.y-p.diyas[i][1]))[0];
     A.nudge=near.i;Timers.add(2400,()=>{if(A.nudge===near.i)A.nudge=-1});AU.sfx('soft')};
   s.down=pt=>{if(!A.active)return;const hit=(A.d||[]).filter(o=>!A.lit[o.i]).sort((a,b)=>Math.hypot(a.x-pt.x,a.y-24-pt.y)-Math.hypot(b.x-pt.x,b.y-24-pt.y))[0];
@@ -1733,7 +1740,7 @@ function scLight(){const s=mkScene('2.5',{frame:'night'});artPart(s);const back=
 async function shot2_5(){mood('inviting');Amb.set('night');Music.mood('light');const s=D.setScene(scLight(),900);const A=s.A;
   await hold(600);
   await say("Rama is coming home! But Ayodhya is still waiting for its lights. Can you help the people welcome him? Tap the diyas to light them one by one!");
-  D.instr('Tap each diya to light it','0 of 12 lamps','tap');A.active=true;Hot.dirty=true;
+  D.instr('Tap each diya to light it',`0 of ${s.pos().diyas.length} lamps`,'tap');A.active=true;Hot.dirty=true;
   await D.task({hint:"Tap a little clay lamp to light its flame.",
     start(t){A.done=()=>t.finish()},demo(){const o=A.d.find(o=>!A.lit[o.i]&&s.ready(o.i));if(o){A.nudge=o.i;s.hand.tap(o.x,o.y-24,2)}},
     assist(t){const step=()=>{if(t.done)return;const o=A.d.find(o=>!A.lit[o.i]&&s.ready(o.i));if(o){s.light(o.i);Timers.add(900,step)}};step()}});
@@ -1814,11 +1821,9 @@ function scTeach(){const s=mkScene('2.7',{frame:'night'});artPart(s);const back=
   onOrient(s,[back,ringG,medG,cen],P_=>{const p=s.pos();S.rays=grp(back,{transform:`translate(${p.c[0]} ${p.c[1]-60})`});rays(S.rays,90,LP(300,280),24,P.turmeric,4);petalRing(S.rays,LP(170,160),20,P.gold,P.marigold,40);
     rings(S.rays,LP(240,230),{n:2,step:.15,w:4,c1:P.gold,c2:P.turmeric,dots:20});
     /* the four vignettes, revealed one by one, then joined into one decorative circle */
-    S.ringE=grp(ringG);const e=`M${p.c[0]-p.ell[0]} ${p.c[1]}A${p.ell[0]} ${p.ell[1]} 0 1 1 ${p.c[0]+p.ell[0]} ${p.c[1]}A${p.ell[0]} ${p.ell[1]} 0 1 1 ${p.c[0]-p.ell[0]} ${p.c[1]}`;
-    ln(S.ringE,e,K,16);const rl=ln(S.ringE,e,P.gold,10);dots(S.ringE,e,P.verm,6,22);
     S.meds=p.med.map(([x,y],i)=>{const g=grp(medG,{transform:`translate(${x} ${y})`});kindMedal(g,KIND_ORDER[i],p.mr,400+i*11);return g});
     S.d=keepArt(s,diya(cen,{lit:1,light:.6,decor:1}));S.d.x=p.c[0];S.d.y=p.c[1]+40;S.d.s=p.ds});
-  s.tick=(dt,t)=>{if(!S.rays)return;const p=s.pos();tf(S.rays,p.c[0],p.c[1]-50,.2+.8*S.ray,t*3*MV());op(S.rays,S.ray);op(S.ringE,S.ring);
+  s.tick=(dt,t)=>{if(!S.rays)return;const p=s.pos();tf(S.rays,p.c[0],p.c[1]-50,.2+.8*S.ray,t*3*MV());op(S.rays,S.ray);
     S.meds.forEach((g,i)=>{const k=S.shown[i];op(g,k);tf(g,lerp(p.c[0],p.med[i][0],k),lerp(p.c[1],p.med[i][1],k),.3+.7*k)})};
   return s}
 async function shot2_7(){mood('gentle');Amb.set('night');Music.mood('light');const s=D.setScene(scTeach(),1100);const S=s.S;
@@ -1828,10 +1833,10 @@ async function shot2_7(){mood('gentle');Amb.set('night');Music.mood('light');con
   const show=i=>{D.go(S.shown,{[i]:1},1200,'back');AU.sfx('chime')};
   await say("The diya reminds us to bring light into the world through our actions: by speaking kindly, helping someone who needs us, being brave when something is difficult, and sharing what we have.",
     [["speaking kindly",()=>show(0)],["helping someone",()=>show(1)],["sharing",()=>show(2)]]);
-  await say("We may not be able to light every lamp in the world, but we can each bring a little light to someone.",[["every lamp",()=>show(3)],["a little light",()=>{D.go(S,{ring:1},1800);AU.sfx('bloom')}]]);
+  await say("We may not be able to light every lamp in the world, but we can each bring a little light to someone.",[["every lamp",()=>show(3)],["a little light",()=>AU.sfx('bloom')]]);
   await hold(1800);await D.late();
   /* the circle contracts towards the diya */
-  await D.tw(S.shown,{0:0,1:0,2:0,3:0},1400,'io');await D.tw(S,{ring:0,ray:.4},600)}
+  await D.tw(S.shown,{0:0,1:0,2:0,3:0},1400,'io');await D.tw(S,{ray:.4},600)}
 
 /* ---------- Scene 2.8: The Sacred Shloka of the Diya ---------- */
 const SHLOKA=[{dv:'शुभं करोति कल्याणम्',tr:'Śubhaṃ karoti kalyāṇam',say:'Shubham karoti kalyaanam'},
@@ -1931,10 +1936,9 @@ async function shot2_9(){mood('inviting');Amb.set('none');Music.mood('day');cons
   K_.active=false;K_.stage='done';D.clearAct();Hot.dirty=true;
   /* plain clay becomes a folk-art lamp; the flame lights; the chosen deed appears beside it */
   await D.tw(K_.d,{decor:1},900);AU.sfx('diya');D.go(K_.d,{lit:1,light:1},900,'back');s.F.burst(s.pos().c[0],s.pos().c[1]-120,8,'spark',2.6);
-  $('deedText').textContent=KIND[K_.choice||'help'].label;$('deed').hidden=false;Overlay.add($('deed'),()=>{const q=s.pos().deed;return refRectPx(q[0],q[1],q[2],q[3])});
   s.bloom(1);Music.swell();await hold(1400);
   await say("Your diya is beautiful! And your kind action can make it even brighter. Remember, the light we share through kindness can last long after a lamp goes out.");
-  await hold(1600);await D.late();$('deed').hidden=true;Overlay.clear();
+  await hold(1600);await D.late();
   /* the finished flame becomes one of many lamps across Ayodhya */
   await D.tw(s.cam,{z:3,fx:s.pos().c[0],fy:s.pos().c[1]-80},1600,'io')}
 

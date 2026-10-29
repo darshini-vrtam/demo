@@ -24,7 +24,7 @@
 | 2 | 2.2 Sita and Rama Reunite | They recognise each other and step together. Lakshmana smiles, Hanuman bows, flowers bloom along the border, petals drift, and a vignette of Ayodhya appears. |
 | 2 | 2.3 The Journey Home | The Pushpaka Vimana carries the three over flat scrolling bands of hills, forest, fields, river and villages. The fields turn gold and Ayodhya grows on the horizon. |
 | 2 | 2.4 Ayodhya Gets Ready | Sweeping, rangoli, garlands, sweets and unlit diyas being placed, while the sky shifts from afternoon to twilight. |
-| 2 | 2.5 Light Up Ayodhya | Twelve diyas: four on the street, two on doorsteps, three on windowsills, two on rooftops and one at the palace entrance. None starts lit. Each tap lights a flame and reveals a patch of gold pattern that spreads to neighbouring lamps. A tap elsewhere makes the nearest diya pulse. The palace diya opens last and warms the whole city. |
+| 2 | 2.5 Light Up Ayodhya | Seven diyas (twelve originally; five rooftop and window lamps were removed in revision 10): four on the street, two on doorsteps and one at the palace entrance. None starts lit. Each tap lights a flame and reveals a patch of gold pattern that spreads to neighbouring lamps. A tap elsewhere makes the nearest diya pulse. The palace diya opens last and warms the whole city. |
 | 2 | 2.6 Rama Returns to Ayodhya | The gates open and the three enter. Families wave and scatter petals, rangoli covers the ground, foreground diyas glow, and a gold halo expands at the peak. |
 | 2 | 2.7 What Does a Diya Teach Us? | One diya on indigo. Four vignettes appear on their narration words (comforting, helping, sharing, caring for a plant), join into one circle, then contract. |
 | 2 | 2.8 The Sacred Shloka | Each line is revealed and recited with its transliteration beneath, followed by a 3.4 s repeat pause. Then the meaning, the closing narration, and a second recitation with motion stilled. Music is near-silent throughout. |
@@ -185,3 +185,14 @@ The late frame of every scene was reviewed in landscape (1280×720) and portrait
   - Any sad face (the "sad" eyebrow) now shows a small light-blue tear under the eye. This covers Sita in the grove and when she is afraid, Rama and Lakshmana when concerned, and the sad friend in the kindness pictures.
   - Ravana shows an angry face, with brows slanting down to the nose and a frown, when he comes for Sita and during the battle. It softens once he is defeated.
 - **1.2 departure:** as Ravana approaches, Sita draws back afraid, with wide eyes, hands to her chest, a tear and a small tremble. The tremble is reduced when reduced motion is on.
+
+## Revision 10
+
+- **End cards:** the veil behind them is now a dark indigo (72%) instead of light ivory.
+- **2.1 battle:**
+  - Rama and Lakshmana both draw their bows and shoot arrows at Ravana, and Ravana shoots arrows back from his bow.
+  - Each arrow flies from the shooter's hand in an arc and is stopped by a soft shield flash in front of its target. There is a twang as it is loosed and a shimmer when it is blocked.
+  - After the fire arrow strikes, flat flame tongues rise over Ravana and he burns away into golden embers. No injury is shown.
+- **2.5 Light Up Ayodhya:** the five rooftop and window diyas are removed. Seven diyas remain, and the palace-entrance diya is still the last to light. The counter adapts to the number of diyas.
+- **2.7 What Does a Diya Teach Us?:** the oval ring joining the four pictures is removed.
+- **2.9 Diya of Kindness:** the "My kind deed" text card beside the diya is removed. The chosen picture keeps its golden highlight, the choice is still saved, and it still appears beside the child's diya in 2.10.
