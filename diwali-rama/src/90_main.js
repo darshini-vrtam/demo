@@ -15,7 +15,7 @@ function mood(k){D.moodKey=k;D.setMood(MOOD[k]||{})}
 async function endCard(n){D.clearAct();const e=$('end');$('endEye').textContent=n===1?'End of Episode 1':'Diwali Stories of India';
   if(n===1){$('endTitle').textContent='Continue the adventure in Episode 2.';$('endLine').textContent='';$('endLine').hidden=true;$('bNext').hidden=false;Store.set('ep',2)}
   else{$('endTitle').textContent='DIWALI STORIES OF INDIA';$('endLine').textContent='The light lives on in you.';$('endLine').hidden=false;$('bNext').hidden=true;Store.data.done=true;Store.data.ep=1;Store.save()}
-  e.style.placeItems=n===1?(L.portrait?'start center':'start start'):'start center';e.hidden=false;
+  e.style.placeItems='center';e.hidden=false;
   /* Episode 1 flows on into Episode 2 after a pause, through the symmetrical gate patterns; the button goes straight there */
   if(n===1){const tok=D.token;await new Promise(r=>{D.nextEp=r;Timers.add(D.fast?10:14000,r)});if(tok!==D.token)throw ABORT;D.nextEp=null;e.hidden=true}
   else await new Promise(()=>{})}

@@ -12,7 +12,7 @@
 <style>
 /* Layout: one painted SVG stage; a quiet dock below it holds narration captions and controls; activity instructions sit in a clear band at the top. */
 :root{
-  --ink:#2A1608; --verm:#D9381E; --turmeric:#F2B01E; --marigold:#F4A21D; --gold:#E0A526; --leaf:#4C9A3A; --forest:#1F5E3B; --peacock:#0E7C8C; --ocean:#17407A; --indigo:#2B2A6B; --terra:#C4623A; --maroon:#6E1A22; --ivory:#F7EBD0;
+  --ink:#2A1608; --veil:rgba(247,235,208,.62); --verm:#D9381E; --turmeric:#F2B01E; --marigold:#F4A21D; --gold:#E0A526; --leaf:#4C9A3A; --forest:#1F5E3B; --peacock:#0E7C8C; --ocean:#17407A; --indigo:#2B2A6B; --terra:#C4623A; --maroon:#6E1A22; --ivory:#F7EBD0;
   --bg:#F7EBD0; --fg:#2A1608; --panel:#F7EBD0; --panel-fg:#2A1608; --line:#2A1608; --hint:#D9381E; --pill:#2B2A6B; --pill-fg:#F7EBD0; --focus:#2B2A6B;
   --font-display:"Yatra One","Palatino Linotype",Georgia,serif;
   --font-body:"Baloo 2","Trebuchet MS","Segoe UI",system-ui,sans-serif;
@@ -37,7 +37,7 @@ button:focus-visible{outline:4px solid var(--focus);outline-offset:3px}
 #hot{position:absolute;inset:0;pointer-events:none;z-index:3}
 .hs{position:absolute;left:0;top:0;pointer-events:none;background:transparent;border:0;padding:0;margin:0;opacity:0}
 .hs:focus-visible{opacity:1;outline:none;box-shadow:0 0 0 4px var(--ivory),0 0 0 8px var(--ink);border-radius:50%}
-#hud{position:absolute;top:calc(var(--bd) + 8px);right:calc(var(--bd) + 8px);display:flex;gap:8px;z-index:6}
+#hud{position:absolute;top:calc(var(--bd) + 8px);right:calc(var(--bd) + 8px);display:flex;gap:8px;z-index:9}
 .hb{width:46px;height:46px;border-radius:50%;border:3px solid var(--ink);background:var(--ivory);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0}
 .hb svg{width:24px;height:24px}
 .hb[aria-pressed="true"]{background:var(--turmeric)}
@@ -107,7 +107,8 @@ button:focus-visible{outline:4px solid var(--focus);outline-offset:3px}
 #tcard .eyebrow{color:var(--turmeric);font-size:clamp(14px,1.2vw + 6px,22px);text-shadow:0 2px 0 var(--ink)}
 #tcard h1{font-size:clamp(28px,3.6vw + 1.4vh,64px);color:var(--ivory);text-shadow:0 3px 0 var(--ink),3px 0 0 var(--ink),-3px 0 0 var(--ink),0 -3px 0 var(--ink)}
 #tcard .sub{font:700 clamp(15px,1vw + 8px,22px)/1.3 var(--font-body);color:var(--ivory);text-shadow:0 2px 0 var(--ink),2px 0 0 var(--ink),-2px 0 0 var(--ink)}
-#end{bottom:var(--dk);pointer-events:none}
+#end{bottom:var(--dk);pointer-events:none;place-items:center;background:var(--veil);animation:veilIn .8s ease both}
+@keyframes veilIn{from{background:transparent}}
 #end .panel{pointer-events:auto;max-width:520px;padding:14px 20px;gap:10px}
 #end h1{font-size:clamp(22px,2.4vw + 1vh,40px)}
 #end .line{font:700 clamp(16px,1vw + 9px,22px)/1.3 var(--font-body);margin:0}
@@ -2009,7 +2010,7 @@ function mood(k){D.moodKey=k;D.setMood(MOOD[k]||{})}
 async function endCard(n){D.clearAct();const e=$('end');$('endEye').textContent=n===1?'End of Episode 1':'Diwali Stories of India';
   if(n===1){$('endTitle').textContent='Continue the adventure in Episode 2.';$('endLine').textContent='';$('endLine').hidden=true;$('bNext').hidden=false;Store.set('ep',2)}
   else{$('endTitle').textContent='DIWALI STORIES OF INDIA';$('endLine').textContent='The light lives on in you.';$('endLine').hidden=false;$('bNext').hidden=true;Store.data.done=true;Store.data.ep=1;Store.save()}
-  e.style.placeItems=n===1?(L.portrait?'start center':'start start'):'start center';e.hidden=false;
+  e.style.placeItems='center';e.hidden=false;
   /* Episode 1 flows on into Episode 2 after a pause, through the symmetrical gate patterns; the button goes straight there */
   if(n===1){const tok=D.token;await new Promise(r=>{D.nextEp=r;Timers.add(D.fast?10:14000,r)});if(tok!==D.token)throw ABORT;D.nextEp=null;e.hidden=true}
   else await new Promise(()=>{})}

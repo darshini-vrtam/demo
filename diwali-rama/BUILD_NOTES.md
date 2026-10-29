@@ -139,3 +139,7 @@ The late frame of every scene was reviewed in landscape (1280×720) and portrait
   - a curled moustache and red lips
   - hatched triangular rays with red petals between them, inside an orange dotted band
 - **Closing scene 2.10:** uses the same background as scene 1.1 (palace, garlanded homes, lotus pond, brown courtyard and the road), at night with little lamps along the rooftops, the palace and the road. Rama, Sita and Lakshmana walk in from the left, and Sita turns to face the others when they stop.
+
+## Revision 4
+
+- **End cards:** both episode end cards ("Continue the adventure in Episode 2." and "DIWALI STORIES OF INDIA") now sit in the centre of the picture. A light ivory veil fades in over the artwork behind them so the card stands out. The mute, skip, captions and camera buttons stay above the veil.
