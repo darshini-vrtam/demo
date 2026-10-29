@@ -1199,7 +1199,7 @@ function pathBand(g,list,w,col,dot){const d=smooth(list,false);ln(g,d,K,w+8);ln(
 /* ===== EPISODE 1: THE JOURNEY OF COURAGE, scenes 1.1 to 1.4 ===== */
 
 /* ---------- Ayodhya: palace, homes with garlands, lotus pond and the road out of the city (scenes 1.1 and 2.10) ---------- */
-function ayodhyaArt(s,back,fore,o){o=o||{};const pc=LP([889,500,.62],[500,760,.5]);const pal=palace(back,{w:1000,h:220,dome:o.dome});tf(pal.g,pc[0],pc[1],pc[2]);s.pk=pal.pk;
+function ayodhyaArt(s,back,fore,o){o=o||{};const pc=o.palace||LP([889,500,.62],[500,760,.5]);const pal=palace(back,{w:1000,h:220,dome:o.dome});tf(pal.g,pc[0],pc[1],pc[2]);s.pk=pal.pk;
   const hs=(LP([[120,500,.55,0],[300,520,.62,1],[1480,520,.62,2],[1660,500,.55,3]],[[90,790,.5,0],[910,790,.5,2]])).map(([x,y,k,v])=>{const h=house(back,{w:220,h:190,v});tf(h.g,x,y,k);return{x,y,k}});
   /* garlands strung between the rooftops */
   LP([[120,346,300,346],[1480,346,1660,346]],[[90,650,250,656],[750,656,910,650]]).forEach(([a,b,c,d])=>garland(back,a,b,c,d,12));
@@ -1748,29 +1748,26 @@ function tinyLamps(g,list,k){const out=grp(g);let d='',b='';list.forEach(([x,y])
 function lampRow(x0,y0,x1,y1,n){const a=[];for(let i=0;i<n;i++){const u=n>1?i/(n-1):0;a.push([lerp(x0,x1,u),lerp(y0,y1,u)])}return a}
 
 /* ---------- Scene 2.6: Rama Returns to Ayodhya ---------- */
-function scReturn(){const s=mkScene('2.6',{frame:'gold'});artPart(s);const back=grp(s.comp),glow=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp);
-  skyBg(s,{kind:'night',horizon:[560,900],ground:['flower',P.gold,P.maroon,1],stars:14,clouds:[[.2,.3,220],[.78,.26,240]]});
+function scReturn(){const s=mkScene('2.6',{frame:'gold'});artPart(s);const back=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp);
+  /* the same Ayodhya as scene 1.1, at night, with a larger palace */
+  skyBg(s,{kind:'night',horizon:[470,760],ground:['flower',P.gold,P.brown,.9],stars:14,clouds:[[.14,.22,250],[.84,.18,300]]});
   const rama=cast(s,'rama',CAST.rama,mid),sita=cast(s,'sita',CAST.sita,mid),lak=cast(s,'lak',CAST.lak,mid),han=cast(s,'hanuman',CAST.hanuman,mid);
   const folk=[];for(let i=0;i<8;i++)folk.push(cast(s,'folk',personCfg(300+i,{child:i%3===1}),mid));folk.forEach(f=>mid.insertBefore(f.g,mid.firstChild));
-  s.pos=()=>LP({gate:[889,470],sita:[780,740,1,1],rama:[930,742,1,1],lak:[1080,746,.96,-1],han:[1290,748,.95,-1],start:[[860,500],[889,500],[920,500]],halo:[930,430,280],
-      folk:[[150,700,.74,1],[270,712,.6,1],[390,700,.74,1],[520,712,.6,1],[1430,712,.6,-1],[1540,700,.74,-1],[1650,712,.6,-1],[1740,700,.74,-1]],fd:[[200,800],[460,800],[1320,800],[1580,800]]},
-    {gate:[500,700],sita:[330,1170,1,1],rama:[500,1172,1,1],lak:[660,1176,.96,-1],han:[850,1180,.92,-1],start:[[470,740],[500,740],[530,740]],halo:[500,700,300],
-      folk:[[80,1400,.68,1],[200,1412,.56,1],[320,1400,.68,1],[680,1400,.68,-1],[800,1412,.56,-1],[920,1400,.68,-1],[150,980,.5,1],[850,980,.5,-1]],fd:[[120,1490],[880,1490]]});
-  onOrient(s,[back,glow,fore],P_=>{const p=s.pos();const C=cityArt(s,back,{dome:P.gold});s.C=C;
-    /* lamps everywhere: doorways, windows, rooftops and the street */
-    const L_=[];C.hs.forEach(({x,y,k})=>{L_.push(...lampRow(x-100*k,y-190*k-4,x+100*k,y-190*k-4,6));L_.push(...lampRow(x-90*k,y+6,x+90*k,y+6,5))});
-    const pc=C.c.palace;L_.push(...lampRow(pc[0]-480*pc[2],pc[1]-250*pc[2],pc[0]+480*pc[2],pc[1]-250*pc[2],14));s.lamps=tinyLamps(back,L_,LP(1.2,1.2));
-    /* the gates of the palace stand open, glowing */
-    const ag=grp(back,{transform:`translate(${pc[0]} ${pc[1]}) scale(${pc[2]})`});shp(ag,'M-68 0V-124Q-68 -215 0 -215Q68 -215 68 -124V0Z',P.turmeric,4);s.doors=[-1,1].map(sx=>{const d=grp(ag);shp(d,`M0 0V-200H${sx*68}V0Z`,Pat.u('flower',P.gold,P.maroon,.8),3.5);return{d,sx}});
-    /* rangoli on the ground */
-    (P_?[[200,1290,60],[800,1290,60]]:[[300,770,64],[1480,770,64],[889,640,54]]).forEach(([x,y,r],i)=>{const R_=rangoli(back,r,i+5,.45);tf(R_.g,x,y,1)});
-    /* flat gold glow shapes with patterned rays behind the family; they expand at the peak */
-    s.halo=grp(glow,{transform:`translate(${p.halo[0]} ${p.halo[1]})`});rays(s.halo,p.halo[2]*.55,p.halo[2],24,P.turmeric,5);halo(s.halo,p.halo[2]*.55,{bw:26,col:P.gold});petalRing(s.halo,p.halo[2]*.4,16,P.marigold,P.turmeric,40);op(s.halo,s.haloK||0);
-    /* distinct lit diyas in the foreground */
-    s.fd=p.fd.map(([x,y])=>{const d=keepArt(s,diya(fore,{lit:1,light:1,decor:1}));d.x=x;d.y=y;d.s=LP(.6,.55);return d});
+  s.pos=()=>LP({palace:[889,530,.8],sita:[780,740,1,1],rama:[930,742,1,1],lak:[1080,746,.96,-1],han:[1290,748,.95,-1],start:[[862,548],[889,548],[916,548]],
+      folk:[[150,640,.7,1],[260,652,.58,1],[370,640,.7,1],[490,652,.58,1],[1420,652,.58,-1],[1530,640,.7,-1],[1640,652,.58,-1],[1740,640,.7,-1]],fd:[[200,772],[600,776],[1350,774],[1600,770]]},
+    {palace:[500,770,.7],sita:[330,1170,1,1],rama:[500,1172,1,1],lak:[660,1176,.96,-1],han:[850,1180,.92,-1],start:[[475,790],[500,790],[525,790]],
+      folk:[[70,1320,.68,1],[190,1335,.56,1],[300,1320,.68,1],[140,990,.5,1],[260,1000,.45,1],[600,990,.5,-1],[740,1000,.45,-1],[860,990,.5,-1]],fd:[[160,1462],[560,1466]]});
+  onOrient(s,[back,fore],P_=>{const p=s.pos();const A=ayodhyaArt(s,back,fore,{dome:P.gold,palace:p.palace});const pc=A.pc;
+    /* little lamps along the rooftops, windows and palace */
+    const L_=[];A.hs.forEach(({x,y,k})=>{L_.push(...lampRow(x-100*k,y-190*k-4,x+100*k,y-190*k-4,6));L_.push(...lampRow(x-90*k,y+6,x+90*k,y+6,5))});
+    L_.push(...lampRow(pc[0]-480*pc[2],pc[1]-250*pc[2],pc[0]+480*pc[2],pc[1]-250*pc[2],14));s.lamps=tinyLamps(back,L_,LP(1.2,1.2));
+    /* the palace gates, which swing open */
+    const ag=grp(back,{transform:`translate(${pc[0]} ${pc[1]}) scale(${pc[2]})`});s.doors=[-1,1].map(sx=>{const d=grp(ag);shp(d,`M0 0V-200H${sx*68}V0Z`,Pat.u('flower',P.gold,P.maroon,.8),3.5);return{d,sx}});
+    /* lit diyas in the foreground: flames only */
+    s.fd=p.fd.map(([x,y])=>{const d=keepArt(s,diya(fore,{lit:1,light:0,decor:1}));d.x=x;d.y=y;d.s=LP(.6,.55);return d});
     folk.forEach((f,i)=>put(f,p.folk[i]));put(han,p.han);if(!s.entered){[sita,rama,lak].forEach((f,i)=>{f.x=p.start[i][0];f.y=p.start[i][1];f.s=.45})}else{put(sita,p.sita);put(rama,p.rama);put(lak,p.lak)}});
   s.petals=drift(s,22,LP([0,0,1778,700],[0,0,1000,1300]));
-  s.doorK=0;s.tick=(dt,t)=>{(s.doors||[]).forEach(o=>tf(o.d,0,0,1,0,1-s.doorK*.92,1));if(s.halo){op(s.halo,s.haloK||0);const p=s.pos().halo;tf(s.halo,p[0],p[1],.4+.6*(s.haloK||0),t*3*MV())}
+  s.doorK=0;s.tick=(dt,t)=>{(s.doors||[]).forEach(o=>tf(o.d,0,0,1,0,1-s.doorK*.92,1));(s.pk||[]).forEach((pk,i)=>pk.set(.3+.35*(.5+.5*Math.sin(t*1.3+i*1.7))*MV()));
     if(s.lamps)op(s.lamps.fl,.85+.15*Math.sin(t*3.1));
     if(Cam.smile&&s.entered&&!s.smiled){s.smiled=true;rama.set('smile',500);sita.set('smile',500);Timers.add(4000,()=>s.smiled=false)}};
   s.camMouth=()=>{};return s}

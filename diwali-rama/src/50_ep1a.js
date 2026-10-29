@@ -1,7 +1,7 @@
 /* ===== EPISODE 1: THE JOURNEY OF COURAGE, scenes 1.1 to 1.4 ===== */
 
 /* ---------- Ayodhya: palace, homes with garlands, lotus pond and the road out of the city (scenes 1.1 and 2.10) ---------- */
-function ayodhyaArt(s,back,fore,o){o=o||{};const pc=LP([889,500,.62],[500,760,.5]);const pal=palace(back,{w:1000,h:220,dome:o.dome});tf(pal.g,pc[0],pc[1],pc[2]);s.pk=pal.pk;
+function ayodhyaArt(s,back,fore,o){o=o||{};const pc=o.palace||LP([889,500,.62],[500,760,.5]);const pal=palace(back,{w:1000,h:220,dome:o.dome});tf(pal.g,pc[0],pc[1],pc[2]);s.pk=pal.pk;
   const hs=(LP([[120,500,.55,0],[300,520,.62,1],[1480,520,.62,2],[1660,500,.55,3]],[[90,790,.5,0],[910,790,.5,2]])).map(([x,y,k,v])=>{const h=house(back,{w:220,h:190,v});tf(h.g,x,y,k);return{x,y,k}});
   /* garlands strung between the rooftops */
   LP([[120,346,300,346],[1480,346,1660,346]],[[90,650,250,656],[750,656,910,650]]).forEach(([a,b,c,d])=>garland(back,a,b,c,d,12));

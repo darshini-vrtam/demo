@@ -159,3 +159,11 @@ The late frame of every scene was reviewed in landscape (1280×720) and portrait
   - The palace is larger and matches 2.4 (0.8× landscape, 0.7× portrait). The last diya moves to the larger palace entrance.
   - The gold light patterns and glow rings around each diya are removed. A tap now lights only the flame.
   - When all twelve are lit, the windows and the palace doorway still turn warm gold.
+
+## Revision 7
+
+- **2.6 Rama Returns to Ayodhya:**
+  - Rebuilt on the same Ayodhya background as scene 1.1, at night: the garlanded homes, lotus pond, brown courtyard and the road at the right.
+  - The palace is larger (0.8× landscape, 0.7× portrait).
+  - The orange central road, the central rangoli, the gold halo and rays, and the glow rings around the diyas are removed. Foreground diyas show only their flames.
+  - The palace gates still swing open, and Rama, Sita and Lakshmana still walk out from them.
