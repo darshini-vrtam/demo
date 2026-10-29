@@ -19,30 +19,37 @@ function petalRing(parent,r,n,col,col2,len){const g=grp(parent);len=len||r*.32;f
     shp(p,`M0 0C${-len*.4} ${-len*.3} ${-len*.3} ${-len*.8} 0 ${-len}C${len*.3} ${-len*.8} ${len*.4} ${-len*.3} 0 0Z`,i%2?col2:col,2.6);ln(p,`M0 ${-len*.15}V${-len*.75}`,K,1.3)}return g}
 
 /* ---- clouds: flat ivory bodies with curled decorative edges and parallel inner lines ---- */
-function cloudD(w){const h=w*.34;return`M${-w/2} ${h*.3}C${-w*.52} ${-h*.1} ${-w*.36} ${-h*.3} ${-w*.24} ${-h*.12}C${-w*.2} ${-h*.62} ${w*.12} ${-h*.72} ${w*.14} ${-h*.24}C${w*.26} ${-h*.46} ${w*.5} ${-h*.3} ${w*.44} ${h*.02}C${w*.54} ${h*.1} ${w*.52} ${h*.3} ${w*.42} ${h*.3}Z`}
-function cloud(parent,w,col,line){const g=grp(parent);shp(g,cloudD(w),col||P.ivory,3.5);const h=w*.34;
-  for(let k=0;k<3;k++)ln(g,`M${-w*.34} ${h*(.18-k*.18)}Q0 ${h*(.34-k*.18)} ${w*.34} ${h*(.18-k*.18)}`,line||P.peacock,2.2);
-  /* curls at both ends */
-  ln(g,`M${-w*.5} ${h*.3}c${-w*.06} 0 ${-w*.08} ${-h*.3} ${-w*.02} ${-h*.32}c${w*.04} 0 ${w*.04} ${h*.14} 0 ${h*.14}`,K,3);
-  ln(g,`M${w*.42} ${h*.3}c${w*.07} 0 ${w*.09} ${-h*.3} ${w*.03} ${-h*.34}c${-w*.04} 0 ${-w*.04} ${h*.14} 0 ${h*.14}`,K,3);return g}
+function spiralD(r,turns){let d='';const n=Math.round(26*turns);for(let i=0;i<=n;i++){const t=i/n;const a=t*turns*TAU-Math.PI/2;const rr=r*(1-t*.9);d+=(i?'L':'M')+f1(Math.cos(a)*rr)+' '+f1(Math.sin(a)*rr)}return d}
+const PUFFS=[[-.36,.06,.16],[.4,.07,.14],[-.17,-.06,.21],[.22,-.04,.2],[.03,-.13,.24],[-.08,.1,.17],[.14,.11,.16]];
+function cloud(parent,w,col,line){const g=grp(parent);PUFFS.forEach(([x,y,r])=>circ(g,x*w,y*w,r*w+3,K,0));
+  PUFFS.forEach(([x,y,r])=>{const p=grp(g,{transform:`translate(${f1(x*w)} ${f1(y*w)})`});circ(p,0,0,r*w,col||P.ivory,3.2);ln(p,spiralD(r*w*.78,2.4),line||P.ocean,Math.max(2.4,w*.011))});return g}
 
 /* ---- skies: every sky is patterned (dots by day, stars at dusk and night) ---- */
-const SKY={day:{bg:P.ivory,dot:P.turmeric,pat:'fdots',ps:1.2,cloud:P.ivory,line:P.marigold},gold:{bg:P.turmeric,dot:P.marigold,pat:'fdots',ps:1.2,cloud:P.ivory,line:P.marigold},
-  forest:{bg:P.ivory,dot:P.leaf,pat:'dots',ps:1.3,cloud:P.ivory,line:P.leaf},shadow:{bg:P.peacock,dot:P.ivory,pat:'dots',ps:1.3,cloud:P.ivory,line:P.peacock},
-  ocean:{bg:P.peacock,dot:P.ivory,pat:'dots',ps:1.4,cloud:P.ivory,line:P.peacock},lanka:{bg:P.maroon,dot:P.gold,pat:'stars',ps:1,cloud:P.terra,line:P.gold},
-  dusk:{bg:P.peacock,dot:P.ivory,pat:'stars',ps:1,cloud:P.ivory,line:P.peacock},night:{bg:P.indigo,dot:P.ivory,pat:'stars',ps:1,cloud:P.ivory,line:P.indigo},
-  blue:{bg:P.sky,dot:P.ivory,pat:'dots',ps:1.3,cloud:P.ivory,line:P.ocean},swirl:{bg:P.peacock,dot:P.ivory,pat:'curl',ps:1.1,cloud:P.ivory,line:P.peacock},
-  warm:{bg:P.marigold,dot:P.turmeric,pat:'fdots',ps:1.2,cloud:P.ivory,line:P.verm}};
+const SKY={day:{bg:P.sky,dot:P.ivory,pat:'dots',ps:1.3,cloud:P.ivory,line:P.sky},gold:{bg:P.sky,dot:P.ivory,pat:'fdots',ps:1.2,cloud:P.ivory,line:P.sky},
+  forest:{bg:P.sky,dot:P.ivory,pat:'dots',ps:1.3,cloud:P.ivory,line:P.sky},shadow:{bg:P.ocean,dot:P.ivory,pat:'dots',ps:1.3,cloud:P.sky,line:K},
+  ocean:{bg:P.sky,dot:P.ivory,pat:'dots',ps:1.4,cloud:P.ivory,line:P.sky},lanka:{bg:P.navy,dot:P.gold,pat:'stars',ps:1,cloud:P.sky,line:K},
+  dusk:{bg:P.ocean,dot:P.ivory,pat:'stars',ps:1,cloud:P.sky,line:K},night:{bg:P.navy,dot:P.ivory,pat:'stars',ps:1,cloud:P.sky,line:K},
+  warm:{bg:P.sky,dot:P.ivory,pat:'fdots',ps:1.2,cloud:P.ivory,line:P.sky},blue:{bg:P.sky,dot:P.ivory,pat:'dots',ps:1.3,cloud:P.ivory,line:P.sky},
+  swirl:{bg:P.sky,dot:P.ivory,pat:'curl',ps:1.1,cloud:P.ivory,line:P.sky},ivory:{bg:P.ivory,dot:P.turmeric,pat:'fdots',ps:1.2,cloud:P.ivory,line:P.sky}};
 function sky(parent,W,H,o){o=o||{};const S=SKY[o.kind||'day'];const g=grp(parent);el('rect',{x:-4,y:-4,width:W+8,height:H+8,fill:Pat.u(S.pat,S.dot,S.bg,S.ps)},g);
   const r=rng(o.seed||3),stars=[];const night=/dusk|night|lanka/.test(o.kind||'');for(let i=0;i<(o.stars==null?(night?12:0):o.stars);i++){const x=r()*W,y=r()*H*.8;const s=grp(g);star4(s,0,0,7+r()*6,i%3?P.ivory:P.turmeric);tf(s,x,y,1);stars.push({g:s,x,y,ph:r()*TAU})}
   const clouds=[];(o.clouds||[]).forEach(([u,v,w])=>{const c=cloud(g,w,S.cloud,S.line);clouds.push({g:c,x:u*W,y:v*H,ph:r()*TAU});tf(c,u*W,v*H,1)});
   return{g,stars,clouds,drift:0,update(t){const m=MV();clouds.forEach(c=>tf(c.g,c.x+Math.sin(t*.05+c.ph)*40*m+this.drift,c.y,1));
     stars.forEach(s=>{const k=.75+.25*Math.sin(t*.9+s.ph)*m;tf(s.g,s.x,s.y,k)})}}}
-/* the patterned sun: turmeric disc, petal ring, decorative rays that slowly turn */
-function sun(parent,r){const g=grp(parent);const ry=grp(g);
-  for(let i=0;i<16;i++){const a=i/16*360;const p=grp(ry,{transform:`rotate(${a})`});shp(p,`M${-r*.12} ${-r*1.02}L0 ${-r*(i%2?1.42:1.62)}L${r*.12} ${-r*1.02}Z`,i%2?P.verm:P.marigold,3)}
-  const pr=petalRing(g,r*1.02,24,P.turmeric,P.marigold,r*.2);circ(g,0,0,r,P.turmeric,4.5);circ(g,0,0,r*.78,'none',3,{stroke:P.verm});
-  dots(g,ellD(0,0,r*.66,r*.66),P.verm,5,13);circ(g,0,0,r*.42,P.marigold,3);ln(g,ellD(0,0,r*.28,r*.28),K,2);circ(g,0,0,r*.12,P.verm,2);
+/* the patterned sun with a friendly face: hatched triangular rays, red petals between them, an orange outer band */
+function sun(parent,r){const g=grp(parent);const ry=grp(g);const k=r/100;
+  shp(ry,`${ellD(0,0,r*1.72,r*1.72)}${ellD(0,0,r*1.52,r*1.52)}`,P.marigold,3.5,{'fill-rule':'evenodd'});dots(ry,ellD(0,0,r*1.62,r*1.62),P.verm,r*.07,r*.16);
+  for(let i=0;i<12;i++){const a=i/12*360;const t=grp(ry,{transform:`rotate(${a})`});shp(t,`M${-r*.26} ${-r*.97}L0 ${-r*1.52}L${r*.26} ${-r*.97}Z`,Pat.u('hatch',K,P.ivory,.55),3);
+    const p=grp(ry,{transform:`rotate(${a+15})`});shp(p,`M0 ${-r*.98}C${-r*.16} ${-r*1.08} ${-r*.12} ${-r*1.36} 0 ${-r*1.4}C${r*.12} ${-r*1.36} ${r*.16} ${-r*1.08} 0 ${-r*.98}Z`,P.verm,2.6)}
+  circ(g,0,0,r,P.turmeric,4.5);dots(g,ellD(0,0,r*.9,r*.9),P.marigold,r*.05,r*.12);
+  const f=grp(g,{transform:`scale(${f3(k)})`});
+  /* tilak, brows, lids with hatched lashes, eyes */
+  shp(f,'M-9 -74L-6 -42Q0 -36 6 -42L9 -74L4 -74L2 -46Q0 -43 -2 -46L-4 -74Z',P.verm,1.6);circ(f,0,-32,6,P.verm,1.6);
+  [-1,1].forEach(sx=>{const e=grp(f,{transform:`translate(${sx*38} -6)`});ln(e,'M-28 -24Q0 -40 28 -24',K,3);shp(e,'M-27 -2Q0 -30 27 -2Q0 -16 -27 -2Z',Pat.u('vlines',K,P.gold,.5),2.4);
+    shp(e,'M-26 0Q0 -18 26 0Q0 14 -26 0Z',P.ivory,3);circ(e,sx*2,-1,9,K,0);circ(e,sx*2-3,-4,2.6,P.ivory,0)});
+  ln(f,'M-3 -14V14Q0 20 7 16',K,3);
+  shp(f,'M0 30C-14 23 -34 25 -46 36C-53 43 -48 53 -39 48C-34 40 -22 37 -10 40C-4 40 0 36 0 36C0 36 4 40 10 40C22 37 34 40 39 48C48 53 53 43 46 36C34 25 14 23 0 30Z',K,0);
+  shp(f,'M-13 47Q0 40 13 47Q0 58 -13 47Z',P.verm,2);
   return{g,ry,update(t){tf(ry,0,0,1,t*3*MV())}}}
 
 /* ---- water life ---- */

@@ -1,5 +1,16 @@
 /* ===== EPISODE 1: THE JOURNEY OF COURAGE, scenes 1.1 to 1.4 ===== */
 
+/* ---------- Ayodhya: palace, homes with garlands, lotus pond and the road out of the city (scenes 1.1 and 2.10) ---------- */
+function ayodhyaArt(s,back,fore,o){o=o||{};const pc=LP([889,500,.62],[500,760,.5]);const pal=palace(back,{w:1000,h:220,dome:o.dome});tf(pal.g,pc[0],pc[1],pc[2]);s.pk=pal.pk;
+  const hs=(LP([[120,500,.55,0],[300,520,.62,1],[1480,520,.62,2],[1660,500,.55,3]],[[90,790,.5,0],[910,790,.5,2]])).map(([x,y,k,v])=>{const h=house(back,{w:220,h:190,v});tf(h.g,x,y,k);return{x,y,k}});
+  /* garlands strung between the rooftops */
+  LP([[120,346,300,346],[1480,346,1660,346]],[[90,650,250,656],[750,656,910,650]]).forEach(([a,b,c,d])=>garland(back,a,b,c,d,12));
+  const pd=keepArt(s,pond(fore,LP(320,260),LP(80,76)));tf(pd.g,LP(270,180),LP(730,1410),1);
+  /* the road that leads out of the city */
+  const road=LP([[960,800],[1180,760],[1420,720],[1800,700]],[[620,1500],[760,1400],[900,1330],[1040,1300]]);pathBand(back,road,LP(70,80),P.marigold);
+  frameFlora(fore,LP([[60,806,170],[1720,806,180],[1590,812,130],[520,816,110,P.verm]],[[60,1496,170],[950,1496,170],[400,1505,120]]));
+  return{pc,hs,road}}
+
 /* ---------- Scene 1.1: The Golden City of Ayodhya ---------- */
 function scAyodhya(){const s=mkScene('1.1',{frame:'lotus'});artPart(s);const back=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp);
   skyBg(s,{kind:'blue',horizon:[470,760],sun:[[1180,200],[700,300]],sunR:118,ground:['flower',P.gold,P.brown,.9],clouds:[[.14,.22,250],[.84,.18,300],[.42,.3,170]]});s.sunRise=260;
@@ -8,14 +19,7 @@ function scAyodhya(){const s=mkScene('1.1',{frame:'lotus'});artPart(s);const bac
   mid.insertBefore(grp(mid),mid.firstChild);folk.forEach(f=>mid.insertBefore(f.g,rama.g));
   s.pos=()=>LP({sita:[700,742,1,1],rama:[860,742,1,-1],lak:[1010,746,1,-1],folk:[[420,610,.5,1],[480,616,.42,1],[540,606,.5,1],[1240,606,.5,-1],[1300,616,.42,-1],[1360,610,.5,-1]]},
     {sita:[330,1232,1.05,1],rama:[520,1232,1.05,-1],lak:[700,1240,1,-1],folk:[[130,968,.55,1],[200,978,.45,1],[270,964,.55,1],[730,964,.55,-1],[800,978,.45,-1],[870,968,.55,-1]]});
-  onOrient(s,[back,fore],P_=>{const pal=palace(back,{w:1000,h:220});tf(pal.g,LP(889,500),LP(470,760),LP(.62,.5));s.pk=pal.pk;
-    (LP([[120,500,.55,0],[300,520,.62,1],[1480,520,.62,2],[1660,500,.55,3]],[[90,790,.5,0],[910,790,.5,2]])).forEach(([x,y,k,v])=>{const h=house(back,{w:220,h:190,v});tf(h.g,x,y,k)});
-    /* garlands strung across the courtyard */
-    LP([[120,346,300,346],[1480,346,1660,346]],[[90,650,250,656],[750,656,910,650]]).forEach(([a,b,c,d])=>garland(back,a,b,c,d,12));
-    const pd=keepArt(s,pond(fore,LP(320,260),LP(80,76)));tf(pd.g,LP(270,180),LP(730,1410),1);
-    /* the road that leads out of the city */
-    pathBand(back,LP([[960,800],[1180,760],[1420,720],[1800,700]],[[620,1500],[760,1400],[900,1330],[1040,1300]]),LP(70,80),P.marigold);
-    frameFlora(fore,LP([[60,806,170],[1720,806,180],[1590,812,130],[520,816,110,P.verm]],[[60,1496,170],[950,1496,170],[400,1505,120]]));
+  onOrient(s,[back,fore],P_=>{ayodhyaArt(s,back,fore);
     const p=s.pos();put(rama,p.rama);put(sita,p.sita);put(lak,p.lak);folk.forEach((f,i)=>put(f,p.folk[i]))});
   s.tick=(dt,t)=>{(s.pk||[]).forEach((pk,i)=>pk.set(.3+.35*(.5+.5*Math.sin(t*1.3+i*1.7))*MV()))};
   drift(s,16,LP([0,0,1778,810],[0,0,1000,1500]));folk.forEach((f,i)=>f.set(i%2?'wait':'idle',0));return s}
@@ -102,54 +106,6 @@ async function shot1_2(){mood('warm');Amb.set('forest');let s=D.scene;if(!s||s.i
   await say("With Lakshmana beside him, Rama began searching for her.",[["Lakshmana beside",()=>Lk.set('pointAhead',700)],["searching",()=>{R.turn(-1);Lk.turn(-1);goWalk(R,R.x-LP(300,180),R.y,3600);goWalk(Lk,Lk.x-LP(300,180),Lk.y,3600)}]]);
   await hold(1800);await D.late()}
 
-/* ---------- Activity 1.3: Follow the Forest Clues ---------- */
-function scClues(){const s=mkScene('1.3',{frame:'forest'});artPart(s);const back=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp),fx=grp(s.comp);
-  skyBg(s,{kind:'forest',horizon:[420,700],ground:['leafy',P.leaf,P.forest,.9],clouds:[[.3,.2,220],[.8,.24,200]]});
-  const rama=cast(s,'rama',CAST.rama,mid),lak=cast(s,'lak',CAST.lak,mid);
-  s.pos=()=>LP({rama:[300,740,.92,1],lak:[150,748,.9,1],clue:[[470,730,90],[1000,690,110],[1380,520,110]],wrong:[[690,470,100]],
-      fork:[[889,830],[889,640],[860,560]],good:[[889,640],[1000,690],[1160,640],[1300,560],[1380,500]],bad:[[860,580],[760,500],[680,450]]},
-    {rama:[200,1420,1,1],lak:[840,1430,1,-1],clue:[[430,1300,90],[650,1030,110],[720,700,110]],wrong:[[250,800,110]],
-      good:[[500,1180],[650,1030],[700,880],[720,700],[730,600]],bad:[[500,1180],[380,960],[250,800]]});
-  const C={found:[false,false,false],objs:[],tg:[],pulse:0};s.C=C;
-  onOrient(s,[back,fore,fx],P_=>{const p=s.pos();forestArt(s,back,fore,{deer:false,stream:true,skip:P_?[3]:[3,4]});
-    /* the fork: the overgrown side (left) and the clear path (right) between two patterned trees */
-    pathBand(back,P_?[[500,1520],[500,1300],[500,1180]]:[[889,830],[889,700],[889,640]],LP(90,96),P.marigold);
-    pathBand(back,p.bad,LP(70,80),P.terra);pathBand(back,p.good,LP(80,86),P.marigold);
-    const ov=grp(back);p.bad.slice(1).forEach(([x,y],i)=>{const b=grp(ov,{transform:`translate(${x} ${y})`});bush(b,LP(130,140),P.forest)});
-    const tr=P_?[[600,760,380],[860,740,400]]:[[1260,520,380],[1520,520,420]];tr.forEach(([x,y,h],i)=>{const T_=keepArt(s,tree(back,{h,seed:40+i,leaf:[P.leaf,P.forest],flowers:P.marigold,nf:6}));tf(T_.g,x,y,1)});
-    /* the three clues, each in its own area */
-    C.objs=[];const fl=clueFlower(back);tf(fl,p.clue[0][0],p.clue[0][1],1.2);const fp=cluePrints(back);tf(fp,p.clue[1][0],p.clue[1][1],1.15,LP(-14,-50));
-    const pg=grp(back);const pd=smooth(P_?[[-60,60],[-20,0],[10,-50],[40,-90]]:[[-80,40],[-30,0],[20,-30],[70,-50]],false);ln(pg,pd,K,40);ln(pg,pd,P.marigold,32);dots(pg,pd,P.verm,6,14);tf(pg,p.clue[2][0],p.clue[2][1],1);
-    [fl,fp,pg].forEach((g,i)=>{const glow=grp(fx);rings(glow,p.clue[i][2]*.8,{n:2,step:.18,w:5,c1:P.turmeric,c2:P.ivory,dots:16});tf(glow,p.clue[i][0],p.clue[i][1],1);op(glow,C.found[i]?1:0);C.objs[i]={g,glow}});
-    C.route=grp(fx);const rt=footTrail(C.route,p.good,LP(9,9));op(C.route,C.joined?1:0);
-    C.tg=p.clue.map(c=>{const t_=target(fx,c[2]);t_.x=c[0];t_.y=c[1];return t_});
-    frameFlora(fore,P_?[[40,1496,150],[960,1496,150,P.verm]]:[[40,806,150],[1740,806,160,P.verm]]);put(rama,p.rama);put(lak,p.lak)});
-  s.F=fxLayer(s);s.hand=demoHand(s);
-  s.tick=(dt,t)=>{const open=C.found.map((f,i)=>f?-1:i).filter(i=>i>=0);C.tg.forEach((t_,i)=>{const on=C.active&&!C.found[i]&&open.length&&open[Math.floor(t/1.6)%open.length]===i;t_.on=lerp(t_.on,on||C.hint===i?1:C.active&&!C.found[i]?.25:0,.12);t_.update(t)});
-    C.objs.forEach((o,i)=>{if(C.found[i])tf(o.glow,s.pos().clue[i][0],s.pos().clue[i][1],1+.05*Math.sin(t*2)*MV())});if(C.route)op(C.route,C.joinK||0)};
-  s.hots=()=>C.active?s.pos().clue.map((c,i)=>C.found[i]?null:{id:'clue'+i,x:c[0],y:c[1],r:c[2],label:['A fallen flower','Footprints','A path between two trees'][i],on:()=>s.tapClue(i)}).filter(Boolean):[];
-  s.tapClue=i=>{if(!C.active||C.found[i])return;C.found[i]=true;const p=s.pos();AU.sfx('chime');s.F.burst(p.clue[i][0],p.clue[i][1]-30,8,'spark',3);op(C.objs[i].glow,1);
-    C.hint=-1;const next=C.found.findIndex(f=>!f);if(next>=0)s.F.trail([p.clue[i][0],p.clue[i][1]],[p.clue[next][0],p.clue[next][1]],P.turmeric);
-    rama.set(i===0?'lookdown':'gestureClue',500);lak.set(i===2?'pointAhead':'smile',500);Hot.dirty=true;D.counter(`${C.found.filter(Boolean).length} of 3 clues`);if(C.found.every(Boolean))C.done&&C.done()};
-  s.down=pt=>{if(!C.active)return;const p=s.pos();let best=-1,bd=1e9;p.clue.forEach((c,i)=>{const d=Math.hypot(pt.x-c[0],pt.y-c[1]);if(d<c[2]*1.15&&d<bd&&!C.found[i]){bd=d;best=i}});
-    if(best>=0){s.tapClue(best);return}if(p.clue.some((c,i)=>C.found[i]&&Math.hypot(pt.x-c[0],pt.y-c[1])<c[2]))return;
-    const w=p.wrong[0];const tangled=Math.hypot(pt.x-w[0],pt.y-w[1])<w[2]*1.6;const now=T.now;if(now-(C.lastNudge||-1e9)<2600)return;C.lastNudge=now;AU.sfx('soft');
-    const nx=C.found.findIndex(f=>!f);C.hint=nx;Timers.add(2600,()=>{if(C.hint===nx)C.hint=-1});lak.set('gestureClue',400);
-    D.say([['lak',tangled?"That side is all tangled up. Let's look for another clue!":"Look closely, a clue is waiting nearby. Let's try again!"]]).catch(()=>{})};
-  return s}
-async function shot1_3(){mood('inviting');Amb.set('forest');const s=D.setScene(scClues(),900);const {rama,lak}=s.cast;const C=s.C;rama.set('lookdown',0);lak.set('gestureClue',0);
-  await hold(800);
-  await say("Oh, young explorers! Can you help Rama and Lakshmana discover which way Sita went? Look carefully. Which clues can help us follow the path?");
-  D.instr('Tap the three clues: a flower, footprints and the path','0 of 3 clues','tap');C.active=true;Hot.dirty=true;
-  await D.task({hint:"Can you spot the fallen flower, the footprints and the path between the trees?",hintWho:'lak',
-    start(t){C.done=()=>t.finish()},demo(){const i=C.found.findIndex(f=>!f);if(i>=0){C.hint=i;const c=s.pos().clue[i];s.hand.tap(c[0],c[1],2)}},
-    assist(t){const step=()=>{if(t.done)return;const i=C.found.findIndex(f=>!f);if(i<0)return;s.tapClue(i);Timers.add(2400,step)};step()}});
-  C.active=false;D.clearAct();Hot.dirty=true;await hold(600);
-  /* the footprints and the path join into one glowing route */
-  C.joined=true;AU.sfx('success');await D.tw(C,{joinK:1},1400);rama.set('idle',400);rama.nod();lak.set('pointAhead',600);await hold(700);
-  await say("You found the clues! Every little discovery brings Rama one step closer to finding Sita. Let’s keep going!",[["closer",()=>{rama.set('determined',500)}]]);
-  rama.turn(1);goWalk(rama,LP(1300,700),LP(560,880),5200);await D.wait(500);goWalk(lak,LP(1160,620),LP(620,980),5200);await hold(2600);await D.late()}
-
 /* ---------- Scene 1.4: A Brave Friend Appears (meeting, the leap, the Ashoka grove) ---------- */
 function scMeet(){const s=mkScene('1.4a',{frame:'forest'});artPart(s);const back=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp);
   skyBg(s,{kind:'forest',horizon:[440,760],ground:['leafy',P.leaf,P.forest,.9],clouds:[[.2,.2,240],[.7,.15,300]]});
@@ -166,7 +122,7 @@ function scLeapSea(){const s=mkScene('1.4s',{frame:'fish'});artPart(s);const bac
   skyBg(s,{kind:'ocean',horizon:[520,860],sea:'day',seaN:5,clouds:[[.12,.24,260],[.5,.16,320],[.86,.3,240]]});
   const han=cast(s,'hanuman',CAST.hanuman,mid);
   onOrient(s,[back],P_=>{const ls=lankaSkyline(back,LP(360,300),LP(150,150),{n:5});tf(ls,LP(1500,520),LP(780,860),1)});
-  s.k=0;s.tick=()=>{const a=LP([120,520],[120,900]),b=LP([1480,440],[780,760]);const k=s.k;han.x=lerp(a[0],b[0],k);han.y=lerp(a[1],b[1],k)-Math.sin(k*Math.PI)*LP(360,420);han.s=LP(.7,.7)};
+  s.k=0;s.tick=()=>{const a=LP([180,640],[170,1120]),b=LP([1400,580],[800,920]);const k=s.k;han.x=lerp(a[0],b[0],k);han.y=lerp(a[1],b[1],k)-Math.sin(k*Math.PI)*LP(250,300);han.s=LP(.75,.8)};
   han.set('leap',0);return s}
 function scGrove(o){o=o||{};const s=mkScene(o.id||'1.4g',{frame:'lotus'});artPart(s);const back=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp),top=grp(s.comp);
   skyBg(s,{kind:'lanka',horizon:[450,780],ground:['flower',P.leaf,P.forest,1],clouds:[[.2,.24,240],[.78,.16,260]],stars:6});
@@ -192,8 +148,8 @@ async function shot1_4(){mood('energetic');Amb.set('forest');const s=D.setScene(
   await say("Hanuman promised to help find Sita.",[["promised",()=>{han.set('speakGently',600);rama.set('bless',700)}]]);
   /* Rama gives Hanuman his ring */
   han.hold('f','ring',{r:13});han.set('standRing',600);rama.set('idle',600);AU.sfx('sparkle');await hold(900);
-  await say("With courage in his heart, he leapt across the mighty ocean towards Lanka.",[["courage",()=>{han.turn(1);han.set('prepLeap',700)}],["leapt",()=>{han.set('leap',300);AU.sfx('whoosh');D.go(han,{x:LP(1950,1250),y:LP(150,300)},1300,'in')}]]);
-  let sea;await Trans.run('iris',()=>{sea=D.setScene(scLeapSea(),0);sea.cast.hanuman.hold('f','ring',{r:13})},{at:LP([1300,300],[700,600]),pat:'wave',a:P.ivory,b:P.peacock,ms:800});
+  await say("With courage in his heart, he leapt across the mighty ocean towards Lanka.",[["courage",()=>{han.turn(1);han.set('prepLeap',700)}],["leapt",()=>{han.set('leap',300);AU.sfx('whoosh');D.go(han,{x:LP(1480,800),y:LP(500,1000)},1300,'io')}]]);
+  let sea;await Trans.run('iris',()=>{sea=D.setScene(scLeapSea(),0);sea.cast.hanuman.hold('f','ring',{r:13})},{at:LP([1480,400],[800,880]),pat:'wave',a:P.ivory,b:P.peacock,ms:800});
   AU.sfx('whoosh');await D.tw(sea,{k:1},4200,'io');await hold(300);
   /* the Ashoka grove */
   let g;await Trans.run('wipe',()=>{g=D.setScene(scGrove(),0)},{pat:'flower',a:P.gold,b:P.maroon,ms:900});const {sita,hanuman:H}=g.cast;H.hold('f','ring',{r:13});mood('gentle');Amb.set('grove');
@@ -206,4 +162,4 @@ async function shot1_4(){mood('energetic');Amb.set('forest');const s=D.setScene(
   await say("For the first time in a long while, Sita felt hope.",[["Sita felt hope",()=>{sita.set('receiveRing',1400);D.go(g,{lotK:1,warmK:1},3200);AU.sfx('bloom');g.bloom(1)}]]);
   /* stillness for the emotional beat */
   await hold(2600);sita.set('seatedJoy',1200);await hold(2400);await D.late();
-  const rp=H.hand('f');await Trans.run('iris',()=>shot1_5pre(),{at:[rp[0],rp[1]-30],pat:'wave',a:P.ivory,b:P.ocean,ms:1100})}
+  const rp=H.hand('f');await Trans.run('iris',()=>{D.setScene(scOcean(),0)},{at:[rp[0],rp[1]-30],pat:'wave',a:P.ivory,b:P.ocean,ms:1100})}

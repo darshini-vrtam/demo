@@ -117,3 +117,25 @@ The late frame of every scene was reviewed in landscape (1280×720) and portrait
   - There is no blood, and no injury is shown.
 - **2.3 Pushpaka Vimana:** the sky is now blue. Lakshmana stays seated throughout, using a new seated pointing pose.
 - **2.4 Ayodhya Gets Ready:** the garland stringer and the boy standing on the central road are removed. The garlands still appear across the doorways during that line.
+
+## Revision 3 (review feedback)
+
+- **Removed scenes:**
+  - Activity 1.3 (Follow the Forest Clues) is removed, along with its two narration lines.
+  - Activity 1.5 (Help Hanuman Deliver the Ring) is removed, along with its two narration lines.
+  - The Ashoka grove now opens straight onto the ocean through the ring's circle.
+  - Episode 1 now has one activity: the bridge.
+  - The full run speaks 86 lines, all verbatim.
+- **Hanuman's flight to Lanka:** he stays fully inside the frame. He leaves the meeting scene within the picture, and his arc over the ocean is lower so his whole figure stays on screen in landscape and portrait.
+- **Skies:**
+  - Daytime skies are light blue (`sky` #7EC4E6).
+  - Evening skies are dark blue (`ocean` #17407A). This includes the discovery keyframe in 1.2, the sunset in 2.4 and the dusk in 2.5.
+  - Night and Lanka skies are deep blue (new `navy` #13285E). This includes the dark backgrounds of 2.7 and 2.8.
+  - The 2.9 kindness activity keeps its warm ivory background, because it isn't a sky.
+- **Clouds:** redrawn as overlapping round puffs, each with a spiral inside. By day they are white with light-blue spirals; at night they are light blue with dark spirals.
+- **Sun:** redrawn with a friendly face:
+  - a red tilak and dot on the forehead
+  - hatched lids over large eyes
+  - a curled moustache and red lips
+  - hatched triangular rays with red petals between them, inside an orange dotted band
+- **Closing scene 2.10:** uses the same background as scene 1.1 (palace, garlanded homes, lotus pond, brown courtyard and the road), at night with little lamps along the rooftops, the palace and the road. Rama, Sita and Lakshmana walk in from the left, and Sita turns to face the others when they stop.

@@ -1,57 +1,5 @@
 /* ===== EPISODE 1, scenes 1.5 to 1.8 ===== */
 
-/* ---------- Activity 1.5: Help Hanuman Deliver the Ring ---------- */
-function scRingPath(){const R={cur:-1,busy:false,drag:false,active:false,lastNudge:-1e9};
-  const pos=()=>LP({sita:[1560,742,1.05,-1],han:[230,744,.95,1],han0:[230,744],tree:[1650,760,600],lotus:[1660,770],
-      warm:[1540,620],steps:[[360,700],[500,610],[650,670],[800,580],[950,650],[1100,560],[1240,640],[1330,700]]},
-    {sita:[730,760,1.1,-1],han:[170,1360,1,1],han0:[170,1360],tree:[800,770,560],lotus:[880,780],
-      warm:[700,640],steps:[[300,1300],[480,1240],[380,1120],[540,1040],[720,1080],[800,960],[640,880],[500,780]]});
-  const s=scGrove({id:'1.5',pos});s.R=R;const {sita,hanuman:han}=s.cast;sita.set('seated',0);han.set('standRing',0);han.hold('f','ring',{r:LP(22,24)});s.arrived=true;
-  const stepG=grp(s.comp);s.comp.insertBefore(stepG,s.comp.childNodes[1]);const fxG=grp(s.comp);
-  const prevLayout=s.layout;s.layout=function(){const was=this.orient;prevLayout.call(this);if(was===L.portrait&&stepG.childNodes.length)return;stepG.innerHTML='';fxG.innerHTML='';const p=pos();
-    /* the route: leaves, floral motifs and geometric stepping points */
-    const d=smooth([p.han0.slice(0,2)].concat(p.steps),false);ln(stepG,d,K,28,{'stroke-dasharray':'2 26'});ln(stepG,d,P.turmeric,16,{'stroke-dasharray':'2 26'});
-    R.stepEls=p.steps.map(([x,y],i)=>{const g=grp(stepG,{transform:`translate(${x} ${y})`});const k=i%3;if(k===0){shp(g,leafD(70,26),P.leaf,3);tf(g,x-35,y,1,-10)}
-      else if(k===1){flower(g,26,P.verm,P.turmeric)}else{shp(g,'M0 -24L28 0L0 24L-28 0Z',Pat.u('grid',P.verm,P.turmeric,.6),3)}const glow=circ(g,0,0,40,'none',5,{stroke:P.turmeric});op(glow,0);return{g,glow}});
-    R.dot=grp(fxG);rings(R.dot,22,{n:2,step:.4,w:4,c1:P.turmeric,c2:P.ivory});circ(R.dot,0,0,9,P.turmeric,2.4);R.tg=target(fxG,60);
-    put(han,R.cur>=0?p.steps[R.cur].concat([p.han[2],1]):p.han);han.x=R.cur>=0?p.steps[R.cur][0]:p.han0[0];han.y=R.cur>=0?p.steps[R.cur][1]:p.han0[1]};
-  s.F2=fxLayer(s);s.hand=demoHand(s);
-  const baseTick=s.tick;s.tick=(dt,t)=>{baseTick(dt,t);if(!R.dot)return;const p=pos();const rest=[[han.x,han.y]].concat(p.steps.slice(R.cur+1));
-    if(R.active&&rest.length>1){const u=(t*.32)%1;const q=polyAt(rest,u);tf(R.dot,q[0],q[1]-6,1);op(R.dot,1)}else op(R.dot,0);
-    const nx=p.steps[R.cur+1];if(nx&&R.active){R.tg.x=nx[0];R.tg.y=nx[1];R.tg.on=lerp(R.tg.on,R.nudge?1:.55,.1)}else R.tg.on=lerp(R.tg.on,0,.2);R.tg.update(t);
-    R.stepEls&&R.stepEls.forEach((e,i)=>op(e.glow,i<=R.cur?1:0))};
-  s.hop=async()=>{if(R.busy||!R.active)return;const p=pos();const i=R.cur+1;if(i>=p.steps.length)return;R.busy=true;R.nudge=false;try{await hopTo(han,p.steps[i][0],p.steps[i][1],520,LP(70,80))}catch(e){R.busy=false;throw e}R.cur=i;R.busy=false;
-    D.counter(`${i+1} of ${p.steps.length} steps`);AU.sfx('tap');if(i===p.steps.length-1)R.done&&R.done()};
-  s.stray=()=>{if(T.now-R.lastNudge<3400)return;R.lastNudge=T.now;R.nudge=true;Timers.add(2600,()=>R.nudge=false);AU.sfx('soft');han.set('speakGently',300);Timers.add(1600,()=>han.set('standRing',400));
-    D.say([['hanuman',"Oops! Let me hop back onto the golden path. This way!"]]).catch(()=>{})};
-  s.near=(pt,q,r)=>Math.hypot(pt.x-q[0],pt.y-q[1])<r;
-  s.down=pt=>{if(!R.active)return;const p=pos();if(s.near(pt,[han.x,han.y-100*han.s],LP(150,160))){R.drag=true;return}
-    const nx=p.steps[R.cur+1];if(nx&&p.steps.slice(R.cur+1).some(q=>s.near(pt,q,LP(95,105)))){s.hop().catch(()=>{});return}s.stray()};
-  s.move=pt=>{if(!R.drag||!R.active)return;const p=pos();const nx=p.steps[R.cur+1];if(nx&&s.near(pt,nx,LP(110,120))){s.hop().catch(()=>{});return}
-    const dmin=Math.min(Math.hypot(pt.x-han.x,pt.y-han.y+60),...p.steps.map(q=>Math.hypot(pt.x-q[0],pt.y-q[1])));if(dmin>LP(230,240)){R.drag=false;s.stray()}};
-  s.up=()=>{R.drag=false};
-  /* camera: an open hand steers, its fingertip acts like a finger held on the screen */
-  s.camHand=h=>{if(!R.active)return;if(h.open){R.drag=true;s.move(h.tip)}};
-  s.hots=()=>{if(!R.active)return[];const nx=pos().steps[R.cur+1];return nx?[{id:'step',x:nx[0],y:nx[1],r:60,label:'Next stepping point for Hanuman',on:()=>s.hop().catch(()=>{})}]:[]};
-  return s}
-async function shot1_5pre(){D.setScene(scRingPath(),0)}
-async function shot1_5(){mood('inviting');Amb.set('grove');let s=D.scene;if(!s||s.id!=='1.5')s=D.setScene(scRingPath(),900);const R=s.R;const {sita,hanuman:han}=s.cast;
-  await hold(600);
-  await say("Can you help Hanuman deliver Rama’s ring to Sita? Guide him along the path and make sure the precious ring reaches her safely!",[["Guide him",()=>han.set('speakGently',500)]]);
-  han.set('standRing',400);D.instr('Drag Hanuman along the golden path, or tap the next step','0 of 8 steps','drag');R.active=true;Hot.dirty=true;
-  await D.task({hint:"Follow the little golden light! Tap the next stepping stone, or drag me there.",hintWho:'hanuman',
-    start(t){R.done=()=>t.finish()},demo(){const p=s.pos?null:null;const q=LP([[230,640],[360,700],[500,610]],[[170,1260],[300,1300],[480,1240]]);s.hand.drag(q,1400)},
-    assist(t){const step=()=>{if(t.done)return;s.hop().then(()=>{if(!t.done)Timers.add(900,step)}).catch(()=>{})};step()}});
-  R.active=false;D.clearAct();Hot.dirty=true;
-  /* arrival: Hanuman kneels, Sita receives the ring, smiles, and a lotus blooms */
-  han.set('kneelPresent',900);han.hold('f','ring',{r:LP(24,26)});await hold(1200);AU.sfx('sparkle');const hp=han.hand('f');s.F2.burst(hp[0],hp[1]-30,8,'spark',2.6);
-  sita.set('receiveRing',1000);await hold(1100);han.hold('f',null);sita.hold('f','ring',{r:LP(14,16)});han.set('namaste',800);Music.swell();
-  sita.set('seatedJoy',900);D.go(s,{lotK:1,warmK:1},2600);AU.sfx('bloom');s.bloom(1);await hold(1600);
-  await say("Well done! A small ring carried a very big message: Rama was coming, and hope was alive.");
-  await hold(1600);await D.late();
-  /* the camera moves in on the ring, then pulls back to Rama and the vanaras */
-  const rp=sita.hand('f');await D.tw(s.cam,{z:2.6,fx:rp[0],fy:rp[1]-20},1600,'io')}
-
 /* ---------- the shore and the ocean, shared by 1.6 and 1.7 ---------- */
 const VN=n=>{const a=[];for(let i=0;i<n;i++)a.push(vanaraCfg(i));return a};
 function scOcean(){const s=mkScene('1.6',{frame:'fish'});artPart(s);const back=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp),top=grp(s.comp);
@@ -73,7 +21,7 @@ function scOcean(){const s=mkScene('1.6',{frame:'fish'});artPart(s);const back=g
     put(rama,p.rama);put(lak,p.lak);put(han,p.han);vans.forEach((v,i)=>put(v,p.van[i]))});
   s.lineK=0;s.tick=()=>{(s.lines||[]).forEach(l=>l.mp.setAttribute('stroke-dashoffset',f1(l.len*(1-(s.lineK||0)))))};
   vans.forEach((v,i)=>v.set('wait',0));return s}
-async function shot1_6(){mood('energetic');Amb.set('ocean');const s=D.setScene(scOcean(),900);const {rama,lak,hanuman:han}=s.cast;const vans=[].concat(s.cast.vanaras);const p=s.pos();
+async function shot1_6(){mood('energetic');Amb.set('ocean');let s=D.scene;if(!s||s.id!=='1.6')s=D.setScene(scOcean(),900);const {rama,lak,hanuman:han}=s.cast;const vans=[].concat(s.cast.vanaras);const p=s.pos();
   s.cam.z=2;s.cam.fx=p.rama[0];s.cam.fy=p.rama[1]-150;D.go(s.cam,{z:1,fx:LP(889,500),fy:LP(405,750)},3200,'io');
   han.x=p.han0[0];han.y=p.han0[1];han.f=-1;vans.forEach(v=>{v.x+=LP(600,500)});rama.set('idle',0);
   const land=(async()=>{han.set('leap',0);const o={k:0};const a=p.han0,b=p.han;const iv=setInterval(()=>{han.x=lerp(a[0],b[0],o.k);han.y=lerp(a[1],b[1],o.k)-Math.sin(o.k*Math.PI)*100},16);AU.sfx('whoosh');

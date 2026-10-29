@@ -24,7 +24,7 @@ async function endCard(n){D.clearAct();const e=$('end');$('endEye').textContent=
 const SHOTS=[['1.1','shot1_1'],['1.2','shot1_2'],['1.3','shot1_3'],['1.4','shot1_4'],['1.5','shot1_5'],['1.6','shot1_6'],['1.7','shot1_7'],['1.8','shot1_8'],
   ['2.1','shot2_1'],['2.2','shot2_2'],['2.3','shot2_3'],['2.4','shot2_4'],['2.5','shot2_5'],['2.6','shot2_6'],['2.7','shot2_7'],['2.8','shot2_8'],['2.9','shot2_9'],['2.10','shot2_10']].filter(s=>typeof window[s[1]]==='function');
 /* production targets in seconds from the story document (Episode 1 9:00, Episode 2 11:00); title cards count inside the first shot of each episode */
-const TARGETS=[['1.1','Golden City of Ayodhya',45],['1.2','A New Life in the Forest',45],['1.3','Follow the Forest Clues',75],['1.4','A Brave Friend Appears',60],['1.5','Deliver the Ring',60],
+const TARGETS=[['1.1','Golden City of Ayodhya',45],['1.2','A New Life in the Forest',45],['1.4','A Brave Friend Appears',60],
   ['1.6','The Ocean Challenge',60],['1.7','Build the Bridge',60],['1.8','The Journey to Lanka',135],
   ['2.1','The Battle for Hope',75],['2.2','Sita and Rama Reunite',45],['2.3','The Journey Home',45],['2.4','Ayodhya Gets Ready',45],['2.5','Light Up Ayodhya',75],
   ['2.6','Rama Returns',60],['2.7','What Does a Diya Teach Us?',45],['2.8','The Sacred Shloka',75],['2.9','Diya of Kindness',75],['2.10','Carry the Light',120]];

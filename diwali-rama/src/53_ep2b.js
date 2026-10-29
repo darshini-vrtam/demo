@@ -137,7 +137,7 @@ const MOTIFS=['flower','leaf','dots','geo'];
 function motif(g,k,r){if(k==='flower')flower(g,r,P.verm,P.turmeric);else if(k==='leaf'){const l=grp(g);shp(l,leafD(r*2.2,r*.8),P.leaf,2.4);tf(l,-r*1.1,0,1)}
   else if(k==='dots'){[[0,0],[r*.8,0],[-r*.8,0],[0,r*.8],[0,-r*.8]].forEach(([x,y])=>circ(g,x,y,r*.3,P.ivory,1.6))}else{shp(g,`M0 ${-r}L${r} 0L0 ${r}L${-r} 0Z`,P.turmeric,2.4);circ(g,0,0,r*.3,P.verm,1.4)}return g}
 function scKind(){const s=mkScene('2.9',{frame:'lotus'});artPart(s);const back=grp(s.comp),medG=grp(s.comp),cen=grp(s.comp),chipG=grp(s.comp),fx=grp(s.comp);
-  skyBg(s,{kind:'day',horizon:[2000,3000],clouds:[]});
+  skyBg(s,{kind:'ivory',horizon:[2000,3000],clouds:[]});
   const K_={choice:null,auto:false,stage:'choose',placed:[],sel:'flower',active:false,show:[0,0,0,0]};s.K=K_;
   const SLOTS=[[-32,1],[-20,4],[-8,5],[4,5],[16,4],[28,1],[-14,-3],[10,-3]];
   s.pos=()=>LP({c:[889,500],ds:2.7,med:[[350,250],[1428,250],[350,610],[1428,610]],mr:132,chips:[[700,740],[826,740],[952,740],[1078,740]],cr:50,deed:[1050,320,290,120]},
@@ -197,20 +197,21 @@ async function shot2_9(){mood('inviting');Amb.set('none');Music.mood('day');cons
 
 /* ---------- Scene 2.10: Carry the Light Within You (closing) ---------- */
 function scClose(){const s=mkScene('2.10',{frame:'night'});artPart(s);const back=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp),ring=grp(s.comp);
-  skyBg(s,{kind:'night',horizon:[560,900],ground:['flower',P.gold,P.maroon,1],stars:18});
+  skyBg(s,{kind:'night',horizon:[470,760],ground:['flower',P.gold,P.brown,.9],stars:18,clouds:[[.14,.22,250],[.84,.18,300]]});
   const lak=cast(s,'lak',CAST.lak,mid),rama=cast(s,'rama',CAST.rama,mid),sita=cast(s,'sita',CAST.sita,mid),han=cast(s,'hanuman',CAST.hanuman,mid);
   const folk=[personCfg(601,{child:true}),personCfg(602,{child:false,fem:true}),personCfg(603,{child:true}),personCfg(604,{child:false}),personCfg(605,{child:true,fem:true}),personCfg(606,{child:false,fem:true})].map(c=>cast(s,'folk',c,mid));
   folk.forEach(f=>mid.insertBefore(f.g,mid.firstChild));
-  s.pos=()=>LP({lak:[640,730,.92,1],rama:[790,730,.95,1],sita:[960,730,.95,-1],han:[1110,734,.92,-1],folk:[[200,660,.62,1],[300,664,.62,-1],[430,660,.62,1],[1330,660,.62,1],[1450,664,.62,-1],[1580,660,.62,-1]],
-      fd:[1240,772,1.6],icon:[1400,730,58],medal:[889,180,190],ell:[889,420,900,440]},
+  s.pos=()=>LP({lak:[640,730,.92,1],rama:[790,730,.95,1],sita:[960,730,.95,-1],han:[1110,734,.92,-1],folk:[[200,630,.6,1],[300,634,.6,-1],[430,630,.6,1],[1300,630,.6,1],[1420,634,.6,-1],[1560,630,.6,-1]],
+      fd:[1240,772,1.6],icon:[1400,730,58],medal:[889,170,180],ell:[889,420,900,440]},
     {lak:[240,1170,.9,1],rama:[410,1170,.92,1],sita:[590,1170,.92,-1],han:[760,1174,.9,-1],folk:[[100,990,.5,1],[200,994,.5,-1],[310,990,.5,1],[690,990,.5,1],[800,994,.5,-1],[900,990,.5,-1]],
-      fd:[500,1400,1.25],icon:[680,1360,50],medal:[500,330,210],ell:[500,760,540,780]});
+      fd:[500,1400,1.25],icon:[330,1390,50],medal:[500,330,210],ell:[500,760,540,780]});
   onOrient(s,[back,fore,ring],P_=>{const p=s.pos();/* a large symmetrical floral motif in the sky */const md=grp(back,{transform:`translate(${p.medal[0]} ${p.medal[1]})`});const r=p.medal[2];
     petalRing(md,r*.95,24,P.gold,P.turmeric,r*.3);halo(md,r*.7,{bw:r*.12,col:P.gold});const rg=rangoli(md,r*.42,2);s.md=md;
-    const C=cityArt(s,back,{dome:P.gold});/* hundreds of little lamps along roofs, windows and streets */
-    const L_=[];C.hs.forEach(({x,y,k})=>{L_.push(...lampRow(x-104*k,y-190*k-4,x+104*k,y-190*k-4,8));L_.push(...lampRow(x-100*k,y+6,x+100*k,y+6,7));L_.push(...lampRow(x-130*k,y-190*k-50*k,x,y-190*k-92*k,4),...lampRow(x,y-190*k-92*k,x+130*k,y-190*k-50*k,4))});
-    const pc=C.c.palace;L_.push(...lampRow(pc[0]-500*pc[2],pc[1]-252*pc[2],pc[0]+500*pc[2],pc[1]-252*pc[2],20),...lampRow(pc[0]-500*pc[2],pc[1]+4,pc[0]+500*pc[2],pc[1]+4,16));
-    const st=C.c.street;for(let i=0;i<10;i++){const u=i/9;const q=polyAt(st,u);L_.push([q[0]-LP(100,90)*(1-u*.5),q[1]],[q[0]+LP(100,90)*(1-u*.5),q[1]])}
+    const A=ayodhyaArt(s,back,fore,{dome:P.gold});const pc=A.pc;const C={hs:A.hs};/* little lamps along rooftops, windows, the palace and the road */
+    const L_=[];A.hs.forEach(({x,y,k})=>{L_.push(...lampRow(x-104*k,y-190*k-4,x+104*k,y-190*k-4,8));L_.push(...lampRow(x-100*k,y+6,x+100*k,y+6,7));L_.push(...lampRow(x-130*k,y-190*k-50*k,x,y-190*k-92*k,4),...lampRow(x,y-190*k-92*k,x+130*k,y-190*k-50*k,4))});
+    L_.push(...lampRow(pc[0]-500*pc[2],pc[1]-252*pc[2],pc[0]+500*pc[2],pc[1]-252*pc[2],20),...lampRow(pc[0]-500*pc[2],pc[1]+4,pc[0]+500*pc[2],pc[1]+4,16));
+    for(let i=0;i<12;i++){const q=polyAt(A.road,i/11);L_.push([q[0],q[1]-LP(42,46)],[q[0],q[1]+LP(42,46)])}
+    L_.push(...lampRow(LP(40,40),LP(476,766),LP(1740,960),LP(476,766),LP(30,18)));
     s.lampsA=tinyLamps(back,L_.filter((_,i)=>i%2===0),1.1);s.lampsB=tinyLamps(back,L_.filter((_,i)=>i%2===1),1.1);
     const ag=grp(back,{transform:`translate(${pc[0]} ${pc[1]}) scale(${pc[2]})`});shp(ag,'M-68 0V-124Q-68 -215 0 -215Q68 -215 68 -124V0Z',P.turmeric,4);
     /* the child's own diya, its flame connected by golden dotted lines to the city's lamps */
@@ -230,6 +231,9 @@ function scClose(){const s=mkScene('2.10',{frame:'night'});artPart(s);const back
   folk[0].hold('f','diya',{lit:1});folk[0].set('light',0);folk[1].hold('f','plate');folk[1].set('share',0);folk[2].hold('f','sweet');folk[2].set('share',0);
   folk[3].hold('f','garland');folk[3].set('garlands',0);folk[4].set('sad',0);folk[5].set('comfort',0);return s}
 async function shot2_10(){mood('heartfelt');Amb.set('night');Music.mood('light');const s=D.setScene(scClose(),1200);const {rama,sita,lak,hanuman:han}=s.cast;const folk=[].concat(s.cast.folk);
+  /* Rama, Sita and Lakshmana walk into the scene from the left; Sita turns to face the others when they stop */
+  const p=s.pos();const trio=[[sita,p.sita],[rama,p.rama],[lak,p.lak]];trio.forEach(([f,q])=>{f.x=q[0]-LP(1050,800);f.f=1});
+  trio.forEach(([f,q],i)=>Timers.add(i*500,()=>{f.set('walk',200);tw(f,{x:q[0]},LP(7200,6200),'lin').then(()=>{f.set(f===rama?'idle':'smile',400);if(f===sita)sita.turn(-1)})}));
   /* the camera pulls back to reveal the whole city */
   s.cam.z=1.45;s.cam.fx=LP(889,500);s.cam.fy=LP(560,1000);D.go(s.cam,{z:1,fy:LP(405,750)},16000,'io');
   await hold(800);

@@ -160,7 +160,7 @@ button:focus-visible{outline:4px solid var(--focus);outline-offset:3px}
 /* ===== Palette tokens: the only colours used in the illustration (skin and fur tones live in the character bible) ===== */
 const P={ink:'#2A1608',verm:'#D9381E',turmeric:'#F2B01E',marigold:'#F4A21D',gold:'#E0A526',leaf:'#4C9A3A',forest:'#1F5E3B',peacock:'#0E7C8C',
   ocean:'#17407A',indigo:'#2B2A6B',terra:'#C4623A',maroon:'#6E1A22',ivory:'#F7EBD0',
-  /* added on request: a sky blue and an earth brown */sky:'#7EC4E6',brown:'#7A4A2A'};
+  /* added on request: a sky blue and an earth brown */sky:'#7EC4E6',brown:'#7A4A2A',navy:'#13285E'};
 const K=P.ink;
 const TAU=Math.PI*2,DEG=Math.PI/180,clamp=(v,a,b)=>v<a?a:v>b?b:v,lerp=(a,b,t)=>a+(b-a)*t,sm=t=>t*t*(3-2*t);
 function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
@@ -304,30 +304,37 @@ function petalRing(parent,r,n,col,col2,len){const g=grp(parent);len=len||r*.32;f
     shp(p,`M0 0C${-len*.4} ${-len*.3} ${-len*.3} ${-len*.8} 0 ${-len}C${len*.3} ${-len*.8} ${len*.4} ${-len*.3} 0 0Z`,i%2?col2:col,2.6);ln(p,`M0 ${-len*.15}V${-len*.75}`,K,1.3)}return g}
 
 /* ---- clouds: flat ivory bodies with curled decorative edges and parallel inner lines ---- */
-function cloudD(w){const h=w*.34;return`M${-w/2} ${h*.3}C${-w*.52} ${-h*.1} ${-w*.36} ${-h*.3} ${-w*.24} ${-h*.12}C${-w*.2} ${-h*.62} ${w*.12} ${-h*.72} ${w*.14} ${-h*.24}C${w*.26} ${-h*.46} ${w*.5} ${-h*.3} ${w*.44} ${h*.02}C${w*.54} ${h*.1} ${w*.52} ${h*.3} ${w*.42} ${h*.3}Z`}
-function cloud(parent,w,col,line){const g=grp(parent);shp(g,cloudD(w),col||P.ivory,3.5);const h=w*.34;
-  for(let k=0;k<3;k++)ln(g,`M${-w*.34} ${h*(.18-k*.18)}Q0 ${h*(.34-k*.18)} ${w*.34} ${h*(.18-k*.18)}`,line||P.peacock,2.2);
-  /* curls at both ends */
-  ln(g,`M${-w*.5} ${h*.3}c${-w*.06} 0 ${-w*.08} ${-h*.3} ${-w*.02} ${-h*.32}c${w*.04} 0 ${w*.04} ${h*.14} 0 ${h*.14}`,K,3);
-  ln(g,`M${w*.42} ${h*.3}c${w*.07} 0 ${w*.09} ${-h*.3} ${w*.03} ${-h*.34}c${-w*.04} 0 ${-w*.04} ${h*.14} 0 ${h*.14}`,K,3);return g}
+function spiralD(r,turns){let d='';const n=Math.round(26*turns);for(let i=0;i<=n;i++){const t=i/n;const a=t*turns*TAU-Math.PI/2;const rr=r*(1-t*.9);d+=(i?'L':'M')+f1(Math.cos(a)*rr)+' '+f1(Math.sin(a)*rr)}return d}
+const PUFFS=[[-.36,.06,.16],[.4,.07,.14],[-.17,-.06,.21],[.22,-.04,.2],[.03,-.13,.24],[-.08,.1,.17],[.14,.11,.16]];
+function cloud(parent,w,col,line){const g=grp(parent);PUFFS.forEach(([x,y,r])=>circ(g,x*w,y*w,r*w+3,K,0));
+  PUFFS.forEach(([x,y,r])=>{const p=grp(g,{transform:`translate(${f1(x*w)} ${f1(y*w)})`});circ(p,0,0,r*w,col||P.ivory,3.2);ln(p,spiralD(r*w*.78,2.4),line||P.ocean,Math.max(2.4,w*.011))});return g}
 
 /* ---- skies: every sky is patterned (dots by day, stars at dusk and night) ---- */
-const SKY={day:{bg:P.ivory,dot:P.turmeric,pat:'fdots',ps:1.2,cloud:P.ivory,line:P.marigold},gold:{bg:P.turmeric,dot:P.marigold,pat:'fdots',ps:1.2,cloud:P.ivory,line:P.marigold},
-  forest:{bg:P.ivory,dot:P.leaf,pat:'dots',ps:1.3,cloud:P.ivory,line:P.leaf},shadow:{bg:P.peacock,dot:P.ivory,pat:'dots',ps:1.3,cloud:P.ivory,line:P.peacock},
-  ocean:{bg:P.peacock,dot:P.ivory,pat:'dots',ps:1.4,cloud:P.ivory,line:P.peacock},lanka:{bg:P.maroon,dot:P.gold,pat:'stars',ps:1,cloud:P.terra,line:P.gold},
-  dusk:{bg:P.peacock,dot:P.ivory,pat:'stars',ps:1,cloud:P.ivory,line:P.peacock},night:{bg:P.indigo,dot:P.ivory,pat:'stars',ps:1,cloud:P.ivory,line:P.indigo},
-  blue:{bg:P.sky,dot:P.ivory,pat:'dots',ps:1.3,cloud:P.ivory,line:P.ocean},swirl:{bg:P.peacock,dot:P.ivory,pat:'curl',ps:1.1,cloud:P.ivory,line:P.peacock},
-  warm:{bg:P.marigold,dot:P.turmeric,pat:'fdots',ps:1.2,cloud:P.ivory,line:P.verm}};
+const SKY={day:{bg:P.sky,dot:P.ivory,pat:'dots',ps:1.3,cloud:P.ivory,line:P.sky},gold:{bg:P.sky,dot:P.ivory,pat:'fdots',ps:1.2,cloud:P.ivory,line:P.sky},
+  forest:{bg:P.sky,dot:P.ivory,pat:'dots',ps:1.3,cloud:P.ivory,line:P.sky},shadow:{bg:P.ocean,dot:P.ivory,pat:'dots',ps:1.3,cloud:P.sky,line:K},
+  ocean:{bg:P.sky,dot:P.ivory,pat:'dots',ps:1.4,cloud:P.ivory,line:P.sky},lanka:{bg:P.navy,dot:P.gold,pat:'stars',ps:1,cloud:P.sky,line:K},
+  dusk:{bg:P.ocean,dot:P.ivory,pat:'stars',ps:1,cloud:P.sky,line:K},night:{bg:P.navy,dot:P.ivory,pat:'stars',ps:1,cloud:P.sky,line:K},
+  warm:{bg:P.sky,dot:P.ivory,pat:'fdots',ps:1.2,cloud:P.ivory,line:P.sky},blue:{bg:P.sky,dot:P.ivory,pat:'dots',ps:1.3,cloud:P.ivory,line:P.sky},
+  swirl:{bg:P.sky,dot:P.ivory,pat:'curl',ps:1.1,cloud:P.ivory,line:P.sky},ivory:{bg:P.ivory,dot:P.turmeric,pat:'fdots',ps:1.2,cloud:P.ivory,line:P.sky}};
 function sky(parent,W,H,o){o=o||{};const S=SKY[o.kind||'day'];const g=grp(parent);el('rect',{x:-4,y:-4,width:W+8,height:H+8,fill:Pat.u(S.pat,S.dot,S.bg,S.ps)},g);
   const r=rng(o.seed||3),stars=[];const night=/dusk|night|lanka/.test(o.kind||'');for(let i=0;i<(o.stars==null?(night?12:0):o.stars);i++){const x=r()*W,y=r()*H*.8;const s=grp(g);star4(s,0,0,7+r()*6,i%3?P.ivory:P.turmeric);tf(s,x,y,1);stars.push({g:s,x,y,ph:r()*TAU})}
   const clouds=[];(o.clouds||[]).forEach(([u,v,w])=>{const c=cloud(g,w,S.cloud,S.line);clouds.push({g:c,x:u*W,y:v*H,ph:r()*TAU});tf(c,u*W,v*H,1)});
   return{g,stars,clouds,drift:0,update(t){const m=MV();clouds.forEach(c=>tf(c.g,c.x+Math.sin(t*.05+c.ph)*40*m+this.drift,c.y,1));
     stars.forEach(s=>{const k=.75+.25*Math.sin(t*.9+s.ph)*m;tf(s.g,s.x,s.y,k)})}}}
-/* the patterned sun: turmeric disc, petal ring, decorative rays that slowly turn */
-function sun(parent,r){const g=grp(parent);const ry=grp(g);
-  for(let i=0;i<16;i++){const a=i/16*360;const p=grp(ry,{transform:`rotate(${a})`});shp(p,`M${-r*.12} ${-r*1.02}L0 ${-r*(i%2?1.42:1.62)}L${r*.12} ${-r*1.02}Z`,i%2?P.verm:P.marigold,3)}
-  const pr=petalRing(g,r*1.02,24,P.turmeric,P.marigold,r*.2);circ(g,0,0,r,P.turmeric,4.5);circ(g,0,0,r*.78,'none',3,{stroke:P.verm});
-  dots(g,ellD(0,0,r*.66,r*.66),P.verm,5,13);circ(g,0,0,r*.42,P.marigold,3);ln(g,ellD(0,0,r*.28,r*.28),K,2);circ(g,0,0,r*.12,P.verm,2);
+/* the patterned sun with a friendly face: hatched triangular rays, red petals between them, an orange outer band */
+function sun(parent,r){const g=grp(parent);const ry=grp(g);const k=r/100;
+  shp(ry,`${ellD(0,0,r*1.72,r*1.72)}${ellD(0,0,r*1.52,r*1.52)}`,P.marigold,3.5,{'fill-rule':'evenodd'});dots(ry,ellD(0,0,r*1.62,r*1.62),P.verm,r*.07,r*.16);
+  for(let i=0;i<12;i++){const a=i/12*360;const t=grp(ry,{transform:`rotate(${a})`});shp(t,`M${-r*.26} ${-r*.97}L0 ${-r*1.52}L${r*.26} ${-r*.97}Z`,Pat.u('hatch',K,P.ivory,.55),3);
+    const p=grp(ry,{transform:`rotate(${a+15})`});shp(p,`M0 ${-r*.98}C${-r*.16} ${-r*1.08} ${-r*.12} ${-r*1.36} 0 ${-r*1.4}C${r*.12} ${-r*1.36} ${r*.16} ${-r*1.08} 0 ${-r*.98}Z`,P.verm,2.6)}
+  circ(g,0,0,r,P.turmeric,4.5);dots(g,ellD(0,0,r*.9,r*.9),P.marigold,r*.05,r*.12);
+  const f=grp(g,{transform:`scale(${f3(k)})`});
+  /* tilak, brows, lids with hatched lashes, eyes */
+  shp(f,'M-9 -74L-6 -42Q0 -36 6 -42L9 -74L4 -74L2 -46Q0 -43 -2 -46L-4 -74Z',P.verm,1.6);circ(f,0,-32,6,P.verm,1.6);
+  [-1,1].forEach(sx=>{const e=grp(f,{transform:`translate(${sx*38} -6)`});ln(e,'M-28 -24Q0 -40 28 -24',K,3);shp(e,'M-27 -2Q0 -30 27 -2Q0 -16 -27 -2Z',Pat.u('vlines',K,P.gold,.5),2.4);
+    shp(e,'M-26 0Q0 -18 26 0Q0 14 -26 0Z',P.ivory,3);circ(e,sx*2,-1,9,K,0);circ(e,sx*2-3,-4,2.6,P.ivory,0)});
+  ln(f,'M-3 -14V14Q0 20 7 16',K,3);
+  shp(f,'M0 30C-14 23 -34 25 -46 36C-53 43 -48 53 -39 48C-34 40 -22 37 -10 40C-4 40 0 36 0 36C0 36 4 40 10 40C22 37 34 40 39 48C48 53 53 43 46 36C34 25 14 23 0 30Z',K,0);
+  shp(f,'M-13 47Q0 40 13 47Q0 58 -13 47Z',P.verm,2);
   return{g,ry,update(t){tf(ry,0,0,1,t*3*MV())}}}
 
 /* ---- water life ---- */
@@ -1190,6 +1197,17 @@ function pathBand(g,list,w,col,dot){const d=smooth(list,false);ln(g,d,K,w+8);ln(
 
 /* ===== EPISODE 1: THE JOURNEY OF COURAGE, scenes 1.1 to 1.4 ===== */
 
+/* ---------- Ayodhya: palace, homes with garlands, lotus pond and the road out of the city (scenes 1.1 and 2.10) ---------- */
+function ayodhyaArt(s,back,fore,o){o=o||{};const pc=LP([889,500,.62],[500,760,.5]);const pal=palace(back,{w:1000,h:220,dome:o.dome});tf(pal.g,pc[0],pc[1],pc[2]);s.pk=pal.pk;
+  const hs=(LP([[120,500,.55,0],[300,520,.62,1],[1480,520,.62,2],[1660,500,.55,3]],[[90,790,.5,0],[910,790,.5,2]])).map(([x,y,k,v])=>{const h=house(back,{w:220,h:190,v});tf(h.g,x,y,k);return{x,y,k}});
+  /* garlands strung between the rooftops */
+  LP([[120,346,300,346],[1480,346,1660,346]],[[90,650,250,656],[750,656,910,650]]).forEach(([a,b,c,d])=>garland(back,a,b,c,d,12));
+  const pd=keepArt(s,pond(fore,LP(320,260),LP(80,76)));tf(pd.g,LP(270,180),LP(730,1410),1);
+  /* the road that leads out of the city */
+  const road=LP([[960,800],[1180,760],[1420,720],[1800,700]],[[620,1500],[760,1400],[900,1330],[1040,1300]]);pathBand(back,road,LP(70,80),P.marigold);
+  frameFlora(fore,LP([[60,806,170],[1720,806,180],[1590,812,130],[520,816,110,P.verm]],[[60,1496,170],[950,1496,170],[400,1505,120]]));
+  return{pc,hs,road}}
+
 /* ---------- Scene 1.1: The Golden City of Ayodhya ---------- */
 function scAyodhya(){const s=mkScene('1.1',{frame:'lotus'});artPart(s);const back=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp);
   skyBg(s,{kind:'blue',horizon:[470,760],sun:[[1180,200],[700,300]],sunR:118,ground:['flower',P.gold,P.brown,.9],clouds:[[.14,.22,250],[.84,.18,300],[.42,.3,170]]});s.sunRise=260;
@@ -1198,14 +1216,7 @@ function scAyodhya(){const s=mkScene('1.1',{frame:'lotus'});artPart(s);const bac
   mid.insertBefore(grp(mid),mid.firstChild);folk.forEach(f=>mid.insertBefore(f.g,rama.g));
   s.pos=()=>LP({sita:[700,742,1,1],rama:[860,742,1,-1],lak:[1010,746,1,-1],folk:[[420,610,.5,1],[480,616,.42,1],[540,606,.5,1],[1240,606,.5,-1],[1300,616,.42,-1],[1360,610,.5,-1]]},
     {sita:[330,1232,1.05,1],rama:[520,1232,1.05,-1],lak:[700,1240,1,-1],folk:[[130,968,.55,1],[200,978,.45,1],[270,964,.55,1],[730,964,.55,-1],[800,978,.45,-1],[870,968,.55,-1]]});
-  onOrient(s,[back,fore],P_=>{const pal=palace(back,{w:1000,h:220});tf(pal.g,LP(889,500),LP(470,760),LP(.62,.5));s.pk=pal.pk;
-    (LP([[120,500,.55,0],[300,520,.62,1],[1480,520,.62,2],[1660,500,.55,3]],[[90,790,.5,0],[910,790,.5,2]])).forEach(([x,y,k,v])=>{const h=house(back,{w:220,h:190,v});tf(h.g,x,y,k)});
-    /* garlands strung across the courtyard */
-    LP([[120,346,300,346],[1480,346,1660,346]],[[90,650,250,656],[750,656,910,650]]).forEach(([a,b,c,d])=>garland(back,a,b,c,d,12));
-    const pd=keepArt(s,pond(fore,LP(320,260),LP(80,76)));tf(pd.g,LP(270,180),LP(730,1410),1);
-    /* the road that leads out of the city */
-    pathBand(back,LP([[960,800],[1180,760],[1420,720],[1800,700]],[[620,1500],[760,1400],[900,1330],[1040,1300]]),LP(70,80),P.marigold);
-    frameFlora(fore,LP([[60,806,170],[1720,806,180],[1590,812,130],[520,816,110,P.verm]],[[60,1496,170],[950,1496,170],[400,1505,120]]));
+  onOrient(s,[back,fore],P_=>{ayodhyaArt(s,back,fore);
     const p=s.pos();put(rama,p.rama);put(sita,p.sita);put(lak,p.lak);folk.forEach((f,i)=>put(f,p.folk[i]))});
   s.tick=(dt,t)=>{(s.pk||[]).forEach((pk,i)=>pk.set(.3+.35*(.5+.5*Math.sin(t*1.3+i*1.7))*MV()))};
   drift(s,16,LP([0,0,1778,810],[0,0,1000,1500]));folk.forEach((f,i)=>f.set(i%2?'wait':'idle',0));return s}
@@ -1292,54 +1303,6 @@ async function shot1_2(){mood('warm');Amb.set('forest');let s=D.scene;if(!s||s.i
   await say("With Lakshmana beside him, Rama began searching for her.",[["Lakshmana beside",()=>Lk.set('pointAhead',700)],["searching",()=>{R.turn(-1);Lk.turn(-1);goWalk(R,R.x-LP(300,180),R.y,3600);goWalk(Lk,Lk.x-LP(300,180),Lk.y,3600)}]]);
   await hold(1800);await D.late()}
 
-/* ---------- Activity 1.3: Follow the Forest Clues ---------- */
-function scClues(){const s=mkScene('1.3',{frame:'forest'});artPart(s);const back=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp),fx=grp(s.comp);
-  skyBg(s,{kind:'forest',horizon:[420,700],ground:['leafy',P.leaf,P.forest,.9],clouds:[[.3,.2,220],[.8,.24,200]]});
-  const rama=cast(s,'rama',CAST.rama,mid),lak=cast(s,'lak',CAST.lak,mid);
-  s.pos=()=>LP({rama:[300,740,.92,1],lak:[150,748,.9,1],clue:[[470,730,90],[1000,690,110],[1380,520,110]],wrong:[[690,470,100]],
-      fork:[[889,830],[889,640],[860,560]],good:[[889,640],[1000,690],[1160,640],[1300,560],[1380,500]],bad:[[860,580],[760,500],[680,450]]},
-    {rama:[200,1420,1,1],lak:[840,1430,1,-1],clue:[[430,1300,90],[650,1030,110],[720,700,110]],wrong:[[250,800,110]],
-      good:[[500,1180],[650,1030],[700,880],[720,700],[730,600]],bad:[[500,1180],[380,960],[250,800]]});
-  const C={found:[false,false,false],objs:[],tg:[],pulse:0};s.C=C;
-  onOrient(s,[back,fore,fx],P_=>{const p=s.pos();forestArt(s,back,fore,{deer:false,stream:true,skip:P_?[3]:[3,4]});
-    /* the fork: the overgrown side (left) and the clear path (right) between two patterned trees */
-    pathBand(back,P_?[[500,1520],[500,1300],[500,1180]]:[[889,830],[889,700],[889,640]],LP(90,96),P.marigold);
-    pathBand(back,p.bad,LP(70,80),P.terra);pathBand(back,p.good,LP(80,86),P.marigold);
-    const ov=grp(back);p.bad.slice(1).forEach(([x,y],i)=>{const b=grp(ov,{transform:`translate(${x} ${y})`});bush(b,LP(130,140),P.forest)});
-    const tr=P_?[[600,760,380],[860,740,400]]:[[1260,520,380],[1520,520,420]];tr.forEach(([x,y,h],i)=>{const T_=keepArt(s,tree(back,{h,seed:40+i,leaf:[P.leaf,P.forest],flowers:P.marigold,nf:6}));tf(T_.g,x,y,1)});
-    /* the three clues, each in its own area */
-    C.objs=[];const fl=clueFlower(back);tf(fl,p.clue[0][0],p.clue[0][1],1.2);const fp=cluePrints(back);tf(fp,p.clue[1][0],p.clue[1][1],1.15,LP(-14,-50));
-    const pg=grp(back);const pd=smooth(P_?[[-60,60],[-20,0],[10,-50],[40,-90]]:[[-80,40],[-30,0],[20,-30],[70,-50]],false);ln(pg,pd,K,40);ln(pg,pd,P.marigold,32);dots(pg,pd,P.verm,6,14);tf(pg,p.clue[2][0],p.clue[2][1],1);
-    [fl,fp,pg].forEach((g,i)=>{const glow=grp(fx);rings(glow,p.clue[i][2]*.8,{n:2,step:.18,w:5,c1:P.turmeric,c2:P.ivory,dots:16});tf(glow,p.clue[i][0],p.clue[i][1],1);op(glow,C.found[i]?1:0);C.objs[i]={g,glow}});
-    C.route=grp(fx);const rt=footTrail(C.route,p.good,LP(9,9));op(C.route,C.joined?1:0);
-    C.tg=p.clue.map(c=>{const t_=target(fx,c[2]);t_.x=c[0];t_.y=c[1];return t_});
-    frameFlora(fore,P_?[[40,1496,150],[960,1496,150,P.verm]]:[[40,806,150],[1740,806,160,P.verm]]);put(rama,p.rama);put(lak,p.lak)});
-  s.F=fxLayer(s);s.hand=demoHand(s);
-  s.tick=(dt,t)=>{const open=C.found.map((f,i)=>f?-1:i).filter(i=>i>=0);C.tg.forEach((t_,i)=>{const on=C.active&&!C.found[i]&&open.length&&open[Math.floor(t/1.6)%open.length]===i;t_.on=lerp(t_.on,on||C.hint===i?1:C.active&&!C.found[i]?.25:0,.12);t_.update(t)});
-    C.objs.forEach((o,i)=>{if(C.found[i])tf(o.glow,s.pos().clue[i][0],s.pos().clue[i][1],1+.05*Math.sin(t*2)*MV())});if(C.route)op(C.route,C.joinK||0)};
-  s.hots=()=>C.active?s.pos().clue.map((c,i)=>C.found[i]?null:{id:'clue'+i,x:c[0],y:c[1],r:c[2],label:['A fallen flower','Footprints','A path between two trees'][i],on:()=>s.tapClue(i)}).filter(Boolean):[];
-  s.tapClue=i=>{if(!C.active||C.found[i])return;C.found[i]=true;const p=s.pos();AU.sfx('chime');s.F.burst(p.clue[i][0],p.clue[i][1]-30,8,'spark',3);op(C.objs[i].glow,1);
-    C.hint=-1;const next=C.found.findIndex(f=>!f);if(next>=0)s.F.trail([p.clue[i][0],p.clue[i][1]],[p.clue[next][0],p.clue[next][1]],P.turmeric);
-    rama.set(i===0?'lookdown':'gestureClue',500);lak.set(i===2?'pointAhead':'smile',500);Hot.dirty=true;D.counter(`${C.found.filter(Boolean).length} of 3 clues`);if(C.found.every(Boolean))C.done&&C.done()};
-  s.down=pt=>{if(!C.active)return;const p=s.pos();let best=-1,bd=1e9;p.clue.forEach((c,i)=>{const d=Math.hypot(pt.x-c[0],pt.y-c[1]);if(d<c[2]*1.15&&d<bd&&!C.found[i]){bd=d;best=i}});
-    if(best>=0){s.tapClue(best);return}if(p.clue.some((c,i)=>C.found[i]&&Math.hypot(pt.x-c[0],pt.y-c[1])<c[2]))return;
-    const w=p.wrong[0];const tangled=Math.hypot(pt.x-w[0],pt.y-w[1])<w[2]*1.6;const now=T.now;if(now-(C.lastNudge||-1e9)<2600)return;C.lastNudge=now;AU.sfx('soft');
-    const nx=C.found.findIndex(f=>!f);C.hint=nx;Timers.add(2600,()=>{if(C.hint===nx)C.hint=-1});lak.set('gestureClue',400);
-    D.say([['lak',tangled?"That side is all tangled up. Let's look for another clue!":"Look closely, a clue is waiting nearby. Let's try again!"]]).catch(()=>{})};
-  return s}
-async function shot1_3(){mood('inviting');Amb.set('forest');const s=D.setScene(scClues(),900);const {rama,lak}=s.cast;const C=s.C;rama.set('lookdown',0);lak.set('gestureClue',0);
-  await hold(800);
-  await say("Oh, young explorers! Can you help Rama and Lakshmana discover which way Sita went? Look carefully. Which clues can help us follow the path?");
-  D.instr('Tap the three clues: a flower, footprints and the path','0 of 3 clues','tap');C.active=true;Hot.dirty=true;
-  await D.task({hint:"Can you spot the fallen flower, the footprints and the path between the trees?",hintWho:'lak',
-    start(t){C.done=()=>t.finish()},demo(){const i=C.found.findIndex(f=>!f);if(i>=0){C.hint=i;const c=s.pos().clue[i];s.hand.tap(c[0],c[1],2)}},
-    assist(t){const step=()=>{if(t.done)return;const i=C.found.findIndex(f=>!f);if(i<0)return;s.tapClue(i);Timers.add(2400,step)};step()}});
-  C.active=false;D.clearAct();Hot.dirty=true;await hold(600);
-  /* the footprints and the path join into one glowing route */
-  C.joined=true;AU.sfx('success');await D.tw(C,{joinK:1},1400);rama.set('idle',400);rama.nod();lak.set('pointAhead',600);await hold(700);
-  await say("You found the clues! Every little discovery brings Rama one step closer to finding Sita. Let’s keep going!",[["closer",()=>{rama.set('determined',500)}]]);
-  rama.turn(1);goWalk(rama,LP(1300,700),LP(560,880),5200);await D.wait(500);goWalk(lak,LP(1160,620),LP(620,980),5200);await hold(2600);await D.late()}
-
 /* ---------- Scene 1.4: A Brave Friend Appears (meeting, the leap, the Ashoka grove) ---------- */
 function scMeet(){const s=mkScene('1.4a',{frame:'forest'});artPart(s);const back=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp);
   skyBg(s,{kind:'forest',horizon:[440,760],ground:['leafy',P.leaf,P.forest,.9],clouds:[[.2,.2,240],[.7,.15,300]]});
@@ -1356,7 +1319,7 @@ function scLeapSea(){const s=mkScene('1.4s',{frame:'fish'});artPart(s);const bac
   skyBg(s,{kind:'ocean',horizon:[520,860],sea:'day',seaN:5,clouds:[[.12,.24,260],[.5,.16,320],[.86,.3,240]]});
   const han=cast(s,'hanuman',CAST.hanuman,mid);
   onOrient(s,[back],P_=>{const ls=lankaSkyline(back,LP(360,300),LP(150,150),{n:5});tf(ls,LP(1500,520),LP(780,860),1)});
-  s.k=0;s.tick=()=>{const a=LP([120,520],[120,900]),b=LP([1480,440],[780,760]);const k=s.k;han.x=lerp(a[0],b[0],k);han.y=lerp(a[1],b[1],k)-Math.sin(k*Math.PI)*LP(360,420);han.s=LP(.7,.7)};
+  s.k=0;s.tick=()=>{const a=LP([180,640],[170,1120]),b=LP([1400,580],[800,920]);const k=s.k;han.x=lerp(a[0],b[0],k);han.y=lerp(a[1],b[1],k)-Math.sin(k*Math.PI)*LP(250,300);han.s=LP(.75,.8)};
   han.set('leap',0);return s}
 function scGrove(o){o=o||{};const s=mkScene(o.id||'1.4g',{frame:'lotus'});artPart(s);const back=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp),top=grp(s.comp);
   skyBg(s,{kind:'lanka',horizon:[450,780],ground:['flower',P.leaf,P.forest,1],clouds:[[.2,.24,240],[.78,.16,260]],stars:6});
@@ -1382,8 +1345,8 @@ async function shot1_4(){mood('energetic');Amb.set('forest');const s=D.setScene(
   await say("Hanuman promised to help find Sita.",[["promised",()=>{han.set('speakGently',600);rama.set('bless',700)}]]);
   /* Rama gives Hanuman his ring */
   han.hold('f','ring',{r:13});han.set('standRing',600);rama.set('idle',600);AU.sfx('sparkle');await hold(900);
-  await say("With courage in his heart, he leapt across the mighty ocean towards Lanka.",[["courage",()=>{han.turn(1);han.set('prepLeap',700)}],["leapt",()=>{han.set('leap',300);AU.sfx('whoosh');D.go(han,{x:LP(1950,1250),y:LP(150,300)},1300,'in')}]]);
-  let sea;await Trans.run('iris',()=>{sea=D.setScene(scLeapSea(),0);sea.cast.hanuman.hold('f','ring',{r:13})},{at:LP([1300,300],[700,600]),pat:'wave',a:P.ivory,b:P.peacock,ms:800});
+  await say("With courage in his heart, he leapt across the mighty ocean towards Lanka.",[["courage",()=>{han.turn(1);han.set('prepLeap',700)}],["leapt",()=>{han.set('leap',300);AU.sfx('whoosh');D.go(han,{x:LP(1480,800),y:LP(500,1000)},1300,'io')}]]);
+  let sea;await Trans.run('iris',()=>{sea=D.setScene(scLeapSea(),0);sea.cast.hanuman.hold('f','ring',{r:13})},{at:LP([1480,400],[800,880]),pat:'wave',a:P.ivory,b:P.peacock,ms:800});
   AU.sfx('whoosh');await D.tw(sea,{k:1},4200,'io');await hold(300);
   /* the Ashoka grove */
   let g;await Trans.run('wipe',()=>{g=D.setScene(scGrove(),0)},{pat:'flower',a:P.gold,b:P.maroon,ms:900});const {sita,hanuman:H}=g.cast;H.hold('f','ring',{r:13});mood('gentle');Amb.set('grove');
@@ -1396,61 +1359,9 @@ async function shot1_4(){mood('energetic');Amb.set('forest');const s=D.setScene(
   await say("For the first time in a long while, Sita felt hope.",[["Sita felt hope",()=>{sita.set('receiveRing',1400);D.go(g,{lotK:1,warmK:1},3200);AU.sfx('bloom');g.bloom(1)}]]);
   /* stillness for the emotional beat */
   await hold(2600);sita.set('seatedJoy',1200);await hold(2400);await D.late();
-  const rp=H.hand('f');await Trans.run('iris',()=>shot1_5pre(),{at:[rp[0],rp[1]-30],pat:'wave',a:P.ivory,b:P.ocean,ms:1100})}
+  const rp=H.hand('f');await Trans.run('iris',()=>{D.setScene(scOcean(),0)},{at:[rp[0],rp[1]-30],pat:'wave',a:P.ivory,b:P.ocean,ms:1100})}
 
 /* ===== EPISODE 1, scenes 1.5 to 1.8 ===== */
-
-/* ---------- Activity 1.5: Help Hanuman Deliver the Ring ---------- */
-function scRingPath(){const R={cur:-1,busy:false,drag:false,active:false,lastNudge:-1e9};
-  const pos=()=>LP({sita:[1560,742,1.05,-1],han:[230,744,.95,1],han0:[230,744],tree:[1650,760,600],lotus:[1660,770],
-      warm:[1540,620],steps:[[360,700],[500,610],[650,670],[800,580],[950,650],[1100,560],[1240,640],[1330,700]]},
-    {sita:[730,760,1.1,-1],han:[170,1360,1,1],han0:[170,1360],tree:[800,770,560],lotus:[880,780],
-      warm:[700,640],steps:[[300,1300],[480,1240],[380,1120],[540,1040],[720,1080],[800,960],[640,880],[500,780]]});
-  const s=scGrove({id:'1.5',pos});s.R=R;const {sita,hanuman:han}=s.cast;sita.set('seated',0);han.set('standRing',0);han.hold('f','ring',{r:LP(22,24)});s.arrived=true;
-  const stepG=grp(s.comp);s.comp.insertBefore(stepG,s.comp.childNodes[1]);const fxG=grp(s.comp);
-  const prevLayout=s.layout;s.layout=function(){const was=this.orient;prevLayout.call(this);if(was===L.portrait&&stepG.childNodes.length)return;stepG.innerHTML='';fxG.innerHTML='';const p=pos();
-    /* the route: leaves, floral motifs and geometric stepping points */
-    const d=smooth([p.han0.slice(0,2)].concat(p.steps),false);ln(stepG,d,K,28,{'stroke-dasharray':'2 26'});ln(stepG,d,P.turmeric,16,{'stroke-dasharray':'2 26'});
-    R.stepEls=p.steps.map(([x,y],i)=>{const g=grp(stepG,{transform:`translate(${x} ${y})`});const k=i%3;if(k===0){shp(g,leafD(70,26),P.leaf,3);tf(g,x-35,y,1,-10)}
-      else if(k===1){flower(g,26,P.verm,P.turmeric)}else{shp(g,'M0 -24L28 0L0 24L-28 0Z',Pat.u('grid',P.verm,P.turmeric,.6),3)}const glow=circ(g,0,0,40,'none',5,{stroke:P.turmeric});op(glow,0);return{g,glow}});
-    R.dot=grp(fxG);rings(R.dot,22,{n:2,step:.4,w:4,c1:P.turmeric,c2:P.ivory});circ(R.dot,0,0,9,P.turmeric,2.4);R.tg=target(fxG,60);
-    put(han,R.cur>=0?p.steps[R.cur].concat([p.han[2],1]):p.han);han.x=R.cur>=0?p.steps[R.cur][0]:p.han0[0];han.y=R.cur>=0?p.steps[R.cur][1]:p.han0[1]};
-  s.F2=fxLayer(s);s.hand=demoHand(s);
-  const baseTick=s.tick;s.tick=(dt,t)=>{baseTick(dt,t);if(!R.dot)return;const p=pos();const rest=[[han.x,han.y]].concat(p.steps.slice(R.cur+1));
-    if(R.active&&rest.length>1){const u=(t*.32)%1;const q=polyAt(rest,u);tf(R.dot,q[0],q[1]-6,1);op(R.dot,1)}else op(R.dot,0);
-    const nx=p.steps[R.cur+1];if(nx&&R.active){R.tg.x=nx[0];R.tg.y=nx[1];R.tg.on=lerp(R.tg.on,R.nudge?1:.55,.1)}else R.tg.on=lerp(R.tg.on,0,.2);R.tg.update(t);
-    R.stepEls&&R.stepEls.forEach((e,i)=>op(e.glow,i<=R.cur?1:0))};
-  s.hop=async()=>{if(R.busy||!R.active)return;const p=pos();const i=R.cur+1;if(i>=p.steps.length)return;R.busy=true;R.nudge=false;try{await hopTo(han,p.steps[i][0],p.steps[i][1],520,LP(70,80))}catch(e){R.busy=false;throw e}R.cur=i;R.busy=false;
-    D.counter(`${i+1} of ${p.steps.length} steps`);AU.sfx('tap');if(i===p.steps.length-1)R.done&&R.done()};
-  s.stray=()=>{if(T.now-R.lastNudge<3400)return;R.lastNudge=T.now;R.nudge=true;Timers.add(2600,()=>R.nudge=false);AU.sfx('soft');han.set('speakGently',300);Timers.add(1600,()=>han.set('standRing',400));
-    D.say([['hanuman',"Oops! Let me hop back onto the golden path. This way!"]]).catch(()=>{})};
-  s.near=(pt,q,r)=>Math.hypot(pt.x-q[0],pt.y-q[1])<r;
-  s.down=pt=>{if(!R.active)return;const p=pos();if(s.near(pt,[han.x,han.y-100*han.s],LP(150,160))){R.drag=true;return}
-    const nx=p.steps[R.cur+1];if(nx&&p.steps.slice(R.cur+1).some(q=>s.near(pt,q,LP(95,105)))){s.hop().catch(()=>{});return}s.stray()};
-  s.move=pt=>{if(!R.drag||!R.active)return;const p=pos();const nx=p.steps[R.cur+1];if(nx&&s.near(pt,nx,LP(110,120))){s.hop().catch(()=>{});return}
-    const dmin=Math.min(Math.hypot(pt.x-han.x,pt.y-han.y+60),...p.steps.map(q=>Math.hypot(pt.x-q[0],pt.y-q[1])));if(dmin>LP(230,240)){R.drag=false;s.stray()}};
-  s.up=()=>{R.drag=false};
-  /* camera: an open hand steers, its fingertip acts like a finger held on the screen */
-  s.camHand=h=>{if(!R.active)return;if(h.open){R.drag=true;s.move(h.tip)}};
-  s.hots=()=>{if(!R.active)return[];const nx=pos().steps[R.cur+1];return nx?[{id:'step',x:nx[0],y:nx[1],r:60,label:'Next stepping point for Hanuman',on:()=>s.hop().catch(()=>{})}]:[]};
-  return s}
-async function shot1_5pre(){D.setScene(scRingPath(),0)}
-async function shot1_5(){mood('inviting');Amb.set('grove');let s=D.scene;if(!s||s.id!=='1.5')s=D.setScene(scRingPath(),900);const R=s.R;const {sita,hanuman:han}=s.cast;
-  await hold(600);
-  await say("Can you help Hanuman deliver Rama’s ring to Sita? Guide him along the path and make sure the precious ring reaches her safely!",[["Guide him",()=>han.set('speakGently',500)]]);
-  han.set('standRing',400);D.instr('Drag Hanuman along the golden path, or tap the next step','0 of 8 steps','drag');R.active=true;Hot.dirty=true;
-  await D.task({hint:"Follow the little golden light! Tap the next stepping stone, or drag me there.",hintWho:'hanuman',
-    start(t){R.done=()=>t.finish()},demo(){const p=s.pos?null:null;const q=LP([[230,640],[360,700],[500,610]],[[170,1260],[300,1300],[480,1240]]);s.hand.drag(q,1400)},
-    assist(t){const step=()=>{if(t.done)return;s.hop().then(()=>{if(!t.done)Timers.add(900,step)}).catch(()=>{})};step()}});
-  R.active=false;D.clearAct();Hot.dirty=true;
-  /* arrival: Hanuman kneels, Sita receives the ring, smiles, and a lotus blooms */
-  han.set('kneelPresent',900);han.hold('f','ring',{r:LP(24,26)});await hold(1200);AU.sfx('sparkle');const hp=han.hand('f');s.F2.burst(hp[0],hp[1]-30,8,'spark',2.6);
-  sita.set('receiveRing',1000);await hold(1100);han.hold('f',null);sita.hold('f','ring',{r:LP(14,16)});han.set('namaste',800);Music.swell();
-  sita.set('seatedJoy',900);D.go(s,{lotK:1,warmK:1},2600);AU.sfx('bloom');s.bloom(1);await hold(1600);
-  await say("Well done! A small ring carried a very big message: Rama was coming, and hope was alive.");
-  await hold(1600);await D.late();
-  /* the camera moves in on the ring, then pulls back to Rama and the vanaras */
-  const rp=sita.hand('f');await D.tw(s.cam,{z:2.6,fx:rp[0],fy:rp[1]-20},1600,'io')}
 
 /* ---------- the shore and the ocean, shared by 1.6 and 1.7 ---------- */
 const VN=n=>{const a=[];for(let i=0;i<n;i++)a.push(vanaraCfg(i));return a};
@@ -1473,7 +1384,7 @@ function scOcean(){const s=mkScene('1.6',{frame:'fish'});artPart(s);const back=g
     put(rama,p.rama);put(lak,p.lak);put(han,p.han);vans.forEach((v,i)=>put(v,p.van[i]))});
   s.lineK=0;s.tick=()=>{(s.lines||[]).forEach(l=>l.mp.setAttribute('stroke-dashoffset',f1(l.len*(1-(s.lineK||0)))))};
   vans.forEach((v,i)=>v.set('wait',0));return s}
-async function shot1_6(){mood('energetic');Amb.set('ocean');const s=D.setScene(scOcean(),900);const {rama,lak,hanuman:han}=s.cast;const vans=[].concat(s.cast.vanaras);const p=s.pos();
+async function shot1_6(){mood('energetic');Amb.set('ocean');let s=D.scene;if(!s||s.id!=='1.6')s=D.setScene(scOcean(),900);const {rama,lak,hanuman:han}=s.cast;const vans=[].concat(s.cast.vanaras);const p=s.pos();
   s.cam.z=2;s.cam.fx=p.rama[0];s.cam.fy=p.rama[1]-150;D.go(s.cam,{z:1,fx:LP(889,500),fy:LP(405,750)},3200,'io');
   han.x=p.han0[0];han.y=p.han0[1];han.f=-1;vans.forEach(v=>{v.x+=LP(600,500)});rama.set('idle',0);
   const land=(async()=>{han.set('leap',0);const o={k:0};const a=p.han0,b=p.han;const iv=setInterval(()=>{han.x=lerp(a[0],b[0],o.k);han.y=lerp(a[1],b[1],o.k)-Math.sin(o.k*Math.PI)*100},16);AU.sfx('whoosh');
@@ -1969,7 +1880,7 @@ const MOTIFS=['flower','leaf','dots','geo'];
 function motif(g,k,r){if(k==='flower')flower(g,r,P.verm,P.turmeric);else if(k==='leaf'){const l=grp(g);shp(l,leafD(r*2.2,r*.8),P.leaf,2.4);tf(l,-r*1.1,0,1)}
   else if(k==='dots'){[[0,0],[r*.8,0],[-r*.8,0],[0,r*.8],[0,-r*.8]].forEach(([x,y])=>circ(g,x,y,r*.3,P.ivory,1.6))}else{shp(g,`M0 ${-r}L${r} 0L0 ${r}L${-r} 0Z`,P.turmeric,2.4);circ(g,0,0,r*.3,P.verm,1.4)}return g}
 function scKind(){const s=mkScene('2.9',{frame:'lotus'});artPart(s);const back=grp(s.comp),medG=grp(s.comp),cen=grp(s.comp),chipG=grp(s.comp),fx=grp(s.comp);
-  skyBg(s,{kind:'day',horizon:[2000,3000],clouds:[]});
+  skyBg(s,{kind:'ivory',horizon:[2000,3000],clouds:[]});
   const K_={choice:null,auto:false,stage:'choose',placed:[],sel:'flower',active:false,show:[0,0,0,0]};s.K=K_;
   const SLOTS=[[-32,1],[-20,4],[-8,5],[4,5],[16,4],[28,1],[-14,-3],[10,-3]];
   s.pos=()=>LP({c:[889,500],ds:2.7,med:[[350,250],[1428,250],[350,610],[1428,610]],mr:132,chips:[[700,740],[826,740],[952,740],[1078,740]],cr:50,deed:[1050,320,290,120]},
@@ -2029,20 +1940,21 @@ async function shot2_9(){mood('inviting');Amb.set('none');Music.mood('day');cons
 
 /* ---------- Scene 2.10: Carry the Light Within You (closing) ---------- */
 function scClose(){const s=mkScene('2.10',{frame:'night'});artPart(s);const back=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp),ring=grp(s.comp);
-  skyBg(s,{kind:'night',horizon:[560,900],ground:['flower',P.gold,P.maroon,1],stars:18});
+  skyBg(s,{kind:'night',horizon:[470,760],ground:['flower',P.gold,P.brown,.9],stars:18,clouds:[[.14,.22,250],[.84,.18,300]]});
   const lak=cast(s,'lak',CAST.lak,mid),rama=cast(s,'rama',CAST.rama,mid),sita=cast(s,'sita',CAST.sita,mid),han=cast(s,'hanuman',CAST.hanuman,mid);
   const folk=[personCfg(601,{child:true}),personCfg(602,{child:false,fem:true}),personCfg(603,{child:true}),personCfg(604,{child:false}),personCfg(605,{child:true,fem:true}),personCfg(606,{child:false,fem:true})].map(c=>cast(s,'folk',c,mid));
   folk.forEach(f=>mid.insertBefore(f.g,mid.firstChild));
-  s.pos=()=>LP({lak:[640,730,.92,1],rama:[790,730,.95,1],sita:[960,730,.95,-1],han:[1110,734,.92,-1],folk:[[200,660,.62,1],[300,664,.62,-1],[430,660,.62,1],[1330,660,.62,1],[1450,664,.62,-1],[1580,660,.62,-1]],
-      fd:[1240,772,1.6],icon:[1400,730,58],medal:[889,180,190],ell:[889,420,900,440]},
+  s.pos=()=>LP({lak:[640,730,.92,1],rama:[790,730,.95,1],sita:[960,730,.95,-1],han:[1110,734,.92,-1],folk:[[200,630,.6,1],[300,634,.6,-1],[430,630,.6,1],[1300,630,.6,1],[1420,634,.6,-1],[1560,630,.6,-1]],
+      fd:[1240,772,1.6],icon:[1400,730,58],medal:[889,170,180],ell:[889,420,900,440]},
     {lak:[240,1170,.9,1],rama:[410,1170,.92,1],sita:[590,1170,.92,-1],han:[760,1174,.9,-1],folk:[[100,990,.5,1],[200,994,.5,-1],[310,990,.5,1],[690,990,.5,1],[800,994,.5,-1],[900,990,.5,-1]],
-      fd:[500,1400,1.25],icon:[680,1360,50],medal:[500,330,210],ell:[500,760,540,780]});
+      fd:[500,1400,1.25],icon:[330,1390,50],medal:[500,330,210],ell:[500,760,540,780]});
   onOrient(s,[back,fore,ring],P_=>{const p=s.pos();/* a large symmetrical floral motif in the sky */const md=grp(back,{transform:`translate(${p.medal[0]} ${p.medal[1]})`});const r=p.medal[2];
     petalRing(md,r*.95,24,P.gold,P.turmeric,r*.3);halo(md,r*.7,{bw:r*.12,col:P.gold});const rg=rangoli(md,r*.42,2);s.md=md;
-    const C=cityArt(s,back,{dome:P.gold});/* hundreds of little lamps along roofs, windows and streets */
-    const L_=[];C.hs.forEach(({x,y,k})=>{L_.push(...lampRow(x-104*k,y-190*k-4,x+104*k,y-190*k-4,8));L_.push(...lampRow(x-100*k,y+6,x+100*k,y+6,7));L_.push(...lampRow(x-130*k,y-190*k-50*k,x,y-190*k-92*k,4),...lampRow(x,y-190*k-92*k,x+130*k,y-190*k-50*k,4))});
-    const pc=C.c.palace;L_.push(...lampRow(pc[0]-500*pc[2],pc[1]-252*pc[2],pc[0]+500*pc[2],pc[1]-252*pc[2],20),...lampRow(pc[0]-500*pc[2],pc[1]+4,pc[0]+500*pc[2],pc[1]+4,16));
-    const st=C.c.street;for(let i=0;i<10;i++){const u=i/9;const q=polyAt(st,u);L_.push([q[0]-LP(100,90)*(1-u*.5),q[1]],[q[0]+LP(100,90)*(1-u*.5),q[1]])}
+    const A=ayodhyaArt(s,back,fore,{dome:P.gold});const pc=A.pc;const C={hs:A.hs};/* little lamps along rooftops, windows, the palace and the road */
+    const L_=[];A.hs.forEach(({x,y,k})=>{L_.push(...lampRow(x-104*k,y-190*k-4,x+104*k,y-190*k-4,8));L_.push(...lampRow(x-100*k,y+6,x+100*k,y+6,7));L_.push(...lampRow(x-130*k,y-190*k-50*k,x,y-190*k-92*k,4),...lampRow(x,y-190*k-92*k,x+130*k,y-190*k-50*k,4))});
+    L_.push(...lampRow(pc[0]-500*pc[2],pc[1]-252*pc[2],pc[0]+500*pc[2],pc[1]-252*pc[2],20),...lampRow(pc[0]-500*pc[2],pc[1]+4,pc[0]+500*pc[2],pc[1]+4,16));
+    for(let i=0;i<12;i++){const q=polyAt(A.road,i/11);L_.push([q[0],q[1]-LP(42,46)],[q[0],q[1]+LP(42,46)])}
+    L_.push(...lampRow(LP(40,40),LP(476,766),LP(1740,960),LP(476,766),LP(30,18)));
     s.lampsA=tinyLamps(back,L_.filter((_,i)=>i%2===0),1.1);s.lampsB=tinyLamps(back,L_.filter((_,i)=>i%2===1),1.1);
     const ag=grp(back,{transform:`translate(${pc[0]} ${pc[1]}) scale(${pc[2]})`});shp(ag,'M-68 0V-124Q-68 -215 0 -215Q68 -215 68 -124V0Z',P.turmeric,4);
     /* the child's own diya, its flame connected by golden dotted lines to the city's lamps */
@@ -2062,6 +1974,9 @@ function scClose(){const s=mkScene('2.10',{frame:'night'});artPart(s);const back
   folk[0].hold('f','diya',{lit:1});folk[0].set('light',0);folk[1].hold('f','plate');folk[1].set('share',0);folk[2].hold('f','sweet');folk[2].set('share',0);
   folk[3].hold('f','garland');folk[3].set('garlands',0);folk[4].set('sad',0);folk[5].set('comfort',0);return s}
 async function shot2_10(){mood('heartfelt');Amb.set('night');Music.mood('light');const s=D.setScene(scClose(),1200);const {rama,sita,lak,hanuman:han}=s.cast;const folk=[].concat(s.cast.folk);
+  /* Rama, Sita and Lakshmana walk into the scene from the left; Sita turns to face the others when they stop */
+  const p=s.pos();const trio=[[sita,p.sita],[rama,p.rama],[lak,p.lak]];trio.forEach(([f,q])=>{f.x=q[0]-LP(1050,800);f.f=1});
+  trio.forEach(([f,q],i)=>Timers.add(i*500,()=>{f.set('walk',200);tw(f,{x:q[0]},LP(7200,6200),'lin').then(()=>{f.set(f===rama?'idle':'smile',400);if(f===sita)sita.turn(-1)})}));
   /* the camera pulls back to reveal the whole city */
   s.cam.z=1.45;s.cam.fx=LP(889,500);s.cam.fy=LP(560,1000);D.go(s.cam,{z:1,fy:LP(405,750)},16000,'io');
   await hold(800);
@@ -2103,7 +2018,7 @@ async function endCard(n){D.clearAct();const e=$('end');$('endEye').textContent=
 const SHOTS=[['1.1','shot1_1'],['1.2','shot1_2'],['1.3','shot1_3'],['1.4','shot1_4'],['1.5','shot1_5'],['1.6','shot1_6'],['1.7','shot1_7'],['1.8','shot1_8'],
   ['2.1','shot2_1'],['2.2','shot2_2'],['2.3','shot2_3'],['2.4','shot2_4'],['2.5','shot2_5'],['2.6','shot2_6'],['2.7','shot2_7'],['2.8','shot2_8'],['2.9','shot2_9'],['2.10','shot2_10']].filter(s=>typeof window[s[1]]==='function');
 /* production targets in seconds from the story document (Episode 1 9:00, Episode 2 11:00); title cards count inside the first shot of each episode */
-const TARGETS=[['1.1','Golden City of Ayodhya',45],['1.2','A New Life in the Forest',45],['1.3','Follow the Forest Clues',75],['1.4','A Brave Friend Appears',60],['1.5','Deliver the Ring',60],
+const TARGETS=[['1.1','Golden City of Ayodhya',45],['1.2','A New Life in the Forest',45],['1.4','A Brave Friend Appears',60],
   ['1.6','The Ocean Challenge',60],['1.7','Build the Bridge',60],['1.8','The Journey to Lanka',135],
   ['2.1','The Battle for Hope',75],['2.2','Sita and Rama Reunite',45],['2.3','The Journey Home',45],['2.4','Ayodhya Gets Ready',45],['2.5','Light Up Ayodhya',75],
   ['2.6','Rama Returns',60],['2.7','What Does a Diya Teach Us?',45],['2.8','The Sacred Shloka',75],['2.9','Diya of Kindness',75],['2.10','Carry the Light',120]];
