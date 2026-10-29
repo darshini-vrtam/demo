@@ -36,6 +36,7 @@ const POSE={
   pointAhead:{ba:-6,bb:12,fa:92,fb:-4,lean:3,ft:8,mouth:'smile',eye:'open'},
   gestureClue:{ba:-6,bb:12,fa:54,fb:26,lean:8,tilt:12,ft:12,mouth:'smile',eye:'open'},
   smile:{ba:-6,bb:10,fa:8,fb:16,mouth:'big',eye:'happy'},
+  afraid:{ba:34,bb:104,fa:44,fb:112,lean:-6,tilt:-4,eye:'wide',mouth:'worry',brow:'sad',shiver:1},
   /* Sita */
   seated:{seated:1,ba:28,bb:46,fa:40,fb:50,mouth:'soft'},
   seatedSad:{seated:1,ba:28,bb:46,fa:40,fb:52,tilt:14,eye:'down',mouth:'worry',brow:'sad'},
@@ -139,6 +140,7 @@ class Fig{constructor(cfg,parent,o){o=o||{};this.Q=cfg;this.x=0;this.y=0;this.s=
     this.lidHalf=shp(this.eyeOpen,'M2 -29Q17 -45 32 -29Q17 -31 2 -29Z',sk,3);show(this.lidHalf,false);
     this.eyeShut=ln(eye,'M3 -28Q17 -21 31 -28',K,3.8);show(this.eyeShut,false);this.eyeHappy=grp(eye);ln(this.eyeHappy,'M3 -26Q17 -40 31 -26',K,4);ln(this.eyeHappy,'M3 -26L-4 -23',K,3);show(this.eyeHappy,false);
     this.brow=ln(H_,'M3 -43Q17 -51 31 -43',K,3.4);
+    this.tear=grp(H_);shp(this.tear,'M12 -19C8 -12 8 -8 12 -7C16 -8 16 -12 12 -19Z',P.sky,1.8);circ(this.tear,10.8,-10,1.1,P.ivory,0);show(this.tear,false);
     const mo=this.mouthG=grp(H_);const mx=Q.face==='monkey'?4:0;this.mouths={smile:ln(mo,`M${23+mx} -4Q${29+mx} 3 ${35+mx} -2`,K,2.6),soft:ln(mo,`M${24+mx} -2Q${29+mx} 1 ${34+mx} -1`,K,2.4),o:circ(mo,31+mx,-1,3.6,K,0),
       worry:ln(mo,`M${24+mx} 1Q${29+mx} -4 ${34+mx} 1`,K,2.6),flat:ln(mo,`M${24+mx} -1H${34+mx}`,K,2.6),big:shp(mo,`M${22+mx} -5Q${29+mx} 8 ${36+mx} -3Z`,P.verm,2.2)};
     this.talkM=ell(mo,30+mx,-1,4,2.6,K,0);show(this.talkM,false);
@@ -148,7 +150,7 @@ class Fig{constructor(cfg,parent,o){o=o||{};this.Q=cfg;this.x=0;this.y=0;this.s=
   /* hold a prop in the front ('f') or back ('b') hand */
   hold(which,kind,o){const a=which==='b'?this.bArm:this.fArm;a.prop.innerHTML='';this.props[which]=kind;if(!kind)return null;return drawProp(a.prop,kind,o||{},this)}
   set(state,ms){const p=POSE[state]||POSE.idle;this.state=state;const tgt={};for(const k of NUM)tgt[k]=p[k]!=null?p[k]:ZERO[k];
-    this.walking=p.walk?1:0;this.oscP=p.osc||null;this.face={eye:p.eye||'open',mouth:p.mouth||'smile',brow:p.brow||''};this.applyFace();
+    this.walking=p.walk?1:0;this.oscP=p.osc||null;this.shiver=p.shiver?1:0;this.face={eye:p.eye||'open',mouth:p.mouth||'smile',brow:p.brow||''};this.applyFace();
     if(p.bowHand&&this.props.b==='bow'){this.hold('b',null);this.hold('f','bow')}
     if(ms===0){Object.assign(this.cur,tgt);return Promise.resolve()}return tw(this.cur,tgt,ms||600)}
   /* a single gentle nod */
@@ -159,7 +161,7 @@ class Fig{constructor(cfg,parent,o){o=o||{};this.Q=cfg;this.x=0;this.y=0;this.s=
   applyFace(){const F=this.face;show(this.eyeOpen,F.eye==='open'||F.eye==='wide'||F.eye==='down');show(this.eyeHappy,F.eye==='happy');show(this.eyeShut,false);show(this.lidHalf,F.eye==='down');
     tf(this.pupil,F.eye==='down'?2:0,F.eye==='down'?4:0,1);this.eyeOpen.setAttribute('transform',F.eye==='wide'?'translate(17 -29) scale(1.12) translate(-17 29)':'');
     const bt=F.brow==='sad'?'rotate(-12 17 -46) translate(0 -2)':F.brow==='up'?'translate(0 -4)':F.brow==='firm'?'rotate(8 17 -46) translate(0 2)':'';this.brow.setAttribute('transform',bt);
-    for(const k in this.mouths)show(this.mouths[k],k===F.mouth)}
+    show(this.tear,F.brow==='sad');for(const k in this.mouths)show(this.mouths[k],k===F.mouth)}
   hand(which){const a=which==='b'?this.bArm:this.fArm;const c=this.cur;const lean=c.lean||0;const sh=which==='b'?[-2,-90]:[6,-88];
     const A=(which==='b'?c.ba:c.fa)*DEG,B=A+(which==='b'?c.bb:c.fb)*DEG;let x=sh[0]+Math.sin(A)*UA+Math.sin(B)*(FA+4),y=sh[1]+Math.cos(A)*UA+Math.cos(B)*(FA+4);
     const L_=lean*DEG;/* lean rotates clockwise for +lean */
@@ -176,7 +178,7 @@ class Fig{constructor(cfg,parent,o){o=o||{};this.Q=cfg;this.x=0;this.y=0;this.s=
     const bob=this.walking?Math.abs(Math.sin(this.wph))*-3:0;this.hipY=-hip+bob-(c.air||0)*40-this.lift;
     const br=1+.012*Math.sin(t*1.6+this.ph)*m;
     tf(this.g,this.x,this.y,this.s,0,this.f*Math.max(.15,this.flipK),1);
-    this.body.setAttribute('transform',`translate(0 ${f1(this.hipY)}) rotate(${f1(c.lean||0)})`);
+    const sv=this.shiver?Math.sin(t*46)*1.8*(RM?.3:1):0;this.body.setAttribute('transform',`translate(${f1(sv)} ${f1(this.hipY)}) rotate(${f1((c.lean||0)+sv*.4)})`);
     this.torso.setAttribute('transform',`scale(1 ${f3(br)})`);
     const setLeg=(L_,a,b)=>{L_.th.setAttribute('transform',`translate(${L_===this.fLeg?6:-4} -4) rotate(${f1(-a)})`);L_.sh.setAttribute('transform',`translate(0 ${TH}) rotate(${f1(-b)})`);L_.foot.setAttribute('transform',`rotate(${f1(a+b-(c.lean||0))})`)};
     show(this.fLeg.th,!seat);show(this.bLeg.th,!seat);show(this.seat,seat);if(this.over)show(this.over,!seat||!this.skirt);if(this.skirt)show(this.skirt,!seat);
@@ -221,8 +223,10 @@ class Ravana{constructor(parent){this.x=0;this.y=0;this.s=1;this.gone=0;this.vis
     const br=grp(g);ln(br,`M${-r*.6} ${-r*.36}Q${-r*.36} ${-r*.56} ${-r*.12} ${-r*.4}M${r*.12} ${-r*.4}Q${r*.36} ${-r*.56} ${r*.6} ${-r*.36}`,K,main?3.6:2.6);
     ln(g,`M0 ${-r*.05}L${-r*.07} ${r*.24}H${r*.07}`,K,2);
     const mu=grp(g);ln(mu,`M0 ${r*.38}Q${-r*.3} ${r*.28} ${-r*.5} ${r*.42}Q${-r*.62} ${r*.5} ${-r*.56} ${r*.28}M0 ${r*.38}Q${r*.3} ${r*.28} ${r*.5} ${r*.42}Q${r*.62} ${r*.5} ${r*.56} ${r*.28}`,K,main?4:3);
+    const brA=grp(g);ln(brA,`M${-r*.66} ${-r*.52}L${-r*.1} ${-r*.3}M${r*.1} ${-r*.3}L${r*.66} ${-r*.52}`,K,main?4.6:3.2);show(brA,false);
+    const moA=ln(g,`M${-r*.18} ${r*.66}Q0 ${r*.54} ${r*.18} ${r*.66}`,K,2.4);show(moA,false);
     const mo=ln(g,`M${-r*.16} ${r*.6}Q0 ${r*.68} ${r*.16} ${r*.6}`,K,2.2);ln(g,`M0 ${-r*.62}V${-r*.42}`,P.verm,main?3.4:2.4);
-    circ(g,-r*.88,r*.24,r*.12,P.gold,1.8);circ(g,r*.88,r*.24,r*.12,P.gold,1.8);return{pu,br,mo}}
+    circ(g,-r*.88,r*.24,r*.12,P.gold,1.8);circ(g,r*.88,r*.24,r*.12,P.gold,1.8);return{pu,br,mo,brA,moA}}
   crownD(r,h){return`M${-r*.8} ${-r*.66}L${-r*.86} ${-r*.66-h*.5}L${-r*.44} ${-r*.66-h*.3}L${-r*.2} ${-r*.66-h*.8}L0 ${-r*.66-h}L${r*.2} ${-r*.66-h*.8}L${r*.44} ${-r*.66-h*.3}L${r*.86} ${-r*.66-h*.5}L${r*.8} ${-r*.66}Z`}
   build(parent){const g=this.g=grp(parent);const sk=SKIN.ravana;const aura=this.aura=grp(g);
     for(let i=0;i<3;i++)circ(aura,0,-300,170+i*34,'none',4,{stroke:i%2?P.indigo:P.verm,'stroke-dasharray':i%2?'.1 14':'26 12','stroke-width':i%2?7:4,'stroke-linecap':'round'});
@@ -253,5 +257,5 @@ class Ravana{constructor(parent){this.x=0;this.y=0;this.s=1;this.gone=0;this.vis
     const arm=(A,la,lb)=>{A.up.setAttribute('transform',`translate(${A.sx*54} -258) rotate(${f1(-A.sx*la)})`);A.fo.setAttribute('transform',`translate(0 60) rotate(${f1(-A.sx*lb)})`);A.hand.setAttribute('transform',`translate(0 58) rotate(${f1(A.sx*(la+lb))})`);op(A.w,clamp(c.w*1.4,0,1))};
     arm(this.L,c.la,c.lb);arm(this.Rt,c.ra,c.rb);
     op(this.aura,c.aura);tf(this.aura,0,0,1,t*4*m*c.aura);
-    const dr=c.droop;const all=[this.mainF].concat(this.heads.map(h=>h.F));all.forEach(F=>{tf(F.pu,0,dr*3,1);F.br.setAttribute('transform',`translate(0 ${f1(dr*2)})`)});
+    const dr=c.droop;const all=[this.mainF].concat(this.heads.map(h=>h.F));all.forEach(F=>{const an=!!this.angry&&dr<.5;show(F.br,!an);show(F.brA,an);show(F.mo,!an);show(F.moA,an);tf(F.pu,0,dr*3,1);F.br.setAttribute('transform',`translate(0 ${f1(dr*2)})`)});
     this.heads.forEach(h=>{tf(h.h,h.hx,h.hy+dr*6,1,(h.hx/124)*dr*-8+Math.sin(t*.8+h.i)*1*m)});tf(this.mh,0,-318+dr*8,1,0)}}

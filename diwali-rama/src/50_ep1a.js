@@ -79,7 +79,7 @@ function scDeparture(){const s=mkScene('1.2b',{frame:'forest'});artPart(s);const
   s.pos=()=>LP({sita:[620,740,.95,1],rav:[1240,744,1.2],rav0:[1800,744]},{sita:[300,1300,1,1],rav:[700,1290,1.1],rav0:[1100,1290]});
   onOrient(s,[back,fore],P_=>{const p=s.pos();forestArt(s,back,fore,{deer:false,skip:P_?[3]:[4]});const h=hut(back,LP(200,190));tf(h,LP(340,160),LP(600,900),1);
     frameFlora(fore,P_?[[50,1496,170],[950,1496,170,P.verm]]:[[50,806,170],[1730,806,180,P.verm]]);put(sita,p.sita);if(!s.moved){rav.x=p.rav0[0];rav.y=p.rav0[1];rav.s=p.rav[2]}});
-  sita.set('concerned',0);rav.set('stand',0);return s}
+  sita.set('concerned',0);rav.set('stand',0);rav.angry=true;return s}
 function scChariotSky(){const s=mkScene('1.2s',{frame:'lanka'});artPart(s);const back=grp(s.comp),mid=grp(s.comp);
   skyBg(s,{kind:'swirl',horizon:[560,900],sea:'night',seaN:4,life:.6,clouds:[[.15,.3,260],[.55,.2,320],[.85,.34,220]]});
   onOrient(s,[back,mid],P_=>{const ls=lankaSkyline(back,LP(820,600),LP(380,360),{n:7});tf(ls,LP(1320,700),LP(560,900),1);const wl=palaceWall(back,LP(860,620),LP(70,80),P.gold,P.maroon);tf(wl,LP(890,390),LP(560,900),1);s.ch=farChariot(mid);tf(s.ch,-200,200,1)});
@@ -94,8 +94,8 @@ async function shot1_2(){mood('warm');Amb.set('forest');let s=D.scene;if(!s||s.i
   await hold(1400);
   /* keyframe B: the departure, through a patterned wipe */
   let b;await Trans.run('wipe',()=>{b=D.setScene(scDeparture(),0)},{pat:'flower',a:P.gold,b:P.indigo,ms:900});const rav=b.parts.find(x=>x instanceof Ravana);const bp=b.pos();
-  b.moved=true;tw(rav,{x:bp.rav[0]},3200,'io');
-  await say("One day, Ravana took Sita away to Lanka.");await hold(2400);b.cast.sita.set('determined',600);await hold(1200);
+  b.moved=true;tw(rav,{x:bp.rav[0]},3200,'io');Timers.add(900,()=>b.cast.sita.set('afraid',600));
+  await say("One day, Ravana took Sita away to Lanka.");await hold(3600);
   let c;await Trans.run('wipe',()=>{c=D.setScene(scChariotSky(),0)},{pat:'chevron',a:P.gold,b:P.maroon,ms:800});await D.tw(c,{k:1},5200,'io');await hold(400);
   /* keyframe C: Rama's discovery */
   let d;await Trans.run('wipe',()=>{d=D.setScene(scForest('c'),0);d.shadeK=.35},{pat:'leafy',a:P.leaf,b:P.forest,ms:900});const R=d.cast.rama,Lk=d.cast.lak;const dp=d.pos();
@@ -161,5 +161,6 @@ async function shot1_4(){mood('energetic');Amb.set('forest');const s=D.setScene(
   await hold(800);Music.swell();
   await say("For the first time in a long while, Sita felt hope.",[["Sita felt hope",()=>{sita.set('receiveRing',1400);D.go(g,{lotK:1,warmK:1},3200);AU.sfx('bloom');g.bloom(1)}]]);
   /* stillness for the emotional beat */
-  await hold(2600);sita.set('seatedJoy',1200);await hold(2400);await D.late();
-  const rp=H.hand('f');await Trans.run('iris',()=>{D.setScene(scOcean(),0)},{at:[rp[0],rp[1]-30],pat:'wave',a:P.ivory,b:P.ocean,ms:1100})}
+  await hold(1800);H.hold('f',null);sita.hold('f','ring',{r:LP(20,22)});AU.sfx('sparkle');H.set('namaste',900);const sp=sita.hand('f');g.F.burst(sp[0],sp[1]-30,8,'spark',2.6);
+  await hold(1800);sita.set('seatedJoy',1200);await hold(2400);await D.late();
+  const rp=sita.hand('f');await Trans.run('iris',()=>{D.setScene(scOcean(),0)},{at:[rp[0],rp[1]-30],pat:'wave',a:P.ivory,b:P.ocean,ms:1100})}

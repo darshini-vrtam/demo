@@ -174,3 +174,14 @@ The late frame of every scene was reviewed in landscape (1280×720) and portrait
 - **2.6 Rama Returns to Ayodhya:**
   - Rama, Sita and Lakshmana walk in from the right along the road and stop facing the welcoming crowd. They no longer emerge from the palace gate, so the gate doors are removed.
   - Hanuman now stands on the left and greets them.
+
+## Revision 9
+
+- **1.8 Journey to Lanka:**
+  - Rama no longer raises his bow to aim. He stays determined, bow at his side.
+  - The gates of Lanka now open by themselves as the army comes near.
+- **1.4 Ashoka grove:** after "Sita felt hope", Hanuman hands the ring over. It moves into Sita's hand with a sparkle, and Hanuman folds his hands.
+- **Expressions:**
+  - Any sad face (the "sad" eyebrow) now shows a small light-blue tear under the eye. This covers Sita in the grove and when she is afraid, Rama and Lakshmana when concerned, and the sad friend in the kindness pictures.
+  - Ravana shows an angry face, with brows slanting down to the nose and a frown, when he comes for Sita and during the battle. It softens once he is defeated.
+- **1.2 departure:** as Ravana approaches, Sita draws back afraid, with wide eyes, hands to her chest, a tear and a small tremble. The tremble is reduced when reduced motion is on.

@@ -33,7 +33,7 @@ function scBattle(){const s=mkScene('2.1',{frame:'lanka'});artPart(s);const back
       tf(a.g,x,y,1,0,a.dir);op(a.g,Math.sin(ph*Math.PI)*.95)});
     B.shields.forEach((sh,i)=>{const ph=(t*.3+i*.33)%1;const on=B.fight?Math.max(0,Math.sin(ph*TAU))*.9:0;op(sh.g,on);tf(sh.g,lerp(ax+200,bx-200,(i+.5)/3),lerp(y0,y1,.5)+(i-1)*30,.8+.2*on)});
     B.dust.forEach(d=>{const r=B.dustK==null?.4:B.dustK;tf(d.g,0,-((t*12+d.i*20)%40)*r*m,.8+.4*r);op(d.g,.3+.7*r)})};
-  rama.hold('b','bow');lak.hold('b','bow');rama.set('determined',0);lak.set('determined',0);han.set('determined',0);rav.set('raise',0);return s}
+  rama.hold('b','bow');lak.hold('b','bow');rama.set('determined',0);lak.set('determined',0);han.set('determined',0);rav.set('raise',0);rav.angry=true;return s}
 async function shot2_1(){Music.mood('lanka');Amb.set('lanka');mood('cliff');
   /* a short visual recap of the gates opening, through the symmetrical gate patterns */
   let r;await Trans.run('gate',()=>{r=D.setScene(scRecap(),0)},{ms:900});const rt=D.tw(r,{gk:1},5200,'io');
@@ -54,7 +54,7 @@ async function shot2_1(){Music.mood('lanka');Amb.set('lanka');mood('cliff');
       B.fire.tongues.forEach((t,i)=>t.firstChild.setAttribute('transform',`scale(${f3(1+.18*Math.sin(T.sec*18+i*2))} ${f3(1+.12*Math.sin(T.sec*14+i))})`))},16);
     await D.tw(o,{k:1},1500,'io');clearInterval(iv);op(B.final,0);
     AU.sfx('flicker');AU.sfx('shield');s.F=s.F||fxLayer(s);s.F.burst(b[0],b[1],14,'flame',TAU);s.F.burst(b[0],b[1],8,'spark',TAU);s.F.ripple(b[0],b[1],LP(200,170),P.marigold,1400);rav.set('lower',1200)})();
-  await say("Rama’s final arrow struck its mark, and Ravana was defeated.",[["defeated",()=>{rav.set('defeated',2400);D.go(B,{calm:1,dustK:0},3000);D.go(s,{skyMix:1},5000)}]]);
+  await say("Rama’s final arrow struck its mark, and Ravana was defeated.",[["defeated",()=>{rav.set('defeated',2400);rav.angry=false;D.go(B,{calm:1,dustK:0},3000);D.go(s,{skyMix:1},5000)}]]);
   await fin;await hold(1000);AU.sfx('dust');rama.set('idle',900);lak.set('idle',900);han.set('idle',900);
   /* Ravana sinks back and fades into settling golden dust */
   D.go(rav,{gone:1},3600,'io');s.F.burst(rav.x,rav.y-120*rav.s,10,'spark',TAU);

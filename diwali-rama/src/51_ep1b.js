@@ -122,7 +122,7 @@ function scMarch(){const s=mkScene('1.8',{frame:'lanka'});artPart(s);const back=
     /* the completed bridge of patterned stones; patterns travel along it */
     const n=16;for(let i=0;i<n;i++){const u=(i+.5)/n;const q=polyAt(p.path,u);const w=lerp(LP(220,200),LP(110,100),u);const st=stone(bridgeG,i,w,w*.5,true);tf(st.g,q[0],q[1]+w*.12,1)}
     s.flow=ln(bridgeG,smooth(p.path,false),P.turmeric,6,{'stroke-dasharray':'.1 20'})});
-  s.tick=(dt,t)=>{const p=s.pos();if(s.flow)s.flow.setAttribute('stroke-dashoffset',f1(-t*50*MV()));if(s.gate)s.gate.set(s.gateK||0);
+  s.tick=(dt,t)=>{const p=s.pos();if(M.u>.6&&!s.gateGo){s.gateGo=true;AU.sfx('bell');tw(s,{gateK:1},5600,'io')}if(s.flow)s.flow.setAttribute('stroke-dashoffset',f1(-t*50*MV()));if(s.gate)s.gate.set(s.gateK||0);
     order.forEach((f,i)=>{const u=clamp(M.u-M.gap[i],0,1);const q=polyAt(p.path,u);f.x=q[0];f.y=q[1]+(i===1?LP(14,10):0);f.s=lerp(p.s0,p.s1,u)*(f.Q.scale||1)})};
   return s}
 async function shot1_8(){mood('cliff');Amb.set('ocean');Music.mood('lanka');const s=D.setScene(scMarch(),900);const M=s.M;const {rama,lak,hanuman:han}=s.cast;const vans=[].concat(s.cast.vanaras);
@@ -134,9 +134,9 @@ async function shot1_8(){mood('cliff');Amb.set('ocean');Music.mood('lanka');cons
   rama.set('determined',700);
   await say("Beyond its grand gates, Sita waited. Ahead lay a great challenge, but Rama was not alone. His friends stood beside him, united by courage, loyalty and hope.",
     [["not alone",()=>{han.set('speakGently',600);lak.set('smile',600)}],["united",()=>{vans.forEach((v,i)=>Timers.add(i*120,()=>v.set('smile',500)))}]]);
-  await say("Would they be able to defeat Ravana and bring Sita home?",[["defeat",()=>{rama.set('bowRaised',800)}]]);
-  await hold(600);AU.sfx('bell');
-  const op_=D.tw(s,{gateK:1},6000,'io');await say("The gates of Lanka opened.");await op_;
+  await say("Would they be able to defeat Ravana and bring Sita home?",[["defeat",()=>{rama.set('determined',800)}]]);
+  await hold(600);
+  await say("The gates of Lanka opened.");await D.wait(D.fast?5:Math.max(0,(1-(s.gateK||0))*5000));
   rama.set('determined',800);han.set('idle',800);
   await say("The final part of their journey was about to begin…");
   /* a held composition: Rama and Hanuman look towards the open gates */
