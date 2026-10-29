@@ -955,7 +955,7 @@ const D={token:0,speed:1,fast:false,qa:null,scene:null,old:null,inset:0,trayPx:0
       const fire=(c)=>{if(!c.done){c.done=true;try{c.fn()}catch(e){console.error(e)}}};
       for(const pg of pages){if(skipped)break;this.showCap(pg.parts[0].v,pg.text);
         for(const part of pg.parts){if(skipped)break;const my=cues.filter(c=>!c.done&&part.t.includes(c.s));const idx=my.map(c=>part.t.indexOf(c.s));
-          const skipP=new Promise(r=>{this.skipFn=()=>{skipped=true;Speech.stop();r()}});this.talk(part.v,true);this.showCap(part.v,pg.text);
+          const skipP=new Promise(r=>{this.skipFn=()=>{skipped=true;Speech.stop();r()}});this.talk(part.v,true);this.showCap(part.v,pg.text);if(window.__said)window.__said.push([part.v,part.t]);
           const est=part.t.length*62/((VOICE[part.v]||VOICE.narr).rate*(part.v==='narr'?this.mood.rate:1));const t0=T.now;
           let p;const onWord=ci=>{my.forEach((c,i)=>{if(ci>=idx[i]-1)fire(c)})};
           if(this.fast)p=new Promise(r=>setTimeout(r,20));
@@ -1323,7 +1323,7 @@ async function shot1_3(){mood('inviting');Amb.set('forest');const s=D.setScene(s
   C.active=false;D.clearAct();Hot.dirty=true;await hold(600);
   /* the footprints and the path join into one glowing route */
   C.joined=true;AU.sfx('success');await D.tw(C,{joinK:1},1400);rama.set('idle',400);rama.nod();lak.set('pointAhead',600);await hold(700);
-  await say("You found the clues! Every little discovery brings Rama one step closer to finding Sita. Let's keep going!",[["closer",()=>{rama.set('determined',500)}]]);
+  await say("You found the clues! Every little discovery brings Rama one step closer to finding Sita. Let’s keep going!",[["closer",()=>{rama.set('determined',500)}]]);
   rama.turn(1);goWalk(rama,LP(1300,700),LP(560,880),5200);await D.wait(500);goWalk(lak,LP(1160,620),LP(620,980),5200);await hold(2600);await D.late()}
 
 /* ---------- Scene 1.4: A Brave Friend Appears (meeting, the leap, the Ashoka grove) ---------- */
@@ -1953,7 +1953,7 @@ function scKind(){const s=mkScene('2.9',{frame:'lotus'});artPart(s);const back=g
   const K_={choice:null,auto:false,stage:'choose',placed:[],sel:'flower',active:false,show:[0,0,0,0]};s.K=K_;
   const SLOTS=[[-32,1],[-20,4],[-8,5],[4,5],[16,4],[28,1],[-14,-3],[10,-3]];
   s.pos=()=>LP({c:[889,500],ds:2.7,med:[[350,250],[1428,250],[350,610],[1428,610]],mr:132,chips:[[700,740],[826,740],[952,740],[1078,740]],cr:50,deed:[1050,320,290,120]},
-    {c:[500,800],ds:2.5,med:[[240,320],[760,320],[240,1260],[760,1260]],mr:140,chips:[[260,1040],[420,1040],[580,1040],[740,1040]],cr:56,deed:[250,486,500,112]});
+    {c:[500,800],ds:2.5,med:[[240,320],[760,320],[240,1260],[760,1260]],mr:140,chips:[[260,1040],[420,1040],[580,1040],[740,1040]],cr:56,deed:[270,900,460,104]});
   onOrient(s,[back,medG,cen,chipG,fx],P_=>{const p=s.pos();/* small leaves, flowers, dots and shapes around the lamp */
     const dec=grp(back,{transform:`translate(${p.c[0]} ${p.c[1]-80})`});for(let i=0;i<16;i++){const a=i/16*TAU;const g=grp(dec,{transform:`translate(${f1(Math.cos(a)*LP(330,300))} ${f1(Math.sin(a)*LP(250,300))})`});motif(g,MOTIFS[i%4],LP(14,14))}
     K_.meds=p.med.map(([x,y],i)=>{const g=grp(medG,{transform:`translate(${x} ${y})`});const hl=grp(g);halo(hl,p.mr+18,{bw:16,col:P.gold});op(hl,0);kindMedal(g,DEEDS[i],p.mr,500+i*13);return{g,hl,x,y}});
@@ -1997,7 +1997,7 @@ async function shot2_9(){mood('inviting');Amb.set('none');Music.mood('day');cons
   await D.task({hint:"Tap a flower, a leaf, dots or a shape to add it to your diya.",start(t){K_.decoDone=()=>t.finish()},
     demo(){const c=K_.chips[0];s.hand.drag([[c.x,c.y],[s.pos().c[0],s.pos().c[1]]],1200)},
     assist(t){const step=()=>{if(t.done)return;if(K_.placed.length>=8){t.finish();return}s.addMotif(MOTIFS[K_.placed.length%4],true);Timers.add(700,step)};step()}});
-  K_.active=false;D.clearAct();Hot.dirty=true;
+  K_.active=false;K_.stage='done';D.clearAct();Hot.dirty=true;
   /* plain clay becomes a folk-art lamp; the flame lights; the chosen deed appears beside it */
   await D.tw(K_.d,{decor:1},900);AU.sfx('diya');D.go(K_.d,{lit:1,light:1},900,'back');s.F.burst(s.pos().c[0],s.pos().c[1]-120,8,'spark',2.6);
   $('deedText').textContent=KIND[K_.choice||'help'].label;$('deed').hidden=false;Overlay.add($('deed'),()=>{const q=s.pos().deed;return refRectPx(q[0],q[1],q[2],q[3])});

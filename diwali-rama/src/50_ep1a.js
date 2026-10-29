@@ -147,7 +147,7 @@ async function shot1_3(){mood('inviting');Amb.set('forest');const s=D.setScene(s
   C.active=false;D.clearAct();Hot.dirty=true;await hold(600);
   /* the footprints and the path join into one glowing route */
   C.joined=true;AU.sfx('success');await D.tw(C,{joinK:1},1400);rama.set('idle',400);rama.nod();lak.set('pointAhead',600);await hold(700);
-  await say("You found the clues! Every little discovery brings Rama one step closer to finding Sita. Let's keep going!",[["closer",()=>{rama.set('determined',500)}]]);
+  await say("You found the clues! Every little discovery brings Rama one step closer to finding Sita. Let’s keep going!",[["closer",()=>{rama.set('determined',500)}]]);
   rama.turn(1);goWalk(rama,LP(1300,700),LP(560,880),5200);await D.wait(500);goWalk(lak,LP(1160,620),LP(620,980),5200);await hold(2600);await D.late()}
 
 /* ---------- Scene 1.4: A Brave Friend Appears (meeting, the leap, the Ashoka grove) ---------- */
