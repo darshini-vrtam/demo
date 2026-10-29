@@ -1274,7 +1274,7 @@ function scForest(kf){const s=mkScene('1.2'+kf,{frame:'forest'});artPart(s);cons
 function scDeparture(){const s=mkScene('1.2b',{frame:'forest'});artPart(s);const back=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp);
   skyBg(s,{kind:'shadow',horizon:[450,780],ground:['leafy',P.leaf,P.forest,.9],clouds:[[.2,.2,240],[.72,.14,280]]});
   const sita=cast(s,'sita',CAST.sita,mid);const rav=part(s,new Ravana(mid));
-  s.pos=()=>LP({sita:[620,740,.95,1],rav:[1240,744,.8],rav0:[1700,744]},{sita:[300,1300,1,1],rav:[700,1290,.78],rav0:[1100,1290]});
+  s.pos=()=>LP({sita:[620,740,.95,1],rav:[1240,744,1.2],rav0:[1800,744]},{sita:[300,1300,1,1],rav:[700,1290,1.1],rav0:[1100,1290]});
   onOrient(s,[back,fore],P_=>{const p=s.pos();forestArt(s,back,fore,{deer:false,skip:P_?[3]:[4]});const h=hut(back,LP(200,190));tf(h,LP(340,160),LP(600,900),1);
     frameFlora(fore,P_?[[50,1496,170],[950,1496,170,P.verm]]:[[50,806,170],[1730,806,180,P.verm]]);put(sita,p.sita);if(!s.moved){rav.x=p.rav0[0];rav.y=p.rav0[1];rav.s=p.rav[2]}});
   sita.set('concerned',0);rav.set('stand',0);return s}
@@ -1319,7 +1319,7 @@ function scMeet(){const s=mkScene('1.4a',{frame:'forest'});artPart(s);const back
 function scLeapSea(){const s=mkScene('1.4s',{frame:'fish'});artPart(s);const back=grp(s.comp),mid=grp(s.comp);
   skyBg(s,{kind:'ocean',horizon:[520,860],sea:'day',seaN:5,clouds:[[.12,.24,260],[.5,.16,320],[.86,.3,240]]});
   const han=cast(s,'hanuman',CAST.hanuman,mid);
-  onOrient(s,[back],P_=>{const ls=lankaSkyline(back,LP(360,300),LP(150,150),{n:5});tf(ls,LP(1500,520),LP(780,860),1)});
+  onOrient(s,[back],P_=>{const wl=palaceWall(back,LP(760,480),LP(90,90),P.gold,P.maroon);tf(wl,LP(980,460),LP(522,862),1);const ls=lankaSkyline(back,LP(720,460),LP(380,340),{n:7});tf(ls,LP(1360,700),LP(522,862),1)});
   s.k=0;s.tick=()=>{const a=LP([180,640],[170,1120]),b=LP([1400,580],[800,920]);const k=s.k;han.x=lerp(a[0],b[0],k);han.y=lerp(a[1],b[1],k)-Math.sin(k*Math.PI)*LP(250,300);han.s=LP(.75,.8)};
   han.set('leap',0);return s}
 function scGrove(o){o=o||{};const s=mkScene(o.id||'1.4g',{frame:'lotus'});artPart(s);const back=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp),top=grp(s.comp);
@@ -1645,9 +1645,9 @@ async function shot2_3(){mood('warm');Amb.set('none');Music.mood('light');let s=
 /* ---------- the city of Ayodhya at street level, reused by 2.4, 2.5 and 2.6 ---------- */
 function cityLayout(){return LP({palace:[889,470,.6],houses:[[230,560,.8,0],[520,580,.7,1],[1250,580,.7,2],[1540,560,.8,4]],street:[[889,840],[889,700],[889,560],[889,480]]},
   {palace:[500,700,.5],houses:[[160,880,.7,0],[840,880,.7,2]],street:[[500,1540],[500,1200],[500,900],[500,720]]})}
-function cityArt(s,back,o){o=o||{};const c=cityLayout();const P_=L.portrait;
+function cityArt(s,back,o){o=o||{};const c=cityLayout();const P_=L.portrait;if(o.palace)c.palace=o.palace;
   const pal=palace(back,{w:1000,h:220,col:o.wall||P.ivory,dome:o.dome||P.turmeric});tf(pal.g,c.palace[0],c.palace[1],c.palace[2]);s.pk=pal.pk;
-  pathBand(back,c.street,LP(170,190),P.marigold,P.verm);
+  if(o.street!==false)pathBand(back,c.street,LP(170,190),P.marigold,P.verm);
   const hs=c.houses.map(([x,y,k,v])=>{const h=house(back,{w:220,h:190,v});tf(h.g,x,y,k);return{h,x,y,k}});
   if(o.garlands!==false)hs.forEach(({h,x,y,k})=>{garland(back,x-110*k,y-190*k,x+110*k,y-190*k,10,7)});
   return{pal,hs,c}}
@@ -1663,7 +1663,7 @@ function scReady(){const s=mkScene('2.4',{frame:'gold'});artPart(s);const back=g
       lamps:[[1250,580],[520,580],[1540,560],[230,560],[1484,466],[286,466],[520,385],[1250,385]]},
     {sweep:[130,1110,.9,1],rangoli:[360,1120,.9,1],rang:[480,1140,64],sweets:[150,1400,.9,1],kid2:[280,1415,.9,-1],diya:[600,1395,.9,1],kid3:[860,1410,.9,-1],
       lamps:[[160,880],[840,880],[111,797],[889,797],[160,683],[840,683]]});
-  onOrient(s,[back,deco,fore],P_=>{const p=s.pos();const C=cityArt(s,back,{garlands:false});s.C=C;
+  onOrient(s,[back,deco,fore],P_=>{const p=s.pos();const C=cityArt(s,back,{garlands:false,street:false,palace:LP([889,530,.8],[500,770,.7])});s.C=C;
     /* garlands that get strung across the doorways */
     s.gars=C.hs.map(({x,y,k})=>{const g=garland(deco,x-110*k,y-190*k,x+110*k,y-190*k,10,7);return g.g});
     s.rang=rangoli(deco,p.rang[2],3,.5);tf(s.rang.g,p.rang[0],p.rang[1],1);

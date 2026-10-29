@@ -143,3 +143,11 @@ The late frame of every scene was reviewed in landscape (1280×720) and portrait
 ## Revision 4
 
 - **End cards:** both episode end cards ("Continue the adventure in Episode 2." and "DIWALI STORIES OF INDIA") now sit in the centre of the picture. A light ivory veil fades in over the artwork behind them so the card stands out. The mute, skip, captions and camera buttons stay above the veil.
+
+## Revision 5
+
+- **1.2 departure:** Ravana is larger: 1.2× in landscape, up from 0.8×, and 1.1× in portrait.
+- **1.4 flight to Lanka:** Lanka is about twice the size, with taller towers and a gold wall standing on the horizon behind them.
+- **2.4 Ayodhya Gets Ready:**
+  - The orange road through the middle of the street is removed. The road still appears in 2.5 and 2.6.
+  - The palace is larger: 0.8× in landscape, up from 0.6×, and 0.7× in portrait.

@@ -137,9 +137,9 @@ async function shot2_3(){mood('warm');Amb.set('none');Music.mood('light');let s=
 /* ---------- the city of Ayodhya at street level, reused by 2.4, 2.5 and 2.6 ---------- */
 function cityLayout(){return LP({palace:[889,470,.6],houses:[[230,560,.8,0],[520,580,.7,1],[1250,580,.7,2],[1540,560,.8,4]],street:[[889,840],[889,700],[889,560],[889,480]]},
   {palace:[500,700,.5],houses:[[160,880,.7,0],[840,880,.7,2]],street:[[500,1540],[500,1200],[500,900],[500,720]]})}
-function cityArt(s,back,o){o=o||{};const c=cityLayout();const P_=L.portrait;
+function cityArt(s,back,o){o=o||{};const c=cityLayout();const P_=L.portrait;if(o.palace)c.palace=o.palace;
   const pal=palace(back,{w:1000,h:220,col:o.wall||P.ivory,dome:o.dome||P.turmeric});tf(pal.g,c.palace[0],c.palace[1],c.palace[2]);s.pk=pal.pk;
-  pathBand(back,c.street,LP(170,190),P.marigold,P.verm);
+  if(o.street!==false)pathBand(back,c.street,LP(170,190),P.marigold,P.verm);
   const hs=c.houses.map(([x,y,k,v])=>{const h=house(back,{w:220,h:190,v});tf(h.g,x,y,k);return{h,x,y,k}});
   if(o.garlands!==false)hs.forEach(({h,x,y,k})=>{garland(back,x-110*k,y-190*k,x+110*k,y-190*k,10,7)});
   return{pal,hs,c}}
@@ -155,7 +155,7 @@ function scReady(){const s=mkScene('2.4',{frame:'gold'});artPart(s);const back=g
       lamps:[[1250,580],[520,580],[1540,560],[230,560],[1484,466],[286,466],[520,385],[1250,385]]},
     {sweep:[130,1110,.9,1],rangoli:[360,1120,.9,1],rang:[480,1140,64],sweets:[150,1400,.9,1],kid2:[280,1415,.9,-1],diya:[600,1395,.9,1],kid3:[860,1410,.9,-1],
       lamps:[[160,880],[840,880],[111,797],[889,797],[160,683],[840,683]]});
-  onOrient(s,[back,deco,fore],P_=>{const p=s.pos();const C=cityArt(s,back,{garlands:false});s.C=C;
+  onOrient(s,[back,deco,fore],P_=>{const p=s.pos();const C=cityArt(s,back,{garlands:false,street:false,palace:LP([889,530,.8],[500,770,.7])});s.C=C;
     /* garlands that get strung across the doorways */
     s.gars=C.hs.map(({x,y,k})=>{const g=garland(deco,x-110*k,y-190*k,x+110*k,y-190*k,10,7);return g.g});
     s.rang=rangoli(deco,p.rang[2],3,.5);tf(s.rang.g,p.rang[0],p.rang[1],1);

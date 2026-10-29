@@ -76,7 +76,7 @@ function scForest(kf){const s=mkScene('1.2'+kf,{frame:'forest'});artPart(s);cons
 function scDeparture(){const s=mkScene('1.2b',{frame:'forest'});artPart(s);const back=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp);
   skyBg(s,{kind:'shadow',horizon:[450,780],ground:['leafy',P.leaf,P.forest,.9],clouds:[[.2,.2,240],[.72,.14,280]]});
   const sita=cast(s,'sita',CAST.sita,mid);const rav=part(s,new Ravana(mid));
-  s.pos=()=>LP({sita:[620,740,.95,1],rav:[1240,744,.8],rav0:[1700,744]},{sita:[300,1300,1,1],rav:[700,1290,.78],rav0:[1100,1290]});
+  s.pos=()=>LP({sita:[620,740,.95,1],rav:[1240,744,1.2],rav0:[1800,744]},{sita:[300,1300,1,1],rav:[700,1290,1.1],rav0:[1100,1290]});
   onOrient(s,[back,fore],P_=>{const p=s.pos();forestArt(s,back,fore,{deer:false,skip:P_?[3]:[4]});const h=hut(back,LP(200,190));tf(h,LP(340,160),LP(600,900),1);
     frameFlora(fore,P_?[[50,1496,170],[950,1496,170,P.verm]]:[[50,806,170],[1730,806,180,P.verm]]);put(sita,p.sita);if(!s.moved){rav.x=p.rav0[0];rav.y=p.rav0[1];rav.s=p.rav[2]}});
   sita.set('concerned',0);rav.set('stand',0);return s}
@@ -121,7 +121,7 @@ function scMeet(){const s=mkScene('1.4a',{frame:'forest'});artPart(s);const back
 function scLeapSea(){const s=mkScene('1.4s',{frame:'fish'});artPart(s);const back=grp(s.comp),mid=grp(s.comp);
   skyBg(s,{kind:'ocean',horizon:[520,860],sea:'day',seaN:5,clouds:[[.12,.24,260],[.5,.16,320],[.86,.3,240]]});
   const han=cast(s,'hanuman',CAST.hanuman,mid);
-  onOrient(s,[back],P_=>{const ls=lankaSkyline(back,LP(360,300),LP(150,150),{n:5});tf(ls,LP(1500,520),LP(780,860),1)});
+  onOrient(s,[back],P_=>{const wl=palaceWall(back,LP(760,480),LP(90,90),P.gold,P.maroon);tf(wl,LP(980,460),LP(522,862),1);const ls=lankaSkyline(back,LP(720,460),LP(380,340),{n:7});tf(ls,LP(1360,700),LP(522,862),1)});
   s.k=0;s.tick=()=>{const a=LP([180,640],[170,1120]),b=LP([1400,580],[800,920]);const k=s.k;han.x=lerp(a[0],b[0],k);han.y=lerp(a[1],b[1],k)-Math.sin(k*Math.PI)*LP(250,300);han.s=LP(.75,.8)};
   han.set('leap',0);return s}
 function scGrove(o){o=o||{};const s=mkScene(o.id||'1.4g',{frame:'lotus'});artPart(s);const back=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp),top=grp(s.comp);
