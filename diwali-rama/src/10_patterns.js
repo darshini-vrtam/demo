@@ -25,6 +25,7 @@ const PATS={
   brick:(a,b)=>({w:40,h:20,m:`<rect width="40" height="20" fill="${b}"/><path d="M0 0H40M0 10H40M10 0V10M30 10V20" stroke="${a}" stroke-width="1.8"/><circle cx="20" cy="5" r="1.4" fill="${a}"/><circle cx="0" cy="15" r="1.4" fill="${a}"/><circle cx="40" cy="15" r="1.4" fill="${a}"/>`}),
   leafy:(a,b)=>({w:30,h:26,m:`<rect width="30" height="26" fill="${b}"/><path d="M4 22Q4 8 15 3Q16 16 4 22Z" fill="${a}" stroke="${I}" stroke-width="1.3"/><path d="M19 24Q26 14 30 13Q28 22 19 24Z" fill="${a}" stroke="${I}" stroke-width="1.3"/><path d="M5 21L14 6" stroke="${I}" stroke-width="1"/>`}),
   spiral:(a,b)=>({w:30,h:30,m:`<rect width="30" height="30" fill="${b}"/><path d="M15 15m-2 0a2 2 0 1 1 4 0a5 5 0 1 1 -9 -1a8 8 0 1 1 15 4" fill="none" stroke="${a}" stroke-width="2"/>`}),
+  curl:(a,b)=>({w:64,h:46,m:`<rect width="64" height="46" fill="${b}"/><path d="M8 14c0-5 7-6 9-2s-2 7-5 5M17 12q6-6 12 0M40 36c0-5 7-6 9-2s-2 7-5 5M49 34q6-6 12 0" fill="none" stroke="${a}" stroke-width="2.2" stroke-linecap="round"/><circle cx="34" cy="8" r="1.6" fill="${a}"/><circle cx="2" cy="38" r="1.6" fill="${a}"/>`}),
   zig:(a,b)=>({w:20,h:16,m:`<rect width="20" height="16" fill="${b}"/><path d="M0 4L5 12L10 4L15 12L20 4" fill="none" stroke="${a}" stroke-width="2.2"/>`})};
 const Pat={defs:null,m:new Map(),
   init(){this.defs=el('defs',null,svg)},

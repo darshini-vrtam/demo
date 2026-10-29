@@ -112,14 +112,14 @@ function scBridge(){const s=mkScene('1.7',{frame:'fish'});artPart(s);const back=
     B.flow=null;B.slots=[];const fixed=grp(brG);const slotG=grp(brG);const placedG=grp(brG);B.placedG=placedG;
     for(let i=0;i<BRIDGE_N;i++){const q=at(i);if(BRIDGE_GAPS.includes(i)){const g=grp(slotG,{transform:`translate(${f1(q.x)} ${f1(q.y)})`});const d=stoneD(q.w,q.w*.64,i);
         shp(g,d,Pat.u('wave',P.peacock,P.indigo,.5),4,{'stroke-dasharray':'10 8'});ln(g,d,P.turmeric,3,{'stroke-dasharray':'.1 12'});B.slots.push({i,x:q.x,y:q.y,w:q.w,g})}
-      else{const st=stone(fixed,i,q.w,q.w*.64);tf(st.g,q.x,q.y,1)}}
+      else{const st=stone(fixed,i,q.w,q.w*.64,true);tf(st.g,q.x,q.y,1)}}
     const fd=`M${p.a[0]} ${p.a[1]}L${p.b[0]} ${p.b[1]}`;B.flow=ln(brG,fd,P.turmeric,6,{'stroke-dasharray':'.1 18'});op(B.flow,0);
     Object.keys(B.placed).forEach(k=>{const sl=B.slots.find(x=>x.i===+k);if(sl)s.placeVisual(sl,B.placed[k],true)});
     /* the movable stones, apart from the bridge */
-    B.stones=p.tray.map((q,i)=>{const prev=B.stones[i];const g=grp(trayG);const st=stone(g,i,p.tw,p.tw*.64);const sel=circ(g,0,0,p.tw*.62,'none',6,{stroke:P.turmeric,'stroke-dasharray':'.1 14'});op(sel,0);
+    B.stones=p.tray.map((q,i)=>{const prev=B.stones[i];const g=grp(trayG);const st=stone(g,i,p.tw,p.tw*.64,true);const sel=circ(g,0,0,p.tw*.62,'none',6,{stroke:P.turmeric,'stroke-dasharray':'.1 14'});op(sel,0);
       return{i,g,sel,home:q,x:q[0],y:q[1],k:1,used:prev?prev.used:false}});B.stones.forEach(o=>{op(o.g,o.used?0:1)});
     B.tg=target(fx,70);put(rama,p.rama);put(han,p.han);vans.forEach((v,i)=>put(v,p.van[i]))});
-  s.placeVisual=(sl,v,instant)=>{const g=grp(B.placedG,{transform:`translate(${f1(sl.x)} ${f1(sl.y)})`});const st=stone(g,v,sl.w,sl.w*.64);sl.g.style.display='none';
+  s.placeVisual=(sl,v,instant)=>{const g=grp(B.placedG,{transform:`translate(${f1(sl.x)} ${f1(sl.y)})`});const st=stone(g,v,sl.w,sl.w*.64,true);sl.g.style.display='none';
     const o={k:instant?1:1.25};const iv=setInterval(()=>tf(st.g,0,0,o.k),16);tw(o,{k:1},instant?1:520,'back').then(()=>clearInterval(iv));
     /* decorative lines connect it to its neighbours */
     const lk=ln(g,`M${-sl.w*.62} 0H${sl.w*.62}`,P.turmeric,5,{'stroke-dasharray':'.1 12'});g.insertBefore(lk,g.firstChild)};
@@ -172,7 +172,7 @@ function scMarch(){const s=mkScene('1.8',{frame:'lanka'});artPart(s);const back=
   onOrient(s,[back,bridgeG,fore],P_=>{const p=s.pos();const ls=lankaSkyline(back,LP(900,700),LP(380,420),{n:LP(7,5)});tf(ls,p.gate[0],p.gate[1]-LP(40,60),1);
     s.gate=lankaGate(back,260,280);tf(s.gate.g,p.gate[0],p.gate[1],p.gate[2]);s.gate.set(s.gateK||0);
     /* the completed bridge of patterned stones; patterns travel along it */
-    const n=16;for(let i=0;i<n;i++){const u=(i+.5)/n;const q=polyAt(p.path,u);const w=lerp(LP(220,200),LP(110,100),u);const st=stone(bridgeG,i,w,w*.5);tf(st.g,q[0],q[1]+w*.12,1)}
+    const n=16;for(let i=0;i<n;i++){const u=(i+.5)/n;const q=polyAt(p.path,u);const w=lerp(LP(220,200),LP(110,100),u);const st=stone(bridgeG,i,w,w*.5,true);tf(st.g,q[0],q[1]+w*.12,1)}
     s.flow=ln(bridgeG,smooth(p.path,false),P.turmeric,6,{'stroke-dasharray':'.1 20'})});
   s.tick=(dt,t)=>{const p=s.pos();if(s.flow)s.flow.setAttribute('stroke-dashoffset',f1(-t*50*MV()));if(s.gate)s.gate.set(s.gateK||0);
     order.forEach((f,i)=>{const u=clamp(M.u-M.gap[i],0,1);const q=polyAt(p.path,u);f.x=q[0];f.y=q[1]+(i===1?LP(14,10):0);f.s=lerp(p.s0,p.s1,u)*(f.Q.scale||1)})};

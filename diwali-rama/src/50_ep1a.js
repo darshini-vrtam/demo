@@ -2,7 +2,7 @@
 
 /* ---------- Scene 1.1: The Golden City of Ayodhya ---------- */
 function scAyodhya(){const s=mkScene('1.1',{frame:'lotus'});artPart(s);const back=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp);
-  skyBg(s,{kind:'day',horizon:[470,760],sun:[[1180,200],[700,300]],sunR:118,ground:['flower',P.marigold,P.ivory,.9],clouds:[[.14,.22,250],[.84,.18,300],[.42,.3,170]]});s.sunRise=260;
+  skyBg(s,{kind:'blue',horizon:[470,760],sun:[[1180,200],[700,300]],sunR:118,ground:['flower',P.gold,P.brown,.9],clouds:[[.14,.22,250],[.84,.18,300],[.42,.3,170]]});s.sunRise=260;
   const rama=cast(s,'rama',CAST.rama,mid),sita=cast(s,'sita',CAST.sita,mid),lak=cast(s,'lak',CAST.lak,mid);
   const folk=[];for(let i=0;i<6;i++)folk.push(cast(s,'folk',personCfg(40+i,{child:i===1||i===4}),mid,{s:.7}));
   mid.insertBefore(grp(mid),mid.firstChild);folk.forEach(f=>mid.insertBefore(f.g,rama.g));
@@ -61,7 +61,7 @@ function scForest(kf){const s=mkScene('1.2'+kf,{frame:'forest'});artPart(s);cons
     if(kf==='c'){/* the empty space where Sita had been: her seat stone and a basket of flowers */const st=grp(back);const [x,y]=P_?[860,1010]:[1150,640];shp(st,'M-50 0Q-44 -34 0 -38Q44 -34 50 0Z',Pat.u('grid',P.terra,P.ivory,.8),4);
       const bk=grp(st,{transform:'translate(66 -4)'});drawProp(bk,'basket',{});tf(st,x,y,1)}
     frameFlora(fore,P_?[[50,1496,170],[950,1496,170,P.verm],[500,1505,110]]:[[50,806,170],[1730,806,180,P.verm],[1000,812,120]]);
-    s.shade=shadeLayer(top);op(s.shade,s.shadeK||0);
+    s.shade=null;
     s.vig=vignette(top,p.vig[2],(g,r)=>{rect(g,-r,-r,r*2,r*2,Pat.u('stars',P.gold,P.maroon,.7),0);const sk=lankaSkyline(g,r*1.6,r*1.1,{n:5,ps:.6});tf(sk,0,r*.55,1);const o_=ocean(g,r*2,r*.5,r*1.2,{n:2,scale:.5,life:0});tf(o_.g,-r,0,1)});
     tf(s.vig,p.vig[0],p.vig[1],1);op(s.vig,s.vigK||0);
     s.dark=grp(top);const dc=cloud(s.dark,LP(520,420),P.indigo,P.peacock);s.darkC=dc;op(s.dark,s.darkK||0);
@@ -72,14 +72,14 @@ function scForest(kf){const s=mkScene('1.2'+kf,{frame:'forest'});artPart(s);cons
 function scDeparture(){const s=mkScene('1.2b',{frame:'forest'});artPart(s);const back=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp);
   skyBg(s,{kind:'shadow',horizon:[450,780],ground:['leafy',P.leaf,P.forest,.9],clouds:[[.2,.2,240],[.72,.14,280]]});
   const sita=cast(s,'sita',CAST.sita,mid);const rav=part(s,new Ravana(mid));
-  s.pos=()=>LP({sita:[620,740,.95,1],rav:[1240,744,.62],rav0:[1700,744]},{sita:[300,1300,1,1],rav:[700,1290,.62],rav0:[1100,1290]});
+  s.pos=()=>LP({sita:[620,740,.95,1],rav:[1240,744,.8],rav0:[1700,744]},{sita:[300,1300,1,1],rav:[700,1290,.78],rav0:[1100,1290]});
   onOrient(s,[back,fore],P_=>{const p=s.pos();forestArt(s,back,fore,{deer:false,skip:P_?[3]:[4]});const h=hut(back,LP(200,190));tf(h,LP(340,160),LP(600,900),1);
     frameFlora(fore,P_?[[50,1496,170],[950,1496,170,P.verm]]:[[50,806,170],[1730,806,180,P.verm]]);put(sita,p.sita);if(!s.moved){rav.x=p.rav0[0];rav.y=p.rav0[1];rav.s=p.rav[2]}});
   sita.set('concerned',0);rav.set('stand',0);return s}
 function scChariotSky(){const s=mkScene('1.2s',{frame:'lanka'});artPart(s);const back=grp(s.comp),mid=grp(s.comp);
-  skyBg(s,{kind:'shadow',horizon:[560,900],sea:'night',seaN:4,life:.6,clouds:[[.15,.3,260],[.55,.2,320],[.85,.34,220]]});
-  onOrient(s,[back,mid],P_=>{const ls=lankaSkyline(back,LP(420,380),LP(170,170),{n:6});tf(ls,LP(1440,760),LP(560,900),1);s.ch=farChariot(mid);tf(s.ch,-200,200,1)});
-  s.k=0;s.tick=()=>{if(!s.ch)return;const a=LP([180,230],[120,420]),b=LP([1440,470],[760,780]);const k=s.k;tf(s.ch,lerp(a[0],b[0],k),lerp(a[1],b[1],k)-Math.sin(k*Math.PI)*60,LP(1.1,1)*(1-k*.6))};return s}
+  skyBg(s,{kind:'swirl',horizon:[560,900],sea:'night',seaN:4,life:.6,clouds:[[.15,.3,260],[.55,.2,320],[.85,.34,220]]});
+  onOrient(s,[back,mid],P_=>{const ls=lankaSkyline(back,LP(820,600),LP(380,360),{n:7});tf(ls,LP(1320,700),LP(560,900),1);const wl=palaceWall(back,LP(860,620),LP(70,80),P.gold,P.maroon);tf(wl,LP(890,390),LP(560,900),1);s.ch=farChariot(mid);tf(s.ch,-200,200,1)});
+  s.k=0;s.tick=()=>{if(!s.ch)return;const a=LP([180,230],[120,420]),b=LP([1300,300],[640,620]);const k=s.k;tf(s.ch,lerp(a[0],b[0],k),lerp(a[1],b[1],k)-Math.sin(k*Math.PI)*60,LP(1.7,1.5)*(1-k*.5))};return s}
 async function shot1_2pre(){D.setScene(scForest('a'),0)}
 async function shot1_2(){mood('warm');Amb.set('forest');let s=D.scene;if(!s||s.id!=='1.2a')s=D.setScene(scForest('a'),900);const {rama,lak,sita}=s.cast;
   const p=s.pos();rama.x-=LP(700,500);lak.x-=LP(700,500);sita.x-=LP(700,500);

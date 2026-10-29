@@ -31,6 +31,7 @@ const SKY={day:{bg:P.ivory,dot:P.turmeric,pat:'fdots',ps:1.2,cloud:P.ivory,line:
   forest:{bg:P.ivory,dot:P.leaf,pat:'dots',ps:1.3,cloud:P.ivory,line:P.leaf},shadow:{bg:P.peacock,dot:P.ivory,pat:'dots',ps:1.3,cloud:P.ivory,line:P.peacock},
   ocean:{bg:P.peacock,dot:P.ivory,pat:'dots',ps:1.4,cloud:P.ivory,line:P.peacock},lanka:{bg:P.maroon,dot:P.gold,pat:'stars',ps:1,cloud:P.terra,line:P.gold},
   dusk:{bg:P.peacock,dot:P.ivory,pat:'stars',ps:1,cloud:P.ivory,line:P.peacock},night:{bg:P.indigo,dot:P.ivory,pat:'stars',ps:1,cloud:P.ivory,line:P.indigo},
+  blue:{bg:P.sky,dot:P.ivory,pat:'dots',ps:1.3,cloud:P.ivory,line:P.ocean},swirl:{bg:P.peacock,dot:P.ivory,pat:'curl',ps:1.1,cloud:P.ivory,line:P.peacock},
   warm:{bg:P.marigold,dot:P.turmeric,pat:'fdots',ps:1.2,cloud:P.ivory,line:P.verm}};
 function sky(parent,W,H,o){o=o||{};const S=SKY[o.kind||'day'];const g=grp(parent);el('rect',{x:-4,y:-4,width:W+8,height:H+8,fill:Pat.u(S.pat,S.dot,S.bg,S.ps)},g);
   const r=rng(o.seed||3),stars=[];const night=/dusk|night|lanka/.test(o.kind||'');for(let i=0;i<(o.stars==null?(night?12:0):o.stars);i++){const x=r()*W,y=r()*H*.8;const s=grp(g);star4(s,0,0,7+r()*6,i%3?P.ivory:P.turmeric);tf(s,x,y,1);stars.push({g:s,x,y,ph:r()*TAU})}
@@ -198,9 +199,12 @@ function ringObj(parent,r){r=r||30;const g=grp(parent);const glow=grp(g);rings(g
 /* bridge stones: five distinct patterns, each with a clear outer silhouette */
 const STONE_KINDS=[{k:'spiral',pat:'spiral',a:P.ink,b:P.terra},{k:'lines',pat:'vlines',a:P.terra,b:P.ivory},{k:'fish',pat:'scale',a:P.ink,b:P.peacock},{k:'leaf',pat:'leafy',a:P.leaf,b:P.gold},{k:'geo',pat:'grid',a:P.verm,b:P.turmeric},{k:'flower',pat:'flower',a:P.verm,b:P.ivory}];
 function stoneD(w,h,v){const r=rng(31+v*7);const pts_=[];for(let i=0;i<10;i++){const a=i/10*TAU;const k=.9+r()*.12;pts_.push([Math.cos(a)*w/2*k,Math.sin(a)*h/2*k])}return smooth(pts_,true)}
-function stone(parent,v,w,h){const S=STONE_KINDS[v%STONE_KINDS.length];const g=grp(parent);const d=stoneD(w,h,v);dbl(g,d,Pat.u(S.pat,S.a,S.b,.9),0,0,.86,5);
+function stone(parent,v,w,h,label){const S=STONE_KINDS[v%STONE_KINDS.length];const g=grp(parent);const d=stoneD(w,h,v);dbl(g,d,Pat.u(S.pat,S.a,S.b,.9),0,0,.86,5);
   if(S.k==='fish'){const f=fish(g,P.verm,P.turmeric);tf(f.g,0,0,w/160)}if(S.k==='spiral'){ln(g,`M0 0m-4 0a4 4 0 1 1 8 0a10 10 0 1 1 -18 -2a16 16 0 1 1 30 8`,P.ivory,4)}
-  return{g,d,kind:S.k}}
+  if(label)shriRam(g,w);return{g,d,kind:S.k}}
+/* श्री राम written on a bridge stone: live Devanagari text with an ivory halo so it reads on any pattern */
+function shriRam(g,w){const t=el('text',{x:0,y:f1(w*.09),'text-anchor':'middle','font-family':'"Noto Sans Devanagari","Kohinoor Devanagari","Nirmala UI",Mangal,sans-serif','font-weight':700,'font-size':f1(w*.24),
+  fill:P.verm,stroke:P.ivory,'stroke-width':f1(Math.max(2.5,w*.045)),'stroke-linejoin':'round','paint-order':'stroke',lang:'hi'},g);t.textContent='श्री राम';return t}
 /* forest clues */
 function cluePrints(parent){const g=grp(parent);const steps=[[-70,30,-14],[-30,-4,12],[14,24,-12],[54,-10,10]];
   steps.forEach(([x,y,a],i)=>{const f=grp(g,{transform:`translate(${x} ${y}) rotate(${a+75})`});ell(f,0,0,12,22,P.terra,3);ell(f,0,0,7,14,P.marigold,1.6);for(let k=-1;k<=1;k++)circ(f,k*7,-26,3.6,P.terra,2)});return g}
@@ -263,6 +267,13 @@ function handIcon(parent){const g=grp(parent);const h=grp(g);
 /* battle motifs: stylised arrow lines, a soft round shield flash, rising dust curls */
 function arrowLine(parent,len,col){const g=grp(parent);ln(g,`M0 0H${len}`,K,7);ln(g,`M0 0H${len}`,col||P.turmeric,3.4);shp(g,`M${len} 0L${len-22} -11L${len-16} 0L${len-22} 11Z`,col||P.turmeric,2.4);
   ln(g,'M0 0L-14 -10M0 0L-14 10M8 0L-6 -10M8 0L-6 10',K,2.6);return g}
+/* the fire arrow: an arrow line with flat flame tongues trailing along its shaft */
+function fireArrow(parent,len){const g=grp(parent);const fl=grp(g);const tongues=[];
+  [[.78,44,P.verm],[.6,40,P.marigold],[.42,34,P.verm],[.26,28,P.marigold],[.12,22,P.turmeric]].forEach(([u,r,c],i)=>{const t=grp(fl,{transform:`translate(${f1(len*u)} 0)`});const b=grp(t);
+    shp(b,`M${r*.5} 0C${r*.4} ${-r*1.1} ${-r} ${-r*1.2} ${-r*2.1} ${-r*.35}C${-r*1.3} ${r*.15} ${-r*.5} ${r*.8} ${r*.5} 0Z`,c,3);
+    shp(b,`M${r*.2} 0C${r*.1} ${-r*.55} ${-r*.5} ${-r*.65} ${-r*1.1} ${-r*.2}C${-r*.6} ${r*.1} ${-r*.2} ${r*.4} ${r*.2} 0Z`,P.turmeric,1.8);tongues.push(t)});
+  arrowLine(g,len,P.turmeric);const tip=grp(g,{transform:`translate(${len-6} 0)`});shp(tip,'M14 0C6 -26 -26 -30 -40 -6C-28 16 2 18 14 0Z',P.verm,3);shp(tip,'M8 0C2 -14 -16 -16 -24 -3C-16 8 0 9 8 0Z',P.turmeric,2);
+  return{g,tongues,len}}
 function shieldFlash(parent,r){const g=grp(parent);circ(g,0,0,r,Pat.u('flower',P.gold,P.ivory,.9),4);circ(g,0,0,r*.7,'none',3,{stroke:P.verm});rays(g,r*1.1,r*1.4,12,P.turmeric,3);return g}
 function dustCurl(parent,w,col){const g=grp(parent);for(let i=0;i<3;i++){ln(g,`M${-w/2+i*w*.3} 0q${w*.12} ${-w*.22} ${w*.22} -2t${w*.12} ${-w*.1}`,K,6);ln(g,`M${-w/2+i*w*.3} 0q${w*.12} ${-w*.22} ${w*.22} -2t${w*.12} ${-w*.1}`,col||P.gold,3)}
   circ(g,-w*.1,-w*.12,w*.08,col||P.gold,2.4);circ(g,w*.2,-w*.2,w*.05,col||P.gold,2);return g}

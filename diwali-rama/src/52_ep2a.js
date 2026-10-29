@@ -13,8 +13,8 @@ function scRecap(){const s=mkScene('2.0',{frame:'lanka'});artPart(s);const back=
 function scBattle(){const s=mkScene('2.1',{frame:'lanka'});artPart(s);const back=grp(s.comp),air=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp);
   skyBg(s,{kind:'lanka',kind2:'gold',horizon:[430,880],ground:['grid',P.gold,P.maroon,1.1],clouds:[[.15,.3,220],[.82,.26,240]],stars:8});s.skyMix=0;
   const rama=cast(s,'rama',CAST.rama,mid),lak=cast(s,'lak',CAST.lak,mid),han=cast(s,'hanuman',CAST.hanuman,mid);const rav=part(s,new Ravana(mid));s.rav=rav;
-  s.pos=()=>LP({rama:[460,744,1.05,1],lak:[250,750,.82,1],han:[110,752,.84,1],rav:[1330,756,.92],sky:[200,1580,90,380]},
-    {rama:[300,1380,1.2,1],lak:[110,1250,.88,1],han:[130,1460,.92,1],rav:[690,1060,.95],sky:[80,920,240,700]});
+  s.pos=()=>LP({rama:[460,744,1.05,1],lak:[250,750,.82,1],han:[110,752,.84,1],rav:[1320,760,1.15],sky:[200,1500,90,300]},
+    {rama:[300,1380,1.2,1],lak:[110,1250,.88,1],han:[130,1460,.92,1],rav:[690,1080,1.15],sky:[80,920,240,700]});
   const B={arrows:[],shields:[],dust:[],swirls:[],calm:0};s.B=B;
   onOrient(s,[back,air,fore],P_=>{const p=s.pos();/* the grand courtyard: a palace wall, patterned columns, symmetrical floral border */
     const ls=lankaSkyline(back,LP(1800,1100),LP(300,320),{n:LP(11,7),flat:true});tf(ls,LP(889,500),LP(430,880),1);
@@ -25,7 +25,7 @@ function scBattle(){const s=mkScene('2.1',{frame:'lanka'});artPart(s);const back
     B.arrows=[];for(let i=0;i<6;i++){const g=grp(air);arrowLine(g,LP(110,90),i%2?P.ivory:P.turmeric);op(g,0);B.arrows.push({g,k:0,dir:i%2?-1:1,lane:i})}
     B.shields=[];for(let i=0;i<3;i++){const g=grp(air);shieldFlash(g,LP(46,40));op(g,0);B.shields.push({g,k:0})}
     B.dust=[];(P_?[[300,1380],[700,1080],[180,1460]]:[[460,760],[1330,770],[900,780],[640,790],[1120,790]]).forEach(([x,y],i)=>{const g=grp(fore,{transform:`translate(${x} ${y})`});const d=dustCurl(g,LP(120,100),i%2?P.gold:P.terra);B.dust.push({g:d,i,x,y})});
-    B.final=grp(air);arrowLine(B.final,LP(140,120),P.turmeric);op(B.final,0);
+    B.final=grp(air);B.fire=fireArrow(B.final,LP(200,170));op(B.final,0);
     put(rama,p.rama);put(lak,p.lak);put(han,p.han);rav.x=p.rav[0];rav.y=p.rav[1];rav.s=p.rav[2]});
   s.tick=(dt,t)=>{const p=s.pos();const m=MV()*(1-B.calm);const ax=p.sky[0],bx=p.sky[1],y0=p.sky[2],y1=p.sky[3];
     B.swirls.forEach(w=>tf(w.g,0,0,1,(t*14*(w.i%2?1:-1))*m));
@@ -47,11 +47,17 @@ async function shot2_1(){Music.mood('lanka');Amb.set('lanka');mood('cliff');
   /* the decisive keyframe: the final arrow reaches Ravana's defensive space; his weapons lower and the energy subsides */
   B.fight=false;
   await say("At last, Rama faced Ravana with courage and determination.",[["faced Ravana",()=>rama.set('bowRaised',800)]]);
-  const fin=(async()=>{const a=rama.hand('f');const b=[rav.x-LP(200,150)*rav.s,rav.y-300*rav.s];const o={k:0};op(B.final,1);AU.sfx('bow');
-    const iv=setInterval(()=>tf(B.final,lerp(a[0],b[0],o.k),lerp(a[1],b[1],o.k)-Math.sin(o.k*Math.PI)*40,1),16);await D.tw(o,{k:1},1300,'io');clearInterval(iv);
-    AU.sfx('shield');s.F=s.F||fxLayer(s);s.F.burst(b[0],b[1],10,'spark',6);D.go(B.final,{},1);op(B.final,0);rav.set('lower',1600)})();
+  /* Rama's final arrow is a fire arrow: it flies in an arc and strikes Ravana with a burst of flat flame shapes (no injury is shown) */
+  const fin=(async()=>{const a=rama.hand('f');const b=[rav.x-10*rav.s,rav.y-232*rav.s];const o={k:0};op(B.final,1);AU.sfx('bow');AU.sfx('whoosh');
+    const at=k=>[lerp(a[0],b[0],k),lerp(a[1],b[1],k)-Math.sin(k*Math.PI)*LP(90,120)];
+    const iv=setInterval(()=>{const p=at(o.k),q=at(Math.min(1,o.k+.02));const ang=Math.atan2(q[1]-p[1],q[0]-p[0])/DEG;tf(B.final,p[0]-Math.cos(ang*DEG)*B.fire.len,p[1]-Math.sin(ang*DEG)*B.fire.len,1,ang);
+      B.fire.tongues.forEach((t,i)=>t.firstChild.setAttribute('transform',`scale(${f3(1+.18*Math.sin(T.sec*18+i*2))} ${f3(1+.12*Math.sin(T.sec*14+i))})`))},16);
+    await D.tw(o,{k:1},1500,'io');clearInterval(iv);op(B.final,0);
+    AU.sfx('flicker');AU.sfx('shield');s.F=s.F||fxLayer(s);s.F.burst(b[0],b[1],14,'flame',TAU);s.F.burst(b[0],b[1],8,'spark',TAU);s.F.ripple(b[0],b[1],LP(200,170),P.marigold,1400);rav.set('lower',1200)})();
   await say("Rama’s final arrow struck its mark, and Ravana was defeated.",[["defeated",()=>{rav.set('defeated',2400);D.go(B,{calm:1,dustK:0},3000);D.go(s,{skyMix:1},5000)}]]);
-  await fin;await hold(1200);AU.sfx('dust');rama.set('idle',900);lak.set('idle',900);han.set('idle',900);
+  await fin;await hold(1000);AU.sfx('dust');rama.set('idle',900);lak.set('idle',900);han.set('idle',900);
+  /* Ravana sinks back and fades into settling golden dust */
+  D.go(rav,{gone:1},3600,'io');s.F.burst(rav.x,rav.y-120*rav.s,10,'spark',TAU);
   await say("The battle was over.");await hold(1200);mood('heartfelt');
   await say("The story reminds us that power alone does not make someone right. Courage, responsibility and the choice to do what is right matter far more.",[["Courage",()=>{rama.nod();s.bloom(.6)}]]);
   await hold(1400);await D.late();
@@ -91,7 +97,7 @@ async function shot2_2(){mood('heartfelt');Amb.set('city');Music.mood('day');let
 
 /* ---------- Scene 2.3: The Journey Home ---------- */
 function scJourney(){const s=mkScene('2.3',{frame:'peacock'});artPart(s);const land=grp(s.comp),mid=grp(s.comp),top=grp(s.comp);
-  skyBg(s,{kind:'day',horizon:[430,640],clouds:[[.1,.2,220],[.6,.12,260]]});
+  skyBg(s,{kind:'blue',horizon:[430,640],clouds:[[.1,.2,220],[.6,.12,260]]});
   const V={travel:0};s.V=V;let vm=null;const riders={};
   s.pos=()=>LP({vim:[800,260,.9],land:430,W:1778,H:810,ay:[1560,470]},{vim:[500,400,.85],land:640,W:1000,H:1500,ay:[760,690]});
   onOrient(s,[land,mid,top],P_=>{const p=s.pos();const W=p.W,H=p.H,y0=p.land;const r=rng(17);
@@ -120,7 +126,7 @@ async function shot2_3pre(){D.setScene(scJourney(),0)}
 async function shot2_3(){mood('warm');Amb.set('none');Music.mood('light');let s=D.scene;if(!s||s.id!=='2.3')s=D.setScene(scJourney(),900);const V=s.V;const {rama,sita,lak}=s.cast;
   D.go(V,{travel:1},38000,'lin');
   await say("Rama, Sita and Lakshmana began their journey home.",[["journey home",()=>{sita.face.mouth='big';sita.face.eye='happy';sita.applyFace()}]]);
-  await say("From above, they saw rivers winding through the land, forests stretching to the horizon and villages surrounded by fields.",[["rivers",()=>{lak.set('pointAhead',700)}],["villages",()=>{lak.set('seated',700)}]]);
+  await say("From above, they saw rivers winding through the land, forests stretching to the horizon and villages surrounded by fields.",[["rivers",()=>{lak.set('seatedPoint',700)}],["villages",()=>{lak.set('seated',700)}]]);
   await say("At last, Ayodhya appeared in the distance.",[["Ayodhya",()=>{if(V.travel<.6)D.go(V,{travel:.75},3000,'io')}]]);
   rama.face.eye='happy';rama.face.mouth='big';rama.applyFace();
   await say("The people had waited a long time for Rama’s return. Soon, the city would be filled with joy.");
@@ -142,12 +148,12 @@ function cityArt(s,back,o){o=o||{};const c=cityLayout();const P_=L.portrait;
 function scReady(){const s=mkScene('2.4',{frame:'gold'});artPart(s);const back=grp(s.comp),deco=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp);
   skyBg(s,{kind:'gold',kind2:'dusk',horizon:[560,900],sun:[[1500,180],[820,260]],sunR:90,ground:['brick',P.terra,P.marigold,1],clouds:[[.2,.3,220],[.6,.2,240]]});s.skyMix=0;s.sunRise=0;
   const R={rang:0,gar:0,diyas:0};s.R=R;
-  const ppl={sweep:personCfg(101,{child:false,fem:true}),rangoli:personCfg(102,{child:true,fem:true}),garland:personCfg(103,{child:false,fem:false}),kid1:personCfg(104,{child:true,fem:false}),
+  const ppl={sweep:personCfg(101,{child:false,fem:true}),rangoli:personCfg(102,{child:true,fem:true}),
     sweets:personCfg(105,{child:false,fem:true}),kid2:personCfg(106,{child:true,fem:true}),diya:personCfg(107,{child:false,fem:false}),kid3:personCfg(108,{child:true,fem:false})};
   const F={};for(const k in ppl)F[k]=cast(s,'folk',ppl[k],mid);s.F_=F;
-  s.pos=()=>LP({sweep:[190,740,.9,1],rangoli:[420,748,.9,1],rang:[560,770,70],garland:[780,736,.9,1],kid1:[900,748,.9,-1],sweets:[1090,738,.9,1],kid2:[1190,750,.9,-1],diya:[1420,740,.9,1],kid3:[1640,748,.9,-1],
+  s.pos=()=>LP({sweep:[190,740,.9,1],rangoli:[420,748,.9,1],rang:[560,770,70],sweets:[1090,738,.9,1],kid2:[1190,750,.9,-1],diya:[1420,740,.9,1],kid3:[1640,748,.9,-1],
       lamps:[[1250,580],[520,580],[1540,560],[230,560],[1484,466],[286,466],[520,385],[1250,385]]},
-    {sweep:[130,1110,.9,1],rangoli:[360,1120,.9,1],rang:[480,1140,64],garland:[740,1105,.9,1],kid1:[880,1120,.9,-1],sweets:[150,1400,.9,1],kid2:[280,1415,.9,-1],diya:[600,1395,.9,1],kid3:[860,1410,.9,-1],
+    {sweep:[130,1110,.9,1],rangoli:[360,1120,.9,1],rang:[480,1140,64],sweets:[150,1400,.9,1],kid2:[280,1415,.9,-1],diya:[600,1395,.9,1],kid3:[860,1410,.9,-1],
       lamps:[[160,880],[840,880],[111,797],[889,797],[160,683],[840,683]]});
   onOrient(s,[back,deco,fore],P_=>{const p=s.pos();const C=cityArt(s,back,{garlands:false});s.C=C;
     /* garlands that get strung across the doorways */
@@ -159,13 +165,13 @@ function scReady(){const s=mkScene('2.4',{frame:'gold'});artPart(s);const back=g
     for(const k in F)put(F[k],p[k])});
   s.tick=(dt,t)=>{if(s.rang)s.rang.set(R.rang);(s.gars||[]).forEach((g,i)=>op(g,clamp(R.gar*s.gars.length-i,0,1)));(s.lamps||[]).forEach((d,i)=>{op(d.g,clamp(R.diyas*s.lamps.length-i,0,1))});
     (s.pk||[]).forEach((pk,i)=>pk.set(.3+.3*Math.sin(t*1.2+i)))};
-  F.sweep.hold('f','broom');F.garland.hold('f','garland');F.sweets.hold('f','plate');F.diya.hold('f','diya',{lit:0});F.rangoli.hold('f','petal');
+  F.sweep.hold('f','broom');F.sweets.hold('f','plate');F.diya.hold('f','diya',{lit:0});F.rangoli.hold('f','petal');
   for(const k in F)F[k].set('wait',0);return s}
 async function shot2_4(){mood('welcome');Amb.set('city');Music.mood('day');let s=D.scene;if(!s||s.id!=='2.4')s=D.setScene(scReady(),900);const F=s.F_;const R=s.R;
   s.cam.z=1;await hold(400);
   await say("When the people of Ayodhya heard that Rama was returning, excitement spread through the city.",[["excitement",()=>{Object.values(F).forEach((f,i)=>Timers.add(i*120,()=>f.set('wave',500)));AU.sfx('celebrate')}]]);
-  F.sweep.set('sweep',600);F.kid1.set('smile',600);F.kid2.set('smile',600);F.kid3.set('wave',600);
-  await say("Families decorated their homes with flowers.",[["decorated",()=>{F.garland.set('garlands',600);D.go(R,{gar:1},4200,'lin')}]]);
+  F.sweep.set('sweep',600);F.kid2.set('smile',600);F.kid3.set('wave',600);
+  await say("Families decorated their homes with flowers.",[["decorated",()=>{D.go(R,{gar:1},4200,'lin')}]]);
   await say("Children made colourful rangoli patterns.",[["rangoli",()=>{F.rangoli.set('rangoli',600);R.rang=0;D.go(R,{rang:1},5200,'lin')}]]);
   await say("Sweet treats were prepared, and little clay lamps were placed along doorways, windows and rooftops.",[["Sweet",()=>{F.sweets.set('sweets',600);F.kid2.set('share',600)}],
     ["clay lamps",()=>{F.diya.set('placeDiya',700);D.go(R,{diyas:1},5200,'lin')}]]);

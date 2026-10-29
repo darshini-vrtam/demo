@@ -1,7 +1,8 @@
 'use strict';
 /* ===== Palette tokens: the only colours used in the illustration (skin and fur tones live in the character bible) ===== */
 const P={ink:'#2A1608',verm:'#D9381E',turmeric:'#F2B01E',marigold:'#F4A21D',gold:'#E0A526',leaf:'#4C9A3A',forest:'#1F5E3B',peacock:'#0E7C8C',
-  ocean:'#17407A',indigo:'#2B2A6B',terra:'#C4623A',maroon:'#6E1A22',ivory:'#F7EBD0'};
+  ocean:'#17407A',indigo:'#2B2A6B',terra:'#C4623A',maroon:'#6E1A22',ivory:'#F7EBD0',
+  /* added on request: a sky blue and an earth brown */sky:'#7EC4E6',brown:'#7A4A2A'};
 const K=P.ink;
 const TAU=Math.PI*2,DEG=Math.PI/180,clamp=(v,a,b)=>v<a?a:v>b?b:v,lerp=(a,b,t)=>a+(b-a)*t,sm=t=>t*t*(3-2*t);
 function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}

@@ -104,3 +104,16 @@ The late frame of every scene was reviewed in landscape (1280×720) and portrait
 - The deed caption moved off the medallions in portrait.
 - Characters enlarged in the portrait battle and reunion.
 - The closing diya enlarged.
+
+## Revision 2 (review feedback)
+
+- **1.1 Ayodhya:** the sky is now sky blue and the courtyard ground is earth brown. Two colours were added to the palette for this: `sky` #7EC4E6 and `brown` #7A4A2A.
+- **1.2 forest:** the grey diagonal shadow lines are removed. The darker mood now comes from the passing indigo cloud and the sky colour only.
+- **1.2 chariot view:** Lanka is drawn much larger, with a gold wall and taller towers. The sky has a new curl-pattern texture, and the chariot is larger.
+- **1.7 bridge and 1.8 march:** every bridge stone (fixed, movable and placed) carries **श्री राम**. It is live Devanagari text in Noto Sans Devanagari with an ivory halo, not drawn shapes. This is a deliberate exception to the "no lettering in the art" rule, made on request.
+- **2.1 battle:**
+  - Ravana is larger: 1.15× instead of 0.92×, and 0.8× instead of 0.62× in the departure scene.
+  - Rama's final arrow is a **fire arrow**: flat flame tongues along the shaft and a flaming tip. It strikes Ravana with a burst of flat flame shapes, he lowers his weapons, then sinks back and fades into settling golden dust as "The battle was over" is spoken.
+  - There is no blood, and no injury is shown.
+- **2.3 Pushpaka Vimana:** the sky is now blue. Lakshmana stays seated throughout, using a new seated pointing pose.
+- **2.4 Ayodhya Gets Ready:** the garland stringer and the boy standing on the central road are removed. The garlands still appear across the doorways during that line.

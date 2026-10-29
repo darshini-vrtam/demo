@@ -22,7 +22,7 @@ function cast(s,key,cfg,layer,o){const f=new Fig(cfg,layer||s.comp,o);part(s,f);
 function fxLayer(s){const g=grp(s.top);const list=[];const F={g,list,
   ripple(x,y,r,col,ms){const e=circ(g,x,y,10,'none',6,{stroke:col||P.turmeric});const o={k:0};list.push({e,o,kind:'ripple',x,y,r:r||120});tw(o,{k:1},ms||1300,'out').then(()=>{e.remove();list.splice(list.findIndex(l=>l.e===e),1)})},
   burst(x,y,n,kind,spread){for(let i=0;i<(n||6);i++){const a=-Math.PI/2+(Math.random()-.5)*(spread||1.6);const d=60+Math.random()*90;const e=grp(g);
-      if(kind==='petal'){shp(e,'M0 0Q6 -8 0 -16Q-6 -8 0 0Z',i%2?P.verm:P.marigold,2)}else if(kind==='leaf'){shp(e,leafD(26,8),i%2?P.leaf:P.forest,2)}else{star4(e,0,0,10,i%2?P.turmeric:P.ivory)}
+      if(kind==='petal'){shp(e,'M0 0Q6 -8 0 -16Q-6 -8 0 0Z',i%2?P.verm:P.marigold,2)}else if(kind==='flame'){shp(e,'M0 0C-10 -8 -8 -22 0 -34C8 -22 10 -8 0 0Z',[P.verm,P.marigold,P.turmeric][i%3],2.4)}else if(kind==='leaf'){shp(e,leafD(26,8),i%2?P.leaf:P.forest,2)}else{star4(e,0,0,10,i%2?P.turmeric:P.ivory)}
       const o={k:0};list.push({e,o,kind:'b',x,y,dx:Math.cos(a)*d,dy:Math.sin(a)*d,rot:Math.random()*360});tw(o,{k:1},900+Math.random()*500,'out').then(()=>{e.remove();list.splice(list.findIndex(l=>l.e===e),1)})}},
   /* a short trail of decorative dots drawn from a to b */
   trail(a,b,col,keep){const d=`M${f1(a[0])} ${f1(a[1])}Q${f1((a[0]+b[0])/2)} ${f1(Math.min(a[1],b[1])-60)} ${f1(b[0])} ${f1(b[1])}`;const e=grp(g);const p=ln(e,d,K,10,{'stroke-dasharray':'.1 22'});const q=ln(e,d,col||P.turmeric,6,{'stroke-dasharray':'.1 22'});

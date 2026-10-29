@@ -41,6 +41,7 @@ const POSE={
   seatedSad:{seated:1,ba:28,bb:46,fa:40,fb:52,tilt:14,eye:'down',mouth:'worry',brow:'sad'},
   seatedHope:{seated:1,ba:28,bb:46,fa:52,fb:76,tilt:-6,eye:'wide',mouth:'o',brow:'up'},
   receiveRing:{seated:1,ba:28,bb:46,fa:66,fb:14,tilt:4,eye:'wide',mouth:'smile',brow:'up'},
+  seatedPoint:{seated:1,ba:28,bb:46,fa:92,fb:-4,mouth:'smile',eye:'open'},
   seatedJoy:{seated:1,ba:28,bb:46,fa:50,fb:80,tilt:-4,eye:'happy',mouth:'big'},
   /* Hanuman pose sheet */
   standRing:{ba:-6,bb:12,fa:52,fb:48,mouth:'smile',eye:'open'},
@@ -214,7 +215,7 @@ function plant(parent,k){const g=grp(parent);shp(g,'M-18 0L-14 -24H14L18 0Z',P.t
    Proud, never frightening: big round eyes, raised brows, a curled moustache, a small proud smile. */
 const RPOSE={stand:{la:16,lb:20,ra:16,rb:20,w:0,aura:.6,droop:0},proud:{la:30,lb:110,ra:30,rb:110,w:0,aura:.7,droop:0},
   raise:{la:100,lb:10,ra:100,rb:10,w:1,aura:1,droop:0},lower:{la:26,lb:6,ra:26,rb:6,w:1,aura:.4,droop:.3},defeated:{la:10,lb:4,ra:10,rb:4,w:0,aura:0,droop:1}};
-class Ravana{constructor(parent){this.x=0;this.y=0;this.s=1;this.vis=true;this.talking=false;this.cur=Object.assign({},RPOSE.stand);this.ph=0;this.build(parent)}
+class Ravana{constructor(parent){this.x=0;this.y=0;this.s=1;this.gone=0;this.vis=true;this.talking=false;this.cur=Object.assign({},RPOSE.stand);this.ph=0;this.build(parent)}
   face(g,r,main){const sk=SKIN.ravana;ell(g,0,0,r*.86,r,sk,main?4.2:3.2);
     ell(g,-r*.36,-r*.1,r*.22,r*.15,P.ivory,2.2);ell(g,r*.36,-r*.1,r*.22,r*.15,P.ivory,2.2);const pu=grp(g);circ(pu,-r*.36,-r*.1,r*.09,K,0);circ(pu,r*.36,-r*.1,r*.09,K,0);
     const br=grp(g);ln(br,`M${-r*.6} ${-r*.36}Q${-r*.36} ${-r*.56} ${-r*.12} ${-r*.4}M${r*.12} ${-r*.4}Q${r*.36} ${-r*.56} ${r*.6} ${-r*.36}`,K,main?3.6:2.6);
@@ -248,7 +249,7 @@ class Ravana{constructor(parent){this.x=0;this.y=0;this.s=1;this.vis=true;this.t
     const mh=this.mh=grp(g,{transform:'translate(0 -318)'});shp(mh,this.crownD(36,52),Pat.u('petals',P.verm,P.gold,.5),4);shp(mh,`M${-31} -26H31V-16H-31Z`,P.verm,2.6);circ(mh,0,-36*.66-52,6,P.turmeric,2.4);
     this.mainF=this.face(mh,36,true);this.set('stand',0)}
   set(st,ms){const p=RPOSE[st]||RPOSE.stand;this.state=st;const tgt=Object.assign({},p);if(ms===0){Object.assign(this.cur,tgt);return Promise.resolve()}return tw(this.cur,tgt,ms||900)}
-  update(dt,t){show(this.g,this.vis);if(!this.vis)return;const c=this.cur;const m=MV();tf(this.g,this.x,this.y,this.s);
+  update(dt,t){show(this.g,this.vis);if(!this.vis)return;const c=this.cur;const m=MV();const gn=this.gone;tf(this.g,this.x,this.y+gn*30*this.s,this.s*(1-gn*.12),-gn*8);this.g.style.opacity=gn>0?String(f3(1-gn)):'';
     const arm=(A,la,lb)=>{A.up.setAttribute('transform',`translate(${A.sx*54} -258) rotate(${f1(-A.sx*la)})`);A.fo.setAttribute('transform',`translate(0 60) rotate(${f1(-A.sx*lb)})`);A.hand.setAttribute('transform',`translate(0 58) rotate(${f1(A.sx*(la+lb))})`);op(A.w,clamp(c.w*1.4,0,1))};
     arm(this.L,c.la,c.lb);arm(this.Rt,c.ra,c.rb);
     op(this.aura,c.aura);tf(this.aura,0,0,1,t*4*m*c.aura);
