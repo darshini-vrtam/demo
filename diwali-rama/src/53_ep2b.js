@@ -11,19 +11,18 @@ function scReturn(){const s=mkScene('2.6',{frame:'gold'});artPart(s);const back=
   skyBg(s,{kind:'night',horizon:[470,760],ground:['flower',P.gold,P.brown,.9],stars:14,clouds:[[.14,.22,250],[.84,.18,300]]});
   const rama=cast(s,'rama',CAST.rama,mid),sita=cast(s,'sita',CAST.sita,mid),lak=cast(s,'lak',CAST.lak,mid),han=cast(s,'hanuman',CAST.hanuman,mid);
   const folk=[];for(let i=0;i<8;i++)folk.push(cast(s,'folk',personCfg(300+i,{child:i%3===1}),mid));folk.forEach(f=>mid.insertBefore(f.g,mid.firstChild));
-  s.pos=()=>LP({palace:[889,530,.8],sita:[780,740,1,1],rama:[930,742,1,1],lak:[1080,746,.96,-1],han:[1290,748,.95,-1],start:[[862,548],[889,548],[916,548]],
+  s.pos=()=>LP({palace:[889,530,.8],sita:[830,740,1,-1],rama:[990,742,1,-1],lak:[1150,746,.96,-1],han:[600,748,.95,1],start:[[1900,708],[2060,700],[2220,694]],
       folk:[[150,640,.7,1],[260,652,.58,1],[370,640,.7,1],[490,652,.58,1],[1420,652,.58,-1],[1530,640,.7,-1],[1640,652,.58,-1],[1740,640,.7,-1]],fd:[[200,772],[600,776],[1350,774],[1600,770]]},
-    {palace:[500,770,.7],sita:[330,1170,1,1],rama:[500,1172,1,1],lak:[660,1176,.96,-1],han:[850,1180,.92,-1],start:[[475,790],[500,790],[525,790]],
+    {palace:[500,770,.7],sita:[420,1170,1,-1],rama:[580,1172,1,-1],lak:[740,1176,.96,-1],han:[170,1180,.92,1],start:[[1120,1296],[1260,1290],[1400,1284]],
       folk:[[70,1320,.68,1],[190,1335,.56,1],[300,1320,.68,1],[140,990,.5,1],[260,1000,.45,1],[600,990,.5,-1],[740,1000,.45,-1],[860,990,.5,-1]],fd:[[160,1462],[560,1466]]});
   onOrient(s,[back,fore],P_=>{const p=s.pos();const A=ayodhyaArt(s,back,fore,{dome:P.gold,palace:p.palace});const pc=A.pc;
     /* little lamps along the rooftops, windows and palace */
     const L_=[];A.hs.forEach(({x,y,k})=>{L_.push(...lampRow(x-100*k,y-190*k-4,x+100*k,y-190*k-4,6));L_.push(...lampRow(x-90*k,y+6,x+90*k,y+6,5))});
     L_.push(...lampRow(pc[0]-480*pc[2],pc[1]-250*pc[2],pc[0]+480*pc[2],pc[1]-250*pc[2],14));s.lamps=tinyLamps(back,L_,LP(1.2,1.2));
-    /* the palace gates, which swing open */
-    const ag=grp(back,{transform:`translate(${pc[0]} ${pc[1]}) scale(${pc[2]})`});s.doors=[-1,1].map(sx=>{const d=grp(ag);shp(d,`M0 0V-200H${sx*68}V0Z`,Pat.u('flower',P.gold,P.maroon,.8),3.5);return{d,sx}});
+    s.doors=[];
     /* lit diyas in the foreground: flames only */
     s.fd=p.fd.map(([x,y])=>{const d=keepArt(s,diya(fore,{lit:1,light:0,decor:1}));d.x=x;d.y=y;d.s=LP(.6,.55);return d});
-    folk.forEach((f,i)=>put(f,p.folk[i]));put(han,p.han);if(!s.entered){[sita,rama,lak].forEach((f,i)=>{f.x=p.start[i][0];f.y=p.start[i][1];f.s=.45})}else{put(sita,p.sita);put(rama,p.rama);put(lak,p.lak)}});
+    folk.forEach((f,i)=>put(f,p.folk[i]));put(han,p.han);if(!s.entered){[sita,rama,lak].forEach((f,i)=>{f.x=p.start[i][0];f.y=p.start[i][1];f.s=p[['sita','rama','lak'][i]][2]*(f.Q.scale||1);f.f=-1})}else{put(sita,p.sita);put(rama,p.rama);put(lak,p.lak)}});
   s.petals=drift(s,22,LP([0,0,1778,700],[0,0,1000,1300]));
   s.doorK=0;s.tick=(dt,t)=>{(s.doors||[]).forEach(o=>tf(o.d,0,0,1,0,1-s.doorK*.92,1));(s.pk||[]).forEach((pk,i)=>pk.set(.3+.35*(.5+.5*Math.sin(t*1.3+i*1.7))*MV()));
     if(s.lamps)op(s.lamps.fl,.85+.15*Math.sin(t*3.1));
@@ -32,10 +31,10 @@ function scReturn(){const s=mkScene('2.6',{frame:'gold'});artPart(s);const back=
 async function shot2_6(){mood('welcome');Amb.set('city');Music.mood('light');const s=D.setScene(scReturn(),900);const {rama,sita,lak,hanuman:han}=s.cast;const folk=[].concat(s.cast.folk);
   folk.forEach(f=>f.set('wait',0));han.set('namaste',0);const p=s.pos();await hold(600);
   /* the palace gates open and the three enter the glowing city */
-  AU.sfx('bell');await D.tw(s,{doorK:1},2200,'io');
-  await say("At last, Rama, Sita and Lakshmana returned to Ayodhya.",[["returned",()=>{s.entered=true;[[sita,p.sita],[rama,p.rama],[lak,p.lak]].forEach(([f,q])=>{f.f=1;f.set('walk',200);
-      tw(f,{x:q[0],y:q[1],s:q[2]*(f.Q.scale||1)},4200,'io').then(()=>f.set('idle',500))})}]]);
-  await hold(2600);lak.turn(-1);Music.swell();
+  AU.sfx('bell');
+  await say("At last, Rama, Sita and Lakshmana returned to Ayodhya.",[["returned",()=>{s.entered=true;[[sita,p.sita],[rama,p.rama],[lak,p.lak]].forEach(([f,q])=>{f.f=-1;f.set('walk',200);
+      tw(f,{x:q[0],y:q[1]},LP(6000,5200),'lin').then(()=>f.set('idle',500))})}]]);
+  await hold(3400);Music.swell();
   await say("The people welcomed them with joy. The streets shone with rows of little lamps, and the air was filled with celebration.",[["welcomed",()=>{folk.forEach((f,i)=>{f.set(i%2?'petals':'wave',500);if(i%2===0)return;f.hold('b','basket')});AU.sfx('celebrate')}],
     ["celebration",()=>{rama.set('bless',700);sita.set('smile',700);lak.set('smile',700);han.set('rejoice',600);AU.sfx('celebrate')}]]);
   await hold(800);

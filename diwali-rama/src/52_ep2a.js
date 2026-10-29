@@ -155,7 +155,7 @@ function scReady(){const s=mkScene('2.4',{frame:'gold'});artPart(s);const back=g
       lamps:[[1250,580],[520,580],[1540,560],[230,560],[1484,466],[286,466],[520,385],[1250,385]]},
     {sweep:[130,1110,.9,1],rangoli:[360,1120,.9,1],rang:[480,1140,64],sweets:[150,1400,.9,1],kid2:[280,1415,.9,-1],diya:[600,1395,.9,1],kid3:[860,1410,.9,-1],
       lamps:[[160,880],[840,880],[111,797],[889,797],[160,683],[840,683]]});
-  onOrient(s,[back,deco,fore],P_=>{const p=s.pos();const C=cityArt(s,back,{garlands:false,street:false,palace:LP([889,530,.8],[500,770,.7])});s.C=C;
+  onOrient(s,[back,deco,fore],P_=>{const p=s.pos();const C=cityArt(s,back,{garlands:false,street:false,palace:LP([889,576,.8],[500,906,.7])});s.C=C;
     /* garlands that get strung across the doorways */
     s.gars=C.hs.map(({x,y,k})=>{const g=garland(deco,x-110*k,y-190*k,x+110*k,y-190*k,10,7);return g.g});
     s.rang=rangoli(deco,p.rang[2],3,.5);tf(s.rang.g,p.rang[0],p.rang[1],1);
@@ -187,11 +187,11 @@ function scLight(){const s=mkScene('2.5',{frame:'night'});artPart(s);const back=
   skyBg(s,{kind:'dusk',kind2:'night',horizon:[560,900],ground:['brick',P.maroon,P.terra,1],clouds:[[.2,.3,220],[.7,.24,240]],stars:12,stars2:16});s.skyMix=0;
   const A={lit:[],active:false,warm:0,lastNudge:-1e9};s.A=A;
   const folk=[personCfg(201,{child:false}),personCfg(202,{child:true}),personCfg(203,{child:false}),personCfg(204,{child:true})].map(c=>cast(s,'folk',c,mid));
-  s.pos=()=>LP({diyas:[[300,770],[640,748],[1140,748],[1480,770],[520,585],[1250,585],[286,468],[1484,468],[1596,468],[520,388],[1250,388],[889,536]],
+  s.pos=()=>LP({diyas:[[300,770],[640,748],[1140,748],[1480,770],[520,585],[1250,585],[286,468],[1484,468],[1596,468],[520,388],[1250,388],[889,582]],
       folk:[[430,768,.78,1],[790,760,.7,1],[1000,760,.78,-1],[1340,768,.7,-1]]},
-    {diyas:[[200,1430],[800,1430],[330,1230],[680,1230],[160,884],[840,884],[209,800],[791,800],[500,1060],[160,688],[840,688],[500,776]],
+    {diyas:[[200,1430],[800,1430],[330,1230],[680,1230],[160,884],[840,884],[209,800],[791,800],[500,1060],[160,688],[840,688],[500,912]],
       folk:[[90,1340,.74,1],[910,1340,.74,-1],[200,1100,.64,1],[800,1100,.64,-1]]});
-  onOrient(s,[back,glowL,lampL,fx],P_=>{const p=s.pos();const C=cityArt(s,back,{wall:P.ivory,street:false,palace:LP([889,530,.8],[500,770,.7])});s.C=C;
+  onOrient(s,[back,glowL,lampL,fx],P_=>{const p=s.pos();const C=cityArt(s,back,{wall:P.ivory,street:false,palace:LP([889,576,.8],[500,906,.7])});s.C=C;
     /* window and arch glows that warm the whole city at the end */
     s.warmG=grp(back);C.hs.forEach(({h,x,y,k})=>h.win.forEach(([wx,wy])=>{const g=grp(s.warmG,{transform:`translate(${x+wx*k} ${y+wy*k})`});shp(g,`M${-22*k} 0V${-36*k}Q0 ${-56*k} ${22*k} ${-36*k}V0Z`,P.turmeric,3)}));
     const pa=C.c.palace;const ag=grp(s.warmG,{transform:`translate(${pa[0]} ${pa[1]}) scale(${pa[2]})`});shp(ag,'M-68 0V-124Q-68 -215 0 -215Q68 -215 68 -124V0Z',P.turmeric,4);op(s.warmG,A.warm);

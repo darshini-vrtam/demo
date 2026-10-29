@@ -167,3 +167,10 @@ The late frame of every scene was reviewed in landscape (1280×720) and portrait
   - The palace is larger (0.8× landscape, 0.7× portrait).
   - The orange central road, the central rangoli, the gold halo and rays, and the glow rings around the diyas are removed. Foreground diyas show only their flames.
   - The palace gates still swing open, and Rama, Sita and Lakshmana still walk out from them.
+
+## Revision 8
+
+- **2.4 and 2.5:** the palace now stands on the ground line instead of floating above it. The palace-entrance diya in 2.5 moves down with it.
+- **2.6 Rama Returns to Ayodhya:**
+  - Rama, Sita and Lakshmana walk in from the right along the road and stop facing the welcoming crowd. They no longer emerge from the palace gate, so the gate doors are removed.
+  - Hanuman now stands on the left and greets them.
