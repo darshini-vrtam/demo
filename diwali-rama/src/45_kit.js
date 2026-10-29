@@ -38,7 +38,7 @@ function demoHand(s){const h=handIcon(s.top);s.parts.push({update:()=>h.update()
     h.press=0;await D.tw(h,{on:0},300)}catch(e){}finally{this.busy=false}}};return D_}
 /* drifting petals (atmosphere layer): n petals falling slowly through a box */
 function petalDrift(parent,n,box,o){o=o||{};const g=grp(parent);const r=rng(o.seed||21);const ps=[];for(let i=0;i<n;i++){const e=grp(g);
-    if(o.kind==='leaf')shp(e,leafD(22,7),i%2?P.leaf:P.forest,2);else shp(e,'M0 0Q7 -9 0 -18Q-7 -9 0 0Z',[P.verm,P.marigold,P.turmeric,P.ivory][i%4],2);ps.push({e,x:r(),y:r(),sp:.04+r()*.05,ph:r()*TAU})}
+    if(o.kind==='leaf')shp(e,leafD(22,7),i%2?P.leaf:P.forest,2);else if(o.kind==='flower'){if(i%3===2)marigold(e,10,P.marigold);else flower(e,9,[P.verm,P.ivory,P.marigold][i%3],P.turmeric)}else shp(e,'M0 0Q7 -9 0 -18Q-7 -9 0 0Z',[P.verm,P.marigold,P.turmeric,P.ivory][i%4],2);ps.push({e,x:r(),y:r(),sp:.04+r()*.05,ph:r()*TAU})}
   return{g,ps,k:1,update(t,dt){op(g,this.k);if(this.k<=0)return;const m=MV();ps.forEach(p=>{p.y=(p.y+dt*p.sp*m*(o.rise?-1:1)+1)%1;const x=box[0]+(p.x+Math.sin(t*.4+p.ph)*.03)*box[2],y=box[1]+p.y*box[3];tf(p.e,x,y,1,Math.sin(t*.7+p.ph)*60+t*20*(o.spin||0))})},
     _u:null}}
 function drift(s,n,box,o){const d=petalDrift(s.top,n,box,o);s.parts.push({update:(dt,t)=>d.update(t,dt)});return d}

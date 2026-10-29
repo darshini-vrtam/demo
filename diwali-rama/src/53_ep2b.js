@@ -23,7 +23,7 @@ function scReturn(){const s=mkScene('2.6',{frame:'gold'});artPart(s);const back=
     /* lit diyas in the foreground: flames only */
     s.fd=p.fd.map(([x,y])=>{const d=keepArt(s,diya(fore,{lit:1,light:0,decor:1}));d.x=x;d.y=y;d.s=LP(.6,.55);return d});
     folk.forEach((f,i)=>put(f,p.folk[i]));put(han,p.han);if(!s.entered){[sita,rama,lak].forEach((f,i)=>{f.x=p.start[i][0];f.y=p.start[i][1];f.s=p[['sita','rama','lak'][i]][2]*(f.Q.scale||1);f.f=-1})}else{put(sita,p.sita);put(rama,p.rama);put(lak,p.lak)}});
-  s.petals=drift(s,22,LP([0,0,1778,700],[0,0,1000,1300]));
+  s.petals=drift(s,22,LP([0,0,1778,700],[0,0,1000,1300]));s.flowers=drift(s,26,LP([0,0,1778,760],[0,0,1000,1380]),{kind:'flower',seed:33});
   s.doorK=0;s.tick=(dt,t)=>{(s.doors||[]).forEach(o=>tf(o.d,0,0,1,0,1-s.doorK*.92,1));(s.pk||[]).forEach((pk,i)=>pk.set(.3+.35*(.5+.5*Math.sin(t*1.3+i*1.7))*MV()));
     if(s.lamps)op(s.lamps.fl,.85+.15*Math.sin(t*3.1));
     if(Cam.smile&&s.entered&&!s.smiled){s.smiled=true;rama.set('smile',500);sita.set('smile',500);Timers.add(4000,()=>s.smiled=false)}};
@@ -194,9 +194,9 @@ function scClose(){const s=mkScene('2.10',{frame:'night'});artPart(s);const back
   const lak=cast(s,'lak',CAST.lak,mid),rama=cast(s,'rama',CAST.rama,mid),sita=cast(s,'sita',CAST.sita,mid),han=cast(s,'hanuman',CAST.hanuman,mid);
   const folk=[personCfg(601,{child:true}),personCfg(602,{child:false,fem:true}),personCfg(603,{child:true}),personCfg(604,{child:false}),personCfg(605,{child:true,fem:true}),personCfg(606,{child:false,fem:true})].map(c=>cast(s,'folk',c,mid));
   folk.forEach(f=>mid.insertBefore(f.g,mid.firstChild));
-  s.pos=()=>LP({lak:[640,730,.92,1],rama:[790,730,.95,1],sita:[960,730,.95,-1],han:[1110,734,.92,-1],folk:[[200,630,.6,1],[300,634,.6,-1],[430,630,.6,1],[1300,630,.6,1],[1420,634,.6,-1],[1560,630,.6,-1]],
+  s.pos=()=>LP({lak:[540,730,.92,1],rama:[700,730,.95,1],sita:[1080,730,.95,-1],han:[1230,734,.92,-1],folk:[[200,630,.6,1],[300,634,.6,-1],[430,630,.6,1],[1300,630,.6,1],[1420,634,.6,-1],[1560,630,.6,-1]],
       fd:[1240,772,1.6],icon:[1400,730,58],medal:[889,170,180],ell:[889,420,900,440]},
-    {lak:[240,1170,.9,1],rama:[410,1170,.92,1],sita:[590,1170,.92,-1],han:[760,1174,.9,-1],folk:[[100,990,.5,1],[200,994,.5,-1],[310,990,.5,1],[690,990,.5,1],[800,994,.5,-1],[900,990,.5,-1]],
+    {lak:[130,1170,.9,1],rama:[290,1170,.92,1],sita:[710,1170,.92,-1],han:[870,1174,.9,-1],folk:[[100,990,.5,1],[200,994,.5,-1],[310,990,.5,1],[690,990,.5,1],[800,994,.5,-1],[900,990,.5,-1]],
       fd:[500,1400,1.25],icon:[330,1390,50],medal:[500,330,210],ell:[500,760,540,780]});
   onOrient(s,[back,fore,ring],P_=>{const p=s.pos();/* a large symmetrical floral motif in the sky */const md=grp(back,{transform:`translate(${p.medal[0]} ${p.medal[1]})`});const r=p.medal[2];
     petalRing(md,r*.95,24,P.gold,P.turmeric,r*.3);halo(md,r*.7,{bw:r*.12,col:P.gold});const rg=rangoli(md,r*.42,2);s.md=md;
@@ -207,6 +207,13 @@ function scClose(){const s=mkScene('2.10',{frame:'night'});artPart(s);const back
     L_.push(...lampRow(LP(40,40),LP(476,766),LP(1740,960),LP(476,766),LP(30,18)));
     s.lampsA=tinyLamps(back,L_.filter((_,i)=>i%2===0),1.1);s.lampsB=tinyLamps(back,L_.filter((_,i)=>i%2===1),1.1);
     const ag=grp(back,{transform:`translate(${pc[0]} ${pc[1]}) scale(${pc[2]})`});shp(ag,'M-68 0V-124Q-68 -215 0 -215Q68 -215 68 -124V0Z',P.turmeric,4);
+    /* a marigold toran over the palace door, a rangoli on the ground in front of it, flowers around it */
+    garland(back,pc[0]-96*pc[2],pc[1]-196*pc[2],pc[0]+96*pc[2],pc[1]-196*pc[2],6,8);
+    const rgD=rangoli(back,LP(76,62),7,.42);tf(rgD.g,pc[0],pc[1]+LP(48,44),1);
+    [[-1,0],[1,0],[-1,1],[1,1]].forEach(([sx,k])=>{const fg=grp(back,{transform:`translate(${f1(pc[0]+sx*LP(120+k*40,96+k*30))} ${f1(pc[1]+LP(28+k*30,26+k*26))})`});if(k)marigold(fg,13,P.marigold);else flower(fg,13,P.verm,P.turmeric)});
+    /* lanterns hanging from the palace and the rooftops */
+    s.lanterns=(LP([[pc[0]-330,pc[1]-232,P.verm,70],[pc[0]+330,pc[1]-232,P.peacock,70],[pc[0]-150,pc[1]-232,P.leaf,50],[pc[0]+150,pc[1]-232,P.maroon,50],[210,350,P.marigold,50],[1570,350,P.verm,50]],
+      [[pc[0]-280,pc[1]-206,P.verm,60],[pc[0]+280,pc[1]-206,P.peacock,60],[pc[0]-130,pc[1]-206,P.leaf,44],[pc[0]+130,pc[1]-206,P.maroon,44]])).map(([x,y,c,l],i)=>{const ln_=lantern(back,c,l);tf(ln_.g,x,y+l,LP(.9,.8));return{ln:ln_,x,y:y+l,i}});
     /* the child's own diya, its flame connected by golden dotted lines to the city's lamps */
     s.links=grp(fore);[[pc[0],pc[1]-250*pc[2]],[C.hs[0].x,C.hs[0].y-190*C.hs[0].k],[C.hs[C.hs.length-1].x,C.hs[C.hs.length-1].y-190*C.hs[C.hs.length-1].k]].forEach(([x,y])=>{
       const d=`M${p.fd[0]} ${p.fd[1]-90*p.fd[2]}Q${(p.fd[0]+x)/2} ${Math.min(y,p.fd[1])-120} ${x} ${y}`;ln(s.links,d,K,7,{'stroke-dasharray':'.1 16'});ln(s.links,d,P.turmeric,4,{'stroke-dasharray':'.1 16'})});op(s.links,s.linkK||0);
@@ -217,7 +224,7 @@ function scClose(){const s=mkScene('2.10',{frame:'night'});artPart(s);const back
     const e=p.ell;s.frameRing=shp(ring,`M-400 -400H2400V2000H-400Z${ellD(e[0],e[1],e[2],e[3])}`,Pat.u('flower',P.gold,P.indigo,1.2),0,{'fill-rule':'evenodd'});
     s.frameLine=grp(ring);ln(s.frameLine,ellD(e[0],e[1],e[2],e[3]),K,12);ln(s.frameLine,ellD(e[0],e[1],e[2],e[3]),P.gold,6);petalRing(grp(s.frameLine,{transform:`translate(${e[0]} ${e[1]}) scale(${f3(e[2]/e[3])} 1)`}),e[3],48,P.verm,P.marigold,26);
     put(lak,p.lak);put(rama,p.rama);put(sita,p.sita);put(han,p.han);folk.forEach((f,i)=>put(f,p.folk[i]))});
-  s.ringK=0;s.tick=(dt,t)=>{const m=MV();if(s.lampsA){op(s.lampsA.fl,.75+.25*Math.sin(t*2.7));op(s.lampsB.fl,.75+.25*Math.sin(t*2.3+1.5))}if(s.md)tf(s.md,s.pos().medal[0],s.pos().medal[1],1,t*2*m*(1-(s.still||0)));
+  s.ringK=0;s.tick=(dt,t)=>{const m=MV();(s.lanterns||[]).forEach(o=>tf(o.ln.g,o.x,o.y,LP(.9,.8),Math.sin(t*1.2+o.i)*6*m));if(s.lampsA){op(s.lampsA.fl,.75+.25*Math.sin(t*2.7));op(s.lampsB.fl,.75+.25*Math.sin(t*2.3+1.5))}if(s.md)tf(s.md,s.pos().medal[0],s.pos().medal[1],1,t*2*m*(1-(s.still||0)));
     if(s.links)op(s.links,s.linkK||0);if(s.icon)op(s.icon,s.iconK||0);const k=s.ringK||0;if(s.frameRing){op(s.frameRing,k);op(s.frameLine,k);const e=s.pos().ell;const z=1+(1-k)*.5;
       s.frameRing.setAttribute('transform',`translate(${e[0]} ${e[1]}) scale(${f3(z)}) translate(${-e[0]} ${-e[1]})`);s.frameLine.setAttribute('transform',`translate(${e[0]} ${e[1]}) scale(${f3(z)}) translate(${-e[0]} ${-e[1]})`)}};
   rama.set('idle',0);sita.set('smile',0);lak.set('smile',0);han.set('namaste',0);

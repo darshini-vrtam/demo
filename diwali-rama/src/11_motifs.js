@@ -263,6 +263,11 @@ function vimana(parent,o){o=o||{};const g=grp(parent);const back=grp(g);const ri
 function farChariot(parent){const g=grp(parent);shp(g,'M-60 0Q-54 18 -20 20H24Q54 18 64 -6Z',Pat.u('petals',P.gold,P.maroon,.6),3.5);shp(g,'M-36 0V-36Q0 -60 36 -36V0Z',P.verm,3);
   const c=cloud(g,90,P.ivory,P.indigo);tf(c,0,24,1);return g}
 
+/* a hanging festival lantern (akash kandil): a patterned diamond body with a lit window and tassels; swing via the group's rotation */
+function lantern(parent,col,len){const g=grp(parent);const L_=len||60;ln(g,`M0 ${-L_}V0`,K,2.4);const b=grp(g);
+  shp(b,'M0 0L-26 24L-26 52L0 76L26 52L26 24Z',Pat.u('chevron',P.gold,col||P.verm,.6),3.2);shp(b,'M-26 24H26M-26 52H26',null,2.2);
+  shp(b,'M0 30L-10 38L0 46L10 38Z',P.turmeric,2);for(const x of[-14,0,14])ln(b,`M${x} 72V96`,x?P.marigold:P.verm,3);circ(b,0,0,4,P.gold,1.6);return{g,b}}
+
 /* ---- interaction markers (separate from the artwork): a golden pulse ring with dots, and the demonstration hand ---- */
 function target(parent,r){const g=grp(parent);const a=grp(g);circ(a,0,0,r,'none',8,{stroke:K});circ(a,0,0,r,'none',4,{stroke:P.turmeric});
   const n=Math.max(10,Math.round(r/7)),d=[];for(let i=0;i<n;i++){const t=i/n*TAU;d.push(`M${f1(Math.cos(t)*(r+12))} ${f1(Math.sin(t)*(r+12))}h.1`)}ln(a,d.join(''),P.gold,7);

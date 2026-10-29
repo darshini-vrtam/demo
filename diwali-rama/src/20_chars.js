@@ -148,7 +148,7 @@ class Fig{constructor(cfg,parent,o){o=o||{};this.Q=cfg;this.x=0;this.y=0;this.s=
     this.fArm=arm();this.fArm.up.setAttribute('transform','translate(6 -88)');
     this.applyFace();this.update(0,0)}
   /* hold a prop in the front ('f') or back ('b') hand */
-  hold(which,kind,o){const a=which==='b'?this.bArm:this.fArm;a.prop.innerHTML='';this.props[which]=kind;if(!kind)return null;return drawProp(a.prop,kind,o||{},this)}
+  hold(which,kind,o){const a=which==='b'?this.bArm:this.fArm;a.prop.innerHTML='';this.props[which]=kind;if(which==='f')this.bowF=null;if(!kind)return null;const r=drawProp(a.prop,kind,o||{},this);if(which==='f'&&kind==='bow')this.bowF=r;return r}
   set(state,ms){const p=POSE[state]||POSE.idle;this.state=state;const tgt={};for(const k of NUM)tgt[k]=p[k]!=null?p[k]:ZERO[k];
     this.walking=p.walk?1:0;this.oscP=p.osc||null;this.shiver=p.shiver?1:0;this.face={eye:p.eye||'open',mouth:p.mouth||'smile',brow:p.brow||''};this.applyFace();
     if(p.bowHand&&this.props.b==='bow'){this.hold('b',null);this.hold('f','bow')}
@@ -171,6 +171,7 @@ class Fig{constructor(cfg,parent,o){o=o||{};this.Q=cfg;this.x=0;this.y=0;this.s=
   update(dt,t){if(!this.vis){show(this.g,false);return}show(this.g,true);const c=this.cur;const m=MV();
     let ba=c.ba,bb=c.bb,fa=c.fa,fb=c.fb,bt=c.bt,bs=c.bs,ft=c.ft,fs=c.fs;
     if(this.walking){this.wph+=dt*5.2*(D.speed>4?1:1);const w=Math.sin(this.wph);ft=c.ft+24*w;bt=c.bt-24*w;fs=c.fs-(w<0?-w*30:0);bs=c.bs-(w>0?w*30:0);fa=c.fa-16*w;ba=c.ba+16*w}
+    const dk=this.bowF?(this.drawK||0):0;if(dk>0){ba=lerp(ba,88,dk);bb=lerp(bb,168,dk)}
     if(this.oscP){const [k,amp,per]=this.oscP;const v=Math.sin(t*TAU/per+this.ph)*amp*m;if(k==='fa')fa+=v;else if(k==='fb')fb+=v;else if(k==='ba')ba+=v}
     const seat=c.seated>.5;
     /* hips: the lower foot always rests on the ground */
@@ -185,6 +186,10 @@ class Fig{constructor(cfg,parent,o){o=o||{};this.Q=cfg;this.x=0;this.y=0;this.s=
     if(!seat){setLeg(this.fLeg,ft,fs);setLeg(this.bLeg,bt,bs)}
     this.bArm.up.setAttribute('transform',`translate(-2 -90) rotate(${f1(-ba)})`);this.bArm.fo.setAttribute('transform',`translate(0 ${UA}) rotate(${f1(-bb)})`);this.bArm.hand.setAttribute('transform',`translate(0 ${FA}) rotate(${f1(ba+bb-(c.lean||0))})`);
     this.fArm.up.setAttribute('transform',`translate(6 -88) rotate(${f1(-fa)})`);this.fArm.fo.setAttribute('transform',`translate(0 ${UA}) rotate(${f1(-fb)})`);this.fArm.hand.setAttribute('transform',`translate(0 ${FA}) rotate(${f1(fa+fb-(c.lean||0))})`);
+    if(this.bowF){const b=this.bowF;if(dk>0){const L_=(c.lean||0)*DEG;const hp=(sh,A,B)=>[sh[0]+Math.sin(A*DEG)*UA+Math.sin((A+B)*DEG)*(FA+4),sh[1]+Math.cos(A*DEG)*UA+Math.cos((A+B)*DEG)*(FA+4)];
+        const bh=hp([-2,-90],ba,bb),fh=hp([6,-88],fa,fb);const dx=bh[0]-fh[0],dy=bh[1]-fh[1];const px=(dx*Math.cos(L_)-dy*Math.sin(L_))*dk,py=(dx*Math.sin(L_)+dy*Math.cos(L_))*dk;
+        b._str.setAttribute('d',`M0 -88L${f1(px)} ${f1(py)}L0 88`);if(!b._arr.firstChild){arrowLine(b._arr,140,P.turmeric)}const an=Math.atan2(-py,-px)/DEG;tf(b._arr,px,py,1,an);op(b._arr,1)}
+      else if(b._str.getAttribute('d')!=='M0 -88V88'){b._str.setAttribute('d','M0 -88V88');op(b._arr,0)}}
     this.head.setAttribute('transform',`translate(4 -110) rotate(${f1((c.tilt||0)+this.nodK*14+(this.talking?Math.sin(t*7)*1.2:0))})`);
     if(this.braidG)tf(this.braidG,0,0,1,-(c.tilt||0)*.8-(c.lean||0)*.5);
     if(this.tail){const sw=Math.sin(t*1.4+this.ph)*14*m;const d=`M-18 -6C-56 ${f1(4+sw*.3)} ${f1(-86+sw*.4)} -46 ${f1(-74+sw)} -104C${f1(-66+sw)} -132 ${f1(-38+sw)} -138 ${f1(-36+sw*.9)} -118`;
@@ -195,7 +200,7 @@ class Fig{constructor(cfg,parent,o){o=o||{};this.Q=cfg;this.x=0;this.y=0;this.s=
 
 /* props carried in a hand; drawn upright in hand space */
 function drawProp(g,kind,o,fig){switch(kind){
-  case'bow':{const b=grp(g);ln(b,'M0 -88Q34 0 0 88',K,10);ln(b,'M0 -88Q34 0 0 88',P.gold,5);ln(b,'M0 -88V88',K,1.6);rect(b,-4,-10,10,20,P.verm,2);circ(b,0,-88,4,P.verm,1.6);circ(b,0,88,4,P.verm,1.6);return b}
+  case'bow':{const b=grp(g);ln(b,'M0 -88Q34 0 0 88',K,10);ln(b,'M0 -88Q34 0 0 88',P.gold,5);b._str=ln(b,'M0 -88V88',K,1.6);b._arr=grp(b);op(b._arr,0);rect(b,-4,-10,10,20,P.verm,2);circ(b,0,-88,4,P.verm,1.6);circ(b,0,88,4,P.verm,1.6);return b}
   case'ring':{const r=ringObj(g,o.r||13);tf(r.g,6,-(o.r||13)*1.1-4,1);return r}
   case'stone':{const s=stone(g,o.v||0,o.w||76,o.h||54);tf(s.g,18,-12,1);return s}
   case'branch':{const b=grp(g,{transform:'rotate(-40)'});ln(b,'M0 30V-90',K,9);ln(b,'M0 30V-90',P.terra,4.5);for(let i=0;i<6;i++)leaf(b,30,9,i%2?P.leaf:P.forest,i%2?-130:-50,0,-30-i*12);return b}
@@ -215,8 +220,8 @@ function plant(parent,k){const g=grp(parent);shp(g,'M-18 0L-14 -24H14L18 0Z',P.t
 
 /* ===== Ravana: front-facing, crowned, with ten heads arranged symmetrically as one figure (a main head and a halo of nine) =====
    Proud, never frightening: big round eyes, raised brows, a curled moustache, a small proud smile. */
-const RPOSE={stand:{la:16,lb:20,ra:16,rb:20,w:0,aura:.6,droop:0},proud:{la:30,lb:110,ra:30,rb:110,w:0,aura:.7,droop:0},
-  raise:{la:100,lb:10,ra:100,rb:10,w:1,aura:1,droop:0},lower:{la:26,lb:6,ra:26,rb:6,w:1,aura:.4,droop:.3},defeated:{la:10,lb:4,ra:10,rb:4,w:0,aura:0,droop:1}};
+const RPOSE={stand:{la:16,lb:20,ra:16,rb:20,w:0,aura:.6,droop:0,sh:1},proud:{la:30,lb:110,ra:30,rb:110,w:0,aura:.7,droop:0,sh:1},shoot:{la:100,lb:10,ra:-84,rb:6,w:1,aura:1,droop:0,sh:0},
+  raise:{la:100,lb:10,ra:100,rb:10,w:1,aura:1,droop:0,sh:1},lower:{la:26,lb:6,ra:26,rb:6,w:1,aura:.4,droop:.3,sh:1},defeated:{la:10,lb:4,ra:10,rb:4,w:0,aura:0,droop:1,sh:1}};
 class Ravana{constructor(parent){this.x=0;this.y=0;this.s=1;this.gone=0;this.vis=true;this.talking=false;this.cur=Object.assign({},RPOSE.stand);this.ph=0;this.build(parent)}
   face(g,r,main){const sk=SKIN.ravana;ell(g,0,0,r*.86,r,sk,main?4.2:3.2);
     ell(g,-r*.36,-r*.1,r*.22,r*.15,P.ivory,2.2);ell(g,r*.36,-r*.1,r*.22,r*.15,P.ivory,2.2);const pu=grp(g);circ(pu,-r*.36,-r*.1,r*.09,K,0);circ(pu,r*.36,-r*.1,r*.09,K,0);
@@ -247,15 +252,20 @@ class Ravana{constructor(parent){this.x=0;this.y=0;this.s=1;this.gone=0;this.vis
     const arm=(sx)=>{const up=grp(g,{transform:`translate(${sx*54} -258)`});limb(up,'M0 0V60',sk,16);ln(up,'M-9 20H9',P.gold,5);const fo=grp(up,{transform:'translate(0 60)'});limb(fo,'M0 0V56',sk,15);ln(fo,'M-8 46H8',P.gold,4);
       const hand=grp(fo,{transform:'translate(0 58)'});circ(hand,0,0,10,sk,3);const w=grp(hand);return{up,fo,hand,w,sx}};
     this.L=arm(-1);this.Rt=arm(1);
-    const bw=this.L.w;ln(bw,'M0 -96Q-40 0 0 96',K,11);ln(bw,'M0 -96Q-40 0 0 96',P.gold,5.5);ln(bw,'M0 -96V96',K,1.6);
+    const bw=this.L.w;ln(bw,'M0 -96Q-40 0 0 96',K,11);ln(bw,'M0 -96Q-40 0 0 96',P.gold,5.5);this.rStr=ln(bw,'M0 -96V96',K,1.6);this.rArr=grp(bw);arrowLine(this.rArr,150,P.ivory);op(this.rArr,0);
     const sh=this.Rt.w;circ(sh,0,0,44,Pat.u('flower',P.gold,P.verm,.9),4.5);circ(sh,0,0,30,'none',3,{stroke:P.gold});circ(sh,0,0,10,P.gold,3);
     /* main head and tall crown */
     const mh=this.mh=grp(g,{transform:'translate(0 -318)'});shp(mh,this.crownD(36,52),Pat.u('petals',P.verm,P.gold,.5),4);shp(mh,`M${-31} -26H31V-16H-31Z`,P.verm,2.6);circ(mh,0,-36*.66-52,6,P.turmeric,2.4);
     this.mainF=this.face(mh,36,true);this.set('stand',0)}
+  /* a hand's position in the figure's own coordinates (shoulder, upper arm 60, forearm 58) */
+  handAt(sx,la,lb){const r1=-sx*la*DEG,r2=r1-sx*lb*DEG;return[sx*54-60*Math.sin(r1)-58*Math.sin(r2),-258+60*Math.cos(r1)+58*Math.cos(r2)]}
+  nock(){const c=this.cur;const h=this.handAt(1,c.ra,c.rb);return[this.x+h[0]*this.s,this.y+h[1]*this.s]}
   set(st,ms){const p=RPOSE[st]||RPOSE.stand;this.state=st;const tgt=Object.assign({},p);if(ms===0){Object.assign(this.cur,tgt);return Promise.resolve()}return tw(this.cur,tgt,ms||900)}
   update(dt,t){show(this.g,this.vis);if(!this.vis)return;const c=this.cur;const m=MV();const gn=this.gone;tf(this.g,this.x,this.y+gn*30*this.s,this.s*(1-gn*.12),-gn*8);this.g.style.opacity=gn>0?String(f3(1-gn)):'';
     const arm=(A,la,lb)=>{A.up.setAttribute('transform',`translate(${A.sx*54} -258) rotate(${f1(-A.sx*la)})`);A.fo.setAttribute('transform',`translate(0 60) rotate(${f1(-A.sx*lb)})`);A.hand.setAttribute('transform',`translate(0 58) rotate(${f1(A.sx*(la+lb))})`);op(A.w,clamp(c.w*1.4,0,1))};
-    arm(this.L,c.la,c.lb);arm(this.Rt,c.ra,c.rb);
+    arm(this.L,c.la,c.lb);arm(this.Rt,c.ra,c.rb);op(this.Rt.w,clamp(c.w*1.4,0,1)*(c.sh==null?1:c.sh));
+    const dk=this.drawK||0;if(dk>0&&c.sh<.5){const lh=this.handAt(-1,c.la,c.lb),rh=this.handAt(1,c.ra,c.rb);const px=(rh[0]-lh[0])*dk,py=(rh[1]-lh[1])*dk;
+      this.rStr.setAttribute('d',`M0 -96L${f1(px)} ${f1(py)}L0 96`);tf(this.rArr,px,py,1,180);op(this.rArr,1)}else if(this.rStr.getAttribute('d')!=='M0 -96V96'){this.rStr.setAttribute('d','M0 -96V96');op(this.rArr,0)}
     op(this.aura,c.aura);tf(this.aura,0,0,1,t*4*m*c.aura);
     const dr=c.droop;const all=[this.mainF].concat(this.heads.map(h=>h.F));all.forEach(F=>{const an=!!this.angry&&dr<.5;show(F.br,!an);show(F.brA,an);show(F.mo,!an);show(F.moA,an);tf(F.pu,0,dr*3,1);F.br.setAttribute('transform',`translate(0 ${f1(dr*2)})`)});
     this.heads.forEach(h=>{tf(h.h,h.hx,h.hy+dr*6,1,(h.hx/124)*dr*-8+Math.sin(t*.8+h.i)*1*m)});tf(this.mh,0,-318+dr*8,1,0)}}

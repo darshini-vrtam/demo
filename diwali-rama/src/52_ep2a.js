@@ -23,7 +23,7 @@ function scBattle(){const s=mkScene('2.1',{frame:'lanka'});artPart(s);const back
       for(let k=1;k<6;k++)dots(c,`M-30 ${-k*LP(120,170)}H30`,P.verm,6,12);shp(c,`M-50 ${-LP(680,960)}H50L36 ${-LP(700,980)}H-36Z`,P.verm,3)});
     B.swirls=(P_?[[200,240,70],[800,300,80],[500,520,60]]:[[300,150,80],[889,110,70],[1480,150,80],[640,300,50],[1140,300,50]]).map(([x,y,r],i)=>{const g=grp(air,{transform:`translate(${x} ${y})`});const w=swirl(g,r,i%2?P.gold:P.terra);return{g:w,i}});
     /* the exchange of arrows: Rama and Lakshmana shoot at Ravana, Ravana shoots back; each arrow is stopped by a soft shield flash */
-    B.arrows=[0,1,2,3].map(i=>{const g=grp(fx2);arrowLine(g,LP(100,84),i<2?P.turmeric:P.ivory);op(g,0);const sh=grp(fx2);shieldFlash(sh,LP(40,34));op(sh,0);return{g,sh,lane:i,ph:i*.27}});
+    B.arrows=[0,1,2].map(i=>{const g=grp(fx2);arrowLine(g,LP(100,84),i<2?P.turmeric:P.ivory);op(g,0);const sh=grp(fx2);shieldFlash(sh,LP(40,34));op(sh,0);return{g,sh,lane:i,ph:i*.27}});
     B.burn=grp(fx2);B.flames=[];for(let i=0;i<16;i++){const f=grp(B.burn);const c=[P.verm,P.marigold,P.turmeric][i%3];shp(f,'M0 0C-26 -14 -22 -50 0 -86C22 -50 26 -14 0 0Z',c,3);shp(f,'M0 -6C-11 -14 -10 -32 0 -50C10 -32 11 -14 0 -6Z',P.turmeric,2);B.flames.push({f,i,u:(i%4)/3-.5,v:Math.floor(i/4)/3})}op(B.burn,0);
     B.dust=[];(P_?[[300,1380],[700,1080],[180,1460]]:[[460,760],[1330,770],[900,780],[640,790],[1120,790]]).forEach(([x,y],i)=>{const g=grp(fore,{transform:`translate(${x} ${y})`});const d=dustCurl(g,LP(120,100),i%2?P.gold:P.terra);B.dust.push({g:d,i,x,y})});
     B.final=grp(air);B.fire=fireArrow(B.final,LP(200,170));op(B.final,0);
@@ -31,8 +31,10 @@ function scBattle(){const s=mkScene('2.1',{frame:'lanka'});artPart(s);const back
   s.tick=(dt,t)=>{const p=s.pos();const m=MV()*(1-B.calm);const ax=p.sky[0],bx=p.sky[1],y0=p.sky[2],y1=p.sky[3];
     B.swirls.forEach(w=>tf(w.g,0,0,1,(t*14*(w.i%2?1:-1))*m));
     const rvHand=[rav.x-167*rav.s,rav.y-288*rav.s],rvFront=[rav.x-150*rav.s,rav.y-250*rav.s];
-    B.arrows.forEach(a=>{if(!B.fight){op(a.g,0);op(a.sh,0);return}const ph=(t/1.7+a.ph)%1;
-      const from=a.lane===0?rama.hand('f'):a.lane===1?lak.hand('f'):rvHand;const to=a.lane<2?rvFront:(a.lane===2?[rama.x+120*rama.s,rama.y-190*rama.s]:[lak.x+110*lak.s,lak.y-170*lak.s]);
+    B.arrows.forEach(a=>{if(!B.fight){op(a.g,0);op(a.sh,0);rama.drawK=lak.drawK=rav.drawK=0;return}const ph=(t/1.7+a.ph)%1;
+      /* the archer draws the string back before each shot and releases it as the arrow flies */
+      const dk=ph>.55?sm(Math.min(1,(ph-.55)/.4)):0;(a.lane===0?rama:a.lane===1?lak:rav).drawK=dk;
+      const atLak=a.lane===2&&Math.floor(t/1.7+a.ph)%2===1;const from=a.lane===0?rama.hand('f'):a.lane===1?lak.hand('f'):rav.nock();const to=a.lane<2?rvFront:(atLak?[lak.x+110*lak.s,lak.y-170*lak.s]:[rama.x+120*rama.s,rama.y-190*rama.s]);
       const u=Math.min(ph/.8,1);const at=k=>[lerp(from[0],to[0],k),lerp(from[1],to[1],k)-Math.sin(k*Math.PI)*LP(70,90)];const p=at(u),q=at(Math.min(1,u+.02));const ang=Math.atan2(q[1]-p[1],q[0]-p[0])/DEG;
       tf(a.g,p[0],p[1],1,ang);op(a.g,ph<.8?1:0);const hit=ph>=.8?Math.sin((ph-.8)/.2*Math.PI):0;op(a.sh,hit*.9);tf(a.sh,to[0],to[1],.7+.3*hit);
       if(hit>0&&!a.snd){a.snd=true;AU.sfx('shield')}if(ph<.5)a.snd=false;if(ph<.05&&!a.shot){a.shot=true;AU.sfx('bow')}if(ph>.2)a.shot=false});
@@ -46,7 +48,7 @@ async function shot2_1(){Music.mood('lanka');Amb.set('lanka');mood('cliff');
   await titleCard(2,'The Return of Light');await rt;await hold(400);
   let s;await Trans.run('gate',()=>{s=D.setScene(scBattle(),0)},{ms:900});const B=s.B;const rav=s.rav;const {rama,lak,hanuman:han}=s.cast;mood('serious');
   await say("Rama and his companions had reached Lanka, but Ravana would not let Sita go easily.",[["would not",()=>rav.set('proud',800)]]);
-  await say("A great battle began. The sounds of bows and clashing weapons echoed through the kingdom.",[["battle began",()=>{rav.set('raise',800);rama.set('bowRaised',700);lak.set('bowRaised',700);B.fight=true}],
+  await say("A great battle began. The sounds of bows and clashing weapons echoed through the kingdom.",[["battle began",()=>{rav.set('shoot',800);rama.set('bowRaised',700);lak.set('bowRaised',700);B.fight=true}],
     ["clashing",()=>{AU.sfx('shield');D.go(B,{dustK:1},1500)}],["echoed",()=>AU.sfx('bow')]]);
   await hold(1200);AU.sfx('shield');
   await say("Rama stood firm. He remembered why he had come: not for fame or anger, but to rescue Sita and restore what was right.",[["rescue Sita",()=>{rama.nod()}]]);

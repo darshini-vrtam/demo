@@ -196,3 +196,14 @@ The late frame of every scene was reviewed in landscape (1280×720) and portrait
 - **2.5 Light Up Ayodhya:** the five rooftop and window diyas are removed. Seven diyas remain, and the palace-entrance diya is still the last to light. The counter adapts to the number of diyas.
 - **2.7 What Does a Diya Teach Us?:** the oval ring joining the four pictures is removed.
 - **2.9 Diya of Kindness:** the "My kind deed" text card beside the diya is removed. The chosen picture keeps its golden highlight, the choice is still saved, and it still appears beside the child's diya in 2.10.
+
+## Revision 11
+
+- **2.1 battle:** each archer now visibly draws the bow before every shot. The string pulls back with an arrow nocked, then releases as the arrow flies.
+  - Rama and Lakshmana draw the string to the cheek with the back hand.
+  - Ravana takes a new shooting pose: his right hand crosses his chest to draw, and his shield is set aside while he shoots. His arrows alternate between Rama and Lakshmana.
+- **2.6 homecoming:** flowers (red and ivory blossoms and marigolds) now drift down from the sky, along with the petals.
+- **2.10 closing:**
+  - A rangoli lies on the ground in front of the palace door, with a marigold toran over the door and flowers on either side.
+  - Six patterned lanterns hang and sway gently from the palace and the rooftops; four in portrait.
+  - The four heroes stand apart so the doorway and rangoli stay visible.
