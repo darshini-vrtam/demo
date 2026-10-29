@@ -151,3 +151,11 @@ The late frame of every scene was reviewed in landscape (1280×720) and portrait
 - **2.4 Ayodhya Gets Ready:**
   - The orange road through the middle of the street is removed. The road still appears in 2.5 and 2.6.
   - The palace is larger: 0.8× in landscape, up from 0.6×, and 0.7× in portrait.
+
+## Revision 6
+
+- **2.5 Light Up Ayodhya:**
+  - The orange road is removed.
+  - The palace is larger and matches 2.4 (0.8× landscape, 0.7× portrait). The last diya moves to the larger palace entrance.
+  - The gold light patterns and glow rings around each diya are removed. A tap now lights only the flame.
+  - When all twelve are lit, the windows and the palace doorway still turn warm gold.

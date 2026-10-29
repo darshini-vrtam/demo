@@ -187,27 +187,25 @@ function scLight(){const s=mkScene('2.5',{frame:'night'});artPart(s);const back=
   skyBg(s,{kind:'dusk',kind2:'night',horizon:[560,900],ground:['brick',P.maroon,P.terra,1],clouds:[[.2,.3,220],[.7,.24,240]],stars:12,stars2:16});s.skyMix=0;
   const A={lit:[],active:false,warm:0,lastNudge:-1e9};s.A=A;
   const folk=[personCfg(201,{child:false}),personCfg(202,{child:true}),personCfg(203,{child:false}),personCfg(204,{child:true})].map(c=>cast(s,'folk',c,mid));
-  s.pos=()=>LP({diyas:[[300,770],[640,748],[1140,748],[1480,770],[520,585],[1250,585],[286,468],[1484,468],[1596,468],[520,388],[1250,388],[889,476]],
+  s.pos=()=>LP({diyas:[[300,770],[640,748],[1140,748],[1480,770],[520,585],[1250,585],[286,468],[1484,468],[1596,468],[520,388],[1250,388],[889,536]],
       folk:[[430,768,.78,1],[790,760,.7,1],[1000,760,.78,-1],[1340,768,.7,-1]]},
-    {diyas:[[200,1430],[800,1430],[330,1230],[680,1230],[160,884],[840,884],[209,800],[791,800],[500,1060],[160,688],[840,688],[500,706]],
+    {diyas:[[200,1430],[800,1430],[330,1230],[680,1230],[160,884],[840,884],[209,800],[791,800],[500,1060],[160,688],[840,688],[500,776]],
       folk:[[90,1340,.74,1],[910,1340,.74,-1],[200,1100,.64,1],[800,1100,.64,-1]]});
-  onOrient(s,[back,glowL,lampL,fx],P_=>{const p=s.pos();const C=cityArt(s,back,{wall:P.ivory});s.C=C;
+  onOrient(s,[back,glowL,lampL,fx],P_=>{const p=s.pos();const C=cityArt(s,back,{wall:P.ivory,street:false,palace:LP([889,530,.8],[500,770,.7])});s.C=C;
     /* window and arch glows that warm the whole city at the end */
     s.warmG=grp(back);C.hs.forEach(({h,x,y,k})=>h.win.forEach(([wx,wy])=>{const g=grp(s.warmG,{transform:`translate(${x+wx*k} ${y+wy*k})`});shp(g,`M${-22*k} 0V${-36*k}Q0 ${-56*k} ${22*k} ${-36*k}V0Z`,P.turmeric,3)}));
-    const pa=C.c.palace;const ag=grp(s.warmG,{transform:`translate(${pa[0]} ${pa[1]}) scale(${pa[2]})`});shp(ag,'M-68 0V-124Q-68 -215 0 -215Q68 -215 68 -124V0Z',P.turmeric,4);rays(ag,30,120,14,P.marigold,4).setAttribute('transform','translate(0 -110)');op(s.warmG,A.warm);
+    const pa=C.c.palace;const ag=grp(s.warmG,{transform:`translate(${pa[0]} ${pa[1]}) scale(${pa[2]})`});shp(ag,'M-68 0V-124Q-68 -215 0 -215Q68 -215 68 -124V0Z',P.turmeric,4);op(s.warmG,A.warm);
     /* each diya has its own patch of patterns that light up around it */
-    A.d=p.diyas.map(([x,y],i)=>{const patch=grp(glowL,{transform:`translate(${x} ${y-20})`});const r=LP(120,110);
-      circ(patch,0,0,r,Pat.u('flower',P.gold,'none',1),0);circ(patch,0,0,r,'none',3,{stroke:P.turmeric,'stroke-dasharray':'.1 12','stroke-width':6,'stroke-linecap':'round'});
+    A.d=p.diyas.map(([x,y],i)=>{const patch=grp(glowL);
       const D_=keepArt(s,diya(lampL,{lit:0,light:0,decor:.7}));D_.x=x;D_.y=y;D_.s=LP(.78,.72);const tg=target(fx,LP(64,60));tg.x=x;tg.y=y-24;
-      const o={i,x,y,D:D_,patch,tg,k:A.lit[i]?1:0};op(patch,o.k);if(A.lit[i]){D_.lit=1;D_.light=1}return o});
+      const o={i,x,y,D:D_,patch,tg,k:A.lit[i]?1:0};op(patch,o.k);if(A.lit[i]){D_.lit=1}return o});
     folk.forEach((f,i)=>put(f,p.folk[i]))});
   s.F=fxLayer(s);s.hand=demoHand(s);
   const last=11;s.ready=i=>i!==last||A.lit.filter(Boolean).length>=11;
   s.tick=(dt,t)=>{op(s.warmG,A.warm);(A.d||[]).forEach(o=>{op(o.patch,o.k);if(o.k>0)tf(o.patch,o.x,o.y-20,(.5+.5*o.k)*(1+.04*Math.sin(t*1.3+o.i)*MV()));
     const want=A.active&&!A.lit[o.i]&&s.ready(o.i);o.tg.on=lerp(o.tg.on,want?(A.nudge===o.i?1:.35+.25*Math.sin(t*2+o.i)):0,.12);o.tg.update(t)})};
-  s.light=i=>{if(A.lit[i]||!A.active)return;if(!s.ready(i)){s.nudge(i);return}A.lit[i]=true;const o=A.d[i];AU.sfx('diya');Timers.add(200,()=>AU.sfx('flicker'));D.go(o.D,{lit:1,light:1},700,'back');D.go(o,{k:1},1400,'out');
+  s.light=i=>{if(A.lit[i]||!A.active)return;if(!s.ready(i)){s.nudge(i);return}A.lit[i]=true;const o=A.d[i];AU.sfx('diya');Timers.add(200,()=>AU.sfx('flicker'));D.go(o.D,{lit:1},700,'back');
     /* the glow spreads to neighbouring motifs */
-    A.d.forEach(n=>{if(n!==o&&!A.lit[n.i]&&Math.hypot(n.x-o.x,n.y-o.y)<LP(330,300))D.go(n,{k:Math.max(n.k,.35)},1600)});
     s.F.burst(o.x,o.y-50,6,'spark',2.4);const n=A.lit.filter(Boolean).length;D.counter(`${n} of 12 lamps`);D.go(s,{skyMix:n/12},1200);folk.forEach((f,j)=>{if(Math.hypot(f.x-o.x,f.y-o.y)<LP(380,360))f.set('smile',400)});
     Hot.dirty=true;if(n===12)A.done&&A.done()};
   s.nudge=(i)=>{const p=s.pos();const open=A.d.filter(o=>!A.lit[o.i]&&s.ready(o.i));if(!open.length)return;const near=open.sort((a,b)=>Math.hypot(a.x-p.diyas[i][0],a.y-p.diyas[i][1])-Math.hypot(b.x-p.diyas[i][0],b.y-p.diyas[i][1]))[0];
@@ -232,4 +230,4 @@ async function shot2_5(){mood('inviting');Amb.set('night');Music.mood('light');c
   await say("Beautiful! Look how the light spreads from one little lamp to the next. Together, the people of Ayodhya have made the whole city shine!");
   await hold(1600);await D.late();
   /* the glowing entrance opens */
-  const pa=cityLayout().palace;await D.tw(s.cam,{z:2.4,fx:pa[0],fy:pa[1]-60*pa[2]},1800,'io')}
+  const pa=s.C.c.palace;await D.tw(s.cam,{z:2.4,fx:pa[0],fy:pa[1]-60*pa[2]},1800,'io')}
