@@ -192,6 +192,8 @@ async function shot2_9(){mood('inviting');Amb.set('none');Music.mood('day');cons
 function scClose(){const s=mkScene('2.10',{frame:'night'});artPart(s);const back=grp(s.comp),mid=grp(s.comp),fore=grp(s.comp),ring=grp(s.comp);
   skyBg(s,{kind:'night',horizon:[470,760],ground:['flower',P.gold,P.brown,.9],stars:18,clouds:[[.14,.22,250],[.84,.18,300]]});
   const lak=cast(s,'lak',CAST.lak,mid),rama=cast(s,'rama',CAST.rama,mid),sita=cast(s,'sita',CAST.sita,mid),han=cast(s,'hanuman',CAST.hanuman,mid);
+  /* front-facing versions of the heroes, shown once each has arrived (Hanuman faces front from the start) */
+  s.front={lak:castFront(s,CAST.lak,mid),rama:castFront(s,CAST.rama,mid),sita:castFront(s,CAST.sita,mid),han:castFront(s,CAST.hanuman,mid)};
   const folk=[personCfg(601,{child:true}),personCfg(602,{child:false,fem:true}),personCfg(603,{child:true}),personCfg(604,{child:false}),personCfg(605,{child:true,fem:true}),personCfg(606,{child:false,fem:true})].map(c=>cast(s,'folk',c,mid));
   folk.forEach(f=>mid.insertBefore(f.g,mid.firstChild));
   s.pos=()=>LP({lak:[540,730,.92,1],rama:[700,730,.95,1],sita:[1080,730,.95,-1],han:[1230,734,.92,-1],folk:[[200,630,.6,1],[300,634,.6,-1],[430,630,.6,1],[1300,630,.6,1],[1420,634,.6,-1],[1560,630,.6,-1]],
@@ -223,17 +225,18 @@ function scClose(){const s=mkScene('2.10',{frame:'night'});artPart(s);const back
     /* floral motifs form a circular frame */
     const e=p.ell;s.frameRing=shp(ring,`M-400 -400H2400V2000H-400Z${ellD(e[0],e[1],e[2],e[3])}`,Pat.u('flower',P.gold,P.indigo,1.2),0,{'fill-rule':'evenodd'});
     s.frameLine=grp(ring);ln(s.frameLine,ellD(e[0],e[1],e[2],e[3]),K,12);ln(s.frameLine,ellD(e[0],e[1],e[2],e[3]),P.gold,6);petalRing(grp(s.frameLine,{transform:`translate(${e[0]} ${e[1]}) scale(${f3(e[2]/e[3])} 1)`}),e[3],48,P.verm,P.marigold,26);
-    put(lak,p.lak);put(rama,p.rama);put(sita,p.sita);put(han,p.han);folk.forEach((f,i)=>put(f,p.folk[i]))});
+    put(lak,p.lak);put(rama,p.rama);put(sita,p.sita);put(han,p.han);folk.forEach((f,i)=>put(f,p.folk[i]));
+    for(const k in s.front)put(s.front[k],p[k],1)});
   s.ringK=0;s.tick=(dt,t)=>{const m=MV();(s.lanterns||[]).forEach(o=>tf(o.ln.g,o.x,o.y,LP(.9,.8),Math.sin(t*1.2+o.i)*6*m));if(s.lampsA){op(s.lampsA.fl,.75+.25*Math.sin(t*2.7));op(s.lampsB.fl,.75+.25*Math.sin(t*2.3+1.5))}if(s.md)tf(s.md,s.pos().medal[0],s.pos().medal[1],1,t*2*m*(1-(s.still||0)));
     if(s.links)op(s.links,s.linkK||0);if(s.icon)op(s.icon,s.iconK||0);const k=s.ringK||0;if(s.frameRing){op(s.frameRing,k);op(s.frameLine,k);const e=s.pos().ell;const z=1+(1-k)*.5;
       s.frameRing.setAttribute('transform',`translate(${e[0]} ${e[1]}) scale(${f3(z)}) translate(${-e[0]} ${-e[1]})`);s.frameLine.setAttribute('transform',`translate(${e[0]} ${e[1]}) scale(${f3(z)}) translate(${-e[0]} ${-e[1]})`)}};
-  rama.set('idle',0);sita.set('smile',0);lak.set('smile',0);han.set('namaste',0);
+  rama.set('idle',0);sita.set('smile',0);lak.set('smile',0);han.set('namaste',0);han.vis=false;han.fwd=s.front.han;s.front.han.vis=true;
   folk[0].hold('f','diya',{lit:1});folk[0].set('light',0);folk[1].hold('f','plate');folk[1].set('share',0);folk[2].hold('f','sweet');folk[2].set('share',0);
   folk[3].hold('f','garland');folk[3].set('garlands',0);folk[4].set('sad',0);folk[5].set('comfort',0);return s}
 async function shot2_10(){mood('heartfelt');Amb.set('night');Music.mood('light');const s=D.setScene(scClose(),1200);const {rama,sita,lak,hanuman:han}=s.cast;const folk=[].concat(s.cast.folk);
-  /* Rama, Sita and Lakshmana walk into the scene from the left; Sita turns to face the others when they stop */
+  /* Rama, Sita and Lakshmana walk into the scene from the left, then each turns to face the viewer with palms joined */
   const p=s.pos();const trio=[[sita,p.sita],[rama,p.rama],[lak,p.lak]];trio.forEach(([f,q])=>{f.x=q[0]-LP(1050,800);f.f=1});
-  trio.forEach(([f,q],i)=>Timers.add(i*500,()=>{f.set('walk',200);tw(f,{x:q[0]},LP(7200,6200),'lin').then(()=>{f.set(f===rama?'idle':'smile',400);if(f===sita)sita.turn(-1)})}));
+  trio.forEach(([f,q],i)=>Timers.add(i*500,()=>{f.set('walk',200);tw(f,{x:q[0]},LP(7200,6200),'lin').then(()=>{f.set('idle',300);f.toFront(s.front[f===rama?'rama':f===sita?'sita':'lak'])})}));
   /* the camera pulls back to reveal the whole city */
   s.cam.z=1.45;s.cam.fx=LP(889,500);s.cam.fy=LP(560,1000);D.go(s.cam,{z:1,fy:LP(405,750)},16000,'io');
   await hold(800);

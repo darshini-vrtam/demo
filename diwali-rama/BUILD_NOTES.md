@@ -225,3 +225,6 @@ The late frame of every scene was reviewed in landscape (1280×720) and portrait
 
 ## Revision 13
 - Recorded background music, ambience and sound effects from ElevenLabs. Music and effects play at 40% (see Music and sound effects).
+
+## Revision 14
+- 2.10: Rama, Sita and Lakshmana walk in from the left and, once each stops, turn to face the viewer with palms joined in namaste. Hanuman faces front from the start. This uses a new front-facing figure (`FrontFig` in `src/20_chars.js`) with each hero's own skin, costume, hair, crown and jewellery. The profile figure hands over with `fig.toFront()`, after which its `set()` and `nod()` cues drive the front figure. The townspeople stay in profile.

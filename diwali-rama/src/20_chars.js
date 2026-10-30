@@ -149,12 +149,15 @@ class Fig{constructor(cfg,parent,o){o=o||{};this.Q=cfg;this.x=0;this.y=0;this.s=
     this.applyFace();this.update(0,0)}
   /* hold a prop in the front ('f') or back ('b') hand */
   hold(which,kind,o){const a=which==='b'?this.bArm:this.fArm;a.prop.innerHTML='';this.props[which]=kind;if(which==='f')this.bowF=null;if(!kind)return null;const r=drawProp(a.prop,kind,o||{},this);if(which==='f'&&kind==='bow')this.bowF=r;return r}
-  set(state,ms){const p=POSE[state]||POSE.idle;this.state=state;const tgt={};for(const k of NUM)tgt[k]=p[k]!=null?p[k]:ZERO[k];
+  set(state,ms){if(this.fwd)return this.fwd.set(state,ms);const p=POSE[state]||POSE.idle;this.state=state;const tgt={};for(const k of NUM)tgt[k]=p[k]!=null?p[k]:ZERO[k];
     this.walking=p.walk?1:0;this.oscP=p.osc||null;this.shiver=p.shiver?1:0;this.face={eye:p.eye||'open',mouth:p.mouth||'smile',brow:p.brow||''};this.applyFace();
     if(p.bowHand&&this.props.b==='bow'){this.hold('b',null);this.hold('f','bow')}
     if(ms===0){Object.assign(this.cur,tgt);return Promise.resolve()}return tw(this.cur,tgt,ms||600)}
   /* a single gentle nod */
-  nod(){const o=this;tw(o,{nodK:1},380).then(()=>tw(o,{nodK:0},480))}
+  nod(){if(this.fwd)return this.fwd.nod();const o=this;tw(o,{nodK:1},380).then(()=>tw(o,{nodK:0},480))}
+  /* hand over to a front-facing figure in the same spot: a quick squash, then the swap */
+  toFront(ff,ms){ms=ms||460;const self=this;ff.x=this.x;ff.y=this.y;ff.s=this.s;this.fwd=null;ff.set('namaste',0);
+    return tw(self,{flipK:.15},ms/2).then(()=>{self.vis=false;self.fwd=ff;ff.flipK=.15;ff.vis=true;return tw(ff,{flipK:1},ms/2)})}
   /* turn to face the other way, with a small squash so it reads as a turn */
   turn(f,ms){if(this.f===f)return Promise.resolve();const self=this;ms=ms||420;
     return tw(self,{flipK:.15},ms/2).then(()=>{self.f=f;return tw(self,{flipK:1},ms/2)})}
@@ -217,6 +220,79 @@ function drawProp(g,kind,o,fig){switch(kind){
 /* a small plant in a pot (watered by a child in the kindness vignettes) */
 function plant(parent,k){const g=grp(parent);shp(g,'M-18 0L-14 -24H14L18 0Z',P.terra,3);rect(g,-20,-30,40,8,P.maroon,2.4);const st=grp(g);ln(st,'M0 -30V-62',K,6);ln(st,'M0 -30V-62',P.leaf,3);
   leaf(st,24,9,P.leaf,-150,0,-44);leaf(st,24,9,P.forest,-30,0,-52);const f=grp(st,{transform:'translate(0 -66)'});flower(f,9,P.verm);return{g,st,f}}
+
+/* ===== Front-facing heroes (the closing scene): the same costume, hair, jewellery and skin as each profile figure, drawn symmetrically with palms joined in namaste.
+   A profile Fig hands over to its FrontFig with fig.toFront(ff); after that the profile's set()/nod() calls drive the front figure. ===== */
+class FrontFig{constructor(cfg,parent){this.Q=cfg;this.x=0;this.y=0;this.s=cfg.scale||1;this.f=1;this.vis=false;this.talking=false;this.state='namaste';this.flipK=1;this.nodK=0;
+    this.face={eye:'open',brow:''};this.ph=Math.random()*TAU;this.blinkAt=2+Math.random()*4;this.build(parent)}
+  build(parent){const Q=this.Q,sk=Q.skin,M=Q.face==='monkey',hc=Q.hairCol||K;const g=this.g=grp(parent);show(g,false);const body=this.body=grp(g);
+    const HIP=-128,T=HIP-94,HC=T-44,tw_=M?1.12:1;this.T=T;this.HC=HC;
+    /* behind the body: tail, quiver, hair falling behind the shoulders */
+    if(Q.tail){this.tail=grp(body);limb(this.tail,`M18 ${HIP+6}C64 ${HIP+14} 86 ${HIP-56} 62 ${HIP-104}C52 ${HIP-132} 74 ${HIP-146} 82 ${HIP-124}`,sk,10);this.tailD=this.tail}
+    if(Q.quiver){const qv=grp(body,{transform:`translate(20 ${T-14}) rotate(20)`});rect(qv,-9,0,18,60,Pat.u('hlines',K,P.terra,.7),3);for(let i=-1;i<=1;i++){ln(qv,`M${i*5} 0V-16`,K,2.4);shp(qv,`M${i*5} -16l-4 -9l4 3l4 -3z`,P.ivory,1.6)}}
+    if(Q.hair==='braid'||Q.hair==='bun')shp(body,`M-29 ${HC-8}Q-36 ${HC+34} -32 ${HC+52}L32 ${HC+52}Q36 ${HC+34} 29 ${HC-8}Z`,hc,2.4);
+    /* legs and feet */
+    [-1,1].forEach(i=>{limb(body,`M${i*10} ${HIP+4}L${i*12} -8`,sk,M?13:12)});
+    /* garments over the legs */
+    if(Q.garment==='dhoti'){shp(body,`M-29 ${HIP-8}L29 ${HIP-8}L25 -54Q0 -46 -25 -54Z`,Pat.u('vlines',Q.g2,Q.g1,.8),3.6);
+      shp(body,`M-7 ${HIP}L7 ${HIP}L10 -40Q0 -34 -10 -40Z`,Pat.u('vlines',Q.g1,Q.g2,.8),3);rect(body,-25,-62,50,9,Q.g2,2.4)}
+    if(Q.garment==='sari'){shp(body,`M-27 ${HIP-8}L27 ${HIP-8}L42 -4L-42 -4Z`,Pat.u('flower',Q.g2,Q.g1,.85),4.2);shp(body,'M-39 -22L39 -22L42 -4L-42 -4Z',Q.g2,3);
+      dots(body,'M-36 -13H36',Q.g1===P.verm?P.maroon:P.ivory,4,10);ln(body,`M-4 ${HIP+4}L-8 -22M4 ${HIP+4}L8 -22`,K,2)}
+    [-1,1].forEach(i=>{ell(body,i*15,-3,13,6.5,sk,3)});
+    /* torso */
+    const tor=this.torso=grp(body);dbl(tor,`M${-22*tw_} ${HIP}L${-28*tw_} ${T+12}Q${-26*tw_} ${T} 0 ${T-4}Q${26*tw_} ${T} ${28*tw_} ${T+12}L${22*tw_} ${HIP}Z`,sk,0,T+46,.86,4.2);
+    if(M)ell(tor,0,T+40,15,26,P.ivory,0,{opacity:.55});
+    if(Q.garment==='dhoti'){if(Q.sash)shp(tor,`M-27 ${T+12}L-15 ${T+2}L25 ${HIP-16}L13 ${HIP-6}Z`,Pat.u('dots',Q.sashDot||P.ivory,Q.sash,.7),3);
+      shp(tor,`M-24 ${HIP-14}H24V${HIP+2}H-24Z`,Q.g2,3);dots(tor,`M-20 ${HIP-6}H20`,P.ivory,3.6,8)}
+    if(Q.garment==='sari'){shp(tor,`M-28 ${T+12}Q0 ${T-6} 28 ${T+12}L26 ${T+36}Q0 ${T+42} -26 ${T+36}Z`,Q.blouse||P.leaf,3.6);dots(tor,`M-23 ${T+36}Q0 ${T+41} 23 ${T+36}`,P.gold,3.6,9);
+      shp(tor,`M12 ${T+2}L28 ${T+12}L0 ${HIP+2}L-24 ${HIP-4}Z`,Pat.u('petals',Q.g2,Q.pallu||Q.g1,.6),3.6)}
+    if(Q.quiver)ln(tor,`M-24 ${T+14}L22 ${HIP-20}`,K,3.4);
+    /* neck and necklace */
+    limb(body,`M0 ${T+4}V${T-16}`,sk,15);
+    if(Q.jewel){ln(body,`M-15 ${T+2}Q0 ${T+26} 15 ${T+2}`,K,7);ln(body,`M-15 ${T+2}Q0 ${T+26} 15 ${T+2}`,P.gold,4);if(Q.jewel>1){ln(body,`M-19 ${T+4}Q0 ${T+36} 19 ${T+4}`,P.gold,3);circ(body,0,T+28,5,P.verm,2)}}
+    /* arms in namaste: shoulders out, elbows down and out, palms joined at the chest */
+    const arms=grp(body);[-1,1].forEach(i=>{const S_=[i*26*tw_,T+12],E_=[i*36*tw_,T+58],H_=[i*6,T+40];
+      limb(arms,`M${S_[0]} ${S_[1]}L${E_[0]} ${E_[1]}`,sk,M?13:12);limb(arms,`M${E_[0]} ${E_[1]}L${H_[0]} ${H_[1]}`,sk,M?12:11);
+      if(Q.jewel)ln(arms,`M${S_[0]+i*-1-5} ${T+30}l11 2`,P.gold,4);if(Q.jewel>1||Q.garment==='sari')ln(arms,`M${H_[0]+i*9} ${T+38}l${i*5} 9`,P.gold,3.6)});
+    shp(arms,`M0 ${T+10}Q-11 ${T+26} -8 ${T+46}Q0 ${T+52} 8 ${T+46}Q11 ${T+26} 0 ${T+10}Z`,sk,3.2);ln(arms,`M0 ${T+13}V${T+48}`,K,2);
+    /* head */
+    const head=this.head=grp(body);const H_=this.headIn=grp(head);
+    if(M){[-1,1].forEach(i=>{ell(H_,i*30,HC-4,10,13,sk,3);ell(H_,i*30,HC-4,5,7,P.ivory,1.6)});
+      shp(H_,`M-27 ${HC+4}Q-30 ${HC-34} 0 ${HC-36}Q30 ${HC-34} 27 ${HC+4}Q26 ${HC+30} 0 ${HC+34}Q-26 ${HC+30} -27 ${HC+4}Z`,sk,4.2);
+      ell(H_,0,HC+14,17,13,P.ivory,3);circ(H_,-4,HC+8,2.4,K,0);circ(H_,4,HC+8,2.4,K,0)}
+    else{if(Q.jewel||Q.garment==='sari')[-1,1].forEach(i=>{ell(H_,i*26,HC,5,8,sk,2.4);circ(H_,i*26,HC+12,4,P.gold,1.8)});
+      shp(H_,`M-24 ${HC-6}Q-24 ${HC-34} 0 ${HC-36}Q24 ${HC-34} 24 ${HC-6}Q24 ${HC+22} 0 ${HC+30}Q-24 ${HC+22} -24 ${HC-6}Z`,sk,4.2);
+      /* hair cap with a centre parting; a top-knot for Rama and Lakshmana */
+      shp(H_,`M-26 ${HC+2}Q-30 ${HC-40} 0 ${HC-40}Q30 ${HC-40} 26 ${HC+2}Q22 ${HC-14} 12 ${HC-22}Q4 ${HC-26} 0 ${HC-30}Q-4 ${HC-26} -12 ${HC-22}Q-22 ${HC-14} -26 ${HC+2}Z`,hc,0);
+      if(Q.hair==='knot'){circ(H_,0,HC-48,14,hc,2.4);ln(H_,`M-14 ${HC-42}Q0 ${HC-36} 14 ${HC-42}`,Q.band||P.gold,5);circ(H_,0,HC-60,4.5,P.verm,2)}
+      if(Q.hair==='braid'||Q.hair==='bun'){ln(H_,`M0 ${HC-38}V${HC-28}`,P.gold,2.6);circ(H_,0,HC-26,3.6,P.gold,1.6);ln(H_,`M-24 ${HC-22}Q0 ${HC-44} 24 ${HC-22}`,Q.band||P.gold,3)}}
+    if(Q.crown){const cr=grp(H_);shp(cr,`M-24 ${HC-24}L24 ${HC-24}L20 ${HC-44}L8 ${HC-50}L0 ${HC-70}L-8 ${HC-50}L-20 ${HC-44}Z`,Pat.u('petals',P.verm,P.gold,.5),3.6);
+      shp(cr,`M-26 ${HC-32}H26V${HC-22}H-26Z`,P.verm,2.6);dots(cr,`M-22 ${HC-27}H22`,P.ivory,3.4,8);circ(cr,0,HC-72,4,P.turmeric,2)}
+    if(Q.tilak)ln(H_,`M0 ${HC-24}V${HC-15}`,P.verm,3.2);if(Q.bindi)circ(H_,0,HC-14,2.8,P.verm,0);
+    /* eyes, brows, nose, mouth */
+    const ey=M?HC-8:HC-6;this.eyeOpen=grp(H_);this.eyeShut=grp(H_);this.eyeHappy=grp(H_);this.brows=grp(H_);
+    [-1,1].forEach(i=>{shp(this.eyeOpen,`M${i*4} ${ey}Q${i*12} ${ey-11} ${i*21} ${ey}Q${i*12} ${ey+7} ${i*4} ${ey}Z`,P.ivory,2.6);ln(this.eyeOpen,`M${i*21} ${ey}l${i*5} -2`,K,2.6);
+      circ(this.eyeOpen,i*12,ey-1,3.8,K,0);circ(this.eyeOpen,i*12-1,ey-2.6,1.2,P.ivory,0);
+      ln(this.eyeShut,`M${i*4} ${ey}Q${i*12} ${ey+5} ${i*21} ${ey}`,K,3);ln(this.eyeHappy,`M${i*4} ${ey+1}Q${i*12} ${ey-9} ${i*21} ${ey+1}`,K,3.2);
+      ln(this.brows,`M${i*5} ${ey-13}Q${i*13} ${ey-19} ${i*22} ${ey-12}`,K,3)});
+    show(this.eyeShut,false);show(this.eyeHappy,false);
+    if(!M)ln(H_,`M-1 ${HC-2}Q-5 ${HC+9} 0 ${HC+11}`,K,2.4);
+    const my=M?HC+19:HC+19;this.mouth=ln(H_,`M-7 ${my}Q0 ${my+5} 7 ${my}`,K,2.6);this.talkM=ell(H_,0,my+1,4.5,3,K,0);show(this.talkM,false)}
+  set(state,ms){this.state=state;const happy=/rejoice|celebrate|cheer/.test(state);this.face={eye:happy?'happy':'open',brow:state==='determined'?'firm':''};this.applyFace();return Promise.resolve()}
+  applyFace(){show(this.eyeOpen,this.face.eye==='open');show(this.eyeHappy,this.face.eye==='happy');show(this.eyeShut,false);
+    this.brows.setAttribute('transform',this.face.brow==='firm'?'translate(0 2)':'')}
+  nod(){const o=this;tw(o,{nodK:1},380).then(()=>tw(o,{nodK:0},480))}
+  turn(){return Promise.resolve()}
+  hold(){return null}
+  hand(){return[this.x,this.y+this.s*(this.T+30)]}
+  headPos(){return[this.x,this.y+this.s*this.HC]}
+  update(dt,t){if(!this.vis){show(this.g,false);return}show(this.g,true);const m=MV();
+    tf(this.g,this.x,this.y,this.s,0,Math.max(.15,this.flipK),1);
+    this.torso.setAttribute('transform',`translate(0 ${this.T+40}) scale(1 ${f3(1+.012*Math.sin(t*1.6+this.ph)*m)}) translate(0 ${-this.T-40})`);
+    this.head.setAttribute('transform',`translate(0 ${f1(this.nodK*6+(this.talking?Math.sin(t*7)*.8:0))})`);
+    if(this.tail)this.tail.setAttribute('transform',`rotate(${f1(Math.sin(t*1.4+this.ph)*5*m)} 18 -122)`);
+    if(t>this.blinkAt&&this.face.eye==='open'){show(this.eyeOpen,false);show(this.eyeShut,true);if(t>this.blinkAt+.13){this.blinkAt=t+2.5+Math.random()*4;this.applyFace()}}
+    if(this.talking){const o=Math.sin(t*14)>0;show(this.talkM,o);show(this.mouth,!o)}else{show(this.talkM,false);show(this.mouth,true)}}}
 
 /* ===== Ravana: front-facing, crowned, with ten heads arranged symmetrically as one figure (a main head and a halo of nine) =====
    Proud, never frightening: big round eyes, raised brows, a curled moustache, a small proud smile. */

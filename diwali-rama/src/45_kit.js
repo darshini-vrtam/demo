@@ -16,6 +16,7 @@ const LP=(l,p)=>L.portrait?p:l;
 /* add an updatable thing to a scene and return it */
 function part(s,o){s.parts.push(o);return o}
 /* a figure placed in a scene: registered as a part so it animates */
+function castFront(s,cfg,layer){return part(s,new FrontFig(cfg,layer||s.comp))}
 function cast(s,key,cfg,layer,o){const f=new Fig(cfg,layer||s.comp,o);part(s,f);if(key){if(s.cast[key]){s.cast[key]=[].concat(s.cast[key],f)}else s.cast[key]=f}return f}
 
 /* ===== Small effects in the top layer: ripples, bursts (petals, sparkles, leaves), dotted trails ===== */
