@@ -92,3 +92,4 @@ https://claude.ai/artifact/8Ypb2Xq8wXemZ2QCMrbTCr
 
 ## QA hook
 Open with `#qa` and call `__qa.go('2.1','end')` (or `'late'`, `'act'`) in the console to fast-forward to a point in a shot.
+- The resting screen links to Episode 2 ("Next: Episode 2", a UI label added later): https://claude.ai/artifact/XTe7VZkEdoHtYQakQUCCuv

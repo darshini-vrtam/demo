@@ -68,6 +68,7 @@ button:focus-visible{outline:4px solid var(--focus);outline-offset:3px}
 .big{font:800 clamp(16px,calc(var(--fs) * .92),22px)/1 var(--font-body);min-height:50px;padding:10px 24px;border-radius:999px;border:3px solid var(--ink);background:var(--gold);color:var(--ink);cursor:pointer;
   box-shadow:0 4px 0 var(--ink);transition:transform .15s ease;display:inline-flex;align-items:center;gap:8px}
 .big.alt{background:var(--cream)}
+a.big{text-decoration:none}
 .big:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .big svg{width:30px;height:24px;flex:none}
 .big.lotusbtn{border-radius:28px 28px 999px 999px;background:var(--lotus);color:var(--ink)}
@@ -168,7 +169,7 @@ button:focus-visible{outline:4px solid var(--focus);outline-offset:3px}
     <div class="panel">
       <p class="eyebrow">Episode 1</p>
       <h1>THE MYSTERY OF THE GOLDEN LOTUS</h1>
-      <div class="row"><button class="big" id="bAgain">Play again</button></div>
+      <div class="row"><button class="big alt" id="bAgain">Play again</button><a class="big" id="bNextEp" href="https://claude.ai/artifact/XTe7VZkEdoHtYQakQUCCuv" target="_blank" rel="noopener">Next: Episode 2</a></div>
     </div>
   </div>
 </div>
