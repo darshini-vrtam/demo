@@ -10,7 +10,7 @@ const PREV={2:'Previously, Rama, Lakshmana, Hanuman and the vanaras built a brid
 /* the script's mood tags set the Narrator's pace, pitch and volume; they are never spoken */
 const MOOD={warm:{rate:.9,pitch:1},inviting:{rate:.98,pitch:1.04},suspense:{rate:.88,pitch:.96},energetic:{rate:1.02,pitch:1.02},serious:{rate:.85,pitch:.94,vol:.92},
   gentle:{rate:.84,pitch:.98,vol:.95},cliff:{rate:.9,pitch:1.02},welcome:{rate:.98,pitch:1.05},respectful:{rate:.8,pitch:.97,vol:.95},heartfelt:{rate:.85,pitch:1}};
-function mood(k){D.moodKey=k;D.setMood(MOOD[k]||{})}
+function mood(k){D.moodKey=k;D.setMood(MOOD[k]||{});Music.auto(k)}
 /* end cards: typeset text over the final held picture */
 async function endCard(n){D.clearAct();const e=$('end');$('endEye').textContent=n===1?'End of Episode 1':'Diwali Stories of India';
   if(n===1){$('endTitle').textContent='Continue the adventure in Episode 2.';$('endLine').textContent='';$('endLine').hidden=true;$('bNext').hidden=false;Store.set('ep',2)}
@@ -36,7 +36,7 @@ function frame(now){const dt=Math.min(.05,(now-lastT)/1000);lastT=now;T.sec+=dt*
   requestAnimationFrame(frame)}
 async function play(from){const tok=++D.token;Tw.kill();Timers.kill();Speech.stop();D.q=Promise.resolve();$('end').hidden=true;$('tcard').hidden=true;$('shloka').hidden=true;$('deed').hidden=true;Overlay.clear();
   Music.hush&&AU.ctx&&Music.quiet&&Music.hush(false);D.hideCap();D.clearAct();
-  try{for(let i=from;i<SHOTS.length;i++){const id=SHOTS[i][0];if(D.qa)D.qa.cur=id;Timing.start(id);await window[SHOTS[i][1]]();D.guard(tok);Timing.end(id);
+  try{for(let i=from;i<SHOTS.length;i++){const id=SHOTS[i][0];D.shot=id;if(D.qa)D.qa.cur=id;Timing.start(id);await window[SHOTS[i][1]]();D.guard(tok);Timing.end(id);
       if(D.qa&&D.qa.stop==='end'&&D.qa.at===id){D.qa.paused=true;await new Promise(()=>{})}}}
   catch(e){if(e!==ABORT)console.error(e)}}
 function begin(fromEp){$('start').hidden=true;AU.init();AU.resume();Speech.init();

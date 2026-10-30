@@ -35,7 +35,7 @@ async function shot2_6(){mood('welcome');Amb.set('city');Music.mood('light');con
   await say("At last, Rama, Sita and Lakshmana returned to Ayodhya.",[["returned",()=>{s.entered=true;[[sita,p.sita],[rama,p.rama],[lak,p.lak]].forEach(([f,q])=>{f.f=-1;f.set('walk',200);
       tw(f,{x:q[0],y:q[1]},LP(6000,5200),'lin').then(()=>f.set('idle',500))})}]]);
   await hold(3400);Music.swell();
-  await say("The people welcomed them with joy. The streets shone with rows of little lamps, and the air was filled with celebration.",[["welcomed",()=>{folk.forEach((f,i)=>{f.set(i%2?'petals':'wave',500);if(i%2===0)return;f.hold('b','basket')});AU.sfx('celebrate')}],
+  await say("The people welcomed them with joy. The streets shone with rows of little lamps, and the air was filled with celebration.",[["welcomed",()=>{AU.sfx('flowers');folk.forEach((f,i)=>{f.set(i%2?'petals':'wave',500);if(i%2===0)return;f.hold('b','basket')});AU.sfx('celebrate')}],
     ["celebration",()=>{rama.set('bless',700);sita.set('smile',700);lak.set('smile',700);han.set('rejoice',600);AU.sfx('celebrate')}]]);
   await hold(800);
   /* stillness for the homecoming */

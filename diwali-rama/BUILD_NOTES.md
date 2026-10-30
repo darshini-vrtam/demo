@@ -50,6 +50,16 @@
 - **Fallback.** The Narrator gets the best English voice available, preferring en-IN. Rama, Sita, Lakshmana, Hanuman and Ravana each get their own pitch and rate. The shloka uses a Hindi voice for the Devanagari if the device has one, otherwise a transliteration. With no voices, or with sound muted, captions advance on a reading-time estimate.
 - **Hosting.** The page fetches `audio/*.mp3` relative to itself. Opened as a lone file without the `audio/` folder, it falls back to browser speech. The published artifact is sent with every clip in its `files` map.
 
+
+## Music and sound effects
+- All recorded in ElevenLabs: 36 files in `sfx/`, loudness-normalised to −16 LUFS (narration measures about −17.5). Music and effects play at **40%** (`AU.vol` in `src/30_audio.js`). Narration clips play at full volume, outside that gain.
+- **Music beds** (Eleven Music v2.5, 60 s instrumental, faded for looping): `bg_ayodhya` (bansuri, tanpura, santoor), `bg_tender` (sitar, santoor), `bg_tense` (low drone, soft tabla heartbeat), `bg_adventure` (bansuri, dholak), `bg_battle` (dhol, pakhawaj, brass), `bg_festive` (shehnai, dhol, bells), `bg_divine` (tanpura, harmonium, temple bells).
+- Each story mood picks a bed (`BED_BY_MOOD`). Shots 2.5 and 2.7 use `bg_divine`, 2.6 and 2.10 use `bg_festive` (`BED_BY_SHOT`), and the battle switches to `bg_battle`. Beds crossfade over about 3 s. They hold a steady 40% under narration and drop to a quarter of that for the shloka.
+- **Ambience** (Sound Effects v2, 20 s seamless loops) at half the music level: `amb_forest`, `amb_ocean`, `amb_city`, `amb_night`, chosen by the scene's `Amb.set()`.
+- **Effects:** one recorded file per `AU.sfx()` cue (bow, sword clash, fire burst, diya flame, temple bell, gates creaking, crowd cheer, falling flowers, monkey chatter, stone set into the bridge, chimes, taps and pops). New cues added in this pass: `gate` (1.8 gates open), `fire` (2.1 fire arrow and the burning), `flowers` (2.6 welcome) and `monkey` (1.6 the vanaras' plan).
+- `build.py` embeds the file list as `SND_IDS`. A headless run confirmed all 36 files decode and that every cue used in the run played from its recorded file.
+- **Hosting:** publish `sfx/*.mp3` alongside `audio/*.mp3`.
+
 ## Devanagari
 
 - The shloka is real DOM text in Noto Sans Devanagari from Google Fonts, with a fallback stack of Kohinoor Devanagari, Nirmala UI, Mangal and Devanagari Sangam MN. It is never drawn as shapes.
@@ -81,7 +91,7 @@ These short lines were added by the builder and are not narration. Please review
   - Six vanara fur tones and six townspeople skin tones
 - **Ravana's ten heads** are a main crowned head plus a symmetrical halo of nine smaller heads. He has two arms, holding a bow and a round shield, to keep him readable and gentle.
 - **Hanuman** does not ride the Vimana in 2.3, following the narration and the bible.
-- **Music and effects** are synthesised in the browser: drone, pentatonic plucks, stream, birdsong, ocean swell and chimes. There are no recorded beds. Synthesis was chosen to keep one self-contained file; it is not something the hosting rules forced.
+- **Music and effects** are recorded ElevenLabs audio in `sfx/` (see Music and sound effects). The older synthesised drone, plucks, noise beds and cues stay in the code as the fallback for any file that is missing or still loading.
 - **Townspeople** are generated from one seeded function, so faces, hair, clothes and ages vary. The same seeds give the same people on each run.
 - **Rough runtime:** Episode 1 is about 8.5 to 9 minutes (about 4 minutes of narration, 3 activities, animation holds). Episode 2 is about 11 to 12 minutes, including the two recitations and their pauses. Both are estimates from the narration length; they were not timed with real voices.
 
@@ -212,3 +222,6 @@ The late frame of every scene was reviewed in landscape (1280×720) and portrait
 
 ## Revision 12
 - Narration recorded with ElevenLabs (Krishna, Eleven v3) for every line, including the shloka in Devanagari. It plays in place of the browser voice (see Speech).
+
+## Revision 13
+- Recorded background music, ambience and sound effects from ElevenLabs. Music and effects play at 40% (see Music and sound effects).

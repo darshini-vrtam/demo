@@ -46,7 +46,7 @@ async function shot2_1(){Music.mood('lanka');Amb.set('lanka');mood('cliff');
   /* a short visual recap of the gates opening, through the symmetrical gate patterns */
   let r;await Trans.run('gate',()=>{r=D.setScene(scRecap(),0)},{ms:900});const rt=D.tw(r,{gk:1},5200,'io');
   await titleCard(2,'The Return of Light');await rt;await hold(400);
-  let s;await Trans.run('gate',()=>{s=D.setScene(scBattle(),0)},{ms:900});const B=s.B;const rav=s.rav;const {rama,lak,hanuman:han}=s.cast;mood('serious');
+  let s;await Trans.run('gate',()=>{s=D.setScene(scBattle(),0)},{ms:900});const B=s.B;const rav=s.rav;const {rama,lak,hanuman:han}=s.cast;mood('serious');Music.bedTo('bg_battle');
   await say("Rama and his companions had reached Lanka, but Ravana would not let Sita go easily.",[["would not",()=>rav.set('proud',800)]]);
   await say("A great battle began. The sounds of bows and clashing weapons echoed through the kingdom.",[["battle began",()=>{rav.set('shoot',800);rama.set('bowRaised',700);lak.set('bowRaised',700);B.fight=true}],
     ["clashing",()=>{AU.sfx('shield');D.go(B,{dustK:1},1500)}],["echoed",()=>AU.sfx('bow')]]);
@@ -61,11 +61,11 @@ async function shot2_1(){Music.mood('lanka');Amb.set('lanka');mood('cliff');
     const iv=setInterval(()=>{const p=at(o.k),q=at(Math.min(1,o.k+.02));const ang=Math.atan2(q[1]-p[1],q[0]-p[0])/DEG;tf(B.final,p[0]-Math.cos(ang*DEG)*B.fire.len,p[1]-Math.sin(ang*DEG)*B.fire.len,1,ang);
       B.fire.tongues.forEach((t,i)=>t.firstChild.setAttribute('transform',`scale(${f3(1+.18*Math.sin(T.sec*18+i*2))} ${f3(1+.12*Math.sin(T.sec*14+i))})`))},16);
     await D.tw(o,{k:1},1500,'io');clearInterval(iv);op(B.final,0);
-    AU.sfx('flicker');AU.sfx('shield');s.F=s.F||fxLayer(s);s.F.burst(b[0],b[1],14,'flame',TAU);s.F.burst(b[0],b[1],8,'spark',TAU);s.F.ripple(b[0],b[1],LP(200,170),P.marigold,1400);rav.set('lower',1200)})();
+    AU.sfx('fire');AU.sfx('shield');s.F=s.F||fxLayer(s);s.F.burst(b[0],b[1],14,'flame',TAU);s.F.burst(b[0],b[1],8,'spark',TAU);s.F.ripple(b[0],b[1],LP(200,170),P.marigold,1400);rav.set('lower',1200)})();
   await say("Rama’s final arrow struck its mark, and Ravana was defeated.",[["defeated",()=>{rav.set('defeated',2400);rav.angry=false;D.go(B,{calm:1,dustK:0},3000);D.go(s,{skyMix:1},5000)}]]);
   await fin;await hold(1000);AU.sfx('dust');rama.set('idle',900);lak.set('idle',900);han.set('idle',900);
   /* the fire arrow's flames rise over Ravana and he burns away into golden embers */
-  AU.sfx('flicker');await D.tw(B,{burnK:1},900);D.go(rav,{gone:1},2600,'io');Timers.add(400,()=>AU.sfx('flicker'));await hold(2200);
+  AU.sfx('fire');await D.tw(B,{burnK:1},900);D.go(rav,{gone:1},2600,'io');Timers.add(400,()=>AU.sfx('flicker'));await hold(2200);
   s.F.burst(rav.x,rav.y-200*rav.s,12,'spark',TAU);D.go(B,{burnK:0},1400);
   await say("The battle was over.");await hold(1200);mood('heartfelt');
   await say("The story reminds us that power alone does not make someone right. Courage, responsibility and the choice to do what is right matter far more.",[["Courage",()=>{rama.nod();s.bloom(.6)}]]);

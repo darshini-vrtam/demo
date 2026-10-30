@@ -1,10 +1,10 @@
-/* ===== Sound: every effect, ambience bed and music line is synthesised here, behind one master gain that respects mute ===== */
-const AU={ctx:null,master:null,vol:.5,sfxG:null,muted:false,noiseBuf:null,
+/* ===== Sound: recorded ElevenLabs music, ambience and effects (sfx/*.mp3), with synthesised stand-ins, behind one master gain that respects mute ===== */
+const AU={ctx:null,master:null,vol:.4,/* music and sound effects play at 40%; narration clips play separately at full volume */sfxG:null,muted:false,noiseBuf:null,
   init(){if(this.ctx)return;try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;this.ctx=new AC();
     this.master=this.ctx.createGain();this.master.gain.value=this.muted?0:this.vol;this.master.connect(this.ctx.destination);
     this.sfxG=this.ctx.createGain();this.sfxG.gain.value=.7;this.sfxG.connect(this.master);
     const len=this.ctx.sampleRate*2,b=this.ctx.createBuffer(1,len,this.ctx.sampleRate),d=b.getChannelData(0);for(let i=0;i<len;i++)d[i]=Math.random()*2-1;this.noiseBuf=b;
-    Music.init();Amb.init()}catch(e){this.ctx=null}},
+    Music.init();Amb.init();Snd.load()}catch(e){this.ctx=null}},
   resume(){try{this.ctx&&this.ctx.state==='suspended'&&this.ctx.resume()}catch(e){}},
   setMute(m){this.muted=m;if(this.master)this.master.gain.setTargetAtTime(m?0:this.vol,this.ctx.currentTime,.05)},
   t(){return this.ctx.currentTime},
@@ -14,7 +14,7 @@ const AU={ctx:null,master:null,vol:.5,sfxG:null,muted:false,noiseBuf:null,
     fl.frequency.setValueAtTime(f||1000,t0);if(f2)fl.frequency.exponentialRampToValueAtTime(f2,t0+dur);fl.Q.value=q||1;
     e.gain.setValueAtTime(0.0001,t0);e.gain.exponentialRampToValueAtTime(g,t0+Math.min(.25,dur*.3));e.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
     s.connect(fl);fl.connect(e);e.connect(dest||this.sfxG);s.start(t0);s.stop(t0+dur+.05)},
-  sfx(name){if(!this.ctx||this.muted)return;const t=this.t();try{switch(name){
+  sfx(name){if(!this.ctx||this.muted)return;if(Snd.play(name))return;const t=this.t();try{switch(name){
     case'chime':[880,1320,1760,2217].forEach((f,i)=>this.osc('sine',f,t+i*.09,2.2-i*.3,.12-i*.02));break;
     case'success':[523,659,784,1047].forEach((f,i)=>this.osc('triangle',f,t+i*.1,.6,.12));break;
     case'sparkle':for(let i=0;i<7;i++)this.osc('sine',1175+i*196,t+i*.07,.55,.05);break;
@@ -36,37 +36,63 @@ const AU={ctx:null,master:null,vol:.5,sfxG:null,muted:false,noiseBuf:null,
     case'tap':this.osc('triangle',660,t,.1,.12);break;
     case'soft':this.osc('sine',520,t,.25,.1,null,440);break;
     case'bloom':[587,740,880].forEach((f,i)=>this.osc('sine',f,t+i*.14,1.4,.06));break;
-    case'hop':this.osc('sine',400,t,.16,.1,null,620);break}}catch(e){}}};
+    case'hop':this.osc('sine',400,t,.16,.1,null,620);break;
+    case'fire':this.noise(t,1.4,.2,'bandpass',600,.8,2400);this.noise(t+.1,1,.08,'highpass',3000,.8);break;
+    case'gate':this.osc('sawtooth',70,t,2.2,.05,null,55);this.noise(t,2.4,.06,'lowpass',380,.7);break;
+    case'flowers':for(let i=0;i<5;i++)this.osc('sine',1320+i*220,t+i*.18,.9,.03);break}}catch(e){}}};
 
 /* ambience beds: forest (stream and birdsong), ocean (slow swells), city (soft bells), night; crossfaded by name */
 const Amb={g:null,want:'none',nodes:{},next:0,
-  init(){const c=AU.ctx;this.g=c.createGain();this.g.gain.value=.5;this.g.connect(AU.master);
+  init(){const c=AU.ctx;this.g=c.createGain();this.g.gain.value=.5;this.g.connect(AU.master);this.rg=c.createGain();this.rg.gain.value=.5;/* ambience sits at half the music level */this.rg.connect(AU.master);
     const bed=(type,f,q,gain)=>{const s=c.createBufferSource();s.buffer=AU.noiseBuf;s.loop=true;const fl=c.createBiquadFilter();fl.type=type;fl.frequency.value=f;fl.Q.value=q;const e=c.createGain();e.gain.value=0;
       const lfo=c.createOscillator(),lg=c.createGain();lfo.frequency.value=type==='lowpass'?.13:.4;lg.gain.value=gain*.5;lfo.connect(lg);lg.connect(e.gain);lfo.start();s.connect(fl);fl.connect(e);e.connect(this.g);s.start();return{e,gain,lg}};
     this.nodes={stream:bed('bandpass',1500,.8,.05),ocean:bed('lowpass',420,.6,.16),hum:bed('lowpass',220,.5,.04)};this.set(this.want)},
-  set(name){this.want=name;if(!AU.ctx)return;const t=AU.t();const lv={forest:{stream:1},grove:{stream:.5},ocean:{ocean:1},bridge:{ocean:.8},city:{hum:1},night:{hum:.6},lanka:{hum:.5},none:{}}[name]||{};
-    for(const k in this.nodes){const n=this.nodes[k];const v=(lv[k]||0)*n.gain;n.e.gain.setTargetAtTime(v,t,1.2);n.lg.gain.setTargetAtTime(v*.5,t,1.2)}},
+  /* recorded loops per place; while one is playing the noise beds and the scattered birdsong stay silent */
+  REC:{forest:['amb_forest',1],grove:['amb_forest',.7],ocean:['amb_ocean',1],bridge:['amb_ocean',.8],city:['amb_city',1],night:['amb_night',1],lanka:['amb_night',.6]},loop:null,
+  playRec(){if(!AU.ctx||!this.g)return;const r=this.REC[this.want],id=r&&Snd.buf[r[0]]?r[0]:null,t=AU.t();
+    if(this.loop&&(this.loop.id!==id||!id)){const o=this.loop;o.e.gain.setTargetAtTime(0,t,.8);setTimeout(()=>{try{o.s.stop()}catch(e){}},4000);this.loop=null}
+    if(id&&!this.loop){const s=AU.ctx.createBufferSource();s.buffer=Snd.buf[id];s.loop=true;const e=AU.ctx.createGain();e.gain.value=0;s.connect(e);e.connect(this.rg);s.start();this.loop={id,s,e}}
+    if(this.loop)this.loop.e.gain.setTargetAtTime(r[1],t,.8);return !!this.loop},
+  set(name){this.want=name;if(!AU.ctx)return;const t=AU.t();const rec=this.playRec();const lv={forest:{stream:1},grove:{stream:.5},ocean:{ocean:1},bridge:{ocean:.8},city:{hum:1},night:{hum:.6},lanka:{hum:.5},none:{}}[name]||{};
+    for(const k in this.nodes){const n=this.nodes[k];const v=rec?0:(lv[k]||0)*n.gain;n.e.gain.setTargetAtTime(v,t,1.2);n.lg.gain.setTargetAtTime(v*.5,t,1.2)}},
   /* birdsong and soft festival bells, scattered in time */
-  tick(){if(!AU.ctx||AU.muted)return;const t=AU.t();if(t<this.next)return;const w=this.want;
+  tick(){if(!AU.ctx||AU.muted||this.loop)return;const t=AU.t();if(t<this.next)return;const w=this.want;
     if(w==='forest'||w==='grove'){const f=1800+Math.random()*1400;for(let i=0;i<3;i++)AU.osc('sine',f+i*120,t+i*.11,.12,.025,this.g,f*1.3+i*120);if(Math.random()<.3)AU.noise(t+.4,.6,.03,'highpass',2600,.8,null,this.g);this.next=t+2+Math.random()*4}
     else if(w==='city'){AU.osc('sine',[1320,1568,1760][Math.floor(Math.random()*3)],t,1.8,.02,this.g);this.next=t+4+Math.random()*5}
     else if(w==='night'){AU.osc('sine',4200,t,.05,.008,this.g);AU.osc('sine',4200,t+.09,.05,.008,this.g);this.next=t+1.2+Math.random()*2}
     else this.next=t+2}};
 
-/* ambient music: a low drone and slow pentatonic plucks; level follows the mood, swells at relief moments, near-silent for the shloka */
-const Music={nodes:null,level:.45,next:0,ducked:false,quiet:false,
-  init(){const c=AU.ctx;const g=c.createGain();g.gain.value=0;g.connect(AU.master);const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=560;lp.connect(g);
+/* music: a recorded bed per mood (sfx/bg_*.mp3) at a steady 40%, crossfaded; without the files, a low drone and slow pentatonic plucks whose level follows the mood */
+const BED_BY_MOOD={warm:'bg_ayodhya',welcome:'bg_festive',inviting:'bg_adventure',energetic:'bg_adventure',suspense:'bg_tense',cliff:'bg_tense',serious:'bg_tense',heartfelt:'bg_tender',gentle:'bg_tender',respectful:'bg_divine'};
+const BED_BY_SHOT={'2.5':'bg_divine','2.7':'bg_divine','2.6':'bg_festive','2.10':'bg_festive'};
+const Music={nodes:null,level:.45,next:0,ducked:false,quiet:false,want:null,bed:null,
+  /* pick the bed for a story mood (a shot can pin its own); called from mood() */
+  auto(k){this.bedTo(BED_BY_SHOT[D.shot]||BED_BY_MOOD[k]||this.want)},
+  bedTo(id){if(!id)return;this.want=id;if(!this.nodes)return;const b=Snd.buf[id];if(this.bed&&this.bed.id===id)return;const c=AU.ctx,t=c.currentTime;
+    if(!b)return;if(this.bed){const o=this.bed;o.e.gain.setTargetAtTime(0,t,.9);setTimeout(()=>{try{o.s.stop()}catch(e){}},5000)}
+    const s=c.createBufferSource();s.buffer=b;s.loop=true;const e=c.createGain();e.gain.value=0;s.connect(e);e.connect(this.nodes.bedG);s.start();e.gain.setTargetAtTime(1,t,.9);
+    this.bed={id,s,e};this.nodes.g.gain.setTargetAtTime(0,t,.5);this.setLevel(this.level,1)},
+  init(){const c=AU.ctx;const g=c.createGain();g.gain.value=0;g.connect(AU.master);const bedG=c.createGain();bedG.gain.value=0;bedG.connect(AU.master);const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=560;lp.connect(g);
     const dr=[146.83,220].map(f=>{const o=c.createOscillator();o.type='sawtooth';o.frequency.value=f;const og=c.createGain();og.gain.value=.022;o.connect(og);og.connect(lp);o.start();return o});
-    const pl=c.createGain();pl.gain.value=1;pl.connect(g);this.nodes={g,lp,pl,dr};this.setLevel(this.level,3)},
-  setLevel(v,sec){this.level=v;if(!this.nodes)return;this.nodes.g.gain.setTargetAtTime(v*(this.ducked?.5:.7),AU.t(),(sec||2)/3)},
+    const pl=c.createGain();pl.gain.value=1;pl.connect(g);this.nodes={g,lp,pl,dr,bedG};this.setLevel(this.level,3);if(this.want)this.bedTo(this.want)},
+  setLevel(v,sec){this.level=v;if(!this.nodes)return;const t=AU.t(),tc=(sec||2)/3;
+    /* a recorded bed holds its level (the master sets it at 40%); only the shloka hush lowers it */
+    if(this.bed){this.nodes.bedG.gain.setTargetAtTime(this.quiet?.25:1,t,tc);this.nodes.g.gain.setTargetAtTime(0,t,tc);return}
+    this.nodes.g.gain.setTargetAtTime(v*(this.ducked?.5:.7),t,tc)},
   duck(on){this.ducked=on;this.setLevel(this.level,.6)},
   swell(){AU.sfx('swell');this.setLevel(1,2);setTimeout(()=>{if(this.level===1)this.setLevel(.5,4)},9000)},
   hush(on){this.quiet=on;this.setLevel(on?.03:.45,2);if(on){this._amb=Amb.want;Amb.set('none')}else if(this._amb){Amb.set(this._amb);this._amb=null}},
   mood(m){if(!this.nodes)return;this.nodes.lp.frequency.setTargetAtTime(m==='lanka'?380:m==='light'?820:600,AU.t(),1.5)},
-  tick(){if(!this.nodes||AU.muted||this.level<.08)return;const c=AU.ctx,t=c.currentTime;if(t<this.next)return;
+  tick(){if(!this.nodes||this.bed||AU.muted||this.level<.08)return;const c=AU.ctx,t=c.currentTime;if(t<this.next)return;
     const sc=[293.66,329.63,369.99,440,493.88,587.33,659.25];const f=sc[Math.floor(Math.random()*sc.length)]*(Math.random()<.3?.5:1);
     const o=c.createOscillator(),e=c.createGain();o.type='triangle';o.frequency.value=f;e.gain.setValueAtTime(.0001,t);e.gain.exponentialRampToValueAtTime(.04*this.level+.006,t+.02);
     e.gain.exponentialRampToValueAtTime(.0001,t+1.6);o.connect(e);e.connect(this.nodes.pl);o.start(t);o.stop(t+1.7);this.next=t+(this.level>.8?.8:1.8)+Math.random()*1.8}};
+
+/* recorded effects, ambience loops and music beds (ElevenLabs), decoded once; each falls back to its synthesised version until it loads or if it is missing */
+const Snd={ids:typeof SND_IDS!=='undefined'?SND_IDS:[],buf:{},
+  load(){this.ids.forEach(id=>{fetch('sfx/'+id+'.mp3').then(r=>r.ok?r.arrayBuffer():Promise.reject(r.status)).then(b=>AU.ctx.decodeAudioData(b))
+    .then(d=>{this.buf[id]=d;if(id.startsWith('bg_')&&id===Music.want)Music.bedTo(id);if(id.startsWith('amb_'))Amb.set(Amb.want)}).catch(()=>{})})},
+  play(name){const b=this.buf[name];if(!b||name.startsWith('bg_')||name.startsWith('amb_'))return false;const c=AU.ctx,s=c.createBufferSource();s.buffer=b;s.connect(AU.master);s.start();return true}};
 
 /* ===== Speech: a warm unhurried Narrator; Rama calm, Sita gentle, Lakshmana young, Hanuman warm, Ravana low and proud ===== */
 const VOICE={narr:{name:'Narrator',col:P.turmeric,pitch:.98,rate:.86},rama:{name:'Rama',col:SKIN.rama,pitch:.78,rate:.84},sita:{name:'Sita',col:P.verm,pitch:1.22,rate:.88},

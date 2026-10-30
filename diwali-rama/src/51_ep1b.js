@@ -34,7 +34,7 @@ async function shot1_6(){mood('energetic');Amb.set('ocean');let s=D.scene;if(!s|
   await say("But there was one enormous challenge. How could the army cross the ocean and reach Lanka?",[["challenge",()=>{rama.set('concerned',700);lak.set('concerned',700)}]]);
   await sweep;await D.tw(s.cam,{z:1,fx:LP(889,500),fy:LP(405,750)},2400,'io');han.set('idle',500);
   vans.forEach((v,i)=>{v.f=-1;goWalk(v,p.van[i][0],p.van[i][1],2600+i*200)});
-  await say("The vanaras came together with a plan. They would build a bridge using stones and rocks.",[["a plan",()=>{rama.set('idle',600);lak.set('idle',600)}],["build a bridge",()=>{D.go(s,{lineK:1},4200,'io');vans[2].set('pointAhead',600)}]]);
+  await say("The vanaras came together with a plan. They would build a bridge using stones and rocks.",[["a plan",()=>{AU.sfx('monkey');rama.set('idle',600);lak.set('idle',600)}],["build a bridge",()=>{D.go(s,{lineK:1},4200,'io');vans[2].set('pointAhead',600)}]]);
   await say("Every helper had a part to play. Some carried stones, some moved branches, and others helped arrange the path.",[["carried stones",()=>{vans[0].hold('f','stone',{v:0});vans[0].set('carryStone',600);vans[3].hold('f','stone',{v:3});vans[3].set('carryStone',600)}],
     ["moved branches",()=>{vans[1].hold('f','branch');vans[1].set('carryBranch',600)}],["arrange the path",()=>{vans[4].set('pointAhead',600);vans[2].set('wait',600)}]]);
   vans.forEach((v,i)=>{if(v.props.f){v.turn(1);goWalk(v,v.x+LP(80,40),v.y,2400)}});
@@ -122,7 +122,7 @@ function scMarch(){const s=mkScene('1.8',{frame:'lanka'});artPart(s);const back=
     /* the completed bridge of patterned stones; patterns travel along it */
     const n=16;for(let i=0;i<n;i++){const u=(i+.5)/n;const q=polyAt(p.path,u);const w=lerp(LP(220,200),LP(110,100),u);const st=stone(bridgeG,i,w,w*.5,true);tf(st.g,q[0],q[1]+w*.12,1)}
     s.flow=ln(bridgeG,smooth(p.path,false),P.turmeric,6,{'stroke-dasharray':'.1 20'})});
-  s.tick=(dt,t)=>{const p=s.pos();if(M.u>.6&&!s.gateGo){s.gateGo=true;AU.sfx('bell');tw(s,{gateK:1},5600,'io')}if(s.flow)s.flow.setAttribute('stroke-dashoffset',f1(-t*50*MV()));if(s.gate)s.gate.set(s.gateK||0);
+  s.tick=(dt,t)=>{const p=s.pos();if(M.u>.6&&!s.gateGo){s.gateGo=true;AU.sfx('bell');AU.sfx('gate');tw(s,{gateK:1},5600,'io')}if(s.flow)s.flow.setAttribute('stroke-dashoffset',f1(-t*50*MV()));if(s.gate)s.gate.set(s.gateK||0);
     order.forEach((f,i)=>{const u=clamp(M.u-M.gap[i],0,1);const q=polyAt(p.path,u);f.x=q[0];f.y=q[1]+(i===1?LP(14,10):0);f.s=lerp(p.s0,p.s1,u)*(f.Q.scale||1)})};
   return s}
 async function shot1_8(){mood('cliff');Amb.set('ocean');Music.mood('lanka');const s=D.setScene(scMarch(),900);const M=s.M;const {rama,lak,hanuman:han}=s.cast;const vans=[].concat(s.cast.vanaras);
