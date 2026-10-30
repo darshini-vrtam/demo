@@ -18,7 +18,7 @@ const D={token:0,speed:1,fast:false,qa:null,scene:null,old:null,inset:0,trayPx:0
   chip(text){const c=$('chip');c.textContent=text||'';c.hidden=!text},
   setMood(m){this.mood=Object.assign({pitch:1,rate:1,vol:1},m||{})},
   /* captions: verbatim text, paged by sentence so long lines stay readable */
-  pages(segs){const lim=L.portrait?118:150;const out=[];const add=(v,t)=>{const parts=t.match(/[^.!?]+[.!?]+['"’”]*\s*|[^.!?]+$/g)||[t];let cur='';
+  pages(segs){const lim=150;const out=[];const add=(v,t)=>{const parts=t.match(/[^.!?]+[.!?]+['"’”]*\s*|[^.!?]+$/g)||[t];let cur='';
       for(const p of parts){if((cur+p).length>lim&&cur){out.push({v,t:cur.trim()});cur=''}cur+=p}if(cur.trim())out.push({v,t:cur.trim()})};
     (typeof segs==='string'?[['narr',segs]]:segs).forEach(s=>add(s[0],s[1]));
     const pages=[];out.forEach(c=>{const last=pages[pages.length-1];if(last&&(last.text.length+c.t.length)<lim)last.parts.push(c),last.text+=' '+c.t;else pages.push({parts:[c],text:c.t})});return pages},

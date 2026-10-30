@@ -90,6 +90,17 @@ const Speech={ok:false,voices:[],pick:{},
       u.pitch=clamp(V.pitch*(who==='narr'?(md.pitch||1):1),.1,2);u.rate=clamp(V.rate*(who==='narr'?(md.rate||1):1),.5,1.5);u.volume=who==='narr'?(md.vol||1):1;
       const v=this.pick[who];if(v)u.voice=v;u.lang=v?v.lang:(who==='shloka'?'hi-IN':'en-IN');u.onend=fin;u.onerror=fin;if(onWord)u.onboundary=e=>{if(e.name==='word'||e.name==null)onWord(e.charIndex)};
       this.cur=fin;speechSynthesis.speak(u);setTimeout(fin,Math.max(4000,text.length*95/u.rate+3000))}catch(e){fin()}})},
-  stop(){try{if(this.ok)speechSynthesis.cancel()}catch(e){}if(this.cur){const f=this.cur;this.cur=null;f()}}};
-function canSpeak(){return !AU.muted&&Speech.available()}
-function speakAny(v,t,mood,onWord){if(AU.muted||!Speech.available())return Promise.resolve(false);return Speech.speak(v,t,mood,onWord)}
+  stop(){Clips.stop();try{if(this.ok)speechSynthesis.cancel()}catch(e){}if(this.cur){const f=this.cur;this.cur=null;f()}}};
+/* Clips: pre-recorded ElevenLabs narration (audio/<id>.mp3, id = FNV-1a of "voice|text"); preferred over the browser voice, which stays the fallback */
+const Clips={rate:1,shlokaRate:1,ids:new Set(typeof CLIP_IDS!=='undefined'?CLIP_IDS:[]),cur:null,
+  id(v,t){const s=v+'|'+t;let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(36)},
+  has(v,t){return this.ids.has(this.id(v,t))},
+  play(v,t,onWord){return new Promise(res=>{let done=false;const a=new Audio('audio/'+this.id(v,t)+'.mp3');a.preservesPitch=true;a.playbackRate=v==='shloka'?this.shlokaRate:this.rate;
+    const fin=ok=>{if(done)return;done=true;clearInterval(iv);clearTimeout(to);if(this.cur&&this.cur.a===a)this.cur=null;res(ok)};
+    const iv=setInterval(()=>{if(a.duration&&onWord)onWord(Math.floor(a.currentTime/a.duration*t.length))},80);const to=setTimeout(()=>fin(true),Math.max(9000,t.length*220));
+    a.onended=()=>fin(true);a.onerror=()=>fin(false);this.cur={a,fin};const pr=a.play();if(pr&&pr.catch)pr.catch(()=>fin(false))})},
+  stop(){if(this.cur){try{this.cur.a.pause()}catch(e){}this.cur.fin(true)}}};
+function canSpeak(v,t){return !AU.muted&&((v&&Clips.has(v,t))||Speech.available())}
+function speakAny(v,t,mood,onWord){if(AU.muted)return Promise.resolve(false);
+  if(Clips.has(v,t))return Clips.play(v,t,onWord).then(ok=>ok||(Speech.available()?Speech.speak(v,t,mood,onWord):false));
+  return Speech.available()?Speech.speak(v,t,mood,onWord):Promise.resolve(false)}

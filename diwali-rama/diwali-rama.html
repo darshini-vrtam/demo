@@ -157,6 +157,7 @@ button:focus-visible{outline:4px solid var(--focus);outline-offset:3px}
 </div>
 
 <script>
+const CLIP_IDS=["10rdggf", "12pxrl1", "175zi11", "17a6dwy", "17oz0s3", "181cqks", "18bhzad", "18j8yuh", "18zavp", "1ax8mrp", "1csnhdp", "1czg4aa", "1dla55t", "1dp15c0", "1e61pjz", "1eynx05", "1fcc79f", "1fdneur", "1h86pzj", "1hkbmhl", "1i89dyy", "1icntcm", "1izqhg", "1jfgsjm", "1lh4j7k", "1ncq0uk", "1o3x9f7", "1odlte8", "1ogyd98", "1ote6xw", "1pyrlr4", "1q0ss2g", "1q2y6ar", "1q30v7k", "1qd10kl", "1qvpuwi", "1r9pyke", "1tclpnc", "1tqm0sf", "1tv4g3d", "1ubqdf2", "1uhp5hs", "1vryzh2", "1wf2tmv", "1wpip75", "1wpiwkz", "1x3vet6", "1x428dp", "1yd8qve", "261z3", "2psht2", "3cnga8", "5l1xlk", "69vsmn", "6ekqvj", "6u5lu7", "6vbc99", "7r9d2n", "7sqz8e", "7uh4bw", "7x8aey", "81134b", "8fyd5c", "8kizpo", "9jawyt", "aptzyy", "aujkp9", "b00vxe", "bswcsb", "c17qa4", "dex915", "dmxmoz", "dswz56", "ensdl", "h8ld8r", "hz7zbd", "inj241", "j7m5uj", "k8et8h", "lnbfgf", "lyktat", "oiaej7", "qxysqo", "rbwy7u", "rtroqi", "sbt2vu", "soey4s", "sww8hn", "syv5o1", "t8xu3a", "tgqmvi", "tlle4i", "wgwcg4", "x9ckh", "yflbt4", "zuno03"];
 'use strict';
 /* ===== Palette tokens: the only colours used in the illustration (skin and fur tones live in the character bible) ===== */
 const P={ink:'#2A1608',verm:'#D9381E',turmeric:'#F2B01E',marigold:'#F4A21D',gold:'#E0A526',leaf:'#4C9A3A',forest:'#1F5E3B',peacock:'#0E7C8C',
@@ -958,9 +959,20 @@ const Speech={ok:false,voices:[],pick:{},
       u.pitch=clamp(V.pitch*(who==='narr'?(md.pitch||1):1),.1,2);u.rate=clamp(V.rate*(who==='narr'?(md.rate||1):1),.5,1.5);u.volume=who==='narr'?(md.vol||1):1;
       const v=this.pick[who];if(v)u.voice=v;u.lang=v?v.lang:(who==='shloka'?'hi-IN':'en-IN');u.onend=fin;u.onerror=fin;if(onWord)u.onboundary=e=>{if(e.name==='word'||e.name==null)onWord(e.charIndex)};
       this.cur=fin;speechSynthesis.speak(u);setTimeout(fin,Math.max(4000,text.length*95/u.rate+3000))}catch(e){fin()}})},
-  stop(){try{if(this.ok)speechSynthesis.cancel()}catch(e){}if(this.cur){const f=this.cur;this.cur=null;f()}}};
-function canSpeak(){return !AU.muted&&Speech.available()}
-function speakAny(v,t,mood,onWord){if(AU.muted||!Speech.available())return Promise.resolve(false);return Speech.speak(v,t,mood,onWord)}
+  stop(){Clips.stop();try{if(this.ok)speechSynthesis.cancel()}catch(e){}if(this.cur){const f=this.cur;this.cur=null;f()}}};
+/* Clips: pre-recorded ElevenLabs narration (audio/<id>.mp3, id = FNV-1a of "voice|text"); preferred over the browser voice, which stays the fallback */
+const Clips={rate:1,shlokaRate:1,ids:new Set(typeof CLIP_IDS!=='undefined'?CLIP_IDS:[]),cur:null,
+  id(v,t){const s=v+'|'+t;let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(36)},
+  has(v,t){return this.ids.has(this.id(v,t))},
+  play(v,t,onWord){return new Promise(res=>{let done=false;const a=new Audio('audio/'+this.id(v,t)+'.mp3');a.preservesPitch=true;a.playbackRate=v==='shloka'?this.shlokaRate:this.rate;
+    const fin=ok=>{if(done)return;done=true;clearInterval(iv);clearTimeout(to);if(this.cur&&this.cur.a===a)this.cur=null;res(ok)};
+    const iv=setInterval(()=>{if(a.duration&&onWord)onWord(Math.floor(a.currentTime/a.duration*t.length))},80);const to=setTimeout(()=>fin(true),Math.max(9000,t.length*220));
+    a.onended=()=>fin(true);a.onerror=()=>fin(false);this.cur={a,fin};const pr=a.play();if(pr&&pr.catch)pr.catch(()=>fin(false))})},
+  stop(){if(this.cur){try{this.cur.a.pause()}catch(e){}this.cur.fin(true)}}};
+function canSpeak(v,t){return !AU.muted&&((v&&Clips.has(v,t))||Speech.available())}
+function speakAny(v,t,mood,onWord){if(AU.muted)return Promise.resolve(false);
+  if(Clips.has(v,t))return Clips.play(v,t,onWord).then(ok=>ok||(Speech.available()?Speech.speak(v,t,mood,onWord):false));
+  return Speech.available()?Speech.speak(v,t,mood,onWord):Promise.resolve(false)}
 
 /* ===== Director: plays shots in order, pauses for every activity, resumes on completion ===== */
 const ABORT={abort:true};
@@ -982,7 +994,7 @@ const D={token:0,speed:1,fast:false,qa:null,scene:null,old:null,inset:0,trayPx:0
   chip(text){const c=$('chip');c.textContent=text||'';c.hidden=!text},
   setMood(m){this.mood=Object.assign({pitch:1,rate:1,vol:1},m||{})},
   /* captions: verbatim text, paged by sentence so long lines stay readable */
-  pages(segs){const lim=L.portrait?118:150;const out=[];const add=(v,t)=>{const parts=t.match(/[^.!?]+[.!?]+['"’”]*\s*|[^.!?]+$/g)||[t];let cur='';
+  pages(segs){const lim=150;const out=[];const add=(v,t)=>{const parts=t.match(/[^.!?]+[.!?]+['"’”]*\s*|[^.!?]+$/g)||[t];let cur='';
       for(const p of parts){if((cur+p).length>lim&&cur){out.push({v,t:cur.trim()});cur=''}cur+=p}if(cur.trim())out.push({v,t:cur.trim()})};
     (typeof segs==='string'?[['narr',segs]]:segs).forEach(s=>add(s[0],s[1]));
     const pages=[];out.forEach(c=>{const last=pages[pages.length-1];if(last&&(last.text.length+c.t.length)<lim)last.parts.push(c),last.text+=' '+c.t;else pages.push({parts:[c],text:c.t})});return pages},
@@ -1875,10 +1887,10 @@ function shlokaPanel(s){const box=$('shlokaLines');box.innerHTML='';const els=SH
     const a=document.createElement('p');a.className='dv';a.lang='sa';a.textContent=l.dv;const b=document.createElement('p');b.className='tr';b.lang='sa-Latn';b.textContent=l.tr;d.append(a,b);box.append(d);return d});
   $('meaningText').textContent=MEANING;$('meaning').hidden=true;$('shloka').hidden=false;
   Overlay.add($('shloka'),()=>{const q=s.pos().panel;return refRectPx(q[0],q[1],q[2],q[3])});return els}
-/* one recited line: the Narrator in a Hindi or Indian-English voice if available; a pause follows for the child to repeat */
+/* one recited line: the recorded clip, else the Narrator in a Hindi or Indian-English voice if available; a pause follows for the child to repeat */
 async function recite(i,els,pause){els.forEach((e,j)=>e.classList.toggle('on',j===i));els[i].classList.remove('wait');const tok=D.token;
-  const hi=Speech.hindi;const text=hi?SHLOKA[i].dv:SHLOKA[i].say;let skipped=false;const skipP=new Promise(r=>{D.skipFn=()=>{skipped=true;Speech.stop();r()}});
-  try{if(!D.fast){const p=canSpeak()?speakAny('shloka',text,null):D.wait(2600);await Promise.race([p,skipP]);D.guard(tok);if(!skipped)await Promise.race([D.wait(pause),skipP])}}finally{D.skipFn=null}D.guard(tok)}
+  const hi=Speech.hindi||Clips.has('shloka',SHLOKA[i].dv);const text=hi?SHLOKA[i].dv:SHLOKA[i].say;let skipped=false;const skipP=new Promise(r=>{D.skipFn=()=>{skipped=true;Speech.stop();r()}});
+  try{if(!D.fast){const p=canSpeak('shloka',text)?speakAny('shloka',text,null):D.wait(2600);await Promise.race([p,skipP]);D.guard(tok);if(!skipped)await Promise.race([D.wait(pause),skipP])}}finally{D.skipFn=null}D.guard(tok)}
 async function shot2_8(){mood('respectful');const s=D.setScene(scShloka(),1200);const S=s.S;Music.hush(true);
   await hold(1200);
   await say("Many families say a beautiful shloka when they light a lamp. It reminds us of the goodness and well-being that light represents.");

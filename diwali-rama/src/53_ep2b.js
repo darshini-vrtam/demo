@@ -104,10 +104,10 @@ function shlokaPanel(s){const box=$('shlokaLines');box.innerHTML='';const els=SH
     const a=document.createElement('p');a.className='dv';a.lang='sa';a.textContent=l.dv;const b=document.createElement('p');b.className='tr';b.lang='sa-Latn';b.textContent=l.tr;d.append(a,b);box.append(d);return d});
   $('meaningText').textContent=MEANING;$('meaning').hidden=true;$('shloka').hidden=false;
   Overlay.add($('shloka'),()=>{const q=s.pos().panel;return refRectPx(q[0],q[1],q[2],q[3])});return els}
-/* one recited line: the Narrator in a Hindi or Indian-English voice if available; a pause follows for the child to repeat */
+/* one recited line: the recorded clip, else the Narrator in a Hindi or Indian-English voice if available; a pause follows for the child to repeat */
 async function recite(i,els,pause){els.forEach((e,j)=>e.classList.toggle('on',j===i));els[i].classList.remove('wait');const tok=D.token;
-  const hi=Speech.hindi;const text=hi?SHLOKA[i].dv:SHLOKA[i].say;let skipped=false;const skipP=new Promise(r=>{D.skipFn=()=>{skipped=true;Speech.stop();r()}});
-  try{if(!D.fast){const p=canSpeak()?speakAny('shloka',text,null):D.wait(2600);await Promise.race([p,skipP]);D.guard(tok);if(!skipped)await Promise.race([D.wait(pause),skipP])}}finally{D.skipFn=null}D.guard(tok)}
+  const hi=Speech.hindi||Clips.has('shloka',SHLOKA[i].dv);const text=hi?SHLOKA[i].dv:SHLOKA[i].say;let skipped=false;const skipP=new Promise(r=>{D.skipFn=()=>{skipped=true;Speech.stop();r()}});
+  try{if(!D.fast){const p=canSpeak('shloka',text)?speakAny('shloka',text,null):D.wait(2600);await Promise.race([p,skipP]);D.guard(tok);if(!skipped)await Promise.race([D.wait(pause),skipP])}}finally{D.skipFn=null}D.guard(tok)}
 async function shot2_8(){mood('respectful');const s=D.setScene(scShloka(),1200);const S=s.S;Music.hush(true);
   await hold(1200);
   await say("Many families say a beautiful shloka when they light a lamp. It reminds us of the goodness and well-being that light represents.");

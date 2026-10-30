@@ -42,11 +42,13 @@
 - In the standalone file opened directly in a browser, the camera path will work if the browser grants permission.
 
 ## Speech
-
-- Narration uses the Web Speech API. The Narrator gets the best English voice available, preferring en-IN. Rama, Sita, Lakshmana, Hanuman and Ravana each get their own pitch and rate, and a distinct male or female voice where the device has one.
-- The shloka uses a Hindi voice and speaks the Devanagari if the device has one. Otherwise it uses an en-IN voice (or the default) reading a plain-letter transliteration.
-- If no voices exist, or the sound is muted, captions advance on a reading-time estimate.
-- Headless Chromium reports the speech API but 0 voices, so testing ran on the timed-caption fallback. Real voices were not heard in testing.
+- **Recorded narration (preferred).** All 96 spoken lines come from ElevenLabs: voice "Krishna - Energetic and Expressive" (`m5qndnI7u4OAdXhH0Mr5`), model Eleven v3, one take per line. Each prompt is the verbatim line with one leading v3 mood tag (for example `[warm]`, `[tense]`, `[joyful]`, `[slow, reverent]` for the shloka). The tag sets delivery and is not spoken. The shloka clips speak the Devanagari exactly as typeset.
+- Clips live in `audio/<id>.mp3`. The id is the FNV-1a hash of `voice|text` in base 36 (`Clips.id`), so any edit to a line's wording orphans its clip and that line falls back to the browser voice. `build.py` embeds the list of ids present as `CLIP_IDS`.
+- Playback order for each line: the clip, then the Web Speech API voice, then timed captions. Clips play at rate 1.0. Captions page at a fixed 150 characters in every orientation, so each part matches its clip.
+- `check_script.py` now also reports any spoken line without a clip (currently 0 of 86 lines, plus the 4 shloka lines).
+- Recorded narration totals about 7.8 minutes.
+- **Fallback.** The Narrator gets the best English voice available, preferring en-IN. Rama, Sita, Lakshmana, Hanuman and Ravana each get their own pitch and rate. The shloka uses a Hindi voice for the Devanagari if the device has one, otherwise a transliteration. With no voices, or with sound muted, captions advance on a reading-time estimate.
+- **Hosting.** The page fetches `audio/*.mp3` relative to itself. Opened as a lone file without the `audio/` folder, it falls back to browser speech. The published artifact is sent with every clip in its `files` map.
 
 ## Devanagari
 
@@ -207,3 +209,6 @@ The late frame of every scene was reviewed in landscape (1280×720) and portrait
   - A rangoli lies on the ground in front of the palace door, with a marigold toran over the door and flowers on either side.
   - Six patterned lanterns hang and sway gently from the palace and the rooftops; four in portrait.
   - The four heroes stand apart so the doorway and rangoli stay visible.
+
+## Revision 12
+- Narration recorded with ElevenLabs (Krishna, Eleven v3) for every line, including the shloka in Devanagari. It plays in place of the browser voice (see Speech).
