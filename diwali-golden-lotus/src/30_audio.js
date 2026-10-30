@@ -28,7 +28,11 @@ const AU={ctx:null,master:null,vol:.55,sfxG:null,muted:false,noiseBuf:null,
     case'swell':[262,330,392,523].forEach((f,i)=>this.osc('sine',f,t+i*.25,3.2,.07));break;
     case'wave':this.osc('sine',220,t,1.2,.04);this.osc('sine',330,t+.05,1.1,.025);break;/* gentle sound-wave tone with each chant phrase */
     case'tick':this.osc('sine',988,t,.6,.07);this.osc('sine',1480,t+.06,.7,.04);break;/* fallback chime per phrase */
-    case'tap':this.osc('triangle',660,t,.1,.1);break}}catch(e){}}};
+    case'tap':this.osc('triangle',660,t,.1,.1);break;
+    case'drum':this.osc('sine',120,t,.32,.36,null,62);this.noise(t,.08,.1,'lowpass',400,.7);break;
+    case'creak':{const c=this.ctx,o=c.createOscillator(),fl=c.createBiquadFilter(),e=c.createGain();o.type='sawtooth';o.frequency.setValueAtTime(80,t);
+      for(let i=0;i<10;i++)o.frequency.linearRampToValueAtTime(80+Math.sin(i*1.7)*18+i*3,t+i*.09);fl.type='bandpass';fl.frequency.value=700;fl.Q.value=7;
+      e.gain.setValueAtTime(.0001,t);e.gain.exponentialRampToValueAtTime(.12,t+.15);e.gain.exponentialRampToValueAtTime(.0001,t+1);o.connect(fl);fl.connect(e);e.connect(this.sfxG);o.start(t);o.stop(t+1.05);break}}}catch(e){}}};
 
 /* ambient music: a low tanpura-like drone, slow pentatonic plucks and a soft ocean wash; level and colour follow the mood */
 const Music={nodes:null,level:.5,next:0,ducked:false,moodName:'ocean',

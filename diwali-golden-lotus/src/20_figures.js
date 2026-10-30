@@ -1,8 +1,9 @@
-/* ===== Character bible: the Devas (profile, Madhubani style; reused from the Dhanteras build with this episode's four garment colours) =====
+/* ===== Character bible: the Devas and, for the Shot 1.1 churning recap, the asuras (profile, Madhubani style; reused from the Dhanteras build) =====
    Built once per figure as an SVG group; a pose state machine only changes transforms,
    so clothing, crowns, colours and proportions never change between shots. */
 const KIN={deva:[{sk:P.ochre,g:P.gold,g2:P.verm,c:P.turmeric},{sk:P.terra,g:P.leaf,g2:P.turmeric,c:P.gold},{sk:P.ochre,g:P.coral,g2:P.gold,c:P.turmeric},{sk:P.terra,g:P.indigo,g2:P.turmeric,c:P.gold}],
-  asura:[{sk:P.terra,g:P.verm,g2:P.indigo,z:P.turmeric}]};
+  asura:[{sk:P.terra,g:P.verm,g2:P.indigo,z:P.turmeric},{sk:P.terra,g:P.indigo,g2:P.turmeric,z:P.turmeric},{sk:P.terra,g:P.coral,g2:P.turq,z:P.terra},
+    {sk:P.terra,g:P.verm,g2:P.turq,z:P.turmeric},{sk:P.terra,g:P.indigo,g2:P.verm,z:P.turmeric}]};
 /* poses: back arm (ba,bb) and front arm (fa,fb), degrees from straight down, + towards the facing side */
 const POSE={idle:{ba:-6,bb:12,fa:8,fb:16,lean:0,tilt:0},
   pull:{ba:64,bb:16,fa:74,fb:8,lean:10,tilt:-3},

@@ -108,16 +108,19 @@ function oceanStage(){const s=mkScene('ocean');s.mode='est';s.seaMood='wonder';s
     op(floatL,st.floats);if(st.floats>0)floats.forEach(o=>tf(o.f,LP(260,90)+o.u*LP(1258,820),LP(690,1260)+Math.sin(t*.8+o.ph)*12*m-((o.u*7)%3)*LP(30,60),st.floats*1.1,t*12*m));
     light.update(dt,t)};
   return s}
+/* Shot 1.1: the recap shows the great churning from the Dhanteras story, the devas and asuras pulling Vasuki round Mount Mandara on Kurma */
 async function shot1_1(){Store.set('scene',1);mood('wonder');Music.mood('ocean');Music.setLevel(.5,3);
-  const s=oceanStage();s.mode='est';Object.assign(s.st,{far:1,tort:1});D.setScene(s,900);
-  s.cam.fx=LP(889,500);s.cam.fy=LP(520,860);D.go(s.cam,{z:1.08},42000,'io');
+  const s=churnScene({mood:'wonder'});const C=s.C;D.setScene(s,900);const M=churnMotor(s);M.base=C.flow;M.rbase=C.rot;C.ringK=0;
+  groupSet(C.devas,'pull');groupSet(C.asuras,'pull');
+  s.cam.fx=LP(889,500);s.cam.fy=LP(470,860);D.go(s.cam,{z:1.06},42000,'io');
   await D.wait(700);
   await D.say('Children, something magical is about to happen!',{cues:[['magical',()=>AU.sfx('sparkle')]]});
-  await D.say('Do you remember our adventure at the Ocean of Milk?');
-  await D.say('We saw Lord Vishnu become Kurma, the giant tortoise, and Lord Shiva protect the universe from the deadly poison.',{cues:[['Kurma',()=>s.fx.ripple(LP(560,560),LP(600,720),LP(260,200),P.turq,1600,.3)]]});
-  await D.say('The danger had passed, but the great churning continued.',{cues:[['churning',()=>D.go(s.st,{glow:.35},3000)]]});
-  await D.late();D.go(s.st,{glow:.6},1200);await D.wait(900)}
-async function shot1_2(){mood('wonder');let s=D.scene;if(!s||s.id!=='ocean'){s=oceanStage();D.setScene(s,0)}
+  await D.say('Do you remember our adventure at the Ocean of Milk?',{cues:[['adventure',()=>{D.go(M,{speed:.6},1600);D.go(C,{ringK:1},1500)}]]});
+  await D.say('We saw Lord Vishnu become Kurma, the giant tortoise, and Lord Shiva protect the universe from the deadly poison.',
+    {cues:[['Kurma',()=>{AU.sfx('chime');D.go(C.K,{ring:1},1200);s.fx.ripple(C.A.kx,C.A.ky-40,LP(420,300),P.turmeric,1800,.25)}]]});
+  await D.say('The danger had passed, but the great churning continued.',{cues:[['churning',()=>{D.go(M,{speed:1.2},1400);D.go(C,{glim:1,energy:1},1800);AU.sfx('drum')}]]});
+  await D.late();await D.wait(900)}
+async function shot1_2(){mood('wonder');let s=D.scene;if(!s||s.id!=='ocean'){s=oceanStage();s.mode='est';s.st.tort=0;s.st.glow=.6;D.setScene(s,1600)}
   D.go(s.cam,{z:1},1600);s.setSea('bright',1800);D.go(s.st,{glow:0,tort:0},1400);s.mode='row';const T=s.T;
   const rise=(k)=>{AU.sfx('ripple');D.go(T[k],{rise:1},1600,'out');const p=s.lay()[k];Timers.add(400,()=>s.fx.ripple(p[0],p[1]+150*p[2],LP(220,180),P.foam,1300,.3))};
   const pulse=async k=>{await D.tw(T[k],{act:1},700,'out');await D.tw(T[k],{act:0},900)};

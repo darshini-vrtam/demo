@@ -10,7 +10,7 @@ All 14 shots and all 4 activities, in story order, after a title card ("Begin th
 
 | ID | Shot / activity | Notes |
 |---|---|---|
-| 1.1 | Returning to the Ocean of Milk | night-indigo sky, wave bands, fish, plants, patterned tortoise silhouette (Kurma), faint distant Mandara with a serpent spiral; slow push-in; the water starts to glow |
+| 1.1 | Returning to the Ocean of Milk | the great churning from the Dhanteras story (ported from its build, per a later request): devas on the left and asuras on the right pull Vasuki round Mount Mandara on Kurma; the churn speeds up on "the great churning continued"; slow push-in. This replaces the brief's faint Mandara/tortoise callback |
 | 1.2 | The Treasures Emerge | Kamadhenu, Airavata, Kalpavriksha rise from the waves on their names, each in its own circular backdrop (concentric rings / petal ring / dotted ring) |
 | 1.3 | The Golden Mystery | deepest indigo, concentric circles under the rising closed lotus, golden seams pulse between its petals, small golden flowers float over the water, treasures small in the distance |
 | INT-01 | Discover the Treasures | any order; golden outline, its own animation, name spoken and shown, floral confirmation; never resets; misses ripple; 15 s hint then auto-discover |
