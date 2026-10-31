@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>The Magic of Giving</title>
+<meta name="description" content="Diwali Stories of India, Episode 3: an interactive, narrated Madhubani-inspired story for children aged 6 to 10.">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Noto+Sans+Devanagari:wght@500;600;700&display=swap">
+<style>
+/* Layout: one painted SVG stage fills the frame; a quiet dock below it carries narration, instructions and controls. */
+:root{
+  --night:#1B2A5C; --deep:#1B2A5C; --ocean:#1FA7A8; --turq:#1FA7A8; --cream:#FFF3D6; --foam:#FFF3D6; --coral:#F28A1E; --lotus:#E8579A;
+  --verm:#B3202A; --mustard:#F28A1E; --gold:#F4B400; --leaf:#3F9A47; --ink:#1B1411;
+  /* page chrome (title card, captions, buttons) follows the viewer's theme; the illustration never does */
+  --bg:#FFF3D6; --fg:#1B1411; --panel:#FFF3D6; --panel-fg:#1B1411; --line:#1B1411; --hint:#B3202A; --pill:#1B2A5C; --pill-fg:#FFF3D6; --focus:#1B2A5C; --who:#1B2A5C;
+  --font-body:"Baloo 2","Trebuchet MS","Segoe UI",system-ui,sans-serif;
+  --font-deva:"Noto Sans Devanagari","Kohinoor Devanagari","Nirmala UI","Mangal","Devanagari Sangam MN","Devanagari MT",sans-serif;
+  --font-roman:"Baloo 2","Segoe UI","Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1B1411; --fg:#FFF3D6; --panel:#1B2A5C; --panel-fg:#FFF3D6; --line:#F4B400; --hint:#F4B400; --pill:#FFF3D6; --pill-fg:#1B2A5C; --focus:#F4B400; --who:#F4B400; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1B1411; --fg:#FFF3D6; --panel:#1B2A5C; --panel-fg:#FFF3D6; --line:#F4B400; --hint:#F4B400; --pill:#FFF3D6; --pill-fg:#1B2A5C; --focus:#F4B400; --who:#F4B400; color-scheme:dark }
+html{height:100%;box-sizing:border-box}
+*,*::before,*::after{box-sizing:inherit}
+body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);overflow:hidden;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-top:max(10px,env(safe-area-inset-top,0px));padding-bottom:max(10px,env(safe-area-inset-bottom,0px))}
+#app{position:relative;width:100%;height:100%;overflow:hidden;border-radius:14px;background:var(--night);border:3px solid var(--line);
+  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;--dk:120px;--bd:24px}
+#stage{position:absolute;left:0;top:0;width:100%;height:100%;display:block;touch-action:none;overflow:hidden}
+[hidden]{display:none!important}
+button{font-family:var(--font-body)}
+button:focus-visible{outline:4px solid var(--focus);outline-offset:3px}
+/* real buttons laid over the painting for keyboard and screen readers; the painting draws the highlight */
+#hot{position:absolute;inset:0;pointer-events:none;z-index:3}
+.hs{position:absolute;left:0;top:0;pointer-events:none;background:transparent;border:0;padding:0;margin:0;opacity:0}
+.hs:focus-visible{opacity:1;outline:none;box-shadow:0 0 0 4px var(--cream),0 0 0 8px var(--ink);border-radius:50%}
+#hud{position:absolute;top:calc(var(--bd) + 8px);right:calc(var(--bd) + 8px);display:flex;gap:8px;z-index:7}
+.hb{width:46px;height:46px;border-radius:50%;border:3px solid var(--ink);background:var(--cream);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0}
+.hb svg{width:24px;height:24px}
+.hb[aria-pressed="true"]{background:var(--gold)}
+.hb:focus-visible{outline:none;box-shadow:0 0 0 4px var(--gold),0 0 0 7px var(--ink)}
+@media (max-width:700px){ .hb{width:40px;height:40px} .hb svg{width:21px;height:21px} #hud{gap:6px} }
+#camDot{position:absolute;z-index:9;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;border:4px solid var(--ink);background:var(--gold);pointer-events:none;left:0;top:0}
+#camDot.on{background:var(--verm)}
+/* dock: narration captions and activity controls */
+#dock{position:absolute;left:0;right:0;bottom:0;height:var(--dk);z-index:5;background:var(--panel);color:var(--panel-fg);border-top:4px solid var(--line);
+  display:flex;flex-direction:column;justify-content:center;gap:6px;padding:6px clamp(12px,3vw,40px);overflow:hidden;
+  --fs:clamp(15px,min(calc(var(--dk) * .15),calc(1.5vw + 9px)),28px)}
+#cap{max-width:1100px;width:100%;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:2px}
+#capWho{display:inline-flex;align-items:center;gap:6px;font:800 calc(var(--fs) * .56)/1 var(--font-body);letter-spacing:.1em;text-transform:uppercase;color:var(--who)}
+#capWho i{width:.95em;height:.95em;border-radius:50%;display:inline-block;border:2px solid var(--ink)}
+#capText{margin:0;font-size:var(--fs);line-height:1.36;font-weight:600;text-wrap:pretty;text-align:center}
+#capText[lang="sa"]{font-family:var(--font-deva)}
+#cap.off #capText{display:none}
+#act{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 18px;max-width:1200px;width:100%;margin:0 auto}
+#actText{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 260px;align-items:center;text-align:center}
+#ins{margin:0;font-size:calc(var(--fs) * 1.08);line-height:1.25;font-weight:800;text-wrap:balance;display:flex;align-items:center;gap:.4em;justify-content:center}
+#ins svg{width:1.6em;height:1.6em;flex:none}
+#ins.hint{color:var(--hint)}
+#cnt{margin:0;font:700 calc(var(--fs) * .78)/1.2 var(--font-body);letter-spacing:.03em;background:var(--pill);color:var(--pill-fg);border-radius:999px;padding:3px 14px;font-variant-numeric:tabular-nums}
+#ctrl{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+#ctrl:empty{display:none}
+.big{font:800 clamp(16px,calc(var(--fs) * .92),22px)/1 var(--font-body);min-height:50px;padding:10px 24px;border-radius:999px;border:3px solid var(--ink);background:var(--gold);color:var(--ink);cursor:pointer;
+  box-shadow:0 4px 0 var(--ink);transition:transform .15s ease;display:inline-flex;align-items:center;gap:8px}
+.big.alt{background:var(--cream)}
+.big:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.big svg{width:30px;height:24px;flex:none}
+.big.lotusbtn{border-radius:28px 28px 999px 999px;background:var(--lotus);color:var(--ink)}
+/* picture cards for Activity 3: they sit over the cream painting, below the Golden Light */
+.tray{position:absolute;left:0;right:0;top:0;bottom:var(--dk);z-index:4;display:grid;justify-content:center;align-content:center;gap:clamp(8px,1.6vw,22px);
+  grid-template-columns:repeat(3,minmax(0,250px));padding:calc(var(--bd) + var(--trayTop,90px)) clamp(16px,4vw,60px) calc(var(--bd) + 26px);pointer-events:none}
+.tray.p{grid-template-columns:repeat(2,minmax(0,260px));gap:10px}
+.card{pointer-events:auto;min-width:0;background:var(--cream);color:var(--ink);border:4px solid var(--ink);border-radius:20px;padding:6px 6px 8px;cursor:pointer;display:flex;flex-direction:column;gap:2px;
+  transition:transform .35s ease,box-shadow .25s ease,opacity .35s ease;position:relative;align-items:center;font-family:var(--font-body);box-shadow:0 0 0 4px var(--cream),0 0 0 7px var(--ink)}
+.card svg{width:100%;aspect-ratio:200/130;max-height:var(--cardH,18vh);display:block}
+.card b{font:800 clamp(13px,.8vw + .7vh + 4px,20px)/1.1 var(--font-body);text-align:center}
+.card.enter{opacity:0;transform:translateY(24px)}
+.card.ready{box-shadow:0 0 0 4px var(--cream),0 0 0 7px var(--ink),0 0 0 10px var(--gold),0 0 0 12px var(--ink)}
+.card[aria-pressed="true"]{transform:translateY(-4px);border-color:var(--ink);box-shadow:0 0 0 5px var(--gold),0 0 0 8px var(--ink),0 0 0 12px var(--mustard),0 0 0 14px var(--ink);
+  background-image:radial-gradient(circle at 10px 10px,var(--mustard) 0 3px,transparent 4px);background-size:20px 20px;background-color:var(--cream)}
+.card .flower{position:absolute;top:-14px;right:-14px;width:40px;height:40px;display:none}
+.card[aria-pressed="true"] .flower{display:block}
+.card:focus-visible{outline:none;box-shadow:0 0 0 5px var(--cream),0 0 0 9px var(--focus)}
+.pulse{animation:pulse 1.6s ease-in-out 3}
+@keyframes pulse{50%{transform:translateY(-6px) scale(1.04)}}
+/* shloka panel: live Devanagari text on cream, dark outline, lotus corners */
+#shloka{position:absolute;z-index:4;background:var(--cream);color:var(--ink);border:4px solid var(--ink);border-radius:18px;box-shadow:0 0 0 6px var(--gold),0 0 0 9px var(--ink);
+  display:flex;flex-direction:column;justify-content:safe center;gap:clamp(6px,1.3vh,14px);padding:clamp(14px,2.4vh,30px) clamp(16px,2.2vw,34px);overflow:hidden;transition:clip-path 1.6s ease}
+#shloka.drawing{clip-path:inset(0 100% 0 0 round 18px)}
+#shloka .corner{position:absolute;width:clamp(22px,2.4vw,34px);height:clamp(22px,2.4vw,34px)}
+#shloka .corner.tl{left:4px;top:4px}#shloka .corner.tr{right:4px;top:4px;transform:scaleX(-1)}#shloka .corner.bl{left:4px;bottom:4px;transform:scaleY(-1)}#shloka .corner.br{right:4px;bottom:4px;transform:scale(-1,-1)}
+#skLines{margin:0;display:flex;flex-direction:column;gap:clamp(4px,1vh,12px);font:600 var(--deva,30px)/1.5 var(--font-deva);text-align:center}
+#skLines .ln{display:block;position:relative;margin:0;transition:opacity .8s ease}
+#skLines .ph{display:inline-block;padding:0 .14em;border-radius:10px;border:3px solid transparent;transition:transform .3s ease,border-color .3s ease;transform-origin:50% 60%}
+#skLines .ph.on{transform:scale(1.07);border-color:var(--ink);border-style:dotted;text-decoration:underline;text-decoration-color:var(--mustard);text-decoration-thickness:5px;text-underline-offset:9px}
+#skLines .ln.cur::before{content:"";position:absolute;left:-.2em;top:50%;width:.9em;height:.9em;margin-top:-.45em;transform:translateX(-100%);
+  background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M6 20h4M14 12v16M20 6v28M26 12v16M32 18v4' stroke='%23111111' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E")}
+#translit{margin:0;font:600 var(--rom,18px)/1.4 var(--font-roman);text-align:center;transition:opacity .8s ease}
+#translit span{display:block}
+#meaning{border:3px solid var(--ink);border-radius:14px;padding:clamp(6px,1vh,12px) clamp(10px,1.4vw,18px);background:var(--foam);display:flex;flex-direction:column;gap:2px;transition:opacity .8s ease}
+#meaning h3{margin:0;font:800 calc(var(--rom,18px) * .72)/1.1 var(--font-body);letter-spacing:.12em;text-transform:uppercase;color:var(--verm);text-align:center}
+#meaning p{margin:0;font:600 var(--rom,18px)/1.35 var(--font-body);text-align:center;text-wrap:pretty}
+#skBadge{position:absolute;left:50%;top:6px;transform:translateX(-50%);font:800 13px/1 var(--font-body);letter-spacing:.1em;text-transform:uppercase;background:var(--deep);color:var(--cream);border-radius:999px;padding:5px 12px;border:2px solid var(--ink)}
+.fade0{opacity:0}
+/* overlays: start card, end card */
+.ov{position:absolute;left:0;right:0;top:0;bottom:0;z-index:8;display:grid;place-items:center;padding:calc(var(--bd) + 14px)}
+.panel{background:var(--panel);color:var(--panel-fg);border:4px solid var(--ink);border-radius:24px;padding:22px 28px;max-width:620px;width:100%;
+  text-align:center;display:flex;flex-direction:column;gap:14px;box-shadow:0 0 0 7px var(--gold),0 0 0 11px var(--ink)}
+.panel h1{font:800 clamp(26px,3vw + 1vh,46px)/1.08 var(--font-body);margin:0;text-wrap:balance;letter-spacing:.01em}
+.panel .eyebrow{font:800 13px/1.2 var(--font-body);letter-spacing:.14em;text-transform:uppercase;margin:0;color:var(--hint)}
+.panel p{margin:0;font-size:16px;line-height:1.45}
+.row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+#begin{font-size:clamp(20px,2vw + 8px,28px);min-height:64px;padding:14px 34px}
+#endCard{bottom:var(--dk);pointer-events:none;align-items:start;padding-top:calc(var(--bd) + 6%)}
+#endCard .t{text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center;max-width:900px;transition:opacity 1.2s ease}
+#endCard h1{margin:0;font:800 clamp(26px,3.4vw + 1.2vh,60px)/1.05 var(--font-body);color:var(--cream);letter-spacing:.03em;text-wrap:balance;
+  text-shadow:0 3px 0 var(--ink),3px 0 0 var(--ink),-3px 0 0 var(--ink),0 -3px 0 var(--ink),2px 2px 0 var(--ink),-2px -2px 0 var(--ink),2px -2px 0 var(--ink),-2px 2px 0 var(--ink)}
+#endCard p{margin:0;font:700 clamp(17px,1.4vw + 1vh,30px)/1.2 var(--font-body);color:var(--ink);background:var(--gold);border:3px solid var(--ink);border-radius:999px;padding:6px 20px}
+/* instruction banner at the top during activities; the question subtitle in Shot 1.3 */
+#banner{position:absolute;z-index:6;top:calc(var(--bd) + 8px);left:calc(var(--bd) + 8px);right:calc(var(--bd) + 220px);display:flex;justify-content:center;pointer-events:none}
+#banner p{margin:0;background:var(--cream);color:var(--ink);border:3px solid var(--ink);border-radius:16px;padding:6px 16px;font:800 clamp(16px,1.1vw + 1vh + 4px,26px)/1.2 var(--font-body);text-align:center;text-wrap:balance;
+  box-shadow:0 0 0 4px var(--gold),0 0 0 6px var(--ink);max-width:100%;display:flex;align-items:center;gap:.4em}
+#banner p svg{width:1.5em;height:1.5em;flex:none}
+#banner.hint p{background:var(--gold)}
+@media (max-width:700px){#banner{right:calc(var(--bd) + 8px);top:calc(var(--bd) + 58px)}}
+#qpanel{position:absolute;z-index:4;right:calc(var(--bd) + 4%);top:30%;width:min(34%,420px);background:var(--cream);color:var(--ink);border:4px solid var(--ink);border-radius:18px;
+  box-shadow:0 0 0 5px var(--gold),0 0 0 8px var(--ink);padding:14px 18px;transition:opacity .8s ease}
+#qpanel p{margin:0;font:700 clamp(17px,1.2vw + 1vh + 4px,28px)/1.3 var(--font-body);text-align:center;text-wrap:balance}
+@media (max-width:700px){#qpanel{left:calc(var(--bd) + 12px);right:calc(var(--bd) + 12px);width:auto;top:auto;bottom:calc(var(--dk) + 3%)}}
+#skIcons{display:flex;gap:14px;justify-content:center}
+#skIcons svg{width:clamp(34px,3vw,52px);height:clamp(34px,3vw,52px)}
+#ctrl .big.on{background:var(--cream)}
+/* two picture cards for each kind-action choice: a band across the lower part of the picture, below the characters' faces */
+#choices{position:absolute;z-index:5;left:0;right:0;bottom:calc(var(--dk) + 4%);display:grid;grid-template-columns:repeat(2,minmax(0,300px));justify-content:center;gap:clamp(12px,3vw,40px);padding:0 12%}
+#choices .card{box-shadow:0 0 0 4px var(--gold),0 0 0 7px var(--ink)}
+#choices .card svg{aspect-ratio:200/120;max-height:var(--cardH,15vh)}
+#choices .card.dim{opacity:.55}
+#choices .card[aria-pressed="true"]{box-shadow:0 0 0 6px var(--cream),0 0 0 10px var(--leaf)}
+@media (max-width:700px){#choices{padding:0 6%;gap:10px}#choices .card b{font-size:13px}}
+/* the mantra screen: large Devanagari first, then the transliteration and the meaning; nothing moves while the children chant */
+#mantra{position:absolute;z-index:4;left:16%;right:16%;top:18%;display:flex;flex-direction:column;align-items:center;gap:clamp(8px,2vh,22px);background:var(--cream);color:var(--ink);
+  border:4px solid var(--ink);border-radius:22px;box-shadow:0 0 0 7px var(--gold),0 0 0 11px var(--ink);padding:clamp(16px,3vh,34px) clamp(14px,3vw,40px);text-align:center}
+#mDeva{margin:0;font:700 clamp(30px,4.2vw + 1vh,74px)/1.35 var(--font-deva)}
+#mRoman{margin:0;font:700 clamp(18px,1.6vw + 1vh,34px)/1.2 var(--font-roman)}
+#mMean{margin:0;font:600 clamp(15px,1vw + 1vh,24px)/1.3 var(--font-body);color:var(--verm)}
+#mBadge{font:800 13px/1 var(--font-body);letter-spacing:.1em;text-transform:uppercase;background:var(--night);color:var(--cream);border-radius:999px;padding:5px 12px}
+@media (max-width:700px){#mantra{left:6%;right:6%;top:16%}#mDeva{font-size:clamp(20px,6.6vw,40px);white-space:nowrap}}
+#endCard{bottom:var(--dk);align-items:center;padding-top:0}
+#endCard .t{background:var(--cream);border:4px solid var(--ink);border-radius:24px;box-shadow:0 0 0 7px var(--gold),0 0 0 11px var(--ink);padding:clamp(14px,3vh,30px) clamp(16px,3vw,40px);max-width:min(760px,80%)}
+#endCard .deva{margin:0;font:700 clamp(30px,4vw + 1vh,68px)/1.3 var(--font-deva);color:var(--verm);background:none;border:0;padding:0}
+#endCard h1{color:var(--ink);text-shadow:none;font-size:clamp(28px,3.6vw + 1vh,60px)}
+#endCard .wish{background:none;border:0;padding:0;font:600 clamp(15px,1vw + 1vh,24px)/1.35 var(--font-body);color:var(--ink);text-wrap:balance}
+#endCard .ep{background:var(--gold);font:800 clamp(14px,1vw + .8vh,22px)/1.1 var(--font-body);letter-spacing:.08em;padding:5px 16px}
+#endCard .ep.small{background:none;border:0;font-size:clamp(12px,.6vw + .8vh,16px)}
+.panel .sub{font:800 clamp(13px,1vw + 6px,18px)/1.2 var(--font-body);letter-spacing:.1em;color:var(--hint)}
+#rest{z-index:8;place-items:start center;padding-top:calc(var(--bd) + 6%)}
+#rest .panel{max-width:520px}
+@media (prefers-reduced-motion: reduce){.card,.big,#skLines .ph,#shloka{transition:none}.pulse{animation:none;outline:4px dashed var(--gold);outline-offset:3px}}
+</style>
+</head>
+<body>
+<div id="app">
+  <svg id="stage" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Story picture. Tap the picture when it asks for help."></svg>
+  <div id="hot"></div>
+  <div id="hud">
+    <button class="hb" id="bCC" aria-pressed="true" title="Read-along captions" aria-label="Read-along captions">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10.5 10.2a2.3 2.3 0 1 0 0 3.6M17 10.2a2.3 2.3 0 1 0 0 3.6"/></svg></button>
+    <button class="hb" id="bCam" aria-pressed="false" title="Camera magic (optional)" aria-label="Camera magic, optional">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button>
+    <button class="hb" id="bMute" aria-pressed="false" title="Mute" aria-label="Mute sound">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path id="mWave" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/><path id="mX" d="M16 9l5 6M21 9l-5 6" style="display:none"/></svg></button>
+    <button class="hb" id="bSkip" title="Skip" aria-label="Skip this line">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l9 7-9 7z"/><path d="M18 5v14"/></svg></button>
+  </div>
+  <div id="tray" class="tray" hidden></div>
+  <div id="shloka" hidden>
+    <span id="skBadge" hidden>Listen along</span>
+    <div id="skLines" lang="sa">
+      <p class="ln" id="ln1"><span class="ph">नमस्तेऽस्तु महामाये श्रीपीठे सुरपूजिते ।</span></p>
+      <p class="ln" id="ln2"><span class="ph">शङ्खचक्रगदाहस्ते महालक्ष्मि नमोऽस्तु ते ॥</span></p>
+    </div>
+    <p id="translit"><span>Namaste'stu Mahamaye, Shripithe Surapujite,</span><span>Shankha Chakra Gada Haste, Mahalakshmi Namostute.</span></p>
+    <div id="meaning"><h3>Meaning</h3><p>“O Goddess Mahalakshmi, the great Divine Goddess, worshipped by the Devas, who holds the conch, discus and mace in Your hands — I bow to You with respect.”</p></div>
+    <div id="skIcons" hidden></div>
+  </div>
+  <div id="dock">
+    <div id="cap" hidden aria-live="polite"><span id="capWho"><i></i><b></b></span><p id="capText"></p></div>
+    <div id="act" hidden aria-live="polite"><div id="actText"><p id="ins"></p><p id="cnt" hidden></p></div><div id="ctrl"></div></div>
+  </div>
+  <div id="camDot" hidden></div>
+  <div id="banner" hidden aria-live="polite"><p id="bannerText"></p></div>
+  <div id="choices" hidden></div>
+  <div id="mantra" hidden><p id="mDeva" lang="sa">ॐ श्रीं महालक्ष्म्यै नमः ॥</p><p id="mRoman">Om Shreem Mahalakshmyai Namah</p><p id="mMean">Salutations to Goddess Mahalakshmi.</p><span id="mBadge" hidden>Listen along</span></div>
+  <div class="ov" id="endCard" hidden><div class="t" id="endT"><p class="deva" lang="hi">शुभ दीपावली!</p><h1>HAPPY DIWALI!</h1>
+    <p class="wish">May your home shine with light, your heart glow with gratitude and your life be filled with love and happiness.</p><p class="ep">THE MAGIC OF GIVING</p><p class="ep small">END OF EPISODE 3</p>
+    <div class="row" id="endRow" hidden><button class="big alt" id="bAgain2">Play again</button></div></div></div>
+  <div class="ov" id="start">
+    <div class="panel">
+      <p class="eyebrow">Diwali Stories of India</p>
+      <h1>THE MAGIC OF GIVING</h1>
+      <p class="sub">EPISODE 3 - FINAL DIWALI ADVENTURE</p>
+      <p>The storyteller reads the story aloud. When the picture asks, tap your choice. The camera is optional, and no microphone is used.</p>
+      <div class="row"><button class="big" id="begin">Begin the story</button><button class="big alt" id="bResume" hidden>Continue</button></div>
+    </div>
+  </div>
+  <div class="ov" id="rest" hidden>
+    <div class="panel">
+      <p class="eyebrow">Episode 3</p>
+      <h1>THE MAGIC OF GIVING</h1>
+      <div class="row"><button class="big" id="bAgain">Play again</button></div>
+    </div>
+  </div>
+</div>

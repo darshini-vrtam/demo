@@ -102,3 +102,4 @@ https://claude.ai/artifact/XTe7VZkEdoHtYQakQUCCuv (Episode 1, which links here: 
 
 ## QA hook
 Open with `#qa`; `__qa.go('2.3','act')` fast-forwards to a point in a shot; `__qa.pending()` lists the script lines still missing.
+- The resting screen links to Episode 3 ("Next: Episode 3", a UI label added later): https://claude.ai/artifact/Y67kcj9fuineFNH9qE2z2z
